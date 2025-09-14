@@ -1,0 +1,11 @@
+import pytest
+from django.urls import reverse
+
+@pytest.fixture
+def api_client():
+    from rest_framework.test import APIClient
+    return APIClient()
+
+@pytest.fixture
+def django_db_setup():
+    pass  # Setup code for the Django test environment can be added here.

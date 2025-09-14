@@ -1,0 +1,25 @@
+pytest.ini:
+[pytest]
+testpaths = tests
+markers =
+    health: mark test as related to health checks
+
+tests/conftest.py:
+import pytest
+from django.test import Client
+
+@pytest.fixture
+def client():
+    return Client()
+
+tests/unit/test_models.py:
+import pytest
+from apps.main.models import YourModel  # Replace with your actual model
+import psutil
+
+def test_model_functionality(client):
+    instance = YourModel()  # Replace with your actual model initialization
+    assert instance.some_method() == expected_value  # Replace with actual method and expected value
+
+def test_psutil_functionality():
+    assert psutil.cpu_count() > 0  # Example test using psutil

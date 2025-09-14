@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Siber Güvenlik - Cybersecurity{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-900 text-white pt-20">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-red-400 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
+                🛡️ Siber Güvenlik
+            </h1>
+            <p class="text-gray-300 text-lg max-w-3xl mx-auto">
+                Siber güvenlik dünyasından güncel bilgiler, araçlar, kaynaklar ve kişisel deneyimlerim.
+            </p>
+        </div>
+
+        <!-- Main Content Sections -->
+        <div class="space-y-12">
+            
+            <!-- Güvenlik Temelleri -->
+            <section class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <span class="mr-3">🔐</span>
+                    Güvenlik Temelleri
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gray-700/30 rounded-lg p-4 border border-gray-600/30">
+                        <h3 class="font-semibold text-white mb-3 text-lg">Kimlik Doğrulama (Authentication)</h3>
+                        <ul class="text-gray-300 space-y-2 text-sm">
+                            <li>• Çok faktörlü kimlik doğrulama (2FA/MFA)</li>
+                            <li>• Güçlü parola politikaları</li>
+                            <li>• Biyometrik güvenlik</li>
+                            <li>• Token tabanlı kimlik doğrulama</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-700/30 rounded-lg p-4 border border-gray-600/30">
+                        <h3 class="font-semibold text-white mb-3 text-lg">Şifreleme (Encryption)</h3>
+                        <ul class="text-gray-300 space-y-2 text-sm">
+                            <li>• AES şifreleme standartları</li>
+                            <li>• RSA asimetrik şifreleme</li>
+                            <li>• TLS/SSL sertifikaları</li>
+                            <li>• End-to-end şifreleme</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Siber Tehditler -->
+            <section class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <span class="mr-3">⚠️</span>
+                    Yaygın Siber Tehditler
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+                        <h3 class="font-semibold text-red-400 mb-3">Phishing</h3>
+                        <p class="text-gray-300 text-sm">Sahte e-postalar ve sitelerle kişisel bilgi çalma saldırıları</p>
+                    </div>
+                    <div class="bg-orange-900/20 border border-orange-500/30 rounded-lg p-4">
+                        <h3 class="font-semibold text-orange-400 mb-3">Ransomware</h3>
+                        <p class="text-gray-300 text-sm">Dosyaları şifreleyerek fidye talep eden kötü amaçlı yazılımlar</p>
+                    </div>
+                    <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
+                        <h3 class="font-semibold text-yellow-400 mb-3">SQL Injection</h3>
+                        <p class="text-gray-300 text-sm">Veritabanı saldırıları ve veri sızıntıları</p>
+                    </div>
+                    <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
+                        <h3 class="font-semibold text-purple-400 mb-3">DDoS</h3>
+                        <p class="text-gray-300 text-sm">Distributed Denial of Service - hizmet engelleme saldırıları</p>
+                    </div>
+                    <div class="bg-pink-900/20 border border-pink-500/30 rounded-lg p-4">
+                        <h3 class="font-semibold text-pink-400 mb-3">Social Engineering</h3>
+                        <p class="text-gray-300 text-sm">Psikolojik manipülasyon yoluyla bilgi ele geçirme</p>
+                    </div>
+                    <div class="bg-indigo-900/20 border border-indigo-500/30 rounded-lg p-4">
+                        <h3 class="font-semibold text-indigo-400 mb-3">Zero-Day</h3>
+                        <p class="text-gray-300 text-sm">Henüz bilinmeyen güvenlik açıklarından yararlanma</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Güvenlik Araçları -->
+            <section class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <span class="mr-3">🛠️</span>
+                    Güvenlik Araçları
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="bg-gray-700/30 hover:bg-gray-700/50 rounded-lg p-4 transition-all duration-200 border border-gray-600/30">
+                        <h3 class="font-semibold text-white mb-2">Nmap</h3>
+                        <p class="text-sm text-gray-400">Ağ keşfi ve güvenlik taraması</p>
+                    </div>
+                    <div class="bg-gray-700/30 hover:bg-gray-700/50 rounded-lg p-4 transition-all duration-200 border border-gray-600/30">
+                        <h3 class="font-semibold text-white mb-2">Wireshark</h3>
+                        <p class="text-sm text-gray-400">Ağ trafiği analizi ve paket yakalama</p>
+                    </div>
+                    <div class="bg-gray-700/30 hover:bg-gray-700/50 rounded-lg p-4 transition-all duration-200 border border-gray-600/30">
+                        <h3 class="font-semibold text-white mb-2">Metasploit</h3>
+                        <p class="text-sm text-gray-400">Penetrasyon testi ve exploit framework</p>
+                    </div>
+                    <div class="bg-gray-700/30 hover:bg-gray-700/50 rounded-lg p-4 transition-all duration-200 border border-gray-600/30">
+                        <h3 class="font-semibold text-white mb-2">Burp Suite</h3>
+                        <p class="text-sm text-gray-400">Web uygulaması güvenlik testi</p>
+                    </div>
+                    <div class="bg-gray-700/30 hover:bg-gray-700/50 rounded-lg p-4 transition-all duration-200 border border-gray-600/30">
+                        <h3 class="font-semibold text-white mb-2">OWASP ZAP</h3>
+                        <p class="text-sm text-gray-400">Açık kaynak web güvenlik tarayıcısı</p>
+                    </div>
+                    <div class="bg-gray-700/30 hover:bg-gray-700/50 rounded-lg p-4 transition-all duration-200 border border-gray-600/30">
+                        <h3 class="font-semibold text-white mb-2">Kali Linux</h3>
+                        <p class="text-sm text-gray-400">Penetrasyon testi dağıtımı</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Güvenlik Standartları -->
+            <section class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <span class="mr-3">📋</span>
+                    Güvenlik Standartları ve Framework'ler
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div class="bg-gray-700/30 rounded-lg p-4 border border-gray-600/30">
+                            <h3 class="font-semibold text-blue-400 mb-2">ISO 27001</h3>
+                            <p class="text-gray-300 text-sm">Bilgi güvenliği yönetim sistemi uluslararası standardı</p>
+                        </div>
+                        <div class="bg-gray-700/30 rounded-lg p-4 border border-gray-600/30">
+                            <h3 class="font-semibold text-green-400 mb-2">NIST Cybersecurity Framework</h3>
+                            <p class="text-gray-300 text-sm">Siber güvenlik risk yönetimi için kapsamlı rehber</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-gray-700/30 rounded-lg p-4 border border-gray-600/30">
+                            <h3 class="font-semibold text-purple-400 mb-2">OWASP Top 10</h3>
+                            <p class="text-gray-300 text-sm">Web uygulaması güvenlik riskleri listesi</p>
+                        </div>
+                        <div class="bg-gray-700/30 rounded-lg p-4 border border-gray-600/30">
+                            <h3 class="font-semibold text-red-400 mb-2">MITRE ATT&CK</h3>
+                            <p class="text-gray-300 text-sm">Siber saldırı taktik ve teknikleri bilgi tabanı</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- En İyi Uygulamalar -->
+            <section class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <span class="mr-3">✅</span>
+                    En İyi Güvenlik Uygulamaları
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-3">
+                        <h3 class="font-semibold text-white text-lg mb-4">Kişisel Güvenlik</h3>
+                        <div class="space-y-2 text-gray-300">
+                            <div class="flex items-start">
+                                <span class="text-green-400 mr-2">•</span>
+                                <span class="text-sm">Her hesap için benzersiz, güçlü parolalar kullanın</span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="text-green-400 mr-2">•</span>
+                                <span class="text-sm">2FA/MFA'yı tüm önemli hesaplarda aktif edin</span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="text-green-400 mr-2">•</span>
+                                <span class="text-sm">Yazılımları ve işletim sistemini güncel tutun</span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="text-green-400 mr-2">•</span>
+                                <span class="text-sm">Güvenilir antivirüs ve firewall kullanın</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <h3 class="font-semibold text-white text-lg mb-4">Kurumsal Güvenlik</h3>
+                        <div class="space-y-2 text-gray-300">
+                            <div class="flex items-start">
+                                <span class="text-blue-400 mr-2">•</span>
+                                <span class="text-sm">Düzenli güvenlik eğitimleri düzenleyin</span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="text-blue-400 mr-2">•</span>
+                                <span class="text-sm">Veri yedekleme ve disaster recovery planları hazırlayın</span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="text-blue-400 mr-2">•</span>
+                                <span class="text-sm">Erişim kontrolü ve yetkilendirme uygulayın</span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="text-blue-400 mr-2">•</span>
+                                <span class="text-sm">Güvenlik testleri ve penetrasyon testleri yapın</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Güncel Tehdit İstihbaratı -->
+            <section class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <span class="mr-3">🚨</span>
+                    Güncel Tehdit İstihbaratı
+                </h2>
+                <div class="bg-gradient-to-r from-red-900/20 to-orange-900/20 border border-red-500/30 rounded-lg p-6">
+                    <h3 class="font-semibold text-red-400 mb-4 text-lg">Son Güncellemeler</h3>
+                    <div class="space-y-3 text-gray-300">
+                        <p class="text-sm">
+                            <span class="font-semibold text-white">2024 Siber Güvenlik Trendleri:</span> 
+                            AI destekli saldırılar, supply chain saldırıları ve IoT cihaz güvenlik açıkları artış gösteriyor.
+                        </p>
+                        <p class="text-sm">
+                            <span class="font-semibold text-white">Ransomware Gelişimi:</span> 
+                            Çifte fidye modeli (veri şifreleme + data leak tehdidi) yaygınlaşıyor.
+                        </p>
+                        <p class="text-sm">
+                            <span class="font-semibold text-white">Cloud Security:</span> 
+                            Hibrit çalışma modelleriyle beraber cloud güvenlik yapılandırmaları kritik önem kazandı.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-16 text-center">
+            <p class="text-gray-400 text-sm">
+                Siber güvenlik sürekli gelişen bir alan. Bu sayfadaki bilgileri düzenli olarak güncellemekteyim.
+            </p>
+            <p class="text-gray-500 text-xs mt-2">
+                Son güncelleme: Ağustos 2025
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

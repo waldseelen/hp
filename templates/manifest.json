@@ -1,0 +1,40 @@
+{
+  "name": "Portfolio Site",
+  "short_name": "Portfolio", 
+  "description": "Personal portfolio website showcasing projects and skills",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "{% load static %}{% static 'images/favicon-192x192.png' %}",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "{% load static %}{% static 'images/favicon-512x512.png' %}",
+      "sizes": "512x512", 
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["portfolio", "developer", "technology"],
+  "lang": "{{ CURRENT_LANGUAGE|default:'tr' }}",
+  "screenshots": [
+    {
+      "src": "{% load static %}{% static 'images/screenshot-desktop.png' %}",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "{% load static %}{% static 'images/screenshot-mobile.png' %}",
+      "sizes": "375x812", 
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+}

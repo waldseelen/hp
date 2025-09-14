@@ -1,0 +1,28 @@
+{
+  "name": "best",
+  "version": "1.0.0",
+  "description": "PACKAGE.JSON - Node.js Proje Konfigürasyonu (Django Portfolio Projesi) | Bu dosya Django portfolio projesinin Node.js bağımlılıklarını ve Tailwind CSS build konfigürasyonunu yönetir. Modern, profesyonel portfolio web sitesi için gerekli frontend araçlarını içerir. TailwindCSS CLI kullanarak CSS build işlemlerini otomatikleştirir. Development ve production ortamları için optimize edilmiştir. Responsive tasarım ve dark theme desteği sağlar. Django ile entegre çalışacak şekilde yapılandırılmıştır.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build:css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/waldseelen/django-portfolio-site.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/waldseelen/django-portfolio-site/issues"
+  },
+  "homepage": "https://github.com/waldseelen/django-portfolio-site#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.12"
+  }
+}

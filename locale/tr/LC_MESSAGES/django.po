@@ -1,0 +1,496 @@
+# Turkish translation for Portfolio Site
+# Copyright (C) 2024
+# This file is distributed under the same license as the Portfolio Site package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Portfolio Site\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: 2024-01-01 12:00+0000\n"
+"Last-Translator: Portfolio Developer\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Languages
+msgid "Turkish"
+msgstr "Türkçe"
+
+msgid "English"
+msgstr "İngilizce"
+
+# Navigation
+msgid "Home"
+msgstr "Ana Sayfa"
+
+msgid "About"
+msgstr "Hakkımda"
+
+msgid "Personal"
+msgstr "Kişisel"
+
+msgid "Projects"
+msgstr "Projeler"
+
+msgid "Blog"
+msgstr "Blog"
+
+msgid "Tools"
+msgstr "Araçlar"
+
+msgid "Contact"
+msgstr "İletişim"
+
+msgid "Music"
+msgstr "Müzik"
+
+msgid "AI Tools"
+msgstr "AI Araçları"
+
+msgid "Cybersecurity"
+msgstr "Siber Güvenlik"
+
+msgid "Useful"
+msgstr "Yararlı"
+
+# Common UI Elements
+msgid "Search"
+msgstr "Ara"
+
+msgid "Search..."
+msgstr "Ara..."
+
+msgid "Search blog, projects or content..."
+msgstr "Blog, proje veya içerik ara..."
+
+msgid "Loading..."
+msgstr "Yükleniyor..."
+
+msgid "Load More"
+msgstr "Daha Fazla Yükle"
+
+msgid "Back to Top"
+msgstr "Başa Dön"
+
+msgid "Close"
+msgstr "Kapat"
+
+msgid "Open"
+msgstr "Aç"
+
+msgid "Toggle"
+msgstr "Değiştir"
+
+msgid "Toggle theme"
+msgstr "Temayı değiştir"
+
+msgid "Toggle language"
+msgstr "Dili değiştir"
+
+# Forms
+msgid "Name"
+msgstr "İsim"
+
+msgid "Email"
+msgstr "E-posta"
+
+msgid "Message"
+msgstr "Mesaj"
+
+msgid "Subject"
+msgstr "Konu"
+
+msgid "Send"
+msgstr "Gönder"
+
+msgid "Sending..."
+msgstr "Gönderiliyor..."
+
+msgid "Sent"
+msgstr "Gönderildi"
+
+msgid "Submit"
+msgstr "Gönder"
+
+msgid "Reset"
+msgstr "Sıfırla"
+
+msgid "Cancel"
+msgstr "İptal"
+
+# Time and Dates
+msgid "min read"
+msgstr "dakika okuma"
+
+msgid "Published"
+msgstr "Yayınlandı"
+
+msgid "Updated"
+msgstr "Güncellendi"
+
+msgid "Created"
+msgstr "Oluşturuldu"
+
+msgid "Modified"
+msgstr "Değiştirildi"
+
+msgid "Posted on"
+msgstr "Yayınlanma tarihi"
+
+msgid "Last updated"
+msgstr "Son güncelleme"
+
+# Messages and Alerts
+msgid "Success!"
+msgstr "Başarılı!"
+
+msgid "Error!"
+msgstr "Hata!"
+
+msgid "Warning!"
+msgstr "Uyarı!"
+
+msgid "Info"
+msgstr "Bilgi"
+
+msgid "Success message"
+msgstr "İşlem başarıyla tamamlandı"
+
+msgid "Error message"
+msgstr "Bir hata oluştu"
+
+msgid "Network error"
+msgstr "Bağlantı hatası"
+
+msgid "Page not found"
+msgstr "Sayfa bulunamadı"
+
+msgid "Server error"
+msgstr "Sunucu hatası"
+
+# Blog and Content
+msgid "Read more"
+msgstr "Devamını oku"
+
+msgid "Continue reading"
+msgstr "Okumaya devam et"
+
+msgid "Related posts"
+msgstr "İlgili yazılar"
+
+msgid "Categories"
+msgstr "Kategoriler"
+
+msgid "Tags"
+msgstr "Etiketler"
+
+msgid "Archive"
+msgstr "Arşiv"
+
+msgid "Recent posts"
+msgstr "Son yazılar"
+
+msgid "Popular posts"
+msgstr "Popüler yazılar"
+
+msgid "No results found"
+msgstr "Sonuç bulunamadı"
+
+msgid "No posts found"
+msgstr "Yazı bulunamadı"
+
+# Project and Portfolio
+msgid "View Project"
+msgstr "Projeyi Görüntüle"
+
+msgid "Source Code"
+msgstr "Kaynak Kod"
+
+msgid "Live Demo"
+msgstr "Canlı Demo"
+
+msgid "Technology Stack"
+msgstr "Teknoloji Yığını"
+
+msgid "Features"
+msgstr "Özellikler"
+
+msgid "Description"
+msgstr "Açıklama"
+
+msgid "Screenshots"
+msgstr "Ekran Görüntüleri"
+
+# Contact and Social
+msgid "Get in Touch"
+msgstr "İletişime Geç"
+
+msgid "Contact Me"
+msgstr "Benimle İletişim"
+
+msgid "Follow Me"
+msgstr "Beni Takip Et"
+
+msgid "Social Links"
+msgstr "Sosyal Bağlantılar"
+
+msgid "Email Me"
+msgstr "E-posta Gönder"
+
+msgid "Call Me"
+msgstr "Ara"
+
+msgid "Location"
+msgstr "Konum"
+
+# Skills and About
+msgid "Skills"
+msgstr "Yetenekler"
+
+msgid "Experience"
+msgstr "Deneyim"
+
+msgid "Education"
+msgstr "Eğitim"
+
+msgid "Certifications"
+msgstr "Sertifikalar"
+
+msgid "Languages"
+msgstr "Diller"
+
+msgid "Hobbies"
+msgstr "Hobiler"
+
+msgid "About Me"
+msgstr "Hakkımda"
+
+msgid "My Story"
+msgstr "Hikayem"
+
+msgid "Background"
+msgstr "Geçmiş"
+
+# Footer
+msgid "All rights reserved"
+msgstr "Tüm hakları saklıdır"
+
+msgid "Made with"
+msgstr "ile yapıldı"
+
+msgid "Privacy Policy"
+msgstr "Gizlilik Politikası"
+
+msgid "Terms of Service"
+msgstr "Hizmet Şartları"
+
+msgid "Sitemap"
+msgstr "Site Haritası"
+
+# Accessibility
+msgid "Skip to main content"
+msgstr "Ana içeriğe geç"
+
+msgid "Skip to navigation"
+msgstr "Navigasyona geç"
+
+msgid "Skip to footer"
+msgstr "Alt bilgiye geç"
+
+msgid "Open menu"
+msgstr "Menüyü aç"
+
+msgid "Close menu"
+msgstr "Menüyü kapat"
+
+msgid "Main navigation"
+msgstr "Ana navigasyon"
+
+msgid "Breadcrumb navigation"
+msgstr "İçerik yolu navigasyonu"
+
+# Error Pages
+msgid "Page Not Found"
+msgstr "Sayfa Bulunamadı"
+
+msgid "Sorry, the page you are looking for doesn't exist."
+msgstr "Üzgünüz, aradığınız sayfa mevcut değil."
+
+msgid "Server Error"
+msgstr "Sunucu Hatası"
+
+msgid "Sorry, we're experiencing technical difficulties."
+msgstr "Üzgünüz, teknik sorunlar yaşıyoruz."
+
+msgid "Go back to homepage"
+msgstr "Ana sayfaya geri dön"
+
+msgid "Popular pages"
+msgstr "Popüler sayfalar"
+
+msgid "Try searching"
+msgstr "Arama yapmayı deneyin"
+
+# Buttons and Actions
+msgid "Click here"
+msgstr "Buraya tıklayın"
+
+msgid "Learn more"
+msgstr "Daha fazla öğren"
+
+msgid "Download"
+msgstr "İndir"
+
+msgid "Share"
+msgstr "Paylaş"
+
+msgid "Copy"
+msgstr "Kopyala"
+
+msgid "Print"
+msgstr "Yazdır"
+
+msgid "Save"
+msgstr "Kaydet"
+
+msgid "Edit"
+msgstr "Düzenle"
+
+msgid "Delete"
+msgstr "Sil"
+
+msgid "Add"
+msgstr "Ekle"
+
+msgid "Remove"
+msgstr "Kaldır"
+
+msgid "Update"
+msgstr "Güncelle"
+
+msgid "Refresh"
+msgstr "Yenile"
+
+msgid "Reload"
+msgstr "Yeniden Yükle"
+
+# Error Pages - Additional
+msgid "Go back"
+msgstr "Geri Git"
+
+msgid "Redirecting to homepage in 30 seconds..."
+msgstr "30 saniye içinde ana sayfaya yönlendirileceksiniz..."
+
+msgid "What you can do"
+msgstr "Yapabilecekleriniz"
+
+msgid "Refresh the page"
+msgstr "Sayfayı yenileyin"
+
+msgid "Wait a moment"
+msgstr "Biraz bekleyin"
+
+msgid "Refresh Page"
+msgstr "Sayfayı Yenile"
+
+msgid "If the problem persists"
+msgstr "Sorun Devam Ederse"
+
+msgid "If this error continues, please let me know. I'll try to resolve the issue as soon as possible."
+msgstr "Eğer bu hata devam ederse, lütfen bana bildirin. Sorunu en kısa sürede çözmeye çalışacağım."
+
+msgid "Error Code"
+msgstr "Hata Kodu"
+
+msgid "Internal Server Error"
+msgstr "İç Sunucu Hatası"
+
+msgid "Time"
+msgstr "Zaman"
+
+msgid "Please try again in a few minutes."
+msgstr "Lütfen birkaç dakika sonra tekrar deneyin."
+
+msgid "Portfolio"
+msgstr "Portfolyo"
+
+msgid "General"
+msgstr "Genel"
+
+msgid "Switch to Turkish"
+msgstr "Türkçe'ye geç"
+
+msgid "Switch to English"
+msgstr "İngilizce'ye geç"
+
+msgid "Switching to"
+msgstr "Geçiliyor"
+
+# Home Page
+msgid "New"
+msgstr "Yeni"
+
+msgid "Welcome to my enhanced portfolio"
+msgstr "Gelişmiş portfolyoma hoş geldiniz"
+
+msgid "Professional Portfolio"
+msgstr "Profesyonel Portfolyo"
+
+msgid "Crafting Digital Excellence"
+msgstr "Dijital Mükemmelliği Yaratıyoruz"
+
+msgid "Full Stack Developer & Cybersecurity Expert"
+msgstr "Full Stack Developer ve Siber Güvenlik Uzmanı"
+
+msgid "Years Experience"
+msgstr "Yıl Deneyim"
+
+msgid "Technologies"
+msgstr "Teknolojiler"
+
+msgid "Success Rate"
+msgstr "Başarı Oranı"
+
+msgid "Visit my profile"
+msgstr "Profilimi ziyaret et"
+
+# Status and State
+msgid "Online"
+msgstr "Çevrimiçi"
+
+msgid "Offline"
+msgstr "Çevrimdışı"
+
+msgid "Available"
+msgstr "Uygun"
+
+msgid "Unavailable"
+msgstr "Uygun değil"
+
+msgid "Active"
+msgstr "Aktif"
+
+msgid "Inactive"
+msgstr "Pasif"
+
+msgid "Enabled"
+msgstr "Etkin"
+
+msgid "Disabled"
+msgstr "Devre dışı"
+
+msgid "Public"
+msgstr "Herkese açık"
+
+msgid "Private"
+msgstr "Özel"
+
+msgid "Draft"
+msgstr "Taslak"
+
+msgid "Published"
+msgstr "Yayınlandı"

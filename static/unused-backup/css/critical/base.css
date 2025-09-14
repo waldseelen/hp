@@ -1,0 +1,125 @@
+/* Critical CSS - Above the fold styles */
+/* Base styles for immediate render */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #0f172a;
+  color: #f8fafc;
+  transition: background-color 0.3s ease;
+}
+
+/* Navigation critical styles */
+nav {
+  background-color: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(71, 85, 105, 0.5);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Skip navigation for accessibility */
+.skip-nav {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  z-index: 9999;
+  padding: 8px 12px;
+  background: #0f172a;
+  color: #f8fafc;
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+  border: 2px solid #c8b560;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.skip-nav:focus {
+  transform: translateY(0%);
+  top: 0;
+}
+
+/* Critical button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: #c8b560;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: #a89550;
+}
+
+/* Critical text utilities */
+.text-center { text-align: center; }
+.text-white { color: #ffffff; }
+.text-gray-300 { color: #d1d5db; }
+.text-primary-400 { color: #f0e68c; }
+
+/* Critical spacing utilities */
+.p-4 { padding: 1rem; }
+.py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mt-8 { margin-top: 2rem; }
+
+/* Critical layout utilities */
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.w-full { width: 100%; }
+.hidden { display: none; }
+.block { display: block; }
+
+/* Critical responsive utilities */
+@media (min-width: 768px) {
+  .md\:flex { display: flex; }
+  .md\:hidden { display: none; }
+}
+
+/* Loading state to prevent FOUC */
+[x-cloak] { display: none !important; }
+
+/* Critical focus styles */
+*:focus-visible {
+  outline: 2px solid #c8b560;
+  outline-offset: 2px;
+}
+
+/* Dark theme variables */
+:root {
+  --primary-500: #c8b560;
+  --primary-600: #a89550;
+  --bg-primary: #0f172a;
+  --text-primary: #f8fafc;
+}
+
+/* Starfield background for immediate render */
+.starfield {
+  position: fixed;
+  inset: 0;
+  opacity: 0.1;
+  background-image: radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                    radial-gradient(2px 2px at 40px 70px, #fff, transparent);
+  background-repeat: repeat;
+  background-size: 100px 100px;
+}

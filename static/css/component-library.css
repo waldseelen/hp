@@ -1,0 +1,591 @@
+/* ==========================================================================
+   Unified Component Library
+   Consolidated, reusable components system
+   ========================================================================== */
+
+/* Root Variables for Component System
+   ========================================================================== */
+:root {
+    /* Button spacing */
+    --btn-padding-sm: 0.5rem 0.75rem;
+    --btn-padding-md: 0.75rem 1rem;
+    --btn-padding-lg: 1rem 1.5rem;
+    --btn-padding-xl: 1.25rem 2rem;
+    
+    /* Button sizes */
+    --btn-text-sm: 0.875rem;
+    --btn-text-md: 1rem;
+    --btn-text-lg: 1.125rem;
+    --btn-text-xl: 1.25rem;
+    
+    /* Card spacing */
+    --card-padding: 1.5rem;
+    --card-padding-sm: 1rem;
+    --card-padding-lg: 2rem;
+    
+    /* Component radius */
+    --component-radius: 0.5rem;
+    --component-radius-lg: 0.75rem;
+    --component-radius-xl: 1rem;
+    
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-normal: 200ms ease;
+    --transition-slow: 300ms ease;
+}
+
+/* ==========================================================================
+   UNIFIED BUTTON SYSTEM
+   ========================================================================== */
+
+/* Base Button Class */
+.btn {
+    /* Core Structure */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    
+    /* Typography */
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    line-height: 1.25;
+    
+    /* Spacing & Appearance */
+    padding: var(--btn-padding-md);
+    font-size: var(--btn-text-md);
+    border-radius: var(--component-radius);
+    border: 1px solid transparent;
+    
+    /* Interactions */
+    cursor: pointer;
+    user-select: none;
+    transition: all var(--transition-normal);
+    
+    /* Focus & Accessibility */
+    outline: none;
+    focus-visible: ring-2 ring-primary-500 ring-offset-2;
+    
+    /* Disabled State */
+    &:disabled,
+    &[aria-disabled="true"] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+    
+    /* Loading State */
+    &.btn--loading {
+        position: relative;
+        color: transparent;
+        
+        &::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1rem;
+            height: 1rem;
+            margin: -0.5rem 0 0 -0.5rem;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: btn-spin 0.6s linear infinite;
+        }
+    }
+}
+
+/* Button Variants */
+.btn--primary {
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+    color: white;
+    box-shadow: 0 2px 8px rgba(var(--primary-500-rgb), 0.3);
+    
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(var(--primary-500-rgb), 0.4);
+    }
+    
+    &:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 4px rgba(var(--primary-500-rgb), 0.3);
+    }
+}
+
+.btn--secondary {
+    background: var(--gray-200);
+    color: var(--gray-900);
+    border-color: var(--gray-300);
+    
+    &:hover:not(:disabled) {
+        background: var(--gray-300);
+        transform: translateY(-1px);
+    }
+    
+    .dark & {
+        background: var(--gray-700);
+        color: var(--gray-100);
+        border-color: var(--gray-600);
+        
+        &:hover:not(:disabled) {
+            background: var(--gray-600);
+        }
+    }
+}
+
+.btn--outline {
+    background: transparent;
+    color: var(--primary-600);
+    border-color: var(--primary-600);
+    
+    &:hover:not(:disabled) {
+        background: var(--primary-600);
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .dark & {
+        color: var(--primary-400);
+        border-color: var(--primary-400);
+        
+        &:hover:not(:disabled) {
+            background: var(--primary-400);
+            color: var(--gray-900);
+        }
+    }
+}
+
+.btn--ghost {
+    background: transparent;
+    color: var(--gray-600);
+    
+    &:hover:not(:disabled) {
+        background: var(--gray-100);
+        color: var(--gray-900);
+    }
+    
+    .dark & {
+        color: var(--gray-400);
+        
+        &:hover:not(:disabled) {
+            background: var(--gray-800);
+            color: var(--white);
+        }
+    }
+}
+
+.btn--danger {
+    background: linear-gradient(135deg, var(--red-500), var(--red-600));
+    color: white;
+    
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, var(--red-600), var(--red-700));
+        transform: translateY(-1px);
+    }
+}
+
+.btn--success {
+    background: linear-gradient(135deg, var(--green-500), var(--green-600));
+    color: white;
+    
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, var(--green-600), var(--green-700));
+        transform: translateY(-1px);
+    }
+}
+
+/* Button Sizes */
+.btn--sm {
+    padding: var(--btn-padding-sm);
+    font-size: var(--btn-text-sm);
+}
+
+.btn--lg {
+    padding: var(--btn-padding-lg);
+    font-size: var(--btn-text-lg);
+}
+
+.btn--xl {
+    padding: var(--btn-padding-xl);
+    font-size: var(--btn-text-xl);
+}
+
+/* Button Modifiers */
+.btn--full {
+    width: 100%;
+}
+
+.btn--icon-only {
+    padding: 0.75rem;
+    aspect-ratio: 1;
+}
+
+.btn--rounded {
+    border-radius: 9999px;
+}
+
+/* ==========================================================================
+   UNIFIED CARD SYSTEM
+   ========================================================================== */
+
+/* Base Card Class */
+.card {
+    /* Structure */
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: var(--component-radius-lg);
+    
+    /* Borders & Shadows */
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    
+    /* Transitions */
+    transition: all var(--transition-normal);
+    
+    /* Dark mode */
+    .dark & {
+        background: var(--gray-800);
+        border-color: var(--gray-700);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* Card Variants */
+.card--interactive {
+    cursor: pointer;
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: var(--primary-300);
+        
+        .dark & {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary-600);
+        }
+    }
+}
+
+.card--elevated {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    
+    .dark & {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+}
+
+.card--glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    .dark & {
+        background: rgba(0, 0, 0, 0.1);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+.card--gradient {
+    background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+    color: white;
+    border: none;
+}
+
+/* Card Layout Components */
+.card__header {
+    padding: var(--card-padding);
+    border-bottom: 1px solid var(--gray-200);
+    
+    .dark & {
+        border-bottom-color: var(--gray-700);
+    }
+    
+    .card--gradient & {
+        border-bottom-color: rgba(255, 255, 255, 0.2);
+    }
+}
+
+.card__body {
+    padding: var(--card-padding);
+    flex: 1;
+}
+
+.card__footer {
+    padding: var(--card-padding);
+    background: var(--gray-50);
+    border-top: 1px solid var(--gray-200);
+    border-radius: 0 0 var(--component-radius-lg) var(--component-radius-lg);
+    
+    .dark & {
+        background: var(--gray-700-50);
+        border-top-color: var(--gray-700);
+    }
+    
+    .card--gradient & {
+        background: rgba(0, 0, 0, 0.1);
+        border-top-color: rgba(255, 255, 255, 0.2);
+    }
+}
+
+/* Card Modifiers */
+.card--sm {
+    .card__header,
+    .card__body,
+    .card__footer {
+        padding: var(--card-padding-sm);
+    }
+}
+
+.card--lg {
+    .card__header,
+    .card__body,
+    .card__footer {
+        padding: var(--card-padding-lg);
+    }
+}
+
+.card--borderless {
+    border: none;
+    box-shadow: none;
+}
+
+.card--rounded {
+    border-radius: var(--component-radius-xl);
+    
+    .card__footer {
+        border-radius: 0 0 var(--component-radius-xl) var(--component-radius-xl);
+    }
+}
+
+/* ==========================================================================
+   SPECIALIZED CARD COMPONENTS
+   ========================================================================== */
+
+/* Tool Card */
+.card--tool {
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
+    }
+    
+    &.card--favorite::after {
+        content: '⭐';
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 1.25rem;
+    }
+}
+
+/* Blog Card */
+.card--blog {
+    .card__header {
+        padding-bottom: 0;
+        border: none;
+    }
+    
+    .card__meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--gray-200);
+        font-size: 0.875rem;
+        color: var(--gray-600);
+        
+        .dark & {
+            border-top-color: var(--gray-700);
+            color: var(--gray-400);
+        }
+    }
+}
+
+/* Resource Card */
+.card--resource {
+    .card__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        border-radius: var(--component-radius);
+        background: var(--primary-100);
+        color: var(--primary-600);
+        margin-bottom: 1rem;
+        
+        .dark & {
+            background: var(--primary-900-50);
+            color: var(--primary-400);
+        }
+    }
+    
+    .card__badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 9999px;
+        font-weight: 500;
+        
+        &--free {
+            background: var(--green-100);
+            color: var(--green-700);
+            
+            .dark & {
+                background: var(--green-900);
+                color: var(--green-200);
+            }
+        }
+        
+        &--premium {
+            background: var(--orange-100);
+            color: var(--orange-700);
+            
+            .dark & {
+                background: var(--orange-900);
+                color: var(--orange-200);
+            }
+        }
+    }
+}
+
+/* ==========================================================================
+   ANIMATIONS & KEYFRAMES
+   ========================================================================== */
+
+@keyframes btn-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Fade-in animation for cards */
+@keyframes card-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card--animate {
+    animation: card-fade-in var(--transition-slow) ease-out;
+}
+
+/* ==========================================================================
+   UTILITY CLASSES
+   ========================================================================== */
+
+/* Flexbox utilities for cards */
+.card--horizontal {
+    flex-direction: row;
+    
+    .card__body {
+        flex: 1;
+    }
+}
+
+.card--center {
+    align-items: center;
+    text-align: center;
+}
+
+/* Spacing utilities */
+.card--no-padding {
+    .card__header,
+    .card__body,
+    .card__footer {
+        padding: 0;
+    }
+}
+
+.card--tight {
+    .card__header,
+    .card__body,
+    .card__footer {
+        padding: 0.75rem;
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 640px) {
+    .btn {
+        padding: var(--btn-padding-sm);
+        font-size: var(--btn-text-sm);
+    }
+    
+    .btn--lg {
+        padding: var(--btn-padding-md);
+        font-size: var(--btn-text-md);
+    }
+    
+    .card {
+        border-radius: var(--component-radius);
+    }
+    
+    .card__header,
+    .card__body,
+    .card__footer {
+        padding: var(--card-padding-sm);
+    }
+}
+
+/* ==========================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ========================================================================== */
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .btn,
+    .card {
+        transition: none;
+    }
+    
+    .card--animate {
+        animation: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .btn {
+        border-width: 2px;
+    }
+    
+    .card {
+        border-width: 2px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .btn {
+        border: 1px solid currentColor;
+        box-shadow: none;
+        background: transparent !important;
+    }
+    
+    .card {
+        border: 1px solid #000;
+        box-shadow: none;
+        break-inside: avoid;
+    }
+}

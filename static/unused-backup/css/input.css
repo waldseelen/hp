@@ -1,0 +1,153 @@
+/*
+* INPUT.CSS - Tailwind CSS Giriş Dosyası (Tailwind CSS Input File)
+* ================================================================
+*
+* Bu dosya Tailwind CSS framework'ünün ana giriş dosyasıdır. Tüm Tailwind
+* direktiflerini içerir ve custom CSS ile birlikte derlenmeye hazırlanır.
+*
+* TAİLWİND CSS DİREKTİFLERİ:
+* - @tailwind base: Reset CSS ve temel HTML element stilleri
+* - @tailwind components: Component class'ları ve özel bileşenler
+* - @tailwind utilities: Utility class'ları ve helper sınıflar
+*
+* DERLEME SÜRECİ:
+* Bu dosya Tailwind CSS build process tarafından işlenir ve output.css'e derlenir.
+* Development sırasında JIT (Just-in-Time) mode ile dinamik class üretimi yapılır.
+*
+* ÖZEL ÖZELLİKLER:
+* - PurgeCSS ile kullanılmayan CSS'lerin temizlenmesi
+* - JIT mode ile anında class üretimi
+* - Custom component ve utility ekleme desteği
+* - PostCSS plugin'leri ile genişletme
+*
+* KULLANIM ALANLARI:
+* - Utility-first CSS yaklaşımı
+* - Rapid prototyping ve development
+* - Consistent design system
+* - Responsive design pattern'leri
+*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Component Styles */
+@layer components {
+  .text-gradient {
+    background: linear-gradient(135deg, #c8b560 0%, #a89550 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .heading-xl {
+    font-size: clamp(2rem, 8vw, 4rem);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #c8b560 0%, #a89550 100%);
+    color: white;
+    box-shadow: 0 4px 14px 0 rgba(200, 181, 96, 0.3);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px 0 rgba(200, 181, 96, 0.4);
+  }
+  
+  .btn-outline {
+    border: 2px solid #c8b560;
+    color: #c8b560;
+    background: transparent;
+  }
+  
+  .btn-outline:hover {
+    background: linear-gradient(135deg, #c8b560 0%, #a89550 100%);
+    color: white;
+  }
+  
+  .card {
+    background: rgba(31, 41, 55, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(75, 85, 99, 0.3);
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(200, 181, 96, 0.3);
+  }
+}
+
+/* Custom Animations */
+@layer utilities {
+  .animate-slide-down {
+    animation: slideDown 0.6s ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-float-delayed {
+    animation: float 6s ease-in-out infinite 3s;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 4s ease-in-out infinite;
+  }
+}
+
+/* Keyframe Animations */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}

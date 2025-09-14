@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Portfolio Admin{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        🎯 Portfolio Admin Panel
+    </a>
+</h1>
+{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/custom_admin.css' %}">
+<style>
+    /* Inline additional styles */
+    #site-name a {
+        color: white !important;
+        text-decoration: none !important;
+        font-size: 24px !important;
+        font-weight: bold !important;
+    }
+    
+    #site-name a:hover {
+        color: #e5e7eb !important;
+    }
+</style>
+{% endblock %}

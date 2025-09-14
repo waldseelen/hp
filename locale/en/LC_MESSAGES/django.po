@@ -1,0 +1,496 @@
+# English translation for Portfolio Site
+# Copyright (C) 2024
+# This file is distributed under the same license as the Portfolio Site package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Portfolio Site\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: 2024-01-01 12:00+0000\n"
+"Last-Translator: Portfolio Developer\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Languages
+msgid "Turkish"
+msgstr "Turkish"
+
+msgid "English"
+msgstr "English"
+
+# Navigation
+msgid "Home"
+msgstr "Home"
+
+msgid "About"
+msgstr "About"
+
+msgid "Personal"
+msgstr "Personal"
+
+msgid "Projects"
+msgstr "Projects"
+
+msgid "Blog"
+msgstr "Blog"
+
+msgid "Tools"
+msgstr "Tools"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Music"
+msgstr "Music"
+
+msgid "AI Tools"
+msgstr "AI Tools"
+
+msgid "Cybersecurity"
+msgstr "Cybersecurity"
+
+msgid "Useful"
+msgstr "Useful"
+
+# Common UI Elements
+msgid "Search"
+msgstr "Search"
+
+msgid "Search..."
+msgstr "Search..."
+
+msgid "Search blog, projects or content..."
+msgstr "Search blog, projects or content..."
+
+msgid "Loading..."
+msgstr "Loading..."
+
+msgid "Load More"
+msgstr "Load More"
+
+msgid "Back to Top"
+msgstr "Back to Top"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Open"
+msgstr "Open"
+
+msgid "Toggle"
+msgstr "Toggle"
+
+msgid "Toggle theme"
+msgstr "Toggle theme"
+
+msgid "Toggle language"
+msgstr "Toggle language"
+
+# Forms
+msgid "Name"
+msgstr "Name"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "Subject"
+msgstr "Subject"
+
+msgid "Send"
+msgstr "Send"
+
+msgid "Sending..."
+msgstr "Sending..."
+
+msgid "Sent"
+msgstr "Sent"
+
+msgid "Submit"
+msgstr "Submit"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+# Time and Dates
+msgid "min read"
+msgstr "min read"
+
+msgid "Published"
+msgstr "Published"
+
+msgid "Updated"
+msgstr "Updated"
+
+msgid "Created"
+msgstr "Created"
+
+msgid "Modified"
+msgstr "Modified"
+
+msgid "Posted on"
+msgstr "Posted on"
+
+msgid "Last updated"
+msgstr "Last updated"
+
+# Messages and Alerts
+msgid "Success!"
+msgstr "Success!"
+
+msgid "Error!"
+msgstr "Error!"
+
+msgid "Warning!"
+msgstr "Warning!"
+
+msgid "Info"
+msgstr "Info"
+
+msgid "Success message"
+msgstr "Operation completed successfully"
+
+msgid "Error message"
+msgstr "An error occurred"
+
+msgid "Network error"
+msgstr "Network error"
+
+msgid "Page not found"
+msgstr "Page not found"
+
+msgid "Server error"
+msgstr "Server error"
+
+# Blog and Content
+msgid "Read more"
+msgstr "Read more"
+
+msgid "Continue reading"
+msgstr "Continue reading"
+
+msgid "Related posts"
+msgstr "Related posts"
+
+msgid "Categories"
+msgstr "Categories"
+
+msgid "Tags"
+msgstr "Tags"
+
+msgid "Archive"
+msgstr "Archive"
+
+msgid "Recent posts"
+msgstr "Recent posts"
+
+msgid "Popular posts"
+msgstr "Popular posts"
+
+msgid "No results found"
+msgstr "No results found"
+
+msgid "No posts found"
+msgstr "No posts found"
+
+# Project and Portfolio
+msgid "View Project"
+msgstr "View Project"
+
+msgid "Source Code"
+msgstr "Source Code"
+
+msgid "Live Demo"
+msgstr "Live Demo"
+
+msgid "Technology Stack"
+msgstr "Technology Stack"
+
+msgid "Features"
+msgstr "Features"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Screenshots"
+msgstr "Screenshots"
+
+# Contact and Social
+msgid "Get in Touch"
+msgstr "Get in Touch"
+
+msgid "Contact Me"
+msgstr "Contact Me"
+
+msgid "Follow Me"
+msgstr "Follow Me"
+
+msgid "Social Links"
+msgstr "Social Links"
+
+msgid "Email Me"
+msgstr "Email Me"
+
+msgid "Call Me"
+msgstr "Call Me"
+
+msgid "Location"
+msgstr "Location"
+
+# Skills and About
+msgid "Skills"
+msgstr "Skills"
+
+msgid "Experience"
+msgstr "Experience"
+
+msgid "Education"
+msgstr "Education"
+
+msgid "Certifications"
+msgstr "Certifications"
+
+msgid "Languages"
+msgstr "Languages"
+
+msgid "Hobbies"
+msgstr "Hobbies"
+
+msgid "About Me"
+msgstr "About Me"
+
+msgid "My Story"
+msgstr "My Story"
+
+msgid "Background"
+msgstr "Background"
+
+# Footer
+msgid "All rights reserved"
+msgstr "All rights reserved"
+
+msgid "Made with"
+msgstr "Made with"
+
+msgid "Privacy Policy"
+msgstr "Privacy Policy"
+
+msgid "Terms of Service"
+msgstr "Terms of Service"
+
+msgid "Sitemap"
+msgstr "Sitemap"
+
+# Accessibility
+msgid "Skip to main content"
+msgstr "Skip to main content"
+
+msgid "Skip to navigation"
+msgstr "Skip to navigation"
+
+msgid "Skip to footer"
+msgstr "Skip to footer"
+
+msgid "Open menu"
+msgstr "Open menu"
+
+msgid "Close menu"
+msgstr "Close menu"
+
+msgid "Main navigation"
+msgstr "Main navigation"
+
+msgid "Breadcrumb navigation"
+msgstr "Breadcrumb navigation"
+
+# Error Pages
+msgid "Page Not Found"
+msgstr "Page Not Found"
+
+msgid "Sorry, the page you are looking for doesn't exist."
+msgstr "Sorry, the page you are looking for doesn't exist."
+
+msgid "Server Error"
+msgstr "Server Error"
+
+msgid "Sorry, we're experiencing technical difficulties."
+msgstr "Sorry, we're experiencing technical difficulties."
+
+msgid "Go back to homepage"
+msgstr "Go back to homepage"
+
+msgid "Popular pages"
+msgstr "Popular pages"
+
+msgid "Try searching"
+msgstr "Try searching"
+
+# Buttons and Actions
+msgid "Click here"
+msgstr "Click here"
+
+msgid "Learn more"
+msgstr "Learn more"
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Share"
+msgstr "Share"
+
+msgid "Copy"
+msgstr "Copy"
+
+msgid "Print"
+msgstr "Print"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Add"
+msgstr "Add"
+
+msgid "Remove"
+msgstr "Remove"
+
+msgid "Update"
+msgstr "Update"
+
+msgid "Refresh"
+msgstr "Refresh"
+
+msgid "Reload"
+msgstr "Reload"
+
+# Error Pages - Additional
+msgid "Go back"
+msgstr "Go back"
+
+msgid "Redirecting to homepage in 30 seconds..."
+msgstr "Redirecting to homepage in 30 seconds..."
+
+msgid "What you can do"
+msgstr "What you can do"
+
+msgid "Refresh the page"
+msgstr "Refresh the page"
+
+msgid "Wait a moment"
+msgstr "Wait a moment"
+
+msgid "Refresh Page"
+msgstr "Refresh Page"
+
+msgid "If the problem persists"
+msgstr "If the problem persists"
+
+msgid "If this error continues, please let me know. I'll try to resolve the issue as soon as possible."
+msgstr "If this error continues, please let me know. I'll try to resolve the issue as soon as possible."
+
+msgid "Error Code"
+msgstr "Error Code"
+
+msgid "Internal Server Error"
+msgstr "Internal Server Error"
+
+msgid "Time"
+msgstr "Time"
+
+msgid "Please try again in a few minutes."
+msgstr "Please try again in a few minutes."
+
+msgid "Portfolio"
+msgstr "Portfolio"
+
+msgid "General"
+msgstr "General"
+
+msgid "Switch to Turkish"
+msgstr "Switch to Turkish"
+
+msgid "Switch to English"
+msgstr "Switch to English"
+
+msgid "Switching to"
+msgstr "Switching to"
+
+# Home Page
+msgid "New"
+msgstr "New"
+
+msgid "Welcome to my enhanced portfolio"
+msgstr "Welcome to my enhanced portfolio"
+
+msgid "Professional Portfolio"
+msgstr "Professional Portfolio"
+
+msgid "Crafting Digital Excellence"
+msgstr "Crafting Digital Excellence"
+
+msgid "Full Stack Developer & Cybersecurity Expert"
+msgstr "Full Stack Developer & Cybersecurity Expert"
+
+msgid "Years Experience"
+msgstr "Years Experience"
+
+msgid "Technologies"
+msgstr "Technologies"
+
+msgid "Success Rate"
+msgstr "Success Rate"
+
+msgid "Visit my profile"
+msgstr "Visit my profile"
+
+# Status and State
+msgid "Online"
+msgstr "Online"
+
+msgid "Offline"
+msgstr "Offline"
+
+msgid "Available"
+msgstr "Available"
+
+msgid "Unavailable"
+msgstr "Unavailable"
+
+msgid "Active"
+msgstr "Active"
+
+msgid "Inactive"
+msgstr "Inactive"
+
+msgid "Enabled"
+msgstr "Enabled"
+
+msgid "Disabled"
+msgstr "Disabled"
+
+msgid "Public"
+msgstr "Public"
+
+msgid "Private"
+msgstr "Private"
+
+msgid "Draft"
+msgstr "Draft"
+
+msgid "Published"
+msgstr "Published"

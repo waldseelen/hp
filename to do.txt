@@ -1,0 +1,672 @@
+# TO DO LIST - Portfolio Projesi Geliştirmeleri
+
+## JavaScript Geliştirmeleri
+
+### main.js Dosyası Düzenlemeleri
+- [ ] Duplicate fonksiyon isimlerini düzelt (özellikle loading button state ile ilgili)
+- [ ] `showLoadingState` fonksiyonunu geliştirilmiş halini koru
+- [ ] `hideLoadingState` fonksiyonunu güncelle:
+  - `btn-loading` sınıfını kaldır
+  - `innerHTML`'i `data-original-html` attribute'ünden geri yükle (bu değeri sakla)
+  - Butonu tekrar etkinleştir
+  - ARIA attribute'larını temizle
+- [ ] Önceki duplicate fonksiyon tanımlarını ve CSS sınıfı varsayımlarını (`loading`, `opacity-75`) kaldır
+- [ ] Tüm çağıranların unified fonksiyonları kullandığından emin ol
+
+### performance.js Dosyası Düzenlemeleri
+- [ ] `templates/base.html` dosyasındaki `/static/js/performance.js` script tag'inin `type="module"` ile yüklendiğini doğrula
+- [ ] Eğer module olarak yüklenmiyorsa, `static/js/performance.js` dosyasından `export default PerformanceMonitor;` satırını kaldır
+- [ ] Tüm script'lerde tutarlı bir yaklaşımı tercih et
+
+### Lazy Loading Optimizasyonu
+- [ ] Tek bir lazy-loading sahibine refactor et
+- [ ] Image lazy-load mantığını `static/js/performance.js` dosyasında tut
+- [ ] `static/js/main.js` ve `static/js/ui-enhancements.js` dosyalarındaki image observer'ları kaldır/azalt
+- [ ] Duplicate başlatmayı önlemek için global guard ekle (örnek: `window.__imgLazyOwner = 'performance'`)
+
+### Service Worker Düzenlemeleri
+- [ ] Service worker update toast gösteriliyor ama offline fallback entegre edilmemiş
+- [ ] Ya `static/js/sw.js` dosyasını offline fallback ve caching ile uygula (workbox veya custom)
+- [ ] Ya da dangling UX'i önlemek için `static/js/main.js` dosyasındaki SW update toast bloğunu kaldır
+- [ ] Registration path'in dosya konumuyla eşleştiğinden emin ol
+
+## CSS ve Template Geliştirmeleri
+
+### base.html Düzenlemeleri
+- [ ] Inline CSS bloğunu (light theme stilleri) custom CSS dosyasına taşı
+  - Satırlar 10-50 arası inline CSS bloğunu kaldır
+  - Tüm kuralları custom CSS dosyasına aktar
+  - Tailwind'in dark variant'larını kullanarak tema farklılıklarını yönet
+  - Tailwind'in utilities'lerinin ötesinde override gerekiyorsa, custom CSS dosyasında tut
+- [ ] Alpine.js script tag'indeki floating version (3.x.x) yerine spesifik bir versiyon numarası kullan
+  - SRI hash ile integrity ve crossorigin attribute'ları ekle
+  - Opsiyonel olarak, production için Alpine.js'i yerel host etmeyi düşün
+- [ ] JavaScript dosyaları preload edilmiş ama gerçek script tag'leri eksik veya doğru defer edilmemiş
+  - Preload edilen JavaScript dosyaları için head kısmına script tag'leri ekle
+  - defer attribute kullanarak verimli yükleme ve parsing sonrası execution sağla
+- [ ] Inline onclick="toggleSearchModal()" olan butonu Alpine.js event dispatching ile değiştir
+  - @click="$dispatch('open-search')" kullan
+  - Search modal partial'ı 'open-search' event'ini dinleyecek şekilde güncelle
+- [ ] Back-to-top butonunun fixed positioning'i admin floating butonlarla çakışıyor
+  - Butonun pozisyonunu ayarlamak için responsive class ekle (örnek: md:right-20)
+  - Buton görünmezken aria-hidden="true", görünürken aria-hidden="false" olacak şekilde toggle implement et
+- [ ] Heavy partial'lar (loading-overlay.html, toast-notifications.html, search-modal.html) doğrudan include edilmiş, bu durum initial page load'u yavaşlatıyor
+  - Bu heavy partial'ların doğrudan include'larını kaldır
+  - Bunun yerine lazy-loading implement et:
+    - İçerikleri <template> tag'leri içine sar
+    - Sadece ihtiyaç duyulduğunda JavaScript veya AJAX ile dinamik yükle
+  - Sadece essential component'ları initially yükle
+- [ ] Scroll progress div elementinde accessibility için ARIA rolleri ve attribute'lar eksik
+  - div'e role="progressbar" ekle
+  - aria-valuenow, aria-valuemin="0", aria-valuemax="100" attribute'ları ekle
+  - Scroll progress'i kontrol eden JavaScript'te aria-valuenow'u dinamik olarak güncelle
+- [ ] Search button'da "Search (Ctrl+K)" kısayolu belirtilmiş ama implement edilmemiş
+  - Ctrl+K basıldığında search toggle'ı tetikleyen JavaScript keydown event listener ekle
+  - Handler'da event target'ın tag name'ini kontrol et (input veya textarea'da kısayolun aktif olmaması için)
+- [ ] global_social_links'ten gelen external/social link URL'leri doğrudan kullanılmış, bu durum unsafe javascript: URI riski oluşturuyor
+  - Server-side validation veya sanitization implement et
+  - Her URL'in sadece http veya https scheme kullandığından emin ol
+  - Tüm external link'lere rel="noopener noreferrer" eklendiğinden emin ol
+- [ ] Title block civarında kullanılan animate-slide-down gibi animation class'ları ve focus:not-sr-only gibi utilities Tailwind CSS konfigürasyon dosyasında düzgün tanımlanmış mı kontrol et
+  - Eğer custom class veya utilities ise Tailwind config'e extend veya plugins altında ekle
+  - Bu customizasyonları açıklamak için codebase veya README'e yorum ekle
+- [ ] Navigation link'leri desktop ve mobile menüler için duplicate edilmiş, DRY prensibini ihlal ediyor
+  - Navigation item'ları tek bir liste haline getir (context processor veya view içinde)
+  - Template'de bu liste üzerinde loop yaparak hem desktop hem mobile navigation render et
+  - Alternatif olarak, navigation item'lar için ayrı bir include template oluştur ve her iki section'da da include et
+- [ ] aria-controls attribute'ları kullanan elementlerin ID'lerinin included partial template'lerdeki element ID'lerle eşleştiğinden emin ol
+  - Partial'ları incele ve ID'lerin doğru yazıldığından ve mevcut olduğundan emin ol
+  - Eksik veya yanlış ID'leri güncelle
+- [ ] scroll-progress div'inin z-index 50 tanımı var, diğer fixed-position elementlerle (progress bars, admin controls, modals) çakışabilir
+  - Tüm fixed-position elementlerin z-index değerlerini audit et
+  - Net bir stacking order tanımla
+  - Named z-index utility class veya CSS variables kullanarak değerleri standardize et
+  - scroll-progress element'inin z-index'ini buna göre güncelle
+
+### UI Partials Entegrasyonu
+- [ ] Yeni UI partial'lar (search modal, toasts, loading overlay) base.html'de açıkça include edilmemiş
+- [ ] `templates/base.html` dosyasına şu include'ları ekle:
+  ```
+  {% include 'partials/toast-notifications.html' %}
+  {% include 'partials/loading-overlay.html' %}
+  {% include 'partials/search-modal.html' %}
+  ```
+- [ ] Bunları kapanış `</body>` tag'inden hemen önce yerleştir ki global olarak erişilebilir olsunlar
+
+### components.css Düzenlemeleri
+- [ ] components.css Tailwind @apply kullanıyor, bu nedenle derlenip linklenmeli yoksa class'lar çalışmaz
+- [ ] `static/css/components.css` dosyasını Tailwind/PostCSS build'e ekle
+- [ ] `templates/base.html` dosyasında Tailwind output'tan sonra şu şekilde linkle:
+  ```
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  ```
+- [ ] Build'in processed CSS ürettiğini doğrula (@apply kalmamalı)
+
+### Search AJAX Entegrasyonu
+- [ ] Search AJAX endpoint'leri X-Requested-With header'ı gerektiriyor
+- [ ] `static/js/ui-enhancements.js` SearchManager'da fetch için header ayarla:
+  ```
+  fetch(url, {
+    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+  })
+  ```
+- [ ] Tüm search ile ilgili request'leri buna göre güncelle
+
+## Backend Geliştirmeleri
+
+### Breadcrumb Sistemi
+- [ ] Breadcrumb'lar için context provider gerekli, view'lar breadcrumb setlemiyor
+- [ ] `navigation_tags.py` template tag ya da context processor implement et
+- [ ] `breadcrumbs`'i tüm request'ler için expose et
+- [ ] `settings.TEMPLATES['OPTIONS']['context_processors']` içine include et
+- [ ] `base.html` dosyasında buna referans ver
+
+### Hata Sayfaları
+- [ ] 404/500 hata sayfaları eksik
+- [ ] `templates/errors/404.html` ve `templates/errors/500.html` oluştur (site shell'i yeniden kullan)
+- [ ] `urls.py` dosyasında şu şekilde konfigüre et:
+  ```
+  handler404 = 'portfolio_site.views.custom_404'
+  handler500 = 'portfolio_site.views.custom_500'
+  ```
+- [ ] Uygun status code'larla template'leri render eden view fonksiyonları ekle
+
+### Internationalization
+- [ ] Birincil olarak Türkçe olan sitede birçok UI string İngilizce
+- [ ] UI string'leri localize et:
+  - `templates/partials/*` ve `templates/main/home.html` dosyalarında `{% load i18n %}` ve `{% trans %}` kullan
+  - JavaScript için localized string'leri `data-*` attribute'lerinden veya JSON endpoint'ten oku
+
+### Accessibility
+- [ ] Accessibility audit'leri ve contrast check'leri maliyetli olabilir, flag arkasına al
+- [ ] `static/js/accessibility.js` dosyasında environment/config flag ekle (örnek: `window.__A11Y_DEV = false`)
+- [ ] Heavy audit'leri koşullu olarak çalıştır
+- [ ] Sayfa başına bir kez audit yap veya UI toggle ile on-demand çalıştır
+
+## CSS Geliştirmeleri
+
+### Genel CSS Sorunları
+- [ ] custom.css dosyasında Tailwind sınıfları ve eski stil tanımları karışık durumda
+  - .btn-primary, .btn-secondary, .btn-ghost sınıfları için hem modern Tailwind sınıfları hem eski stil tanımlarını düzelt
+- [ ] Tailwind'in varsayılan renk paletiyle uyumlu olmayan özel renk tanımları var
+  - :root altında tanımlanan renk değişkenlerini Tailwind konfigürasyonuyla uyumlu hale getir
+- [ ] Responsive tasarım eksiklikleri
+  - Bazı medya sorgularında eksik breakpoint tanımları var
+  - Mobil cihazlar için yeterli optimizasyon yapılmamış
+
+### CSS Temizliği
+- [ ] custom.css'den eski stil tanımlarını kaldır
+- [ ] Sadece Tailwind sınıflarını kullan veya modern CSS custom properties kullan
+
+### Renk Sistemi Standardizasyonu
+- [ ] Tailwind konfigürasyonundaki renk paletini kullan
+- [ ] :root içindeki özel renk tanımlarını Tailwind'in theme.extend özelliğini kullanarak tanımla
+
+## JavaScript Geliştirmeleri
+
+### ES6+ Özelliklerinin Kullanımı
+- [ ] main.js dosyasında eski JavaScript syntax'ı kullanımını modern syntax'a çevir
+  - Eski: `function validateField(field) { ... }`
+  - Yeni: `const validateField = (field) => { ... }`
+
+### Performans Optimizasyonları
+- [ ] IntersectionObserver ile lazy loading'i optimize et
+- [ ] Scroll event listener'lara throttle ekle
+- [ ] requestAnimationFrame kullanımı eksik animasyonları düzelt
+
+## Template Geliştirmeleri
+
+### Accessibility Geliştirmeleri
+- [ ] Tüm form elemanlarına uygun aria-label ekle
+- [ ] Kontrast oranlarını WCAG 2.1 AA seviyesine yükselt
+
+### SEO Geliştirmeleri
+- [ ] Meta tag'lerde eksik açıklamaları tamamla
+- [ ] Structured data ekle:
+  ```html
+  <!-- Her sayfaya özel meta description ekle -->
+  <meta name="description" content="Sayfa spesifik açıklama">
+
+  <!-- Structured data ekle -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Portfolio",
+    "url": "https://yourportfolio.com"
+  }
+  </script>
+  ```
+
+## Hata Sayfaları Geliştirmeleri
+
+### Tasarım Tutarlılığı
+- [ ] 404 ve 500 sayfaları için aynı temel tasarım sistemini kullan
+- [ ] Renk paletlerini ve tipografiyi standardize et
+
+### Kullanıcı Deneyimi Geliştirmeleri
+- [ ] Otomatik yeniden yönlendirme ekle:
+  ```html
+  <meta http-equiv="refresh" content="30;url=/" />
+  ```
+- [ ] Popüler sayfalara bağlantılar ekle:
+  ```html
+  <div class="popular-pages">
+    <h3>En çok ziyaret edilen sayfalar</h3>
+    <!-- Sayfa bağlantıları -->
+  </div>
+  ```
+
+
+
+
+
+I have created the following plan after thorough exploration and analysis of the codebase. Follow the below plan verbatim. Trust the files and references. Do not re-verify what's written in the plan. Explore only when absolutely necessary. First implement all the proposed file changes and then I'll review all the changes together at the end.
+
+### Observations
+
+Based on my exploration of the codebase, I can confirm the to-do list is accurate and comprehensive. The project is a Django portfolio site with multiple JavaScript files containing duplicate functions, inline CSS in templates, and various performance/accessibility issues. The main problems include: duplicate loading state functions in `main.js`, performance.js exported as ES module but loaded without type="module", multiple IntersectionObserver implementations for lazy loading, inline CSS in base.html, missing breadcrumb system, and various UI/UX improvements needed.
+
+### Approach
+
+This plan addresses the comprehensive to-do list by prioritizing critical JavaScript consolidation, CSS organization, and backend infrastructure improvements. The approach focuses on eliminating duplicates, standardizing implementations, and improving maintainability while ensuring no functionality is broken. Each change is designed to be incremental and testable, with clear dependencies between tasks to ensure smooth implementation.
+
+### Reasoning
+
+I analyzed the comprehensive Turkish to-do list provided by the user, then explored the codebase structure to understand the current state. I examined key JavaScript files (main.js, performance.js, ui-enhancements.js), templates (base.html), CSS files (components.css, custom.css), and configuration files (tailwind.config.js, settings.py) to validate the issues mentioned in the to-do list and understand the current implementation patterns.
+
+## Mermaid Diagram
+
+sequenceDiagram
+    participant Dev as Developer
+    participant JS as JavaScript Files
+    participant CSS as CSS System
+    participant Django as Django Backend
+    participant Templates as Template System
+
+    Dev->>JS: 1. Consolidate duplicate functions
+    JS->>JS: Remove duplicate showLoadingState/hideLoadingState
+    JS->>JS: Centralize lazy loading in performance.js
+    JS->>JS: Add global guards to prevent conflicts
+
+    Dev->>CSS: 2. Organize CSS architecture
+    CSS->>Templates: Move inline styles to external files
+    CSS->>CSS: Standardize color system with Tailwind
+    CSS->>CSS: Ensure components.css is built properly
+
+    Dev->>Django: 3. Add backend infrastructure
+    Django->>Django: Create breadcrumb context processor
+    Django->>Django: Add custom error handlers
+    Django->>Templates: Create 404/500 error templates
+
+    Dev->>Templates: 4. Enhance template system
+    Templates->>Templates: Pin Alpine.js version with integrity
+    Templates->>Templates: Add missing UI partials
+    Templates->>Templates: Improve accessibility attributes
+
+    JS->>Templates: 5. Integrate improvements
+    Templates->>CSS: Apply consolidated styling
+    Django->>Templates: Provide breadcrumb context
+    Templates->>JS: Use unified loading functions
+
+## Proposed File Changes
+
+### static\js\main.js(MODIFY)
+
+References:
+
+- static\js\performance.js(MODIFY)
+- static\js\ui-enhancements.js(MODIFY)
+
+**Consolidate Duplicate Loading Functions**
+
+Remove the duplicate `showLoadingState` and `hideLoadingState` functions that exist in multiple places in the file. Keep only the enhanced versions (lines 634-654) that include proper ARIA attributes and better loading state management.
+
+**Update hideLoadingState Function**
+
+Modify the `hideLoadingState` function to:
+- Remove `btn-loading` class instead of just `loading` and `opacity-75`
+- Restore `innerHTML` from `data-original-html` attribute (change from `data-original-text`)
+- Clear ARIA attributes (`aria-busy`, `aria-live`)
+- Re-enable the button
+
+**Remove Duplicate Image Lazy Loading**
+
+Remove the IntersectionObserver implementation for image lazy loading (lines 231-246 in `initPerformanceOptimizations`) since this functionality will be centralized in `performance.js`.
+
+**Update Service Worker Registration**
+
+Modify the service worker registration code (lines 773-815) to check if `sw.js` actually implements offline fallback. If not, remove the update toast notification logic to prevent dangling UX.
+
+**Add Global Guard for Lazy Loading**
+
+Add a global guard at the top of the performance optimizations function: `if (window.__imgLazyOwner) return;` and set `window.__imgLazyOwner = 'main'` to prevent conflicts.
+
+**Update Function Calls**
+
+Ensure all calls to loading state functions throughout the file use the consolidated versions and that the `data-original-html` attribute is properly set and used.
+
+### static\js\performance.js(MODIFY)
+
+References:
+
+- static\js\main.js(MODIFY)
+- templates\base.html(MODIFY)
+
+**Remove ES Module Export**
+
+Remove the `export default PerformanceMonitor;` statement at line 935 since the script is not loaded as a module in `base.html`.
+
+**Implement Global Lazy Loading Guard**
+
+Add a global guard in the `setupLazyLoading` method to ensure only one instance manages image lazy loading:
+- Check for `window.__imgLazyOwner` at the start of the method
+- Set `window.__imgLazyOwner = 'performance'` if not already set
+- Return early if another module already owns lazy loading
+
+**Enhance Image Loading Logic**
+
+Update the `loadImage` method to:
+- Use `data-original-html` attribute pattern for consistency with main.js
+- Ensure proper fallback image handling
+- Add better error reporting for failed image loads
+
+**Optimize Observer Configuration**
+
+Review and optimize the IntersectionObserver configurations to ensure they don't conflict with other observers in the codebase.
+
+### static\js\ui-enhancements.js(MODIFY)
+
+References:
+
+- static\js\main.js(MODIFY)
+- static\js\performance.js(MODIFY)
+
+**Remove Duplicate Image Observers**
+
+Remove or reduce any IntersectionObserver implementations for image lazy loading in the UIEnhancements class to prevent conflicts with the centralized implementation in `performance.js`.
+
+**Update Search Manager AJAX Headers**
+
+In the SearchManager class, update all fetch requests to include the required headers:
+- Add `'X-Requested-With': 'XMLHttpRequest'`
+- Add `'Accept': 'application/json'`
+
+This ensures compatibility with Django's AJAX endpoint requirements.
+
+**Update Loading State Function Calls**
+
+Ensure any calls to loading state functions use the consolidated versions from `main.js` and follow the `data-original-html` attribute pattern.
+
+**Verify Global Function Dependencies**
+
+Check that functions like `toggleSearchModal()` and `closeSearchModal()` are properly defined and accessible for the keyboard shortcuts in `main.js`.
+
+### templates\base.html(MODIFY)
+
+References:
+
+- static\css\custom.css(MODIFY)
+- static\css\components.css
+- static\js\main.js(MODIFY)
+
+**Move Inline CSS to External File**
+
+Remove the inline `<style>` block (lines 33-73) that contains light theme styles and move all these styles to `d:/FİLES/BEST/static/css/custom.css`. This includes:
+- Light theme body and html background colors
+- Navigation background and border styles
+- Text color overrides for light theme
+- Card and component light theme styles
+
+**Pin Alpine.js Version**
+
+Replace the floating version `https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js` with a specific version like `https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js` and add integrity and crossorigin attributes for security.
+
+**Add Missing Script Tags**
+
+Add proper `<script defer>` tags for the preloaded JavaScript files in the head section, ensuring they match the preload declarations.
+
+**Replace onclick with Alpine.js**
+
+Replace any `onclick="toggleSearchModal()"` attributes with Alpine.js event dispatching: `@click="$dispatch('open-search')"`.
+
+**Add Heavy Partials**
+
+Add the missing UI partial includes before the closing `</body>` tag:
+```
+{% include 'partials/toast-notifications.html' %}
+{% include 'partials/loading-overlay.html' %}
+{% include 'partials/search-modal.html' %}
+```
+
+**Improve Back-to-Top Button**
+
+Add responsive positioning classes to prevent conflicts with admin buttons and add proper ARIA attributes that will be toggled by JavaScript.
+
+**Add Scroll Progress ARIA Attributes**
+
+Add `role="progressbar"`, `aria-valuenow="0"`, `aria-valuemin="0"`, and `aria-valuemax="100"` to the scroll progress div.
+
+**Add Components CSS Link**
+
+Ensure the components.css file is properly linked after the Tailwind output CSS.
+
+### static\css\custom.css(MODIFY)
+
+References:
+
+- templates\base.html(MODIFY)
+- tailwind.config.js(MODIFY)
+- static\css\components.css
+
+**Add Light Theme Styles**
+
+Add the light theme styles that were moved from the inline CSS in `base.html`. This includes:
+- Light theme body and html background colors
+- Navigation background and border styles
+- Text color overrides for light theme
+- Card and component light theme styles
+
+Organize these styles in a dedicated light theme section and use Tailwind's dark variant approach where possible.
+
+**Standardize Color System**
+
+Review and update the CSS custom properties in the `:root` section to align with the Tailwind color palette defined in `tailwind.config.js`. Ensure consistency between the primary color definitions.
+
+**Clean Up Legacy Styles**
+
+Remove any conflicting or duplicate button styles that don't align with the modern Tailwind approach. Keep only the essential custom styles that extend Tailwind's capabilities.
+
+**Optimize CSS Organization**
+
+Ensure the file is well-organized with clear sections and comments, making it easier to maintain alongside the Tailwind and components CSS files.
+
+### main\context_processors.py(MODIFY)
+
+References:
+
+- portfolio_site\settings.py(MODIFY)
+- templates\base.html(MODIFY)
+
+**Create Breadcrumb Context Processor**
+
+Create a new context processor file that provides breadcrumb functionality to all templates. The processor should:
+
+- Define a `breadcrumbs` function that takes a request parameter
+- Return a context dictionary with a `breadcrumbs` list
+- Include logic to generate breadcrumbs based on the current URL path
+- Provide a way for views to add custom breadcrumb items
+- Handle common portfolio site sections (Home, About, Projects, Blog, etc.)
+- Include proper URL resolution for breadcrumb links
+
+The breadcrumbs should be structured as a list of dictionaries with 'title' and 'url' keys, making them easy to render in templates.
+
+### portfolio_site\settings.py(MODIFY)
+
+References:
+
+- main\context_processors.py(MODIFY)
+
+**Add Breadcrumb Context Processor**
+
+Add the new breadcrumb context processor to the `TEMPLATES` configuration in the `context_processors` list:
+- Add `'main.context_processors.breadcrumbs'` to the existing context processors
+
+This will make the breadcrumbs available in all templates throughout the site.
+
+### templates\errors\404.html(NEW)
+
+References:
+
+- templates\base.html(MODIFY)
+
+**Create 404 Error Template**
+
+Create a custom 404 error page that:
+- Extends the base template to maintain site design consistency
+- Includes a user-friendly error message in Turkish
+- Provides navigation links to popular pages (Home, Projects, Blog)
+- Includes a search functionality to help users find content
+- Uses the same styling system as the rest of the site
+- Includes proper meta tags for SEO
+- Adds a subtle animation or illustration to make the page more engaging
+
+The template should maintain the professional look of the portfolio while being helpful to users who encounter broken links.
+
+### templates\errors\500.html(NEW)
+
+References:
+
+- templates\base.html(MODIFY)
+
+**Create 500 Error Template**
+
+Create a custom 500 error page that:
+- Extends the base template for design consistency
+- Displays a professional error message explaining the server issue
+- Provides a link back to the homepage
+- Includes contact information for reporting persistent issues
+- Uses the same styling and color scheme as the rest of the site
+- Avoids complex functionality that might cause additional errors
+- Includes proper meta tags and basic SEO elements
+
+The template should be simple and reliable, focusing on getting users back to working parts of the site.
+
+### portfolio_site\views.py(NEW)
+
+References:
+
+- templates\errors\404.html(NEW)
+- templates\errors\500.html(NEW)
+- portfolio_site\urls.py(MODIFY)
+
+**Create Custom Error View Functions**
+
+Create view functions for handling custom error pages:
+
+- `custom_404(request, exception)`: Renders the 404 template with proper context and status code
+- `custom_500(request)`: Renders the 500 template with proper context and status code
+
+Both functions should:
+- Use Django's `render()` function with appropriate status codes
+- Include basic context data like site name and navigation items
+- Handle any potential errors gracefully to avoid recursive error loops
+- Log error information for debugging purposes
+
+These views will be referenced in the URL configuration for proper error handling.
+
+### portfolio_site\urls.py(MODIFY)
+
+References:
+
+- portfolio_site\views.py(NEW)
+- templates\errors\404.html(NEW)
+- templates\errors\500.html(NEW)
+
+**Add Custom Error Handlers**
+
+Add the custom error handler configurations to the URL patterns:
+- Add `handler404 = 'portfolio_site.views.custom_404'`
+- Add `handler500 = 'portfolio_site.views.custom_500'`
+
+These handlers will ensure that the custom error templates are used instead of Django's default error pages, providing a better user experience when errors occur.
+
+### main\templatetags\navigation_tags.py(MODIFY)
+
+References:
+
+- main\context_processors.py(MODIFY)
+- templates\base.html(MODIFY)
+
+**Create Navigation Template Tags**
+
+Create template tags to support navigation and breadcrumb functionality:
+
+- `@register.simple_tag` for `get_breadcrumbs(request)`: Returns formatted breadcrumbs for the current page
+- `@register.inclusion_tag` for `breadcrumb_nav()`: Renders breadcrumb navigation HTML
+- `@register.simple_tag` for `is_active_nav(request, url_name)`: Checks if a navigation item should be marked as active
+
+These tags will provide reusable navigation functionality that can be used across templates and will integrate with the breadcrumb context processor.
+
+### main\templatetags\__init__.py(MODIFY)
+
+References:
+
+- main\templatetags\navigation_tags.py(MODIFY)
+
+**Create Template Tags Package Init File**
+
+Create an empty `__init__.py` file to make the templatetags directory a proper Python package. This is required for Django to recognize and load the custom template tags.
+
+### static\js\sw.js(MODIFY)
+
+References:
+
+- static\js\main.js(MODIFY)
+
+**Implement or Remove Service Worker Functionality**
+
+Based on the current state of the service worker file, either:
+
+**Option A - Implement Offline Functionality:**
+- Add proper cache management with versioning
+- Implement fetch event handlers for offline fallbacks
+- Add background sync capabilities
+- Include proper update mechanisms
+- Add messaging to communicate with the main thread
+
+**Option B - Remove Service Worker (Recommended if not needed):**
+- Remove or comment out all service worker functionality
+- Update `main.js` to remove service worker registration
+- Remove update toast notifications related to service worker
+
+Choose Option B if offline functionality is not currently needed, as it will eliminate the dangling UX mentioned in the to-do list.
+
+### tailwind.config.js(MODIFY)
+
+References:
+
+- static\css\components.css
+- static\css\custom.css(MODIFY)
+
+**Add Components CSS to Content Paths**
+
+Update the `content` array to include the components CSS file in the build process:
+- Add `'./static/css/components.css'` to the content array
+- Ensure the PostCSS build process includes this file
+
+**Verify Custom Animation Classes**
+
+Confirm that custom animation classes like `animate-slide-down` used in templates are properly defined in the `extend.animation` and `extend.keyframes` sections. Add any missing animations that are referenced in the codebase.
+
+**Standardize Color Palette**
+
+Review the primary and secondary color definitions to ensure they align with the CSS custom properties used in `custom.css`. Make any necessary adjustments for consistency.
+
+### package.json(MODIFY)
+
+References:
+
+- static\css\components.css
+- tailwind.config.js(MODIFY)
+
+**Update Build Scripts for Components CSS**
+
+Update the build scripts to ensure `components.css` is processed through the Tailwind/PostCSS pipeline:
+- Modify the CSS build command to include components.css as an input or ensure it's processed
+- Add any necessary PostCSS plugins for processing @apply directives
+- Ensure the build output includes the processed components.css
+
+This ensures that the @apply directives in components.css are properly compiled to actual CSS classes.
+
+
+
+## Performans Geliştirmeleri
+
+### CSS Optimizasyonu
+- [ ] Kullanılmayan CSS'leri temizle (PurgeCSS)
+- [ ] Critical CSS uygula
+
+### JavaScript Optimizasyonu
+- [ ] Kod bölme (code splitting) uygula
+- [ ] Async/defer attribute'larını doğru kullan
+
+## Önceliklendirme
+
+### Yüksek Öncelikli
+- [ ] CSS temizliği ve tutarlılık
+- [ ] JavaScript duplicate function düzeltmeleri
+- [ ] Accessibility geliştirmeleri
+- [ ] Responsive tasarım iyileştirmeleri
+
+### Orta Öncelikli
+- [ ] JavaScript modernizasyonu
+- [ ] Performans optimizasyonları
+- [ ] SEO iyileştirmeleri
+- [ ] Hata sayfaları entegrasyonu
+
+### Düşük Öncelikli
+- [ ] Hata sayfaları tutarlılığı
+- [ ] Gelişmiş animasyonlar
+- [ ] PWA özellikleri
+- [ ] Internationalization tamamlama
