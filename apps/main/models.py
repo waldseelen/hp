@@ -75,9 +75,14 @@ class PersonalInfo(models.Model):
         verbose_name = "Personal Information"
         verbose_name_plural = "Personal Information"
         indexes = [
-            models.Index(fields=['is_visible', 'order']),
-            models.Index(fields=['key']),
-            models.Index(fields=['type', 'is_visible']),
+            # Primary access patterns
+            models.Index(fields=['is_visible', 'order'], name='personal_vis_order'),
+            models.Index(fields=['key'], name='personal_key'),
+            models.Index(fields=['type', 'is_visible'], name='personal_type_vis'),
+
+            # Additional performance indexes
+            models.Index(fields=['is_visible', 'type', 'order'], name='personal_vis_type_ord'),
+            models.Index(fields=['-updated_at'], name='personal_updated_desc'),
         ]
 
     def clean(self):
@@ -146,9 +151,14 @@ class SocialLink(models.Model):
         verbose_name_plural = "Social Links"
         unique_together = ['platform', 'url']
         indexes = [
-            models.Index(fields=['is_visible', 'order']),
-            models.Index(fields=['platform', 'is_visible']),
-            models.Index(fields=['is_primary']),
+            # Primary access patterns
+            models.Index(fields=['is_visible', 'order'], name='social_vis_order'),
+            models.Index(fields=['platform', 'is_visible'], name='social_plat_vis'),
+            models.Index(fields=['is_primary'], name='social_primary'),
+
+            # Additional performance indexes
+            models.Index(fields=['platform'], name='social_platform'),
+            models.Index(fields=['is_visible', 'platform', 'order'], name='social_vis_plat_ord'),
         ]
 
     def clean(self):

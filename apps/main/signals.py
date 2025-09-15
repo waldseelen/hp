@@ -1,12 +1,18 @@
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.dispatch import receiver
 from django.core.cache import cache
 from django.template.loader import get_template
 from django.template import TemplateDoesNotExist
-from .cache_utils import CacheManager
+from .cache import cache_manager, CacheInvalidator, QueryCache, APIResponseCache
 from .models import PersonalInfo, SocialLink, AITool, CybersecurityResource, BlogCategory, MusicPlaylist, UsefulResource
 from apps.blog.models import Post
-from apps.tools.models import Tool
+from apps.contact.models import ContactMessage
+
+try:
+    from apps.tools.models import Tool
+except ImportError:
+    Tool = None
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -32,8 +38,10 @@ def invalidate_personal_info_cache(sender, instance, **kwargs):
         except:
             pass
             
-        # Clear pattern-based cache
-        CacheManager.delete_pattern('personal_info*')
+        # Clear pattern-based cache with new cache manager
+        cache_manager.delete_pattern('personal_info*')
+        cache_manager.delete_pattern('queryset_*personalinfo*')
+        cache_manager.delete_pattern('api_*personal*')
         
         logger.info(f"Invalidated PersonalInfo cache after {kwargs.get('signal', 'unknown')} signal")
         
@@ -100,29 +108,30 @@ def invalidate_blog_cache(sender, instance, **kwargs):
     except Exception as e:
         logger.error(f"Error invalidating Post cache: {e}")
 
-@receiver([post_save, post_delete], sender=Tool)  
-def invalidate_tools_cache(sender, instance, **kwargs):
-    """Invalidate cache when Tool changes"""
-    try:
-        cache_keys_to_clear = [
-            'home_featured_tools',
-            'tools_visible_tools',
-            'tools_featured_tools', 
-            'tools_tools_by_category',
-            'projects_page_data',
-            'home_page_data'
-        ]
-        
-        for key in cache_keys_to_clear:
-            cache.delete(key)
-            
-        CacheManager.delete_pattern('tools*')
-        CacheManager.delete_pattern('projects*')
-        
-        logger.info(f"Invalidated Tool cache after {kwargs.get('signal', 'unknown')} signal")
-        
-    except Exception as e:
-        logger.error(f"Error invalidating Tool cache: {e}")
+if Tool:
+    @receiver([post_save, post_delete], sender=Tool)
+    def invalidate_tools_cache(sender, instance, **kwargs):
+        """Invalidate cache when Tool changes"""
+        try:
+            cache_keys_to_clear = [
+                'home_featured_tools',
+                'tools_visible_tools',
+                'tools_featured_tools',
+                'tools_tools_by_category',
+                'projects_page_data',
+                'home_page_data'
+            ]
+
+            for key in cache_keys_to_clear:
+                cache.delete(key)
+
+            cache_manager.delete_pattern('tools*')
+            cache_manager.delete_pattern('projects*')
+
+            logger.info(f"Invalidated Tool cache after {kwargs.get('signal', 'unknown')} signal")
+
+        except Exception as e:
+            logger.error(f"Error invalidating Tool cache: {e}")
 
 @receiver([post_save, post_delete], sender=AITool)
 def invalidate_ai_tools_cache(sender, instance, **kwargs):

@@ -4,20 +4,8 @@ from django.utils.text import slugify
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from apps.main.models import Admin
+from apps.main.querysets import PostManager
 import re
-
-
-class PostManager(models.Manager):
-    def published(self):
-        """Get all published posts"""
-        return self.filter(
-            status='published',
-            published_at__lte=timezone.now()
-        )
-    
-    def by_tag(self, tag):
-        """Get posts by tag"""
-        return self.filter(tags__icontains=tag)
 
 
 class Post(models.Model):
@@ -100,9 +88,26 @@ class Post(models.Model):
         verbose_name = "Blog Post"
         verbose_name_plural = "Blog Posts"
         indexes = [
-            models.Index(fields=['status', '-published_at']),
-            models.Index(fields=['author', '-published_at']),
-            models.Index(fields=['slug']),
+            # Primary composite indexes for common queries
+            models.Index(fields=['status', '-published_at'], name='blog_status_pub'),
+            models.Index(fields=['status', '-created_at'], name='blog_status_created'),
+            models.Index(fields=['author', 'status', '-published_at'], name='blog_auth_stat_pub'),
+
+            # Single field indexes for exact lookups
+            models.Index(fields=['slug'], name='blog_slug'),
+            models.Index(fields=['status'], name='blog_status'),
+            models.Index(fields=['-published_at'], name='blog_pub_desc'),
+            models.Index(fields=['-created_at'], name='blog_created_desc'),
+            models.Index(fields=['-updated_at'], name='blog_updated_desc'),
+
+            # Performance indexes for common filters
+            models.Index(fields=['status', 'author', '-view_count'], name='blog_pop_by_author'),
+            models.Index(fields=['-view_count'], name='blog_popular'),
+
+            # Composite indexes for tag-based searches (PostgreSQL partial index style)
+            models.Index(fields=['status', '-published_at'],
+                        condition=models.Q(tags__isnull=False),
+                        name='blog_tagged_pub'),
         ]
 
     def clean(self):

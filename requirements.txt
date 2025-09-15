@@ -12,3 +12,6 @@ requests==2.32.3
 python-decouple==3.8
 channels==4.0.0
 channels-redis==4.2.0
+flower==2.0.1
+django-celery-beat==2.7.0
+django-celery-results==2.5.1
