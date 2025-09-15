@@ -1,1 +1,21 @@
-{"status": "ok", "message": "Analytics data received", "timestamp": "{{ request.timestamp|default:'N/A' }}"}
+{
+  "status": "ok",
+  "message": "Analytics data received",
+  "timestamp": "{% now 'c' %}",
+  "session_id": "{{ request.session.session_key|default:'anonymous' }}",
+  "features": {
+    "performance_monitoring": true,
+    "analytics_enabled": true,
+    "push_notifications": true
+  },
+  "config": {
+    "sample_rate": 0.1,
+    "track_sql_queries": false,
+    "core_web_vitals_thresholds": {
+      "lcp": 2.5,
+      "fid": 0.1,
+      "cls": 0.1,
+      "ttfb": 0.8
+    }
+  }
+}

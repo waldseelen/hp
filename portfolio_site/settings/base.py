@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'django_extensions',
+    'channels',
     
     # Local apps
     'apps.main',
@@ -115,6 +116,23 @@ DATABASES = {
         conn_max_age=600
     )
 }
+
+# Channel Layers Configuration
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [config('REDIS_URL', default='redis://localhost:6379/0')],
+            "capacity": 1500,  # Maximum number of messages to store
+            "expiry": 60,      # Message expiry time in seconds
+            "group_expiry": 86400,  # Group membership expiry (24 hours)
+            "symmetric_encryption_keys": [SECRET_KEY],
+        },
+    },
+}
+
+# ASGI Application
+ASGI_APPLICATION = 'portfolio_site.asgi.application'
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -216,29 +234,43 @@ AUTH_USER_MODEL = 'main.Admin'
 # SENTRY MONITORING AND ERROR TRACKING
 # ==========================================================================
 
-if SENTRY_AVAILABLE and config('SENTRY_DSN', default=''):
-    # Initialize Sentry SDK only if DSN is provided
-    sentry_logging = LoggingIntegration(
-        level=logging.INFO,        # Capture info and above as breadcrumbs
-        event_level=logging.ERROR  # Send errors as events
-    )
+SENTRY_DSN = config('SENTRY_DSN', default='')
+if SENTRY_AVAILABLE and SENTRY_DSN:
+    try:
+        # Initialize Sentry SDK only if DSN is provided
+        sentry_logging = LoggingIntegration(
+            level=logging.INFO,        # Capture info and above as breadcrumbs
+            event_level=logging.ERROR  # Send errors as events
+        )
 
-    sentry_sdk.init(
-        dsn=config('SENTRY_DSN', default=''),
-        integrations=[
-            DjangoIntegration(
-                transaction_style='url',
-                middleware_spans=True,
-                signals_spans=True,
-            ),
-            sentry_logging,
-        ],
-        traces_sample_rate=config('SENTRY_TRACES_SAMPLE_RATE', default=0.1, cast=float),
-        send_default_pii=False,
-        debug=DEBUG,
-        environment=config('ENVIRONMENT', default='development'),
-        release=config('APP_VERSION', default='1.0.0'),
-    )
+        sentry_sdk.init(
+            dsn=SENTRY_DSN,
+            integrations=[
+                DjangoIntegration(
+                    transaction_style='url',
+                    middleware_spans=True,
+                    signals_spans=True,
+                ),
+                sentry_logging,
+            ],
+            traces_sample_rate=config('SENTRY_TRACES_SAMPLE_RATE', default=0.1, cast=float),
+            send_default_pii=False,
+            debug=DEBUG,
+            environment=config('ENVIRONMENT', default='development'),
+            release=config('APP_VERSION', default='1.0.0'),
+        )
+
+        # Test Sentry connection
+        import sentry_sdk
+        with sentry_sdk.configure_scope() as scope:
+            scope.set_tag("initialization", "success")
+
+    except Exception as e:
+        import warnings
+        warnings.warn(f"Sentry initialization failed ({e}), error tracking disabled")
+elif SENTRY_DSN and not SENTRY_AVAILABLE:
+    import warnings
+    warnings.warn("SENTRY_DSN provided but sentry-sdk not installed. Install with: pip install sentry-sdk")
 
 # ==========================================================================
 # ADVANCED LOGGING CONFIGURATION
@@ -406,42 +438,99 @@ API_RATE_LIMITS = {
 # ==========================================================================
 
 if not DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
-    EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-    EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
     EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
     EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-    DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@example.com')
-    SERVER_EMAIL = config('SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
+
+    if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
+        try:
+            EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+            EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+            EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+            EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+            EMAIL_HOST_USER = EMAIL_HOST_USER
+            EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
+            DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@example.com')
+            SERVER_EMAIL = config('SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
+
+            # Test email configuration
+            import smtplib
+            from email.mime.text import MIMEText
+            # Note: Actual SMTP test is expensive, so we'll skip it here
+
+        except Exception as e:
+            import warnings
+            warnings.warn(f"Email configuration failed ({e}), falling back to console backend")
+            EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    else:
+        import warnings
+        warnings.warn("EMAIL_HOST_USER and EMAIL_HOST_PASSWORD not provided, using console email backend")
+        EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # ==========================================================================
 # REDIS CACHE CONFIGURATION (Production)
 # ==========================================================================
 
-if not DEBUG and config('REDIS_URL', default=''):
-    CACHES = {
-        'default': {
-            'BACKEND': 'django_redis.cache.RedisCache',
-            'LOCATION': config('REDIS_URL'),
-            'OPTIONS': {
-                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-                'CONNECTION_POOL_KWARGS': {
-                    'max_connections': 20,
-                    'retry_on_timeout': True,
+REDIS_URL = config('REDIS_URL', default='')
+if not DEBUG and REDIS_URL:
+    try:
+        CACHES = {
+            'default': {
+                'BACKEND': 'django_redis.cache.RedisCache',
+                'LOCATION': REDIS_URL,
+                'OPTIONS': {
+                    'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+                    'CONNECTION_POOL_KWARGS': {
+                        'max_connections': 20,
+                        'retry_on_timeout': True,
+                    },
+                    'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
+                    'SERIALIZER': 'django_redis.serializers.json.JSONSerializer',
                 },
-                'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
-                'SERIALIZER': 'django_redis.serializers.json.JSONSerializer',
-            },
-            'KEY_PREFIX': 'portfolio',
-            'VERSION': 1,
-            'TIMEOUT': 3600,  # 1 hour default timeout
+                'KEY_PREFIX': 'portfolio',
+                'VERSION': 1,
+                'TIMEOUT': 3600,  # 1 hour default timeout
+            }
         }
-    }
-    
-    # Session storage
-    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-    SESSION_CACHE_ALIAS = 'default'
+
+        # Session storage
+        SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+        SESSION_CACHE_ALIAS = 'default'
+
+        # Test Redis connection
+        import redis
+        r = redis.from_url(REDIS_URL)
+        r.ping()
+
+    except Exception as e:
+        import warnings
+        warnings.warn(f"Redis connection failed ({e}), falling back to local memory cache")
+        # Fallback to local memory cache
+        CACHES = {
+            'default': {
+                'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+                'LOCATION': 'unique-snowflake-fallback',
+            }
+        }
+elif REDIS_URL:
+    # Development with Redis
+    try:
+        import redis
+        r = redis.from_url(REDIS_URL)
+        r.ping()
+        CACHES = {
+            'default': {
+                'BACKEND': 'django_redis.cache.RedisCache',
+                'LOCATION': REDIS_URL,
+                'OPTIONS': {
+                    'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+                },
+                'KEY_PREFIX': 'portfolio-dev',
+                'VERSION': 1,
+            }
+        }
+    except Exception:
+        # Redis not available, use default local memory cache
+        pass
 
 # ==========================================================================
 # CUSTOM SETTINGS

@@ -25,13 +25,14 @@ from django.db.models import Q, Count, Avg, Max, F, Case, When, Value, IntegerFi
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.cache import cache_page, vary_on_headers
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers
 from django.contrib.sitemaps import ping_google
 from django.conf import settings
-from .cache_utils import (
-    CacheManager, cache_result, cache_queryset_medium, cache_long,
-    cache_page_data, ModelCacheManager
-)
+# from .cache_utils import (
+#     CacheManager, cache_result, cache_queryset_medium, cache_long,
+#     cache_page_data, ModelCacheManager
+# )
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
@@ -760,7 +761,7 @@ def create_fallback_context(page_id, title, error=None):
         'canonical_url': '/',
     }
 
-@ratelimit(key='ip', rate='200/h', method=ratelimit.ALL)
+@ratelimit(key='ip', rate='200/h', method=ratelimit_ALL)
 def log_page_view(request, page_id, location=None):
     """Log page view for analytics (implement as needed)"""
     try:
@@ -775,7 +776,7 @@ def log_page_view(request, page_id, location=None):
     except Exception as e:
         logger.error(f"Error logging page view: {str(e)}")
 
-@ratelimit(key='ip', rate='100/h', method=ratelimit.ALL)
+@ratelimit(key='ip', rate='100/h', method=ratelimit_ALL)
 def log_search_query(request, query, category, result_count):
     """Log search query for analytics"""
     try:
@@ -897,6 +898,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from django_ratelimit.decorators import ratelimit
+from django_ratelimit import ALL as ratelimit_ALL
 from django.utils.decorators import method_decorator
 
 from .serializers import (
@@ -1616,15 +1618,170 @@ def get_vapid_public_key(request):
     """
     try:
         public_key = settings.WEBPUSH_SETTINGS.get('VAPID_PUBLIC_KEY', '')
-        
+
         if not public_key:
             return JsonResponse({'error': 'VAPID public key not configured'}, status=500)
-        
+
         return JsonResponse({'publicKey': public_key})
-        
+
     except Exception as e:
         logger.error(f"Error getting VAPID public key: {e}")
         return JsonResponse({'error': 'Internal server error'}, status=500)
+
+
+@require_http_methods(["GET"])
+def manifest_json(request):
+    """
+    Serve the PWA manifest.json dynamically with proper JSON structure
+    """
+    try:
+        site_name = getattr(settings, 'SITE_NAME', 'Portfolio Site')
+        site_description = getattr(settings, 'SITE_DESCRIPTION', 'Professional portfolio website')
+
+        manifest_data = {
+            "name": site_name,
+            "short_name": "Portfolio",
+            "description": site_description,
+            "start_url": "/",
+            "display": "standalone",
+            "background_color": "#0f172a",
+            "theme_color": "#0f172a",
+            "orientation": "portrait-primary",
+            "icons": [
+                {
+                    "src": request.build_absolute_uri("/static/images/favicon-192x192.png"),
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "purpose": "any maskable"
+                },
+                {
+                    "src": request.build_absolute_uri("/static/images/favicon-512x512.png"),
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "any"
+                }
+            ],
+            "categories": ["portfolio", "developer", "technology"],
+            "lang": translation.get_language() or "tr",
+            "screenshots": [
+                {
+                    "src": request.build_absolute_uri("/static/images/screenshot-desktop.png"),
+                    "sizes": "1280x720",
+                    "type": "image/png",
+                    "form_factor": "wide"
+                },
+                {
+                    "src": request.build_absolute_uri("/static/images/screenshot-mobile.png"),
+                    "sizes": "375x812",
+                    "type": "image/png",
+                    "form_factor": "narrow"
+                }
+            ]
+        }
+
+        return JsonResponse(manifest_data, content_type='application/manifest+json')
+
+    except Exception as e:
+        logger.error(f"Error serving manifest.json: {e}")
+        # Fallback manifest
+        fallback_manifest = {
+            "name": "Portfolio Site",
+            "short_name": "Portfolio",
+            "start_url": "/",
+            "display": "standalone",
+            "background_color": "#0f172a",
+            "theme_color": "#0f172a"
+        }
+        return JsonResponse(fallback_manifest, content_type='application/manifest+json')
+
+
+@require_http_methods(["GET"])
+def analytics_json(request):
+    """
+    Enhanced analytics endpoint for frontend performance tracking
+    """
+    try:
+        analytics_data = {
+            "status": "ok",
+            "message": "Analytics data received",
+            "timestamp": timezone.now().isoformat(),
+            "session_id": request.session.session_key or "anonymous",
+            "features": {
+                "performance_monitoring": settings.FEATURES.get('PERFORMANCE_MONITORING', True),
+                "analytics_enabled": settings.FEATURES.get('ANALYTICS_ENABLED', True),
+                "push_notifications": settings.FEATURES.get('PUSH_NOTIFICATIONS', True)
+            },
+            "config": {
+                "sample_rate": settings.PERFORMANCE_MONITORING.get('SAMPLE_RATE', 0.1),
+                "track_sql_queries": settings.PERFORMANCE_MONITORING.get('TRACK_SQL_QUERIES', False),
+                "core_web_vitals_thresholds": settings.CORE_WEB_VITALS
+            }
+        }
+
+        return JsonResponse(analytics_data, content_type='application/json')
+
+    except Exception as e:
+        logger.error(f"Error serving analytics.json: {e}")
+        # Fallback response
+        fallback_data = {
+            "status": "error",
+            "message": "Analytics service unavailable",
+            "timestamp": timezone.now().isoformat()
+        }
+        return JsonResponse(fallback_data, content_type='application/json')
+
+
+@require_http_methods(["POST"])
+@csrf_exempt
+def csp_violation_report(request):
+    """
+    Handle CSP violation reports
+    """
+    try:
+        if request.content_type == 'application/csp-report':
+            data = json.loads(request.body.decode('utf-8'))
+        else:
+            data = json.loads(request.body)
+
+        csp_report = data.get('csp-report', data)
+
+        # Log CSP violation
+        security_logger = logging.getLogger('main.security')
+        security_logger.warning(
+            f"CSP Violation: {csp_report.get('violated-directive')} - "
+            f"Blocked URI: {csp_report.get('blocked-uri')} - "
+            f"Document URI: {csp_report.get('document-uri')}"
+        )
+
+        return HttpResponse(status=204)  # No content response
+
+    except Exception as e:
+        logger.error(f"Error processing CSP violation report: {e}")
+        return HttpResponse(status=400)
+
+
+@require_http_methods(["POST"])
+@csrf_exempt
+def network_error_report(request):
+    """
+    Handle Network Error Logging (NEL) reports
+    """
+    try:
+        data = json.loads(request.body)
+
+        # Log network error
+        error_logger = logging.getLogger('main.security')
+        error_logger.warning(
+            f"Network Error: Type: {data.get('type')} - "
+            f"URL: {data.get('url')} - "
+            f"User Agent: {request.META.get('HTTP_USER_AGENT', 'Unknown')}"
+        )
+
+        return HttpResponse(status=204)  # No content response
+
+    except Exception as e:
+        logger.error(f"Error processing network error report: {e}")
+        return HttpResponse(status=400)
 
 
 @require_http_methods(["POST"])

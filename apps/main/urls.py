@@ -32,6 +32,10 @@ urlpatterns = [
     # Authentication
     path('logout/', views.logout_view, name='logout'),
     
+    # PWA and JSON endpoints (using template views for simplicity)
+    # path('manifest.json', views.manifest_json, name='manifest_json'),
+    # path('analytics.json', views.analytics_json, name='analytics_json'),
+
     # Security endpoints
     path('api/security/csp-report/', views.csp_violation_report, name='csp_violation_report'),
     path('api/security/network-error-report/', views.network_error_report, name='network_error_report'),

@@ -19,6 +19,7 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
+from django.views.generic import TemplateView
 from apps.main.views import home, logout_view
 from apps.core.health import health_check_view, readiness_check_view, liveness_check_view
 
@@ -33,6 +34,10 @@ urlpatterns = [
     path('health/', health_check_view, name='health_check'),
     path('health/readiness/', readiness_check_view, name='readiness_check'),
     path('health/liveness/', liveness_check_view, name='liveness_check'),
+
+    # PWA and JSON endpoints
+    path('manifest.json', TemplateView.as_view(template_name='manifest.json', content_type='application/manifest+json'), name='manifest'),
+    path('analytics.json', TemplateView.as_view(template_name='analytics.json', content_type='application/json'), name='analytics'),
 
     # API endpoints for performance monitoring and notifications
     path('api/performance/', collect_performance_metric, name='api_performance'),

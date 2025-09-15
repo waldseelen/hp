@@ -10,3 +10,5 @@ celery==5.4.0
 redis==5.2.1
 requests==2.32.3
 python-decouple==3.8
+channels==4.0.0
+channels-redis==4.2.0

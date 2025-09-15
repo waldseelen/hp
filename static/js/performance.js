@@ -730,22 +730,51 @@ class PerformanceMonitor {
     }
     
     sendMetric(metric) {
+        // Get CSRF token from cookie or meta tag
+        const csrfToken = this.getCSRFToken();
+
         // Use sendBeacon for reliable delivery
-        if (navigator.sendBeacon) {
-            const data = JSON.stringify(metric);
-            navigator.sendBeacon(this.reportingEndpoint, data);
+        if (navigator.sendBeacon && csrfToken) {
+            const formData = new FormData();
+            formData.append('csrfmiddlewaretoken', csrfToken);
+            formData.append('data', JSON.stringify(metric));
+            navigator.sendBeacon(this.reportingEndpoint, formData);
         } else {
-            // Fallback to fetch
+            // Fallback to fetch with proper CSRF handling
             fetch(this.reportingEndpoint, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest'
                 },
                 body: JSON.stringify(metric)
             }).catch(error => {
                 console.warn('Failed to send performance metric:', error);
             });
         }
+    }
+
+    getCSRFToken() {
+        // Try to get CSRF token from meta tag first
+        const metaTag = document.querySelector('meta[name="csrf-token"]');
+        if (metaTag) {
+            return metaTag.getAttribute('content');
+        }
+
+        // Fallback to cookie
+        const cookieMatch = document.cookie.match(/csrftoken=([^;]+)/);
+        if (cookieMatch) {
+            return cookieMatch[1];
+        }
+
+        // Last resort: try to get from form
+        const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+        if (csrfInput) {
+            return csrfInput.value;
+        }
+
+        return null;
     }
     
     reportCurrentMetrics() {
