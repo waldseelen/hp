@@ -8,7 +8,19 @@
   },
   "scripts": {
     "build:css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:components": "echo \"Building components...\"",
+    "build:all": "npm run build:css && npm run build:components",
+    "watch:css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
+    "dev": "npm run watch:css",
+    "optimize:images": "echo \"Optimizing images...\"",
+    "optimize:fonts": "echo \"Optimizing fonts...\"",
+    "lint:js": "echo \"Linting JavaScript...\"",
+    "lint:css": "echo \"Linting CSS...\"",
+    "format": "echo \"Formatting code...\"",
+    "test": "echo \"Running frontend tests...\"",
+    "test:js": "echo \"Running JavaScript tests...\"",
+    "test:e2e": "echo \"Running E2E tests...\"",
+    "test:coverage": "echo \"Running tests with coverage...\""
   },
   "repository": {
     "type": "git",

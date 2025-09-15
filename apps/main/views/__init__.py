@@ -17,6 +17,10 @@ from .health_api import (
     health_check_endpoint, health_check_detailed, health_dashboard,
     liveness_probe, readiness_probe, health_metrics
 )
+from .performance_api import (
+    collect_performance_metric, performance_dashboard_data, health_check,
+    subscribe_push_notifications, send_push_notification, log_error
+)
 
 # Create function-based view aliases for URL patterns
 search_view = SearchView.as_view()

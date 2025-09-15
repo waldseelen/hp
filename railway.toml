@@ -1,0 +1,225 @@
+# =============================================================================
+# Railway Deployment Configuration
+# =============================================================================
+# Production-ready deployment configuration for Railway platform
+# Supports staging and production environments with automated deployments
+
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm run build:all && python manage.py collectstatic --noinput"
+
+[deploy]
+startCommand = "bash scripts/railway-start.sh"
+healthcheckPath = "/health/"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+# =============================================================================
+# Production Environment
+# =============================================================================
+[environments.production]
+# Deployment Configuration
+branch = "main"
+autoRedeploy = true
+autoRedeployEnabled = true
+
+# Health Check Settings
+healthcheckPath = "/health/"
+healthcheckTimeout = 300
+healthcheckInterval = 30
+
+# Restart Policy
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+# Build Settings
+buildCommand = "npm run build:all && python manage.py collectstatic --noinput"
+startCommand = "bash scripts/railway-start.sh"
+
+# Resource Limits
+memory = 1024
+cpu = 1000
+
+# Environment Variables (Production)
+[environments.production.variables]
+DJANGO_SETTINGS_MODULE = "portfolio_site.settings.production"
+DEBUG = "False"
+PYTHONUNBUFFERED = "1"
+PORT = "8000"
+
+# Gunicorn Configuration
+GUNICORN_WORKERS = "4"
+GUNICORN_WORKER_CLASS = "sync"
+GUNICORN_TIMEOUT = "30"
+GUNICORN_MAX_REQUESTS = "1000"
+GUNICORN_MAX_REQUESTS_JITTER = "100"
+
+# Security Settings
+SECURE_SSL_REDIRECT = "True"
+SECURE_HSTS_SECONDS = "31536000"
+SECURE_HSTS_INCLUDE_SUBDOMAINS = "True"
+SECURE_HSTS_PRELOAD = "True"
+
+# Static Files
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# =============================================================================
+# Staging Environment
+# =============================================================================
+[environments.staging]
+# Deployment Configuration
+branch = "develop"
+autoRedeploy = true
+autoRedeployEnabled = true
+
+# Health Check Settings
+healthcheckPath = "/health/"
+healthcheckTimeout = 300
+healthcheckInterval = 30
+
+# Restart Policy
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5
+
+# Build Settings
+buildCommand = "npm run build:all && python manage.py collectstatic --noinput"
+startCommand = "bash scripts/railway-start.sh"
+
+# Resource Limits (Smaller for staging)
+memory = 512
+cpu = 500
+
+# Environment Variables (Staging)
+[environments.staging.variables]
+DJANGO_SETTINGS_MODULE = "portfolio_site.settings.development"
+DEBUG = "True"
+PYTHONUNBUFFERED = "1"
+PORT = "8000"
+
+# Gunicorn Configuration (Lighter for staging)
+GUNICORN_WORKERS = "2"
+GUNICORN_WORKER_CLASS = "sync"
+GUNICORN_TIMEOUT = "30"
+GUNICORN_MAX_REQUESTS = "500"
+
+# Security Settings (Relaxed for staging)
+SECURE_SSL_REDIRECT = "False"
+
+# =============================================================================
+# Services Configuration
+# =============================================================================
+[services]
+
+# PostgreSQL Database
+[services.database]
+type = "postgresql"
+plan = "hobby"  # Free tier for development
+variables = [
+    "DATABASE_URL"
+]
+
+# Redis Cache
+[services.redis]
+type = "redis"
+plan = "hobby"  # Free tier for development
+variables = [
+    "REDIS_URL"
+]
+
+# =============================================================================
+# Monitoring & Observability
+# =============================================================================
+[monitoring]
+enabled = true
+
+# Health Checks
+[monitoring.healthcheck]
+path = "/health/"
+interval = 30
+timeout = 10
+retries = 3
+
+# Metrics Collection
+[monitoring.metrics]
+enabled = true
+path = "/metrics/"
+
+# Log Configuration
+[monitoring.logs]
+level = "INFO"
+format = "json"
+retention = "7d"
+
+# =============================================================================
+# Networking & Domains
+# =============================================================================
+[networking]
+# Custom domain configuration
+# domains = ["yourdomain.com", "www.yourdomain.com"]
+
+# SSL Configuration
+[networking.ssl]
+enabled = true
+redirect = true
+
+# =============================================================================
+# Backup Configuration
+# =============================================================================
+[backups]
+enabled = true
+
+# Database Backups
+[backups.database]
+enabled = true
+schedule = "0 2 * * *"  # Daily at 2 AM UTC
+retention = "30d"
+compression = true
+
+# File Backups
+[backups.files]
+enabled = true
+schedule = "0 3 * * 0"  # Weekly on Sunday at 3 AM UTC
+retention = "4w"
+paths = [
+    "media/",
+    "logs/"
+]
+
+# =============================================================================
+# Deployment Hooks
+# =============================================================================
+[hooks]
+
+# Pre-deployment hooks
+[hooks.pre-deploy]
+command = "python manage.py check --deploy"
+
+# Post-deployment hooks
+[hooks.post-deploy]
+command = "python manage.py migrate --noinput"
+
+# Health check after deployment
+[hooks.health-check]
+command = "curl -f $RAILWAY_STATIC_URL/health/"
+timeout = 60
+retries = 5
+
+# =============================================================================
+# Feature Flags
+# =============================================================================
+[features]
+# Zero-downtime deployments
+rolling_deployments = true
+
+# Automatic SSL certificate provisioning
+auto_ssl = true
+
+# Database connection pooling
+connection_pooling = true
+
+# Static file compression
+static_compression = true
+
+# CDN integration
+cdn_enabled = true

@@ -1,0 +1,265 @@
+# =============================================================================
+# Docker Compose Development Configuration
+# =============================================================================
+# Development environment with:
+# - Hot reloading for Django
+# - Volume mounts for live code editing
+# - Simplified services
+# - Debug-friendly configuration
+#
+# Usage:
+#   docker-compose -f docker-compose.dev.yml up
+#   docker-compose -f docker-compose.dev.yml up --build
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # =============================================================================
+  # PostgreSQL Database (Development)
+  # =============================================================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: portfolio_db_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: portfolio_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+      - ./scripts/db_init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - portfolio_network_dev
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # =============================================================================
+  # Redis Cache (Development)
+  # =============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: portfolio_redis_dev
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_dev:/data
+    networks:
+      - portfolio_network_dev
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # =============================================================================
+  # Django Web Application (Development)
+  # =============================================================================
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+      args:
+        APP_USER: django
+        APP_UID: 1000
+        APP_GID: 1000
+    container_name: portfolio_web_dev
+    restart: unless-stopped
+    environment:
+      # Django Development Settings
+      DJANGO_SETTINGS_MODULE: portfolio_site.settings.development
+      DEBUG: "True"
+      SECRET_KEY: "dev-secret-key-change-in-production"
+      ALLOWED_HOSTS: "localhost,127.0.0.1,0.0.0.0,web"
+
+      # Database Configuration
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/portfolio_dev
+
+      # Redis Configuration
+      REDIS_URL: redis://redis:6379/0
+
+      # Development Features
+      DJANGO_RUNSERVER_RELOAD: "True"
+      PYTHONPATH: /app
+
+      # Debug Tools
+      DJANGO_DEBUG_TOOLBAR: "True"
+      DJANGO_EXTENSIONS: "True"
+
+      # Email (Console backend for development)
+      EMAIL_BACKEND: django.core.mail.backends.console.EmailBackend
+
+      # Media and Static Files
+      MEDIA_URL: /media/
+      STATIC_URL: /static/
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount source code for live editing
+      - ./apps:/app/apps
+      - ./portfolio_site:/app/portfolio_site
+      - ./templates:/app/templates
+      - ./static:/app/static
+      - ./locale:/app/locale
+      - ./tests:/app/tests
+      - ./manage.py:/app/manage.py
+
+      # Persistent development data
+      - media_files_dev:/app/media
+      - ./logs:/app/logs
+
+      # Development tools
+      - ./.vscode:/app/.vscode
+      - ./pyproject.toml:/app/pyproject.toml
+      - ./pytest.ini:/app/pytest.ini
+      - ./.flake8:/app/.flake8
+    networks:
+      - portfolio_network_dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "check", "--database", "default"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    command: |
+      sh -c "
+        echo 'Waiting for database...'
+        python manage.py wait_for_db
+        echo 'Running migrations...'
+        python manage.py migrate
+        echo 'Collecting static files...'
+        python manage.py collectstatic --noinput
+        echo 'Creating superuser if needed...'
+        python manage.py shell -c \"
+        from django.contrib.auth import get_user_model;
+        User = get_user_model();
+        if not User.objects.filter(username='admin').exists():
+            User.objects.create_superuser('admin', 'admin@example.com', 'admin')
+        \"
+        echo 'Starting development server...'
+        python manage.py runserver 0.0.0.0:8000
+      "
+
+  # =============================================================================
+  # Mailhog (Email testing)
+  # =============================================================================
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: portfolio_mailhog_dev
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web interface
+    networks:
+      - portfolio_network_dev
+
+  # =============================================================================
+  # Frontend Development (Optional)
+  # =============================================================================
+  frontend:
+    image: node:18-alpine
+    container_name: portfolio_frontend_dev
+    restart: unless-stopped
+    working_dir: /app
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
+      - ./tailwind.config.js:/app/tailwind.config.js
+      - ./postcss.config.js:/app/postcss.config.js
+      - ./static:/app/static
+    networks:
+      - portfolio_network_dev
+    command: |
+      sh -c "
+        npm install
+        npm run dev
+      "
+    profiles:
+      - frontend
+
+  # =============================================================================
+  # Database Admin (pgAdmin)
+  # =============================================================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: portfolio_pgadmin_dev
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data_dev:/var/lib/pgadmin
+    networks:
+      - portfolio_network_dev
+    depends_on:
+      - postgres
+    profiles:
+      - admin
+
+  # =============================================================================
+  # Redis Admin (RedisInsight)
+  # =============================================================================
+  redis-insight:
+    image: redislabs/redisinsight:latest
+    container_name: portfolio_redis_insight_dev
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    volumes:
+      - redis_insight_data_dev:/db
+    networks:
+      - portfolio_network_dev
+    depends_on:
+      - redis
+    profiles:
+      - admin
+
+# =============================================================================
+# Network Configuration
+# =============================================================================
+networks:
+  portfolio_network_dev:
+    driver: bridge
+    name: portfolio_network_dev
+
+# =============================================================================
+# Volume Configuration
+# =============================================================================
+volumes:
+  postgres_data_dev:
+    name: portfolio_postgres_data_dev
+    driver: local
+
+  redis_data_dev:
+    name: portfolio_redis_data_dev
+    driver: local
+
+  media_files_dev:
+    name: portfolio_media_files_dev
+    driver: local
+
+  pgadmin_data_dev:
+    name: portfolio_pgadmin_data_dev
+    driver: local
+
+  redis_insight_data_dev:
+    name: portfolio_redis_insight_data_dev
+    driver: local

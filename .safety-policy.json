@@ -1,0 +1,35 @@
+{
+  "security": {
+    "ignore-vulnerabilities": [],
+    "continue-on-vulnerability-error": false,
+    "audit-and-monitor": {
+      "enabled": true,
+      "project-uuid": "",
+      "sign-with-key": ""
+    }
+  },
+  "alert": {
+    "ignore-severities": [],
+    "ignore-cvss-severity-below": 0,
+    "ignore-cvss-unknown-severity": false,
+    "ignore-unpinned-requirements": false
+  },
+  "report": {
+    "only-report": false,
+    "output": {
+      "format": "json",
+      "file": "safety-report.json"
+    }
+  },
+  "scan": {
+    "max-depth": 5,
+    "exclude": [
+      "tests/*",
+      "*/migrations/*",
+      "venv/*",
+      ".venv/*",
+      "node_modules/*",
+      "staticfiles/*"
+    ]
+  }
+}

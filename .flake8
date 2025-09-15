@@ -1,0 +1,38 @@
+[flake8]
+max-line-length = 88
+exclude =
+    .git,
+    __pycache__,
+    */migrations/*,
+    .venv,
+    venv,
+    node_modules,
+    staticfiles,
+    build,
+    dist,
+    .pytest_cache,
+    .ruff_cache,
+    .next
+
+ignore =
+    E203,  # whitespace before ':'
+    E501,  # line too long (handled by black)
+    W503,  # line break before binary operator
+    F401,  # imported but unused (handled by isort)
+
+per-file-ignores =
+    __init__.py:F401
+    settings/*.py:F405,F401
+    tests/*.py:F401,F811
+    manage.py:E402
+    */asgi.py:F401
+    */wsgi.py:F401
+
+# Additional quality rules
+select = E,W,F,C
+max-complexity = 10
+max-doc-length = 72
+
+# Error codes to enable
+enable-extensions =
+    G  # logging format checks
