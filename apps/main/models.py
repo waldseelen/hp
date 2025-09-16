@@ -3,6 +3,10 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.core.validators import URLValidator, validate_email
 from django.core.exceptions import ValidationError
+import pyotp
+import qrcode
+import io
+import base64
 
 
 class Admin(AbstractUser):
@@ -10,6 +14,16 @@ class Admin(AbstractUser):
     name = models.CharField(max_length=100, help_text="Display name for the portfolio")
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # Two-Factor Authentication fields
+    totp_secret = models.CharField(max_length=32, blank=True, help_text="TOTP secret key")
+    is_2fa_enabled = models.BooleanField(default=False, help_text="Whether 2FA is enabled")
+    backup_codes = models.JSONField(default=list, blank=True, help_text="Backup recovery codes")
+
+    # Security tracking
+    failed_login_attempts = models.IntegerField(default=0)
+    last_failed_login = models.DateTimeField(null=True, blank=True)
+    account_locked_until = models.DateTimeField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'name']
@@ -37,6 +51,311 @@ class Admin(AbstractUser):
 
     def __str__(self):
         return self.name
+
+    def generate_totp_secret(self):
+        """Generate a new TOTP secret"""
+        if not self.totp_secret:
+            self.totp_secret = pyotp.random_base32()
+            self.save(update_fields=['totp_secret'])
+        return self.totp_secret
+
+    def get_totp_uri(self, issuer_name="Portfolio Site"):
+        """Get TOTP URI for QR code generation"""
+        if not self.totp_secret:
+            self.generate_totp_secret()
+
+        totp = pyotp.TOTP(self.totp_secret)
+        return totp.provisioning_uri(
+            name=self.email,
+            issuer_name=issuer_name
+        )
+
+    def get_qr_code(self):
+        """Generate QR code as base64 image"""
+        uri = self.get_totp_uri()
+        qr = qrcode.QRCode(version=1, box_size=10, border=5)
+        qr.add_data(uri)
+        qr.make(fit=True)
+
+        img = qr.make_image(fill_color="black", back_color="white")
+        buffer = io.BytesIO()
+        img.save(buffer, format='PNG')
+        buffer.seek(0)
+
+        return base64.b64encode(buffer.getvalue()).decode()
+
+    def verify_totp(self, token):
+        """Verify TOTP token"""
+        if not self.totp_secret or not self.is_2fa_enabled:
+            return False
+
+        totp = pyotp.TOTP(self.totp_secret)
+        return totp.verify(token, valid_window=1)
+
+    def generate_backup_codes(self, count=8):
+        """Generate backup recovery codes"""
+        import secrets
+        import string
+
+        codes = []
+        for _ in range(count):
+            code = ''.join(secrets.choice(string.ascii_uppercase + string.digits)
+                          for _ in range(8))
+            codes.append(code)
+
+        self.backup_codes = codes
+        self.save(update_fields=['backup_codes'])
+        return codes
+
+    def use_backup_code(self, code):
+        """Use a backup code (one-time use)"""
+        if code in self.backup_codes:
+            self.backup_codes.remove(code)
+            self.save(update_fields=['backup_codes'])
+            return True
+        return False
+
+    def is_account_locked(self):
+        """Check if account is currently locked"""
+        if self.account_locked_until:
+            return timezone.now() < self.account_locked_until
+        return False
+
+    def lock_account(self, duration_minutes=30):
+        """Lock account for specified duration"""
+        self.account_locked_until = timezone.now() + timezone.timedelta(minutes=duration_minutes)
+        self.save(update_fields=['account_locked_until'])
+
+    def unlock_account(self):
+        """Unlock account and reset failed attempts"""
+        self.failed_login_attempts = 0
+        self.account_locked_until = None
+        self.last_failed_login = None
+        self.save(update_fields=['failed_login_attempts', 'account_locked_until', 'last_failed_login'])
+
+    def record_failed_login(self):
+        """Record a failed login attempt"""
+        self.failed_login_attempts += 1
+        self.last_failed_login = timezone.now()
+
+        # Lock account after 5 failed attempts
+        if self.failed_login_attempts >= 5:
+            self.lock_account()
+
+        self.save(update_fields=['failed_login_attempts', 'last_failed_login', 'account_locked_until'])
+
+    def record_successful_login(self):
+        """Reset failed login attempts on successful login"""
+        if self.failed_login_attempts > 0:
+            self.failed_login_attempts = 0
+            self.last_failed_login = None
+            self.save(update_fields=['failed_login_attempts', 'last_failed_login'])
+
+
+class UserSession(models.Model):
+    """Track user sessions for security management"""
+    user = models.ForeignKey(Admin, on_delete=models.CASCADE, related_name='sessions')
+    session_key = models.CharField(max_length=40, unique=True)
+    ip_address = models.GenericIPAddressField()
+    user_agent = models.TextField()
+    location = models.CharField(max_length=200, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    last_activity = models.DateTimeField(default=timezone.now)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['-last_activity']
+        indexes = [
+            models.Index(fields=['user', 'is_active']),
+            models.Index(fields=['session_key']),
+            models.Index(fields=['-last_activity']),
+        ]
+
+    def __str__(self):
+        return f"{self.user.email} - {self.ip_address} ({self.created_at})"
+
+    def get_device_info(self):
+        """Extract device info from user agent"""
+        import re
+
+        # Simple device detection
+        if 'Mobile' in self.user_agent or 'Android' in self.user_agent:
+            device_type = 'Mobile'
+        elif 'Tablet' in self.user_agent or 'iPad' in self.user_agent:
+            device_type = 'Tablet'
+        else:
+            device_type = 'Desktop'
+
+        # Browser detection
+        if 'Chrome' in self.user_agent:
+            browser = 'Chrome'
+        elif 'Firefox' in self.user_agent:
+            browser = 'Firefox'
+        elif 'Safari' in self.user_agent:
+            browser = 'Safari'
+        elif 'Edge' in self.user_agent:
+            browser = 'Edge'
+        else:
+            browser = 'Unknown'
+
+        return {
+            'device_type': device_type,
+            'browser': browser,
+            'user_agent': self.user_agent[:100] + '...' if len(self.user_agent) > 100 else self.user_agent
+        }
+
+    def deactivate(self):
+        """Deactivate this session"""
+        self.is_active = False
+        self.save(update_fields=['is_active'])
+
+
+class CookieConsent(models.Model):
+    """Track user cookie consent preferences"""
+    CONSENT_CHOICES = [
+        ('necessary', 'Necessary'),
+        ('functional', 'Functional'),
+        ('analytics', 'Analytics'),
+        ('marketing', 'Marketing'),
+    ]
+
+    session_key = models.CharField(max_length=40, db_index=True)
+    ip_address = models.GenericIPAddressField()
+    user_agent = models.TextField()
+
+    # Consent preferences
+    necessary = models.BooleanField(default=True, help_text="Required cookies, always enabled")
+    functional = models.BooleanField(default=False, help_text="Functional cookies for enhanced experience")
+    analytics = models.BooleanField(default=False, help_text="Analytics cookies for site improvement")
+    marketing = models.BooleanField(default=False, help_text="Marketing cookies for personalized ads")
+
+    consent_given_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    expires_at = models.DateTimeField(help_text="When this consent expires")
+
+    class Meta:
+        ordering = ['-consent_given_at']
+        indexes = [
+            models.Index(fields=['session_key']),
+            models.Index(fields=['ip_address']),
+            models.Index(fields=['-consent_given_at']),
+            models.Index(fields=['expires_at']),
+        ]
+
+    def save(self, *args, **kwargs):
+        # Set expiration to 1 year from consent date if not set
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timezone.timedelta(days=365)
+        super().save(*args, **kwargs)
+
+    def is_expired(self):
+        """Check if consent has expired"""
+        return timezone.now() > self.expires_at
+
+    def get_consent_summary(self):
+        """Get a summary of consent preferences"""
+        return {
+            'necessary': self.necessary,
+            'functional': self.functional,
+            'analytics': self.analytics,
+            'marketing': self.marketing,
+        }
+
+    def __str__(self):
+        return f"Cookie Consent ({self.session_key}) - {self.consent_given_at}"
+
+
+class DataExportRequest(models.Model):
+    """Track data export requests for GDPR compliance"""
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
+
+    user = models.ForeignKey(Admin, on_delete=models.CASCADE, related_name='export_requests')
+    email = models.EmailField(help_text="Email where export will be sent")
+    request_date = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    file_path = models.CharField(max_length=500, blank=True, help_text="Path to generated export file")
+    completed_at = models.DateTimeField(null=True, blank=True)
+    error_message = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['-request_date']
+        indexes = [
+            models.Index(fields=['user', 'status']),
+            models.Index(fields=['-request_date']),
+        ]
+
+    def __str__(self):
+        return f"Data Export for {self.user.email} - {self.status}"
+
+
+class AccountDeletionRequest(models.Model):
+    """Track account deletion requests for GDPR compliance"""
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    user = models.ForeignKey(Admin, on_delete=models.CASCADE, related_name='deletion_requests')
+    email = models.EmailField(help_text="User's email for confirmation")
+    reason = models.TextField(blank=True, help_text="Optional reason for deletion")
+    confirmation_token = models.CharField(max_length=100, unique=True)
+
+    request_date = models.DateTimeField(default=timezone.now)
+    confirmed_at = models.DateTimeField(null=True, blank=True)
+    scheduled_deletion = models.DateTimeField(help_text="When account will be deleted")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+
+    # Backup info before deletion
+    user_data_backup = models.JSONField(default=dict, help_text="Backup of user data before deletion")
+
+    class Meta:
+        ordering = ['-request_date']
+        indexes = [
+            models.Index(fields=['user', 'status']),
+            models.Index(fields=['confirmation_token']),
+            models.Index(fields=['scheduled_deletion']),
+        ]
+
+    def save(self, *args, **kwargs):
+        # Set scheduled deletion to 30 days from request if not set
+        if not self.scheduled_deletion:
+            self.scheduled_deletion = timezone.now() + timezone.timedelta(days=30)
+        super().save(*args, **kwargs)
+
+    def generate_confirmation_token(self):
+        """Generate a secure confirmation token"""
+        import secrets
+        self.confirmation_token = secrets.token_urlsafe(32)
+        self.save(update_fields=['confirmation_token'])
+        return self.confirmation_token
+
+    def is_expired(self):
+        """Check if deletion request has expired (72 hours for confirmation)"""
+        if self.status == 'pending':
+            return timezone.now() > (self.request_date + timezone.timedelta(hours=72))
+        return False
+
+    def confirm_deletion(self):
+        """Confirm the deletion request"""
+        self.status = 'confirmed'
+        self.confirmed_at = timezone.now()
+        self.save(update_fields=['status', 'confirmed_at'])
+
+    def cancel_deletion(self):
+        """Cancel the deletion request"""
+        self.status = 'cancelled'
+        self.save(update_fields=['status'])
+
+    def __str__(self):
+        return f"Account Deletion for {self.user.email} - {self.status}"
 
 
 class PersonalInfo(models.Model):

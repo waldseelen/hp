@@ -12,7 +12,11 @@
     "build:all": "npm run build:css && npm run build:components",
     "watch:css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
     "dev": "npm run watch:css",
-    "optimize:images": "echo \"Optimizing images...\"",
+    "minify:js": "node scripts/minify-js.js",
+    "minify:css": "node scripts/minify-css.js",
+    "minify:all": "npm run minify:js && npm run minify:css",
+    "optimize:images": "node scripts/optimize-images.js",
+    "cleanup:unused": "node scripts/cleanup-unused.js",
     "optimize:fonts": "echo \"Optimizing fonts...\"",
     "lint:js": "echo \"Linting JavaScript...\"",
     "lint:css": "echo \"Linting CSS...\"",
@@ -35,6 +39,11 @@
   },
   "homepage": "https://github.com/waldseelen/django-portfolio-site#readme",
   "devDependencies": {
-    "@tailwindcss/cli": "^4.1.12"
+    "@tailwindcss/cli": "^4.1.12",
+    "autoprefixer": "^10.4.21",
+    "cssnano": "^7.1.1",
+    "postcss": "^8.5.6",
+    "sharp": "^0.34.3",
+    "terser": "^5.44.0"
   }
 }

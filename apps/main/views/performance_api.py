@@ -9,6 +9,8 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from apps.main.validators import validate_json_input, API_SCHEMAS
 
 logger = logging.getLogger(__name__)
 
@@ -20,18 +22,35 @@ def collect_performance_metric(request):
     API endpoint to collect performance metrics from frontend
     """
     try:
-        data = json.loads(request.body)
-        metric_type = data.get('metric_type')
-        value = data.get('value')
-
-        if not metric_type or value is None:
+        # Validate content type
+        if not request.content_type == 'application/json':
             return JsonResponse({
                 'status': 'error',
-                'message': 'metric_type and value are required'
+                'message': 'Content-Type must be application/json'
             }, status=400)
 
-        # Log the performance metric
-        logger.info(f"Performance metric collected: {metric_type}={value}")
+        # Validate request body size
+        if len(request.body) > 1024:  # 1KB limit
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Request body too large'
+            }, status=413)
+
+        data = json.loads(request.body)
+
+        # Validate using comprehensive validator
+        try:
+            validated_data = validate_json_input(data, API_SCHEMAS['performance_metric'])
+            metric_type = validated_data['metric_type']
+            value = validated_data['value']
+        except ValidationError as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            }, status=400)
+
+        # Log the performance metric (sanitized)
+        logger.info(f"Performance metric collected: {metric_type}={value:.2f}")
 
         return JsonResponse({
             'status': 'success',
@@ -193,6 +212,20 @@ def log_error(request):
     API endpoint to log errors from frontend
     """
     try:
+        # Validate content type
+        if not request.content_type == 'application/json':
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Content-Type must be application/json'
+            }, status=400)
+
+        # Validate request body size
+        if len(request.body) > 2048:  # 2KB limit for error messages
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Request body too large'
+            }, status=413)
+
         data = json.loads(request.body)
         message = data.get('message')
         level = data.get('level', 'error')
@@ -203,13 +236,47 @@ def log_error(request):
                 'message': 'message is required'
             }, status=400)
 
-        # Log the error
+        # Validate and sanitize message
+        import re
+        from django.utils.html import strip_tags
+
+        message = strip_tags(str(message))  # Remove HTML
+        message = re.sub(r'\s+', ' ', message)  # Normalize whitespace
+
+        if len(message) > 1000:  # Limit message length
+            message = message[:1000] + '...'
+
+        # Validate level
+        allowed_levels = ['critical', 'error', 'warning', 'info']
+        if level not in allowed_levels:
+            level = 'error'
+
+        # Check for suspicious content
+        suspicious_patterns = [
+            r'<script',
+            r'javascript:',
+            r'data:',
+            r'vbscript:',
+        ]
+
+        for pattern in suspicious_patterns:
+            if re.search(pattern, message.lower()):
+                logger.warning(f"Suspicious error message blocked: {message[:50]}...")
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Invalid error message content'
+                }, status=400)
+
+        # Log the error (sanitized)
+        safe_message = f"Frontend {level}: {message}"
         if level == 'critical':
-            logger.critical(f"Frontend critical error: {message}")
+            logger.critical(safe_message)
         elif level == 'error':
-            logger.error(f"Frontend error: {message}")
+            logger.error(safe_message)
+        elif level == 'warning':
+            logger.warning(safe_message)
         else:
-            logger.warning(f"Frontend warning: {message}")
+            logger.info(safe_message)
 
         return JsonResponse({
             'status': 'success',

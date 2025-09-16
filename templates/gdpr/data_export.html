@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Veri Dışa Aktarma - Portfolio{% endblock %}
+
+{% block extra_head %}
+<meta name="description" content="Kişisel verilerinizi farklı formatlarda dışa aktarın.">
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="bg-gray-800/50 backdrop-blur-md rounded-xl shadow-2xl border border-gray-700/50 p-8">
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent mb-4">
+                Veri Dışa Aktarma
+            </h1>
+            <p class="text-gray-300 text-lg">
+                KVKK ve GDPR haklarınız kapsamında kişisel verilerinizi dışa aktarabilirsiniz.
+            </p>
+            <div class="w-24 h-1 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full mt-4"></div>
+        </div>
+
+        <div class="space-y-8">
+            <!-- Bilgilendirme -->
+            <section class="bg-blue-900/20 border border-blue-700/30 rounded-lg p-6">
+                <div class="flex items-start">
+                    <svg class="w-6 h-6 text-blue-400 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-300 mb-2">Veri Taşınabilirlik Hakkınız</h3>
+                        <p class="text-blue-200 text-sm leading-relaxed">
+                            Bu özellik sayesinde sistemimizde saklanan kişisel verilerinizin tamamına erişebilir
+                            ve bunları farklı formatlarda indirebilirsiniz. Bu hak, KVKK'nın 11. maddesi ve
+                            GDPR'nin 20. maddesi kapsamında size tanınmıştır.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Export Form -->
+            <section>
+                <h2 class="text-2xl font-semibold text-white mb-4 flex items-center">
+                    <svg class="w-6 h-6 text-primary-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Veri Dışa Aktarma Formatı Seçin
+                </h2>
+
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <!-- JSON Format -->
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="format" value="json" class="sr-only peer" checked>
+                            <div class="bg-gray-700/30 border border-gray-600 peer-checked:border-primary-500 peer-checked:bg-primary-900/20 rounded-lg p-6 transition-all hover:bg-gray-700/50">
+                                <div class="flex items-center justify-center mb-3">
+                                    <svg class="w-8 h-8 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-white text-center mb-2">JSON</h3>
+                                <p class="text-gray-300 text-sm text-center mb-2">Yapılandırılmış veri formatı</p>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>• Teknik kullanım için ideal</li>
+                                    <li>• Tam veri yapısı</li>
+                                    <li>• Programlama dostu</li>
+                                </ul>
+                            </div>
+                        </label>
+
+                        <!-- CSV Format -->
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="format" value="csv" class="sr-only peer">
+                            <div class="bg-gray-700/30 border border-gray-600 peer-checked:border-primary-500 peer-checked:bg-primary-900/20 rounded-lg p-6 transition-all hover:bg-gray-700/50">
+                                <div class="flex items-center justify-center mb-3">
+                                    <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-white text-center mb-2">CSV</h3>
+                                <p class="text-gray-300 text-sm text-center mb-2">Tablo formatında veri</p>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>• Excel'de açılabilir</li>
+                                    <li>• Kolay okunabilir</li>
+                                    <li>• Özet bilgiler</li>
+                                </ul>
+                            </div>
+                        </label>
+
+                        <!-- ZIP Format -->
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="format" value="zip" class="sr-only peer">
+                            <div class="bg-gray-700/30 border border-gray-600 peer-checked:border-primary-500 peer-checked:bg-primary-900/20 rounded-lg p-6 transition-all hover:bg-gray-700/50">
+                                <div class="flex items-center justify-center mb-3">
+                                    <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-white text-center mb-2">ZIP</h3>
+                                <p class="text-gray-300 text-sm text-center mb-2">Komple arşiv paketi</p>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>• Tüm formatları içerir</li>
+                                    <li>• README dosyası</li>
+                                    <li>• Önerilen format</li>
+                                </ul>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- İçerik Bilgileri -->
+                    <div class="bg-gray-700/20 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
+                            <svg class="w-5 h-5 text-primary-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                            </svg>
+                            Dışa Aktarılacak Veriler
+                        </h3>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-medium text-white mb-2">Kişisel Bilgiler</h4>
+                                <ul class="text-sm text-gray-300 space-y-1">
+                                    <li>• Kullanıcı adı ve e-posta</li>
+                                    <li>• Hesap bilgileri</li>
+                                    <li>• Kayıt tarihi</li>
+                                    <li>• Son giriş bilgileri</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h4 class="font-medium text-white mb-2">İletişim Verileri</h4>
+                                <ul class="text-sm text-gray-300 space-y-1">
+                                    <li>• İletişim formu mesajları</li>
+                                    <li>• Sohbet geçmişi</li>
+                                    <li>• Destek talepleri</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h4 class="font-medium text-white mb-2">Aktivite Verileri</h4>
+                                <ul class="text-sm text-gray-300 space-y-1">
+                                    <li>• Blog etkileşimleri</li>
+                                    <li>• Sayfa ziyaretleri</li>
+                                    <li>• Tercih ayarları</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h4 class="font-medium text-white mb-2">Çerez Verileri</h4>
+                                <ul class="text-sm text-gray-300 space-y-1">
+                                    <li>• Çerez tercihleri</li>
+                                    <li>• Oturum bilgileri</li>
+                                    <li>• Onay kayıtları</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Notice -->
+                    <div class="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-6">
+                        <div class="flex items-start">
+                            <svg class="w-6 h-6 text-yellow-400 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                            </svg>
+                            <div>
+                                <h4 class="font-semibold text-yellow-300 mb-2">Gizlilik ve Güvenlik</h4>
+                                <ul class="text-yellow-200 text-sm space-y-1">
+                                    <li>• İndirilen dosyalar hassas bilgiler içerir</li>
+                                    <li>• Dosyaları güvenli bir yerde saklayın</li>
+                                    <li>• Başkalarıyla paylaşırken dikkatli olun</li>
+                                    <li>• Şifre korumalı arşivleme önerilir</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-center pt-4">
+                        <button type="submit"
+                                class="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+                            </svg>
+                            Verilerimi Dışa Aktar
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Help Section -->
+            <section class="border-t border-gray-700/50 pt-8">
+                <h2 class="text-2xl font-semibold text-white mb-4 flex items-center">
+                    <svg class="w-6 h-6 text-primary-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Sık Sorulan Sorular
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="bg-gray-700/20 rounded-lg p-4">
+                        <h4 class="font-medium text-white mb-2">Hangi formatı seçmeliyim?</h4>
+                        <p class="text-gray-300 text-sm">
+                            <strong>ZIP formatı</strong> önerilir çünkü tüm formatları içerir ve açıklayıcı README dosyası bulunur.
+                            Teknik kullanım için JSON, tablo görünümü için CSV seçebilirsiniz.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-700/20 rounded-lg p-4">
+                        <h4 class="font-medium text-white mb-2">Ne kadar sürer?</h4>
+                        <p class="text-gray-300 text-sm">
+                            Veri miktarına bağlı olarak birkaç saniye ile birkaç dakika arasında değişir.
+                            İndirme işlemi hemen başlar.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-700/20 rounded-lg p-4">
+                        <h4 class="font-medium text-white mb-2">Bu işlem ücretsiz mi?</h4>
+                        <p class="text-gray-300 text-sm">
+                            Evet, KVKK ve GDPR haklarınız kapsamında bu hizmet tamamen ücretsizdir.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-700/20 rounded-lg p-4">
+                        <h4 class="font-medium text-white mb-2">Verilerim güvende mi?</h4>
+                        <p class="text-gray-300 text-sm">
+                            Evet, dışa aktarma işlemi yalnızca sizin hesabınızla ilişkili verilerinizi içerir
+                            ve güvenli bağlantı üzerinden gerçekleşir.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Legal Info -->
+            <section class="bg-gray-700/10 border border-gray-600/30 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-white mb-3">Yasal Bilgiler</h3>
+                <div class="text-sm text-gray-300 space-y-2">
+                    <p>
+                        Bu hizmet <strong>KVKK Madde 11</strong> ve <strong>GDPR Madde 20</strong> kapsamında
+                        veri taşınabilirlik hakkınızı kullanmanızı sağlar.
+                    </p>
+                    <p>
+                        Veri dışa aktarma talepleriniz sistem tarafından kaydedilir ve yasal saklama
+                        süresi boyunca korunur.
+                    </p>
+                    <p>
+                        Sorularınız için
+                        <a href="mailto:privacy@example.com" class="text-primary-400 hover:text-primary-300">
+                            privacy@example.com
+                        </a> adresinden iletişime geçebilirsiniz.
+                    </p>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

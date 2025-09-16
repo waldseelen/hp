@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gizlilik Kontrol Paneli - Portfolio{% endblock %}
+
+{% block extra_head %}
+<meta name="description" content="Kişisel verilerinizi yönetin ve gizlilik haklarınızı kullanın.">
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent mb-4">
+            Gizlilik Kontrol Paneli
+        </h1>
+        <p class="text-gray-300 text-lg">
+            Kişisel verilerinizi yönetin ve KVKK/GDPR haklarınızı kullanın.
+        </p>
+        <div class="w-24 h-1 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full mt-4"></div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Data Overview -->
+            <div class="bg-gray-800/50 backdrop-blur-md rounded-xl shadow-2xl border border-gray-700/50 p-6">
+                <h2 class="text-2xl font-semibold text-white mb-6 flex items-center">
+                    <svg class="w-6 h-6 text-primary-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Veri Özeti
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gray-700/30 rounded-lg p-4">
+                        <h3 class="font-semibold text-white mb-3">Hesap Bilgileri</h3>
+                        <div class="space-y-2 text-sm text-gray-300">
+                            <div class="flex justify-between">
+                                <span>Kullanıcı Adı:</span>
+                                <span class="text-white">{{ user.username }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>E-posta:</span>
+                                <span class="text-white">{{ user.email }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Kayıt Tarihi:</span>
+                                <span class="text-white">{{ data_summary.date_joined|date:"d.m.Y" }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Son Giriş:</span>
+                                <span class="text-white">
+                                    {% if data_summary.last_login %}
+                                        {{ data_summary.last_login|date:"d.m.Y H:i" }}
+                                    {% else %}
+                                        Henüz giriş yapılmadı
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Hesap Durumu:</span>
+                                <span class="text-green-400">{{ data_summary.account_status }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-700/30 rounded-lg p-4">
+                        <h3 class="font-semibold text-white mb-3">Veri İstatistikleri</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-300 text-sm">İletişim Mesajları</span>
+                                </div>
+                                <span class="bg-blue-600 text-white px-2 py-1 rounded-full text-xs">
+                                    {{ data_summary.contact_messages }}
+                                </span>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                    </svg>
+                                    <span class="text-gray-300 text-sm">Sohbet Mesajları</span>
+                                </div>
+                                <span class="bg-green-600 text-white px-2 py-1 rounded-full text-xs">
+                                    {{ data_summary.chat_messages }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cookie Consent Status -->
+            {% if cookie_consent %}
+            <div class="bg-gray-800/50 backdrop-blur-md rounded-xl shadow-2xl border border-gray-700/50 p-6">
+                <h2 class="text-2xl font-semibold text-white mb-6 flex items-center">
+                    <svg class="w-6 h-6 text-primary-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                    </svg>
+                    Çerez Tercihleri
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="flex items-center justify-between p-3 bg-gray-700/20 rounded-lg">
+                        <span class="text-gray-300">Gerekli Çerezler</span>
+                        <div class="flex items-center">
+                            <span class="text-green-400 text-sm mr-2">Aktif</span>
+                            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-gray-700/20 rounded-lg">
+                        <span class="text-gray-300">İşlevsel Çerezler</span>
+                        <div class="flex items-center">
+                            {% if cookie_consent.functional %}
+                                <span class="text-green-400 text-sm mr-2">Aktif</span>
+                                <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                            {% else %}
+                                <span class="text-gray-500 text-sm mr-2">Pasif</span>
+                                <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-gray-700/20 rounded-lg">
+                        <span class="text-gray-300">Analitik Çerezler</span>
+                        <div class="flex items-center">
+                            {% if cookie_consent.analytics %}
+                                <span class="text-green-400 text-sm mr-2">Aktif</span>
+                                <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                            {% else %}
+                                <span class="text-gray-500 text-sm mr-2">Pasif</span>
+                                <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-gray-700/20 rounded-lg">
+                        <span class="text-gray-300">Pazarlama Çerezleri</span>
+                        <div class="flex items-center">
+                            {% if cookie_consent.marketing %}
+                                <span class="text-green-400 text-sm mr-2">Aktif</span>
+                                <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                            {% else %}
+                                <span class="text-gray-500 text-sm mr-2">Pasif</span>
+                                <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex justify-between items-center text-sm text-gray-400">
+                    <span>
+                        Son güncelleme:
+                        {% if cookie_consent.consent_given_at %}
+                            {{ cookie_consent.consent_given_at|date:"d.m.Y H:i" }}
+                        {% else %}
+                            Henüz güncellenmedi
+                        {% endif %}
+                    </span>
+                    <button onclick="cookieConsent.showSettings()"
+                            class="text-primary-400 hover:text-primary-300 text-sm underline">
+                        Çerez Ayarlarını Düzenle
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Quick Actions -->
+            <div class="bg-gray-800/50 backdrop-blur-md rounded-xl shadow-2xl border border-gray-700/50 p-6">
+                <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+                    <svg class="w-5 h-5 text-primary-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Hızlı Eylemler
+                </h3>
+
+                <div class="space-y-3">
+                    <a href="{% url 'gdpr:data_export' %}"
+                       class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Verilerimi Dışa Aktar
+                    </a>
+
+                    <button onclick="cookieConsent.showSettings()"
+                            class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                        </svg>
+                        Çerez Ayarları
+                    </button>
+
+                    <a href="{% url 'gdpr:account_deletion' %}"
+                       class="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Hesabımı Sil
+                    </a>
+                </div>
+            </div>
+
+            <!-- Your Rights -->
+            <div class="bg-gray-800/50 backdrop-blur-md rounded-xl shadow-2xl border border-gray-700/50 p-6">
+                <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+                    <svg class="w-5 h-5 text-primary-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    Haklarınız
+                </h3>
+
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-start">
+                        <svg class="w-4 h-4 text-green-400 mr-2 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <span class="text-white font-medium">Erişim Hakkı</span>
+                            <p class="text-gray-400 text-xs">Hangi verilerinizin işlendiğini öğrenme</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <svg class="w-4 h-4 text-green-400 mr-2 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <span class="text-white font-medium">Düzeltme Hakkı</span>
+                            <p class="text-gray-400 text-xs">Yanlış verilerin düzeltilmesini isteme</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <svg class="w-4 h-4 text-green-400 mr-2 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <span class="text-white font-medium">Silme Hakkı</span>
+                            <p class="text-gray-400 text-xs">Verilerinizin silinmesini talep etme</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <svg class="w-4 h-4 text-green-400 mr-2 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <span class="text-white font-medium">Taşınabilirlik Hakkı</span>
+                            <p class="text-gray-400 text-xs">Verilerinizi farklı formatlarda alma</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support -->
+            <div class="bg-gray-800/50 backdrop-blur-md rounded-xl shadow-2xl border border-gray-700/50 p-6">
+                <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+                    <svg class="w-5 h-5 text-primary-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                    Destek
+                </h3>
+
+                <div class="space-y-3 text-sm text-gray-300">
+                    <p>Gizlilik haklarınızla ilgili sorularınız için:</p>
+
+                    <div class="space-y-2">
+                        <a href="mailto:privacy@example.com"
+                           class="flex items-center text-primary-400 hover:text-primary-300">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            privacy@example.com
+                        </a>
+
+                        <a href="{% url 'contact:form' %}"
+                           class="flex items-center text-primary-400 hover:text-primary-300">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                            </svg>
+                            İletişim Formu
+                        </a>
+
+                        <a href="{% url 'gdpr:privacy_policy' %}"
+                           class="flex items-center text-primary-400 hover:text-primary-300">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Gizlilik Politikası
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

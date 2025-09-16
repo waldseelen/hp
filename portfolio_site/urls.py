@@ -57,7 +57,16 @@ urlpatterns = [
     path('projects/', lambda request: redirect('tools:tool_list'), name='projects_redirect'),
     path('contact/', include('apps.contact.urls')),
     path('chat/', include('apps.chat.urls')),
+
+    # GDPR Compliance URLs
+    path('gdpr/', include(('apps.main.urls_gdpr', 'gdpr'))),
 ]
+
+# Custom error handlers
+handler404 = 'apps.main.error_handlers.custom_404_handler'
+handler500 = 'apps.main.error_handlers.custom_500_handler'
+handler403 = 'apps.main.error_handlers.custom_403_handler'
+handler400 = 'apps.main.error_handlers.custom_400_handler'
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

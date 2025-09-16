@@ -12,7 +12,13 @@
       "Bash(git push:*)",
       "Bash(find:*)",
       "Bash(set DJANGO_SETTINGS_MODULE=portfolio_site.settings.development)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(npm install:*)",
+      "Bash(touch:*)",
+      "Bash(npm run minify:js:*)",
+      "Bash(npm run minify:css:*)",
+      "Bash(npm run optimize:images:*)",
+      "Bash(npm run cleanup:unused:*)"
     ],
     "deny": [],
     "ask": [],

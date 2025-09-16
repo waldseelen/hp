@@ -71,7 +71,9 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'apps.main.ratelimit.RateLimitMiddleware',      # Global rate limiting
     'apps.main.middleware.SecurityHeadersMiddleware',  # Custom security headers with CSP
+    'apps.main.middleware.static_optimization_middleware.TTFBOptimizationMiddleware',  # TTFB optimization
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'apps.main.middleware.static_optimization_middleware.StaticFileOptimizationMiddleware',  # Static file optimization
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -83,6 +85,8 @@ MIDDLEWARE = [
     'apps.main.middleware.CacheControlMiddleware',  # Cache control headers
     'apps.main.middleware.CompressionMiddleware',   # Compression optimization
     'apps.main.middleware.PerformanceMiddleware',   # Performance monitoring
+    'apps.main.middleware.static_optimization_middleware.ResourceHintsMiddleware',  # Resource hints
+    'apps.main.middleware.static_optimization_middleware.StaticFileMetricsMiddleware',  # Static file metrics
 ]
 
 ROOT_URLCONF = 'portfolio_site.urls'
@@ -219,6 +223,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # WhiteNoise configuration for static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Static file optimization settings
+STATIC_COMPRESSION = True
+STATIC_WEBP_SUPPORT = True
+WHITENOISE_MAX_AGE = 31536000  # 1 year for static files
+
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -268,8 +277,20 @@ CACHES = {
 # Email configuration (for contact forms, etc.)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# Admin configuration for error reporting
+ADMINS = [
+    ('Admin', config('ADMIN_EMAIL', default='admin@localhost')),
+]
+MANAGERS = ADMINS
+
 # Custom User Model
 AUTH_USER_MODEL = 'main.Admin'
+
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'apps.main.auth_backends.SecureAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # ==========================================================================
 # SENTRY MONITORING AND ERROR TRACKING
