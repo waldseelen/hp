@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls.i18n import i18n_patterns
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from apps.main.views import home, logout_view
@@ -29,6 +30,7 @@ from apps.main.views import (
     subscribe_push_notifications, send_push_notification, log_error
 )
 
+# Language-independent URLs (API, admin, health checks)
 urlpatterns = [
     # Health check endpoints (must be first for Docker/K8s)
     path('health/', health_check_view, name='health_check'),
@@ -47,8 +49,16 @@ urlpatterns = [
     path('api/notifications/send/', send_push_notification, name='api_notifications_send'),
     path('api/errors/log/', log_error, name='api_error_log'),
 
-    # Admin and main application
+    # Admin (language-independent)
     path('admin/', admin.site.urls),
+
+    # Language selection URLs
+    path('i18n/', include('django.conf.urls.i18n')),
+]
+
+# Language-dependent URLs
+urlpatterns += i18n_patterns(
+    # Main application URLs
     path('', home, name='home'),
     path('logout/', logout_view, name='logout'),
     path('', include('apps.main.urls')),
@@ -60,7 +70,9 @@ urlpatterns = [
 
     # GDPR Compliance URLs
     path('gdpr/', include(('apps.main.urls_gdpr', 'gdpr'))),
-]
+
+    prefix_default_language=False,
+)
 
 # Custom error handlers
 handler404 = 'apps.main.error_handlers.custom_404_handler'

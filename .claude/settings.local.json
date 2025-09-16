@@ -18,7 +18,10 @@
       "Bash(npm run minify:js:*)",
       "Bash(npm run minify:css:*)",
       "Bash(npm run optimize:images:*)",
-      "Bash(npm run cleanup:unused:*)"
+      "Bash(npm run cleanup:unused:*)",
+      "Bash(timeout 10 python manage.py runserver:*)",
+      "Bash(git checkout:*)",
+      "Bash(cd:*)"
     ],
     "deny": [],
     "ask": [],

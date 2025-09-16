@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Contact - Portfolio{% endblock %}
+{% block title %}{% trans "Contact" %} - {% trans "Portfolio" %}{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
@@ -8,78 +9,85 @@
         <!-- Header -->
         <div class="text-center mb-12">
             <h1 class="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
-                İletişime Geçin
+                {% trans "Get In Touch" %}
             </h1>
             <p class="text-xl text-gray-300">
-                Buğra AKIN ile iletişim kurun
+                {% trans "Contact Buğra AKIN" %}
             </p>
         </div>
         
         <div class="grid lg:grid-cols-2 gap-12">
             <!-- Contact Form -->
             <div class="bg-gray-800/50 backdrop-blur-sm rounded-lg p-8">
-                <h2 class="text-2xl font-semibold mb-6">Send a Message</h2>
+                <h2 class="text-2xl font-semibold mb-6">{% trans "Send a Message" %}</h2>
                 
-                <form method="POST" class="space-y-6" data-validate>
+                <form method="POST" class="space-y-6" data-validate role="form" aria-label="Contact form">
                     {% csrf_token %}
                     
                     <!-- Honeypot field - hidden from users -->
-                    <input type="text" name="website" style="display:none !important;" tabindex="-1" autocomplete="off">
+                    <input type="text" name="website" style="display:none !important;" tabindex="-1" autocomplete="off" aria-hidden="true">
                     
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-300 mb-2">
-                                Name *
+                                {% trans "Name" %} *
                             </label>
-                            <input type="text" 
-                                   id="name" 
-                                   name="name" 
+                            <input type="text"
+                                   id="name"
+                                   name="name"
                                    required
-                                   class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
-                                   placeholder="Your name">
+                                   class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white placeholder-gray-400"
+                                   placeholder="{% trans 'Your name' %}"
+                                   aria-describedby="name-help"
+                                   autocomplete="name">
                         </div>
                         
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
-                                Email *
+                                {% trans "Email" %} *
                             </label>
-                            <input type="email" 
-                                   id="email" 
-                                   name="email" 
+                            <input type="email"
+                                   id="email"
+                                   name="email"
                                    required
-                                   class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
-                                   placeholder="your@email.com">
+                                   class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white placeholder-gray-400"
+                                   placeholder="your@email.com"
+                                   aria-describedby="email-help"
+                                   autocomplete="email">
                         </div>
                     </div>
                     
                     <div>
                         <label for="subject" class="block text-sm font-medium text-gray-300 mb-2">
-                            Subject *
+                            {% trans "Subject" %} *
                         </label>
-                        <input type="text" 
-                               id="subject" 
-                               name="subject" 
+                        <input type="text"
+                               id="subject"
+                               name="subject"
                                required
-                               class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
-                               placeholder="What's this about?">
+                               class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white placeholder-gray-400"
+                               placeholder="{% trans 'What\'s this about?' %}"
+                               aria-describedby="subject-help">
                     </div>
                     
                     <div>
                         <label for="message" class="block text-sm font-medium text-gray-300 mb-2">
-                            Message *
+                            {% trans "Message" %} *
                         </label>
-                        <textarea id="message" 
-                                  name="message" 
-                                  rows="6" 
+                        <textarea id="message"
+                                  name="message"
+                                  rows="6"
                                   required
-                                  class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-gray-400 resize-vertical"
-                                  placeholder="Tell me what's on your mind..."></textarea>
+                                  class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white placeholder-gray-400 resize-vertical"
+                                  placeholder="{% trans 'Tell me what\'s on your mind...' %}"
+                                  aria-describedby="message-help"></textarea>
                     </div>
                     
-                    <button type="submit" 
-                            class="w-full bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg transition-colors font-semibold"
-                            data-loading="Sending...">
-                        Send Message
+                    <button type="submit"
+                            class="w-full bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg transition-colors font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800"
+                            data-loading="Sending..."
+                            aria-describedby="submit-help">
+{% trans "Send Message" %}
                     </button>
                 </form>
             </div>
@@ -87,7 +95,7 @@
             <!-- Contact Info -->
             <div class="space-y-8">
                 <div class="bg-gray-800/50 backdrop-blur-sm rounded-lg p-8">
-                    <h2 class="text-2xl font-semibold mb-6">Contact Information</h2>
+                    <h2 class="text-2xl font-semibold mb-6">{% trans "Contact Information" %}</h2>
                     
                     <div class="space-y-6">
                         <div class="flex items-start space-x-4">
@@ -98,7 +106,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-semibold mb-1">E-posta</h3>
+                                <h3 class="font-semibold mb-1">{% trans "Email" %}</h3>
                                 <p class="text-gray-400">bugraakin01@gmail.com</p>
                             </div>
                         </div>
@@ -111,7 +119,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-semibold mb-1">Telefon</h3>
+                                <h3 class="font-semibold mb-1">{% trans "Phone" %}</h3>
                                 <p class="text-gray-400">+90 (555) 123 45 67</p>
                             </div>
                         </div>
@@ -126,7 +134,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-semibold mb-1">Konum</h3>
+                                <h3 class="font-semibold mb-1">{% trans "Location" %}</h3>
                                 <p class="text-gray-400">Ankara, Türkiye</p>
                             </div>
                         </div>
@@ -135,22 +143,22 @@
                 
                 <!-- FAQ -->
                 <div class="bg-gray-800/50 backdrop-blur-sm rounded-lg p-8">
-                    <h2 class="text-2xl font-semibold mb-6">Hızlı Sorular</h2>
+                    <h2 class="text-2xl font-semibold mb-6">{% trans "Frequently Asked Questions" %}</h2>
                     
                     <div class="space-y-4">
                         <div>
-                            <h3 class="font-semibold mb-2 text-blue-400">En iyi iletişim yolu nedir?</h3>
-                            <p class="text-gray-400 text-sm">E-posta yoluyla bu form üzerinden ulaşabilirsiniz. Mesajları günlük kontrol ediyorum.</p>
+                            <h3 class="font-semibold mb-2 text-blue-400">{% trans "What is the best way to contact you?" %}</h3>
+                            <p class="text-gray-400 text-sm">{% trans "You can reach me via email through this form. I check messages daily." %}</p>
                         </div>
                         
                         <div>
-                            <h3 class="font-semibold mb-2 text-blue-400">Freelance projeler yapıyor musunuz?</h3>
-                            <p class="text-gray-400 text-sm">Evet! Yeni fırsatları ve projeleri tartışmaktan her zaman memnuniyet duyarım.</p>
+                            <h3 class="font-semibold mb-2 text-blue-400">{% trans "Do you do freelance projects?" %}</h3>
+                            <p class="text-gray-400 text-sm">{% trans "Yes! I'm always happy to discuss new opportunities and projects." %}</p>
                         </div>
                         
                         <div>
-                            <h3 class="font-semibold mb-2 text-blue-400">Hangi konularda uzmanım?</h3>
-                            <p class="text-gray-400 text-sm">Elektrik-Elektronik Mühendisliği, Embedded Systems, Linux, AI, Cloud ve Cybersecurity alanlarında.</p>
+                            <h3 class="font-semibold mb-2 text-blue-400">{% trans "What are my areas of expertise?" %}</h3>
+                            <p class="text-gray-400 text-sm">{% trans "Electrical Engineering, Embedded Systems, Linux, AI, Cloud and Cybersecurity." %}</p>
                         </div>
                     </div>
                 </div>

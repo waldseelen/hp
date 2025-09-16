@@ -1,0 +1,93 @@
+# English translations for Portfolio site.
+# Copyright (C) 2025
+# This file is distributed under the same license as the Portfolio package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Portfolio 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-15 16:00+0000\n"
+"PO-Revision-Date: 2025-01-15 16:00+0000\n"
+"Last-Translator: Portfolio Team\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Navigation and basic interface
+msgid "Home"
+msgstr "Home"
+
+msgid "About"
+msgstr "About"
+
+msgid "Projects"
+msgstr "Projects"
+
+msgid "Blog"
+msgstr "Blog"
+
+msgid "AI Tools"
+msgstr "AI Tools"
+
+msgid "Cybersecurity"
+msgstr "Cybersecurity"
+
+msgid "Music"
+msgstr "Music"
+
+msgid "Useful"
+msgstr "Useful"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Portfolio"
+msgstr "Portfolio"
+
+msgid "Contact Form"
+msgstr "Contact Form"
+
+msgid "Live Chat"
+msgstr "Live Chat"
+
+msgid "Chat"
+msgstr "Chat"
+
+msgid "Management"
+msgstr "Management"
+
+msgid "Admin Panel"
+msgstr "Admin Panel"
+
+msgid "Logout"
+msgstr "Logout"
+
+# Content sections
+msgid "Content"
+msgstr "Content"
+
+msgid "Quick Links"
+msgstr "Quick Links"
+
+msgid "Connect"
+msgstr "Connect"
+
+msgid "No social links available"
+msgstr "No social links available"
+
+# Meta descriptions and content
+msgid "Full Stack Developer & Cybersecurity Enthusiast Portfolio"
+msgstr "Full Stack Developer & Cybersecurity Enthusiast Portfolio"
+
+msgid "Full Stack Developer & Cybersecurity Enthusiast passionate about creating innovative solutions."
+msgstr "Full Stack Developer & Cybersecurity Enthusiast passionate about creating innovative solutions."
+
+# Language names
+msgid "Turkish"
+msgstr "Turkish"
+
+msgid "English"
+msgstr "English"

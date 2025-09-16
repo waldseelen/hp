@@ -494,3 +494,175 @@ msgstr "Taslak"
 
 msgid "Published"
 msgstr "Yayınlandı"
+
+# New translations from templates
+msgid "Welcome to My Portfolio"
+msgstr "Portfolyoma Hoş Geldiniz"
+
+msgid "Full Stack Developer & Cybersecurity Enthusiast"
+msgstr "Full Stack Developer ve Siber Güvenlik Uzmanı"
+
+msgid "What I Do"
+msgstr "Ne Yapıyorum"
+
+msgid "Full Stack Development"
+msgstr "Full Stack Geliştirme"
+
+msgid "Creating modern web applications with cutting-edge technologies and best practices."
+msgstr "Modern teknolojiler ve en iyi uygulamalarla güncel web uygulamaları geliştiriyorum."
+
+msgid "AI Integration"
+msgstr "AI Entegrasyonu"
+
+msgid "Leveraging artificial intelligence to create smarter, more efficient solutions."
+msgstr "Daha akıllı ve verimli çözümler oluşturmak için yapay zekayı kullanıyorum."
+
+msgid "Securing digital assets and implementing robust security measures for applications."
+msgstr "Dijital varlıkları koruyorum ve uygulamalar için güçlü güvenlik önlemleri uyguluyorum."
+
+msgid "Recent Blog Posts"
+msgstr "Son Blog Yazıları"
+
+msgid "Read More"
+msgstr "Devamını Oku"
+
+msgid "View All Posts"
+msgstr "Tüm Yazıları Görüntüle"
+
+msgid "AI Tools I Use"
+msgstr "Kullandığım AI Araçları"
+
+msgid "Explore the AI-powered tools that help me stay productive and create innovative solutions."
+msgstr "Üretken kalmama ve yenilikçi çözümler üretmeme yardımcı olan AI destekli araçları keşfedin."
+
+msgid "Try it"
+msgstr "Deneyin"
+
+msgid "View All Tools"
+msgstr "Tüm Araçları Görüntüle"
+
+msgid "Featured AI Tools"
+msgstr "Öne Çıkan AI Araçları"
+
+msgid "Free"
+msgstr "Ücretsiz"
+
+msgid "Premium"
+msgstr "Premium"
+
+msgid "View All AI Tools"
+msgstr "Tüm AI Araçlarını Görüntüle"
+
+msgid "Security Alerts"
+msgstr "Güvenlik Uyarıları"
+
+msgid "Critical"
+msgstr "Kritik"
+
+msgid "High"
+msgstr "Yüksek"
+
+msgid "Medium"
+msgstr "Orta"
+
+msgid "Low"
+msgstr "Düşük"
+
+msgid "Learn More"
+msgstr "Daha Fazla Öğren"
+
+msgid "View All Security Resources"
+msgstr "Tüm Güvenlik Kaynaklarını Görüntüle"
+
+msgid "Skip to navigation"
+msgstr "Navigasyona geç"
+
+msgid "Content"
+msgstr "İçerik"
+
+msgid "Administration"
+msgstr "Yönetim"
+
+msgid "Admin Panel"
+msgstr "Yönetim Paneli"
+
+msgid "Logout"
+msgstr "Çıkış Yap"
+
+msgid "Quick Links"
+msgstr "Hızlı Bağlantılar"
+
+msgid "Connect"
+msgstr "Bağlanın"
+
+msgid "No social links available"
+msgstr "Sosyal bağlantı bulunmuyor"
+
+msgid "Built with Django & Tailwind CSS."
+msgstr "Django ve Tailwind CSS ile geliştirildi."
+
+msgid "Get In Touch"
+msgstr "İletişime Geçin"
+
+msgid "Contact Buğra AKIN"
+msgstr "Buğra AKIN ile İletişim Kurun"
+
+msgid "Send a Message"
+msgstr "Mesaj Gönderin"
+
+msgid "Your name"
+msgstr "Adınız"
+
+msgid "What's this about?"
+msgstr "Bu ne hakkında?"
+
+msgid "Tell me what's on your mind..."
+msgstr "Aklınızdan geçenleri söyleyin..."
+
+msgid "Send Message"
+msgstr "Mesaj Gönder"
+
+msgid "Contact Information"
+msgstr "İletişim Bilgileri"
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "Frequently Asked Questions"
+msgstr "Sık Sorulan Sorular"
+
+msgid "What is the best way to contact you?"
+msgstr "Sizinle iletişime geçmenin en iyi yolu nedir?"
+
+msgid "You can reach me via email through this form. I check messages daily."
+msgstr "Bu form üzerinden e-posta ile bana ulaşabilirsiniz. Mesajları günlük kontrol ediyorum."
+
+msgid "Do you do freelance projects?"
+msgstr "Freelance projeler yapıyor musunuz?"
+
+msgid "Yes! I'm always happy to discuss new opportunities and projects."
+msgstr "Evet! Yeni fırsatları ve projeleri tartışmaktan her zaman memnuniyet duyarım."
+
+msgid "What are my areas of expertise?"
+msgstr "Hangi konularda uzmanım?"
+
+msgid "Electrical Engineering, Embedded Systems, Linux, AI, Cloud and Cybersecurity."
+msgstr "Elektrik Mühendisliği, Gömülü Sistemler, Linux, AI, Cloud ve Siber Güvenlik."
+
+msgid "Thoughts, tutorials, and insights"
+msgstr "Düşünceler, eğitimler ve görüşler"
+
+msgid "Search posts..."
+msgstr "Yazılarda ara..."
+
+msgid "Django, Python, Web Development, Cybersecurity"
+msgstr "Django, Python, Web Geliştirme, Siber Güvenlik"
+
+msgid "Contact Form"
+msgstr "İletişim Formu"
+
+msgid "Live Chat"
+msgstr "Canlı Sohbet"
+
+msgid "Chat"
+msgstr "Sohbet"

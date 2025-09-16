@@ -1,0 +1,93 @@
+# Turkish translations for Portfolio site.
+# Copyright (C) 2025
+# This file is distributed under the same license as the Portfolio package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Portfolio 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-15 16:00+0000\n"
+"PO-Revision-Date: 2025-01-15 16:00+0000\n"
+"Last-Translator: Portfolio Team\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+# Navigation and basic interface
+msgid "Home"
+msgstr "Ana Sayfa"
+
+msgid "About"
+msgstr "Hakkımda"
+
+msgid "Projects"
+msgstr "Projeler"
+
+msgid "Blog"
+msgstr "Blog"
+
+msgid "AI Tools"
+msgstr "AI Araçları"
+
+msgid "Cybersecurity"
+msgstr "Siber Güvenlik"
+
+msgid "Music"
+msgstr "Müzik"
+
+msgid "Useful"
+msgstr "Yararlı"
+
+msgid "Contact"
+msgstr "İletişim"
+
+msgid "Portfolio"
+msgstr "Portfolyo"
+
+msgid "Contact Form"
+msgstr "İletişim Formu"
+
+msgid "Live Chat"
+msgstr "Canlı Sohbet"
+
+msgid "Chat"
+msgstr "Sohbet"
+
+msgid "Management"
+msgstr "Yönetim"
+
+msgid "Admin Panel"
+msgstr "Yönetim Paneli"
+
+msgid "Logout"
+msgstr "Çıkış Yap"
+
+# Content sections
+msgid "Content"
+msgstr "İçerik"
+
+msgid "Quick Links"
+msgstr "Hızlı Bağlantılar"
+
+msgid "Connect"
+msgstr "Bağlantılar"
+
+msgid "No social links available"
+msgstr "Sosyal medya bağlantısı bulunmuyor"
+
+# Meta descriptions and content
+msgid "Full Stack Developer & Cybersecurity Enthusiast Portfolio"
+msgstr "Full Stack Geliştirici ve Siber Güvenlik Uzmanı Portfolyosu"
+
+msgid "Full Stack Developer & Cybersecurity Enthusiast passionate about creating innovative solutions."
+msgstr "Yenilikçi çözümler yaratma konusunda tutkulu Full Stack Geliştirici ve Siber Güvenlik Uzmanı."
+
+# Language names
+msgid "Turkish"
+msgstr "Türkçe"
+
+msgid "English"
+msgstr "İngilizce"
