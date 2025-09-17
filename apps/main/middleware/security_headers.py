@@ -76,7 +76,13 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
 
         # Add additional security headers
         response['X-Permitted-Cross-Domain-Policies'] = 'none'
-        response['Cross-Origin-Embedder-Policy'] = 'require-corp'
+
+        # Use less restrictive COEP in development to allow CDN resources
+        from django.conf import settings
+        if getattr(settings, 'DEBUG', False):
+            response['Cross-Origin-Embedder-Policy'] = 'credentialless'
+        else:
+            response['Cross-Origin-Embedder-Policy'] = 'require-corp'
         response['Cross-Origin-Opener-Policy'] = 'same-origin'
         response['Cross-Origin-Resource-Policy'] = 'same-origin'
 

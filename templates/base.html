@@ -52,8 +52,8 @@
     {% endif %}
 
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?v=3.4.0"></script>
-    <script>
+    <script src="https://cdn.tailwindcss.com?v=3.4.0" crossorigin="anonymous"></script>
+    <script nonce="{{ csp_nonce }}">
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -101,7 +101,7 @@
     </script>
     
     <!-- Alpine.js -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" crossorigin="anonymous"></script>
 
     <!-- Tailwind CSS Output -->
     {% load static %}
