@@ -171,8 +171,8 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
         # Preload hints for critical resources
         if request.path == '/':
             preload_links = [
-                '</static/css/custom.css>; rel=preload; as=style',
-                '</static/js/main.js>; rel=preload; as=script',
+                '</static/css/custom.min.css>; rel=preload; as=style',
+                '</static/js/main.min.js>; rel=preload; as=script',
             ]
             if preload_links:
                 response['Link'] = ', '.join(preload_links)

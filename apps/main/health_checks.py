@@ -414,7 +414,7 @@ class HealthCheckSystem:
             # Check static files
             try:
                 from django.contrib.staticfiles.storage import staticfiles_storage
-                test_file = 'css/custom.css'
+                test_file = 'css/custom.min.css'
                 if staticfiles_storage.exists(test_file):
                     static_files_ok = True
                 else:
