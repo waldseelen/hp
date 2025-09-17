@@ -228,6 +228,19 @@ STATIC_COMPRESSION = True
 STATIC_WEBP_SUPPORT = True
 WHITENOISE_MAX_AGE = 31536000  # 1 year for static files
 
+# CDN Configuration
+CDN_ENABLED = config('CDN_ENABLED', default=False, cast=bool)
+CDN_DOMAIN = config('CDN_DOMAIN', default='')
+
+# If CDN is enabled, use CDN domain for static files
+if CDN_ENABLED and CDN_DOMAIN:
+    STATIC_URL = f'https://{CDN_DOMAIN}/static/'
+
+# Image optimization settings
+IMAGE_LAZY_LOADING = True
+IMAGE_WEBP_CONVERSION = True
+IMAGE_QUALITY_COMPRESSION = 85
+
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

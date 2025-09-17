@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load math_extras %}
 {% load i18n %}
+{% load schema_tags %}
 
 {% block title %}{% trans "Home" %} - {% trans "Portfolio" %}{% endblock %}
 
@@ -417,4 +418,31 @@
     </section>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_head %}
+<!-- JSON-LD Structured Data for Homepage -->
+{% website_schema %}
+{% person_schema request %}
+
+<!-- Open Graph Meta Tags -->
+<meta property="og:title" content="Portfolio - Full Stack Developer & Cybersecurity Enthusiast">
+<meta property="og:description" content="Welcome to my portfolio showcasing full stack web development, cybersecurity projects, AI tools, and technical expertise.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:image" content="{{ request.build_absolute_uri }}{% load static %}{% static 'images/og-home.png' %}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Portfolio - Full Stack Developer & Cybersecurity Enthusiast">
+<meta name="twitter:description" content="Welcome to my portfolio showcasing full stack web development, cybersecurity projects, AI tools, and technical expertise.">
+<meta name="twitter:image" content="{{ request.build_absolute_uri }}{% load static %}{% static 'images/og-home.png' %}">
+
+<!-- Additional SEO Meta Tags -->
+<meta name="description" content="Full Stack Developer & Cybersecurity Enthusiast portfolio featuring Django projects, Python development, web security, AI tools, and professional expertise.">
+<meta name="keywords" content="full stack developer, cybersecurity, Django, Python, web development, portfolio, AI tools, programming, security">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
 {% endblock %}

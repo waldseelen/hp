@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load schema_tags %}
 
 {% block title %}{{ post.title }} - Blog{% endblock %}
 
@@ -168,6 +169,55 @@
 {% endblock %}
 
 {% block extra_head %}
+<!-- JSON-LD Structured Data for Blog Post -->
+{% blog_post_schema request post %}
+
+<!-- Open Graph Meta Tags -->
+<meta property="og:title" content="{{ post.title }}">
+<meta property="og:description" content="{{ post.meta_description|default:post.excerpt|truncatewords:30 }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+{% if post.featured_image %}
+<meta property="og:image" content="{{ request.build_absolute_uri }}{{ post.featured_image.url }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+{% elif post.featured_image_url %}
+<meta property="og:image" content="{{ post.featured_image_url }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+{% else %}
+<meta property="og:image" content="{{ request.build_absolute_uri }}{% load static %}{% static 'images/og-blog-default.png' %}">
+{% endif %}
+<meta property="og:site_name" content="Portfolio - Full Stack Developer">
+<meta property="article:author" content="{{ post.author.name }}">
+<meta property="article:published_time" content="{{ post.published_at|date:'c' }}">
+<meta property="article:modified_time" content="{{ post.updated_at|date:'c' }}">
+{% if post.tags %}
+{% for tag in post.tags %}
+<meta property="article:tag" content="{{ tag }}">
+{% endfor %}
+{% endif %}
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ post.title }}">
+<meta name="twitter:description" content="{{ post.meta_description|default:post.excerpt|truncatewords:30 }}">
+{% if post.featured_image %}
+<meta name="twitter:image" content="{{ request.build_absolute_uri }}{{ post.featured_image.url }}">
+{% elif post.featured_image_url %}
+<meta name="twitter:image" content="{{ post.featured_image_url }}">
+{% else %}
+<meta name="twitter:image" content="{{ request.build_absolute_uri }}{% load static %}{% static 'images/og-blog-default.png' %}">
+{% endif %}
+<meta name="twitter:site" content="@portfolio_dev">
+<meta name="twitter:creator" content="@portfolio_dev">
+
+<!-- Additional SEO Meta Tags -->
+<meta name="description" content="{{ post.meta_description|default:post.excerpt|truncatewords:30 }}">
+<meta name="keywords" content="{% if post.tags %}{% for tag in post.tags %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}">
+<meta name="author" content="{{ post.author.name }}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
 <style>
     .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
         color: #e5e7eb;

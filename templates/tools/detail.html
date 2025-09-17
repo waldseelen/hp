@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load schema_tags %}
 
 {% block title %}{{ tool.title }} - Tools{% endblock %}
 
@@ -209,4 +210,40 @@ function copyToClipboard(text) {
     });
 }
 </script>
+{% endblock %}
+
+{% block extra_head %}
+<!-- JSON-LD Structured Data for Tool/Project -->
+{% project_schema request tool %}
+
+<!-- Open Graph Meta Tags -->
+<meta property="og:title" content="{{ tool.title }} - Professional Tools">
+<meta property="og:description" content="{{ tool.description|truncatewords:30 }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+{% if tool.icon_url %}
+<meta property="og:image" content="{{ tool.icon_url }}">
+{% else %}
+<meta property="og:image" content="{{ request.build_absolute_uri }}{% load static %}{% static 'images/og-tools-default.png' %}">
+{% endif %}
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="Portfolio - Full Stack Developer">
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ tool.title }} - Professional Tools">
+<meta name="twitter:description" content="{{ tool.description|truncatewords:30 }}">
+{% if tool.icon_url %}
+<meta name="twitter:image" content="{{ tool.icon_url }}">
+{% else %}
+<meta name="twitter:image" content="{{ request.build_absolute_uri }}{% load static %}{% static 'images/og-tools-default.png' %}">
+{% endif %}
+<meta name="twitter:site" content="@portfolio_dev">
+
+<!-- Additional SEO Meta Tags -->
+<meta name="description" content="{{ tool.description|truncatewords:30 }}">
+<meta name="keywords" content="{% if tool.tags %}{% for tag in tool.tags %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}, {% endif %}{{ tool.category }}, tools, software, productivity">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
 {% endblock %}

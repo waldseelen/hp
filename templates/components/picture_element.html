@@ -1,0 +1,30 @@
+<picture{% if css_class %} class="{{ css_class }}"{% endif %}>
+    {% if avif_src %}
+    <source
+        {% if lazy %}data-srcset="{{ avif_src }}"{% else %}srcset="{{ avif_src }}"{% endif %}
+        type="image/avif"
+    >
+    {% endif %}
+
+    {% if webp_src %}
+    <source
+        {% if lazy %}data-srcset="{{ webp_src }}"{% else %}srcset="{{ webp_src }}"{% endif %}
+        type="image/webp"
+    >
+    {% endif %}
+
+    <img
+        {% if lazy %}
+        class="lazy-load{% if css_class %} {{ css_class }}{% endif %}"
+        data-src="{{ src }}"
+        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
+        loading="lazy"
+        {% else %}
+        src="{{ src }}"
+        {% if css_class %}class="{{ css_class }}"{% endif %}
+        {% endif %}
+        alt="{{ alt }}"
+        {% if width %}width="{{ width }}"{% endif %}
+        {% if height %}height="{{ height }}"{% endif %}
+    >
+</picture>

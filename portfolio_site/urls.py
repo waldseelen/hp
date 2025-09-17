@@ -21,6 +21,9 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
+from django.views.static import serve
+from django.http import FileResponse
+import os
 from apps.main.views import home, logout_view
 from apps.core.health import health_check_view, readiness_check_view, liveness_check_view
 
@@ -28,6 +31,10 @@ from apps.core.health import health_check_view, readiness_check_view, liveness_c
 from apps.main.views import (
     collect_performance_metric, performance_dashboard_data, health_check,
     subscribe_push_notifications, send_push_notification, log_error
+)
+from apps.main.views.search_api import (
+    SearchAutocompleteView, SearchAPIView, SearchFiltersView,
+    SearchAnalyticsView, popular_searches_api
 )
 
 # Language-independent URLs (API, admin, health checks)
@@ -49,11 +56,21 @@ urlpatterns = [
     path('api/notifications/send/', send_push_notification, name='api_notifications_send'),
     path('api/errors/log/', log_error, name='api_error_log'),
 
+    # Search API endpoints
+    path('api/search/autocomplete/', SearchAutocompleteView.as_view(), name='api_search_autocomplete'),
+    path('api/search/', SearchAPIView.as_view(), name='api_search'),
+    path('api/search/filters/', SearchFiltersView.as_view(), name='api_search_filters'),
+    path('api/search/analytics/', SearchAnalyticsView.as_view(), name='api_search_analytics'),
+    path('api/search/popular/', popular_searches_api, name='api_popular_searches'),
+
     # Admin (language-independent)
     path('admin/', admin.site.urls),
 
     # Language selection URLs
     path('i18n/', include('django.conf.urls.i18n')),
+
+    # SEO Files (robots.txt, sitemap.xml)
+    path('robots.txt', lambda request: FileResponse(open(os.path.join(settings.BASE_DIR, 'static', 'robots.txt'), 'rb'), content_type='text/plain')),
 ]
 
 # Language-dependent URLs
