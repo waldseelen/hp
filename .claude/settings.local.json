@@ -26,7 +26,8 @@
       "Bash(npm run build:css:*)",
       "Bash(npx tailwindcss:*)",
       "Bash(start http://localhost:8000)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": [],
