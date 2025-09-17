@@ -32,6 +32,10 @@ from apps.main.views import (
     collect_performance_metric, performance_dashboard_data, health_check,
     subscribe_push_notifications, send_push_notification, log_error
 )
+from apps.main.views.logging_dashboard import (
+    logging_dashboard_view, log_data_api, log_alerts_api,
+    acknowledge_alert_api, log_export_view
+)
 from apps.main.views.search_api import (
     SearchAutocompleteView, SearchAPIView, SearchFiltersView,
     SearchAnalyticsView, popular_searches_api
@@ -63,6 +67,12 @@ urlpatterns = [
     path('api/search/analytics/', SearchAnalyticsView.as_view(), name='api_search_analytics'),
     path('api/search/popular/', popular_searches_api, name='api_popular_searches'),
 
+    # Log monitoring API endpoints
+    path('api/logs/data/', log_data_api, name='api_log_data'),
+    path('api/logs/alerts/', log_alerts_api, name='api_log_alerts'),
+    path('api/logs/acknowledge/', acknowledge_alert_api, name='api_acknowledge_alert'),
+    path('api/logs/export/', log_export_view, name='api_log_export'),
+
     # Admin (language-independent)
     path('admin/', admin.site.urls),
 
@@ -84,6 +94,9 @@ urlpatterns += i18n_patterns(
     path('projects/', lambda request: redirect('tools:tool_list'), name='projects_redirect'),
     path('contact/', include('apps.contact.urls')),
     path('chat/', include('apps.chat.urls')),
+
+    # Log monitoring dashboard
+    path('logs/', logging_dashboard_view, name='logging_dashboard'),
 
     # GDPR Compliance URLs
     path('gdpr/', include(('apps.main.urls_gdpr', 'gdpr'))),

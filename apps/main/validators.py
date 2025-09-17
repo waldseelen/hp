@@ -385,7 +385,7 @@ API_SCHEMAS = {
             'required': True,
             'type': str,
             'max_length': 50,
-            'pattern': r'^(lcp|fid|cls|fcp|ttfb|inp|navigation|resource|memory|custom)$'
+            'pattern': r'^(lcp|fid|cls|fcp|ttfb|inp|navigation|resource|memory|custom|core_web_vitals|page_load|response_time)$'
         },
         'value': {
             'required': True,

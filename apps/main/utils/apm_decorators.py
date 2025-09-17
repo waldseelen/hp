@@ -71,8 +71,8 @@ def trace_function(operation_name: str = None, description: str = None, tags: Di
                     logger.debug(
                         f"Function {func.__name__} executed in {execution_time:.3f}s",
                         extra={
-                            'function': func.__name__,
-                            'module': func.__module__,
+                            'function_name': func.__name__,
+                            'function_module': func.__module__,
                             'execution_time': execution_time,
                         }
                     )
@@ -94,10 +94,10 @@ def trace_function(operation_name: str = None, description: str = None, tags: Di
                     logger.error(
                         f"Function {func.__name__} failed after {execution_time:.3f}s: {e}",
                         extra={
-                            'function': func.__name__,
-                            'module': func.__module__,
+                            'function_name': func.__name__,
+                            'function_module': func.__module__,
                             'execution_time': execution_time,
-                            'error': str(e),
+                            'error_message': str(e),
                         }
                     )
 
@@ -153,7 +153,7 @@ def trace_database_operation(operation_type: str = "database"):
                             logger.warning(
                                 f"Database operation {func.__name__} exceeded budget: {query_time:.3f}s > {db_threshold}s",
                                 extra={
-                                    'function': func.__name__,
+                                    'function_name': func.__name__,
                                     'operation_type': operation_type,
                                     'query_time': query_time,
                                     'query_count': query_count,
@@ -218,7 +218,7 @@ def trace_cache_operation(operation_type: str = "cache"):
                             logger.warning(
                                 f"Cache operation {func.__name__} exceeded budget: {execution_time:.3f}s > {cache_threshold}s",
                                 extra={
-                                    'function': func.__name__,
+                                    'function_name': func.__name__,
                                     'operation_type': operation_type,
                                     'execution_time': execution_time,
                                     'threshold': cache_threshold,
