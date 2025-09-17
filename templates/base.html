@@ -103,8 +103,11 @@
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Custom CSS -->
+    <!-- Tailwind CSS Output -->
     {% load static %}
+    <link rel="stylesheet" href="{% static 'css/output.css' %}?v={% now 'U' %}">
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/custom.min.css' %}?v={% now 'U' %}">
 
     <!-- Image Optimization System -->
@@ -179,7 +182,7 @@
         {% trans "Skip to navigation" %}
     </a>
 
-    <div class="starfield"></div>
+    <div class="starfield fixed inset-0 opacity-10 -z-10"></div>
     
     <!-- Navigation -->
     <nav id="navigation" class="relative z-10 bg-white/90 dark:glass-nav backdrop-blur-md border-b border-secondary-200/50 dark:border-secondary-700/50"
