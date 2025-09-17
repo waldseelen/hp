@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Premium Dark Theme Demo{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <!-- Hero Section -->
+    <section class="text-center mb-16">
+        <h1 class="heading-premium text-5xl md:text-7xl mb-6">
+            Premium Dark Experience
+        </h1>
+        <p class="text-premium text-xl md:text-2xl max-w-3xl mx-auto mb-8">
+            Experience the enhanced <span class="text-premium-accent">gold-accented</span> dark theme with
+            glass morphism effects, neon glows, and animated starfield background.
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center">
+            <button class="btn-premium">
+                Premium Button
+            </button>
+            <button class="btn-premium">
+                Another Action
+            </button>
+        </div>
+    </section>
+
+    <!-- Demo Cards Grid -->
+    <section class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <!-- Glass Card 1 -->
+        <div class="glass-card p-6">
+            <h3 class="neon-gold text-2xl font-bold mb-4">Glass Morphism</h3>
+            <p class="text-premium mb-4">
+                Beautiful glass morphism effects with backdrop blur and gold accent borders.
+            </p>
+            <div class="flex items-center space-x-2">
+                <div class="loading-premium w-6 h-6"></div>
+                <span class="text-premium-accent">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Glass Card 2 -->
+        <div class="glass-card p-6">
+            <h3 class="neon-blue text-2xl font-bold mb-4">Neon Effects</h3>
+            <p class="text-premium mb-4">
+                Animated neon glow effects for text and UI elements with smooth pulsing animations.
+            </p>
+            <div class="space-y-2">
+                <div class="w-full bg-secondary-700 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-primary-400 to-primary-600 h-2 rounded-full" style="width: 75%"></div>
+                </div>
+                <span class="text-premium-accent text-sm">75% Complete</span>
+            </div>
+        </div>
+
+        <!-- Glass Card 3 -->
+        <div class="glass-card p-6">
+            <h3 class="heading-premium text-2xl font-bold mb-4">Premium Typography</h3>
+            <p class="text-premium mb-4">
+                Enhanced typography with gradient text effects and improved readability for dark theme.
+            </p>
+            <div class="flex space-x-2">
+                <span class="badge badge-primary">Primary</span>
+                <span class="badge badge-success">Success</span>
+                <span class="badge badge-warning">Warning</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Form Demo -->
+    <section class="max-w-2xl mx-auto mb-16">
+        <div class="glass-card p-8">
+            <h2 class="neon-gold text-3xl font-bold mb-6 text-center">Premium Forms</h2>
+            <form class="space-y-6">
+                <div>
+                    <label class="block text-premium-accent font-medium mb-2">Email Address</label>
+                    <input type="email" class="form-premium w-full" placeholder="Enter your email">
+                </div>
+                <div>
+                    <label class="block text-premium-accent font-medium mb-2">Message</label>
+                    <textarea class="form-premium w-full h-32" placeholder="Your message here..."></textarea>
+                </div>
+                <div class="flex space-x-4">
+                    <button type="submit" class="btn-premium flex-1">
+                        Send Message
+                    </button>
+                    <button type="reset" class="btn-premium flex-1">
+                        Reset Form
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Feature Showcase -->
+    <section class="mb-16">
+        <h2 class="heading-premium text-4xl font-bold text-center mb-12">
+            Premium Features
+        </h2>
+        <div class="grid md:grid-cols-4 gap-6">
+            <div class="text-center">
+                <div class="glass-card p-6 mb-4">
+                    <div class="neon-gold text-4xl mb-4">⭐</div>
+                    <h3 class="text-premium-accent font-bold">Enhanced Starfield</h3>
+                </div>
+                <p class="text-premium text-sm">Mixed gold and white stars with smooth animations</p>
+            </div>
+            <div class="text-center">
+                <div class="glass-card p-6 mb-4">
+                    <div class="neon-blue text-4xl mb-4">💎</div>
+                    <h3 class="text-premium-accent font-bold">Glass Morphism</h3>
+                </div>
+                <p class="text-premium text-sm">Backdrop blur effects with gold accent borders</p>
+            </div>
+            <div class="text-center">
+                <div class="glass-card p-6 mb-4">
+                    <div class="neon-gold text-4xl mb-4">🎨</div>
+                    <h3 class="text-premium-accent font-bold">Gold Accents</h3>
+                </div>
+                <p class="text-premium text-sm">Premium gold color scheme throughout</p>
+            </div>
+            <div class="text-center">
+                <div class="glass-card p-6 mb-4">
+                    <div class="neon-blue text-4xl mb-4">🚀</div>
+                    <h3 class="text-premium-accent font-bold">Smooth Animations</h3>
+                </div>
+                <p class="text-premium text-sm">60fps animations with hardware acceleration</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation Demo -->
+    <section class="mb-16">
+        <div class="glass-card p-8">
+            <h2 class="neon-gold text-3xl font-bold mb-6 text-center">Premium Navigation</h2>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#" class="nav-link-premium">Home</a>
+                <a href="#" class="nav-link-premium">About</a>
+                <a href="#" class="nav-link-premium">Services</a>
+                <a href="#" class="nav-link-premium neon-blue">AI Tools</a>
+                <a href="#" class="nav-link-premium text-cyber-300">Security</a>
+                <a href="#" class="nav-link-premium text-music-300">Music</a>
+                <a href="#" class="nav-link-premium">Contact</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Color Palette Demo -->
+    <section class="mb-16">
+        <h2 class="heading-premium text-4xl font-bold text-center mb-12">
+            Semantic Color Palette
+        </h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="glass-card p-6">
+                <h3 class="neon-gold text-xl font-bold mb-4">Primary Colors</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-primary-400 rounded border border-primary-500"></div>
+                        <span class="text-premium">Primary 400</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-primary-500 rounded border border-primary-600"></div>
+                        <span class="text-premium">Primary 500</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-primary-600 rounded border border-primary-700"></div>
+                        <span class="text-premium">Primary 600</span>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card p-6">
+                <h3 class="neon-blue text-xl font-bold mb-4">Theme Colors</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-tech-400 rounded border border-tech-500"></div>
+                        <span class="text-premium">Tech Blue</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-cyber-400 rounded border border-cyber-500"></div>
+                        <span class="text-premium">Cyber Red</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-music-400 rounded border border-music-500"></div>
+                        <span class="text-premium">Music Purple</span>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card p-6">
+                <h3 class="text-premium-accent text-xl font-bold mb-4">Status Colors</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-success-400 rounded border border-success-500"></div>
+                        <span class="text-premium">Success</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-warning-400 rounded border border-warning-500"></div>
+                        <span class="text-premium">Warning</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-error-400 rounded border border-error-500"></div>
+                        <span class="text-premium">Error</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+/* Additional premium effects for demo */
+.badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-primary {
+    @apply bg-primary-100 text-primary-800 dark:bg-primary-900/20 dark:text-primary-200;
+}
+
+.badge-success {
+    @apply bg-success-100 text-success-800 dark:bg-success-900/20 dark:text-success-200;
+}
+
+.badge-warning {
+    @apply bg-warning-100 text-warning-800 dark:bg-warning-900/20 dark:text-warning-200;
+}
+</style>
+{% endblock %}
