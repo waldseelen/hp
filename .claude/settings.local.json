@@ -21,7 +21,10 @@
       "Bash(npm run cleanup:unused:*)",
       "Bash(timeout 10 python manage.py runserver:*)",
       "Bash(git checkout:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(echo $DJANGO_SETTINGS_MODULE)",
+      "Bash(npm run build:css:*)",
+      "Bash(npx tailwindcss:*)"
     ],
     "deny": [],
     "ask": [],
