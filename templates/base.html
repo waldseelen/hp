@@ -51,57 +51,12 @@
     <link rel="preconnect" href="https://{{ CDN_DOMAIN }}" crossorigin>
     {% endif %}
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?v=3.4.0" crossorigin="anonymous"></script>
-    <script nonce="{{ csp_nonce }}">
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#fefdf8',
-                            100: '#fdf9ed',
-                            200: '#f9f1d4',
-                            300: '#f4e6a4',
-                            400: '#f0e68c',
-                            500: '#c8b560',
-                            600: '#a89550',
-                            700: '#8b7355',
-                            800: '#6b705c',
-                            900: '#4a4e3a'
-                        },
-                        secondary: {
-                            800: '#1f2937',
-                            900: '#111827'
-                        }
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-in-out',
-                        'slide-up': 'slideUp 0.3s ease-out',
-                        'starfield': 'starfield 20s linear infinite',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        slideUp: {
-                            '0%': { transform: 'translateY(10px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
-                        },
-                        starfield: {
-                            '0%': { transform: 'translateY(0px)' },
-                            '100%': { transform: 'translateY(-100px)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Tailwind CSS - Using local compiled version instead of CDN to avoid CORS issues -->
     
-    <!-- Alpine.js -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" crossorigin="anonymous"></script>
+    <!-- Alpine.js - Load from CDN with proper integrity -->
+    <script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"
+            integrity="sha384-+GnWA6VfNm3NWfC5v8jDYL+RGkJ4LYGl2MFFwGnT7YmAgD4A4DcXYFQMqFjU9j3l"
+            crossorigin="anonymous"></script>
 
     <!-- Tailwind CSS Output -->
     {% load static %}

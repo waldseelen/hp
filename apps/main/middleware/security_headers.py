@@ -36,8 +36,8 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
             "default-src 'self'",
             # Script sources - only allow specific CDNs and self with nonce
             f"script-src 'self' 'nonce-{nonce}' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://cdn.tailwindcss.com",
-            # Style sources - only allow specific style sources with nonce
-            f"style-src 'self' 'nonce-{nonce}' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
+            # Style sources - only allow specific style sources with nonce and Alpine.js inline styles
+            f"style-src 'self' 'nonce-{nonce}' 'unsafe-inline' 'unsafe-hashes' https://fonts.googleapis.com https://cdn.jsdelivr.net",
             # Font sources - restrict to Google Fonts and self
             "font-src 'self' https://fonts.gstatic.com https://r2cdn.perplexity.ai data:",
             # Image sources - restrict to self, data URIs and HTTPS only
@@ -127,6 +127,7 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
         # Preload hints for critical resources
         if request.path == '/':
             preload_links = [
+                '</static/css/output.css>; rel=preload; as=style',
                 '</static/css/custom.min.css>; rel=preload; as=style',
                 '</static/js/main.min.js>; rel=preload; as=script',
             ]
