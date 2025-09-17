@@ -48,6 +48,9 @@ from apps.blog.models import Post
 from apps.tools.models import Tool
 from apps.main.search import search_engine
 
+# Import APM decorators for distributed tracing
+from .utils.apm_decorators import trace_function, trace_database_operation, trace_cache_operation, trace_api_call, trace_operation
+
 # Setup enhanced logging
 logger = logging.getLogger(__name__)
 
@@ -58,6 +61,7 @@ CACHE_TIMEOUT_LONG = 3600    # 1 hour
 CACHE_TIMEOUT_DAILY = 86400  # 24 hours
 
 
+@trace_function(operation_name="view.home", description="Home page view with analytics", tags={"view_type": "main"})
 def home(request):
     """
     Enhanced home page view with analytics, performance optimization, and rich metadata.

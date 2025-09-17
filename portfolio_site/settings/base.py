@@ -85,6 +85,8 @@ MIDDLEWARE = [
     'apps.main.middleware.CacheControlMiddleware',  # Cache control headers
     'apps.main.middleware.CompressionMiddleware',   # Compression optimization
     'apps.main.middleware.PerformanceMiddleware',   # Performance monitoring
+    'apps.main.middleware.apm_middleware.APMMiddleware',  # APM transaction tracking
+    'apps.main.middleware.apm_middleware.DatabaseQueryTrackingMiddleware',  # Database query tracking
     'apps.main.middleware.static_optimization_middleware.ResourceHintsMiddleware',  # Resource hints
     'apps.main.middleware.static_optimization_middleware.StaticFileMetricsMiddleware',  # Static file metrics
 ]
@@ -310,6 +312,55 @@ AUTHENTICATION_BACKENDS = [
 # ==========================================================================
 
 SENTRY_DSN = config('SENTRY_DSN', default='')
+
+# Performance budget configuration for APM
+PERFORMANCE_BUDGETS = {
+    'SLOW_TRANSACTION_THRESHOLD': config('SLOW_TRANSACTION_THRESHOLD', default=2.0, cast=float),  # seconds
+    'VERY_SLOW_THRESHOLD': config('VERY_SLOW_THRESHOLD', default=5.0, cast=float),  # seconds
+    'DATABASE_QUERY_THRESHOLD': config('DB_QUERY_THRESHOLD', default=0.1, cast=float),  # seconds
+    'CACHE_OPERATION_THRESHOLD': config('CACHE_THRESHOLD', default=0.05, cast=float),  # seconds
+    'API_RESPONSE_THRESHOLD': config('API_THRESHOLD', default=1.0, cast=float),  # seconds
+}
+
+def filter_slow_transactions(event, hint):
+    """
+    Custom filter for Sentry transactions to focus on performance issues
+    """
+    try:
+        # Only process transaction events
+        if event.get('type') != 'transaction':
+            return event
+
+        transaction_duration = event.get('timestamp', 0) - event.get('start_timestamp', 0)
+        transaction_name = event.get('transaction', 'unknown')
+
+        # Always capture very slow transactions
+        if transaction_duration > PERFORMANCE_BUDGETS['VERY_SLOW_THRESHOLD']:
+            event['tags'] = event.get('tags', {})
+            event['tags']['performance_issue'] = 'very_slow'
+            event['tags']['budget_exceeded'] = 'critical'
+            return event
+
+        # Capture moderately slow transactions with sampling
+        elif transaction_duration > PERFORMANCE_BUDGETS['SLOW_TRANSACTION_THRESHOLD']:
+            event['tags'] = event.get('tags', {})
+            event['tags']['performance_issue'] = 'slow'
+            event['tags']['budget_exceeded'] = 'warning'
+            # Sample slow transactions at higher rate
+            import random
+            if random.random() < 0.5:  # 50% sampling for slow transactions
+                return event
+            else:
+                return None
+
+        # For normal speed transactions, use default sampling
+        return event
+
+    except Exception as e:
+        # If filtering fails, return the event to ensure it's still captured
+        logging.getLogger(__name__).error(f"Error in Sentry transaction filter: {e}")
+        return event
+
 if SENTRY_AVAILABLE and SENTRY_DSN:
     try:
         # Initialize Sentry SDK only if DSN is provided
@@ -318,6 +369,11 @@ if SENTRY_AVAILABLE and SENTRY_DSN:
             event_level=logging.ERROR  # Send errors as events
         )
 
+        # Import additional APM integrations
+        from sentry_sdk.integrations.celery import CeleryIntegration
+        from sentry_sdk.integrations.redis import RedisIntegration
+        from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+
         sentry_sdk.init(
             dsn=SENTRY_DSN,
             integrations=[
@@ -325,14 +381,27 @@ if SENTRY_AVAILABLE and SENTRY_DSN:
                     transaction_style='url',
                     middleware_spans=True,
                     signals_spans=True,
+                    cache_spans=True,
                 ),
                 sentry_logging,
+                CeleryIntegration(monitor_beat_tasks=True),
+                RedisIntegration(),
+                SqlalchemyIntegration(),
             ],
-            traces_sample_rate=config('SENTRY_TRACES_SAMPLE_RATE', default=0.1, cast=float),
+            traces_sample_rate=config('SENTRY_TRACES_SAMPLE_RATE', default=0.2, cast=float),
+            profiles_sample_rate=config('SENTRY_PROFILES_SAMPLE_RATE', default=0.1, cast=float),
             send_default_pii=False,
             debug=DEBUG,
             environment=config('ENVIRONMENT', default='development'),
             release=config('APP_VERSION', default='1.0.0'),
+            # Performance monitoring configuration
+            enable_tracing=True,
+            # Custom performance budget configuration
+            before_send_transaction=lambda event, hint: filter_slow_transactions(event, hint),
+            # Additional APM settings
+            max_breadcrumbs=100,
+            attach_stacktrace=True,
+            request_bodies='medium',
         )
 
         # Test Sentry connection
@@ -366,6 +435,12 @@ LOGGING = {
         'json': {
             'format': '{"level": "%(levelname)s", "time": "%(asctime)s", "module": "%(module)s", "message": "%(message)s"}',
         },
+        'structured_json': {
+            '()': 'apps.main.logging.json_formatter.StructuredJSONFormatter',
+            'service_name': config('SERVICE_NAME', default='portfolio_site'),
+            'environment': config('ENVIRONMENT', default='development'),
+            'include_extra_fields': True,
+        },
     },
     'filters': {
         'require_debug_false': {
@@ -373,6 +448,15 @@ LOGGING = {
         },
         'require_debug_true': {
             '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'request_context': {
+            '()': 'apps.main.logging.json_formatter.RequestContextFilter',
+        },
+        'performance_filter': {
+            '()': 'apps.main.logging.json_formatter.PerformanceFilter',
+        },
+        'security_filter': {
+            '()': 'apps.main.logging.json_formatter.SecurityFilter',
         },
     },
     'handlers': {
@@ -391,21 +475,52 @@ LOGGING = {
             'formatter': 'verbose',
             'filters': ['require_debug_false'],
         },
+        'structured_json_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'structured.log',
+            'when': 'midnight',
+            'interval': 1,
+            'backupCount': 30,  # Keep 30 days
+            'formatter': 'structured_json',
+            'filters': ['request_context', 'performance_filter'],
+        },
         'performance_file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': BASE_DIR / 'logs' / 'performance.log',
             'maxBytes': 1024*1024*5,  # 5 MB
             'backupCount': 5,
-            'formatter': 'json',
+            'formatter': 'structured_json',
+            'filters': ['performance_filter'],
         },
         'error_file': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': BASE_DIR / 'logs' / 'errors.log',
             'maxBytes': 1024*1024*10,  # 10 MB
-            'backupCount': 10,
-            'formatter': 'verbose',
+            'backupCount': 15,  # Keep more error logs
+            'formatter': 'structured_json',
+            'filters': ['request_context'],
+        },
+        'security_file': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'security.log',
+            'maxBytes': 1024*1024*5,  # 5 MB
+            'backupCount': 20,  # Keep security logs longer
+            'formatter': 'structured_json',
+            'filters': ['security_filter', 'request_context'],
+        },
+        'aggregated_json': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'aggregated.jsonl',
+            'when': 'H',  # Hourly rotation
+            'interval': 1,
+            'backupCount': 24 * 7,  # Keep 1 week of hourly logs
+            'formatter': 'structured_json',
+            'filters': ['request_context', 'performance_filter', 'security_filter'],
         },
     },
     'root': {

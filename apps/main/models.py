@@ -1649,6 +1649,449 @@ class ErrorLog(models.Model):
 
 
 # ==========================================================================
+# ANALYTICS MODELS
+# ==========================================================================
+
+class AnalyticsEvent(models.Model):
+    """Privacy-compliant analytics event tracking"""
+
+    EVENT_TYPE_CHOICES = [
+        ('page_view', 'Page View'),
+        ('custom_event', 'Custom Event'),
+        ('conversion', 'Conversion'),
+        ('ab_test_assignment', 'A/B Test Assignment'),
+        ('ab_test_conversion', 'A/B Test Conversion'),
+        ('funnel_step', 'Funnel Step'),
+        ('journey_step', 'Journey Step'),
+    ]
+
+    # Core event data
+    event_type = models.CharField(
+        max_length=20,
+        choices=EVENT_TYPE_CHOICES,
+        help_text="Type of analytics event"
+    )
+    event_name = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Custom event name"
+    )
+    anonymous_id = models.CharField(
+        max_length=50,
+        db_index=True,
+        help_text="Anonymous session identifier (privacy-compliant)"
+    )
+
+    # Page and context information
+    page_path = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Page path (sanitized)"
+    )
+    page_title = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Page title"
+    )
+    referrer_type = models.CharField(
+        max_length=20,
+        blank=True,
+        help_text="Referrer type (search, social, external)"
+    )
+
+    # Device and browser info (aggregated, non-identifying)
+    device_type = models.CharField(
+        max_length=20,
+        blank=True,
+        help_text="Device type (mobile, desktop, tablet)"
+    )
+    browser_family = models.CharField(
+        max_length=50,
+        blank=True,
+        help_text="Browser family (Chrome, Firefox, Safari)"
+    )
+    os_family = models.CharField(
+        max_length=50,
+        blank=True,
+        help_text="Operating system family"
+    )
+
+    # Event-specific data (JSON field for flexibility)
+    event_data = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Additional event data (sanitized)"
+    )
+
+    # Privacy and compliance
+    gdpr_consent = models.BooleanField(
+        default=False,
+        help_text="Whether user has given GDPR consent for analytics"
+    )
+    ip_hash = models.CharField(
+        max_length=64,
+        blank=True,
+        help_text="Hashed IP address (for geographic insights only)"
+    )
+
+    # Timing
+    timestamp = models.DateTimeField(
+        default=timezone.now,
+        db_index=True,
+        help_text="When the event occurred"
+    )
+    session_start = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text="When the session started"
+    )
+
+    # Retention policy
+    expires_at = models.DateTimeField(
+        help_text="When this data should be automatically deleted"
+    )
+
+    class Meta:
+        ordering = ['-timestamp']
+        verbose_name = "Analytics Event"
+        verbose_name_plural = "Analytics Events"
+        indexes = [
+            models.Index(fields=['timestamp', 'event_type']),
+            models.Index(fields=['anonymous_id', 'timestamp']),
+            models.Index(fields=['event_type', 'event_name']),
+            models.Index(fields=['page_path', 'timestamp']),
+            models.Index(fields=['expires_at']),
+        ]
+
+    def save(self, *args, **kwargs):
+        # Set automatic expiration (90 days default for GDPR compliance)
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timezone.timedelta(days=90)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.event_type}: {self.event_name or self.page_path} at {self.timestamp}"
+
+    @classmethod
+    def cleanup_expired(cls):
+        """Remove expired analytics data for GDPR compliance"""
+        expired_count = cls.objects.filter(expires_at__lt=timezone.now()).delete()[0]
+        return expired_count
+
+
+class UserJourney(models.Model):
+    """Privacy-compliant user journey tracking"""
+
+    journey_id = models.CharField(
+        max_length=100,
+        unique=True,
+        help_text="Unique journey identifier"
+    )
+    anonymous_id = models.CharField(
+        max_length=50,
+        db_index=True,
+        help_text="Anonymous session identifier"
+    )
+
+    # Journey metadata
+    started_at = models.DateTimeField(
+        default=timezone.now,
+        help_text="When the journey started"
+    )
+    last_activity = models.DateTimeField(
+        auto_now=True,
+        help_text="Last activity in this journey"
+    )
+    current_step = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Current step in the journey"
+    )
+
+    # Journey analytics
+    total_steps = models.IntegerField(
+        default=0,
+        help_text="Total number of steps in this journey"
+    )
+    total_time_spent = models.IntegerField(
+        default=0,
+        help_text="Total time spent in seconds"
+    )
+    is_completed = models.BooleanField(
+        default=False,
+        help_text="Whether the journey reached completion"
+    )
+    completion_type = models.CharField(
+        max_length=50,
+        blank=True,
+        help_text="How the journey was completed"
+    )
+
+    # Journey path (stored as JSON for analysis)
+    journey_path = models.JSONField(
+        default=list,
+        help_text="List of steps taken in this journey"
+    )
+
+    # Privacy compliance
+    gdpr_consent = models.BooleanField(
+        default=False,
+        help_text="GDPR consent for journey tracking"
+    )
+    expires_at = models.DateTimeField(
+        help_text="When this journey data expires"
+    )
+
+    class Meta:
+        ordering = ['-started_at']
+        verbose_name = "User Journey"
+        verbose_name_plural = "User Journeys"
+        indexes = [
+            models.Index(fields=['anonymous_id', 'started_at']),
+            models.Index(fields=['is_completed', 'started_at']),
+            models.Index(fields=['current_step']),
+            models.Index(fields=['expires_at']),
+        ]
+
+    def save(self, *args, **kwargs):
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timezone.timedelta(days=90)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Journey {self.journey_id} - {self.total_steps} steps"
+
+    def add_step(self, step_name, page_path=None, timestamp=None):
+        """Add a step to the journey"""
+        if timestamp is None:
+            timestamp = timezone.now()
+
+        step_data = {
+            'step_name': step_name,
+            'timestamp': timestamp.isoformat(),
+            'page_path': page_path,
+            'order': len(self.journey_path) + 1
+        }
+
+        self.journey_path.append(step_data)
+        self.current_step = step_name
+        self.total_steps = len(self.journey_path)
+        self.last_activity = timestamp
+        self.save()
+
+
+class ConversionFunnel(models.Model):
+    """Conversion funnel tracking and analytics"""
+
+    funnel_id = models.CharField(
+        max_length=100,
+        unique=True,
+        help_text="Unique funnel identifier"
+    )
+    anonymous_id = models.CharField(
+        max_length=50,
+        db_index=True,
+        help_text="Anonymous session identifier"
+    )
+    funnel_name = models.CharField(
+        max_length=50,
+        db_index=True,
+        help_text="Name of the funnel (signup, purchase, etc.)"
+    )
+
+    # Funnel progress
+    started_at = models.DateTimeField(
+        default=timezone.now,
+        help_text="When the funnel was entered"
+    )
+    last_activity = models.DateTimeField(
+        auto_now=True,
+        help_text="Last activity in this funnel"
+    )
+    current_step = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Current step in the funnel"
+    )
+    current_step_order = models.IntegerField(
+        default=1,
+        help_text="Order of current step"
+    )
+
+    # Completion tracking
+    is_completed = models.BooleanField(
+        default=False,
+        help_text="Whether the funnel was completed"
+    )
+    completed_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text="When the funnel was completed"
+    )
+    time_to_complete = models.IntegerField(
+        blank=True,
+        null=True,
+        help_text="Time to complete in seconds"
+    )
+
+    # Funnel data
+    steps_completed = models.JSONField(
+        default=list,
+        help_text="List of completed steps with timing"
+    )
+    drop_off_step = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Step where user dropped off"
+    )
+
+    # Privacy compliance
+    gdpr_consent = models.BooleanField(
+        default=False,
+        help_text="GDPR consent for funnel tracking"
+    )
+    expires_at = models.DateTimeField(
+        help_text="When this funnel data expires"
+    )
+
+    class Meta:
+        ordering = ['-started_at']
+        verbose_name = "Conversion Funnel"
+        verbose_name_plural = "Conversion Funnels"
+        indexes = [
+            models.Index(fields=['funnel_name', 'started_at']),
+            models.Index(fields=['anonymous_id', 'funnel_name']),
+            models.Index(fields=['is_completed', 'funnel_name']),
+            models.Index(fields=['expires_at']),
+        ]
+
+    def save(self, *args, **kwargs):
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timezone.timedelta(days=90)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        status = "completed" if self.is_completed else f"step {self.current_step_order}"
+        return f"{self.funnel_name} funnel - {status}"
+
+    def complete_step(self, step_name, step_order, is_final=False):
+        """Mark a step as completed"""
+        step_data = {
+            'step_name': step_name,
+            'step_order': step_order,
+            'timestamp': timezone.now().isoformat(),
+            'time_since_start': (timezone.now() - self.started_at).total_seconds()
+        }
+
+        self.steps_completed.append(step_data)
+        self.current_step = step_name
+        self.current_step_order = step_order
+
+        if is_final:
+            self.is_completed = True
+            self.completed_at = timezone.now()
+            self.time_to_complete = (timezone.now() - self.started_at).total_seconds()
+
+        self.save()
+
+
+class ABTestAssignment(models.Model):
+    """A/B test variant assignments and tracking"""
+
+    test_name = models.CharField(
+        max_length=100,
+        db_index=True,
+        help_text="Name of the A/B test"
+    )
+    anonymous_id = models.CharField(
+        max_length=50,
+        db_index=True,
+        help_text="Anonymous session identifier"
+    )
+    variant = models.CharField(
+        max_length=50,
+        help_text="Assigned variant (A, B, C, etc.)"
+    )
+
+    # Assignment details
+    assigned_at = models.DateTimeField(
+        default=timezone.now,
+        help_text="When the variant was assigned"
+    )
+    assignment_method = models.CharField(
+        max_length=20,
+        default='hash',
+        help_text="Method used for assignment (hash, random)"
+    )
+
+    # Conversion tracking
+    has_converted = models.BooleanField(
+        default=False,
+        help_text="Whether this user has converted"
+    )
+    converted_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text="When the conversion occurred"
+    )
+    conversion_type = models.CharField(
+        max_length=50,
+        blank=True,
+        help_text="Type of conversion"
+    )
+    conversion_value = models.FloatField(
+        blank=True,
+        null=True,
+        help_text="Value of the conversion"
+    )
+
+    # Test data
+    test_data = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Additional test-specific data"
+    )
+
+    # Privacy compliance
+    gdpr_consent = models.BooleanField(
+        default=False,
+        help_text="GDPR consent for A/B testing"
+    )
+    expires_at = models.DateTimeField(
+        help_text="When this test data expires"
+    )
+
+    class Meta:
+        ordering = ['-assigned_at']
+        verbose_name = "A/B Test Assignment"
+        verbose_name_plural = "A/B Test Assignments"
+        unique_together = ['test_name', 'anonymous_id']
+        indexes = [
+            models.Index(fields=['test_name', 'variant']),
+            models.Index(fields=['anonymous_id', 'test_name']),
+            models.Index(fields=['has_converted', 'test_name']),
+            models.Index(fields=['expires_at']),
+        ]
+
+    def save(self, *args, **kwargs):
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timezone.timedelta(days=90)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        status = "converted" if self.has_converted else "active"
+        return f"{self.test_name}: {self.variant} ({status})"
+
+    def record_conversion(self, conversion_type='default', conversion_value=None):
+        """Record a conversion for this assignment"""
+        self.has_converted = True
+        self.converted_at = timezone.now()
+        self.conversion_type = conversion_type
+        self.conversion_value = conversion_value
+        self.save()
+
+
+# ==========================================================================
 # SHORT URL MODEL
 # ==========================================================================
 

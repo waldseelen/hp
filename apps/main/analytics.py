@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from django.core.cache import cache
 from django.conf import settings
 from django.utils import timezone
+from django.db import models
 import logging
 
 logger = logging.getLogger(__name__)
@@ -55,7 +56,8 @@ class PrivacyCompliantAnalytics:
         try:
             anonymous_id = self.get_anonymous_id(request)
             timestamp = timezone.now()
-            
+            device_info = self._get_device_info(request)
+
             event = {
                 'type': 'page_view',
                 'anonymous_id': anonymous_id,
@@ -63,14 +65,21 @@ class PrivacyCompliantAnalytics:
                 'page_title': page_title[:100] if page_title else None,
                 'timestamp': timestamp.isoformat(),
                 'referrer': self._get_sanitized_referrer(request),
-                'device_info': self._get_device_info(request)
+                'device_info': device_info
             }
-            
+
+            # Store in cache for fast access
             self._store_event(event)
             self._update_session(anonymous_id, event)
-            
+
+            # Store in database for persistence (async task in production)
+            try:
+                self._store_event_to_db(event, request, device_info)
+            except Exception as e:
+                logger.warning(f"Failed to store event to database: {e}")
+
             return True
-            
+
         except Exception as e:
             logger.error(f"Failed to track page view: {e}")
             return False
@@ -306,10 +315,10 @@ class PrivacyCompliantAnalytics:
         """
         try:
             anonymous_id = self.get_anonymous_id(request)
-            
+
             if not journey_id:
-                journey_id = f"journey_{anonymous_id}_{timezone.now().timestamp()}"
-            
+                journey_id = f"journey_{anonymous_id}_{int(timezone.now().timestamp())}"
+
             journey_key = f"user_journey_{journey_id}"
             journey_data = cache.get(journey_key, {
                 'anonymous_id': anonymous_id,
@@ -317,25 +326,31 @@ class PrivacyCompliantAnalytics:
                 'steps': [],
                 'current_step': None
             })
-            
+
             step_data = {
                 'step_name': step_name,
                 'timestamp': timezone.now().isoformat(),
                 'page_path': self._sanitize_path(request.path),
                 'referrer': self._get_sanitized_referrer(request)
             }
-            
+
             journey_data['steps'].append(step_data)
             journey_data['current_step'] = step_name
             journey_data['last_activity'] = timezone.now().isoformat()
-            
+
             cache.set(journey_key, journey_data, self.journey_timeout)
-            
+
             # Track journey metrics
             self._update_journey_metrics(step_name)
-            
+
+            # Store in database for persistence
+            try:
+                self._store_journey_to_db(journey_id, anonymous_id, step_name, request)
+            except Exception as e:
+                logger.warning(f"Failed to store journey to database: {e}")
+
             return journey_id
-            
+
         except Exception as e:
             logger.error(f"Failed to track user journey: {e}")
             return None
@@ -379,7 +394,13 @@ class PrivacyCompliantAnalytics:
             
             # Update funnel metrics
             self._update_funnel_metrics(funnel_name, step_name, step_order)
-            
+
+            # Store in database for persistence
+            try:
+                self._store_funnel_to_db(funnel_name, anonymous_id, step_name, step_order, request)
+            except Exception as e:
+                logger.warning(f"Failed to store funnel to database: {e}")
+
             return True
             
         except Exception as e:
@@ -419,7 +440,13 @@ class PrivacyCompliantAnalytics:
             
             # Update test metrics
             self._update_ab_test_metrics(test_name, assigned_variant, 'assignment')
-            
+
+            # Store in database for persistence
+            try:
+                self._store_ab_test_to_db(test_name, anonymous_id, assigned_variant, request)
+            except Exception as e:
+                logger.warning(f"Failed to store A/B test to database: {e}")
+
             return assigned_variant
             
         except Exception as e:
@@ -698,6 +725,163 @@ class PrivacyCompliantAnalytics:
         }
         
         return current_step >= funnel_definitions.get(funnel_name, 999)
+
+    def _store_event_to_db(self, event, request, device_info):
+        """Store analytics event to database for persistence"""
+        # Import here to avoid circular imports
+        from .models import AnalyticsEvent
+
+        # Get GDPR consent from session or cookies
+        gdpr_consent = getattr(request, 'session', {}).get('gdpr_consent', False)
+
+        # Hash IP for geographic insights only (privacy-compliant)
+        ip_address = request.META.get('REMOTE_ADDR', '')
+        ip_hash = hashlib.sha256(ip_address.encode()).hexdigest() if ip_address else ''
+
+        AnalyticsEvent.objects.create(
+            event_type=event.get('type', 'unknown'),
+            event_name=event.get('event_name', ''),
+            anonymous_id=event['anonymous_id'],
+            page_path=event.get('page_path', ''),
+            page_title=event.get('page_title', ''),
+            referrer_type=event.get('referrer', ''),
+            device_type='mobile' if device_info.get('is_mobile') else 'desktop',
+            browser_family=device_info.get('browser_family', ''),
+            os_family=device_info.get('os_family', ''),
+            event_data=event.get('event_data', {}),
+            gdpr_consent=gdpr_consent,
+            ip_hash=ip_hash[:64],  # Limit hash length
+            timestamp=timezone.now(),
+        )
+
+    def _store_journey_to_db(self, journey_id, anonymous_id, step_name, request):
+        """Store or update user journey in database"""
+        from .models import UserJourney
+
+        gdpr_consent = getattr(request, 'session', {}).get('gdpr_consent', False)
+
+        journey, created = UserJourney.objects.get_or_create(
+            journey_id=journey_id,
+            defaults={
+                'anonymous_id': anonymous_id,
+                'gdpr_consent': gdpr_consent,
+            }
+        )
+
+        journey.add_step(step_name, self._sanitize_path(request.path))
+        return journey
+
+    def _store_funnel_to_db(self, funnel_name, anonymous_id, step_name, step_order, request):
+        """Store or update conversion funnel in database"""
+        from .models import ConversionFunnel
+
+        gdpr_consent = getattr(request, 'session', {}).get('gdpr_consent', False)
+        funnel_id = f"funnel_{funnel_name}_{anonymous_id}_{timezone.now().date()}"
+
+        funnel, created = ConversionFunnel.objects.get_or_create(
+            funnel_id=funnel_id,
+            defaults={
+                'anonymous_id': anonymous_id,
+                'funnel_name': funnel_name,
+                'gdpr_consent': gdpr_consent,
+            }
+        )
+
+        # Check if this is the final step
+        is_final = self._is_funnel_complete(funnel_name, step_order)
+        funnel.complete_step(step_name, step_order, is_final)
+        return funnel
+
+    def _store_ab_test_to_db(self, test_name, anonymous_id, variant, request):
+        """Store A/B test assignment in database"""
+        from .models import ABTestAssignment
+
+        gdpr_consent = getattr(request, 'session', {}).get('gdpr_consent', False)
+
+        assignment, created = ABTestAssignment.objects.get_or_create(
+            test_name=test_name,
+            anonymous_id=anonymous_id,
+            defaults={
+                'variant': variant,
+                'gdpr_consent': gdpr_consent,
+                'assignment_method': 'hash',
+            }
+        )
+
+        return assignment
+
+    def get_gdpr_compliance_info(self):
+        """Get GDPR compliance information for the analytics system"""
+        return {
+            'data_processing_purposes': [
+                'Website performance optimization',
+                'User experience improvement',
+                'Content personalization',
+                'A/B testing for feature development'
+            ],
+            'data_collected': [
+                'Anonymous session identifiers (no personal data)',
+                'Page paths and titles visited',
+                'Device type and browser family (aggregated)',
+                'Interaction events (clicks, form submissions)',
+                'Performance metrics timing'
+            ],
+            'data_not_collected': [
+                'Personal identification information',
+                'Email addresses or names',
+                'Precise location data',
+                'Cross-site tracking identifiers',
+                'Sensitive personal categories'
+            ],
+            'retention_period': '90 days maximum',
+            'user_rights': [
+                'Opt-out of analytics tracking',
+                'Data deletion upon request',
+                'Access to aggregated data insights',
+                'Correction of inaccurate data'
+            ],
+            'technical_measures': [
+                'Anonymous session-based tracking',
+                'IP address hashing for geographic insights only',
+                'Automatic data expiration (90 days)',
+                'No cross-site tracking',
+                'Local storage preference respect'
+            ]
+        }
+
+    def cleanup_expired_data(self):
+        """Clean up expired analytics data for GDPR compliance"""
+        from .models import AnalyticsEvent, UserJourney, ConversionFunnel, ABTestAssignment
+
+        cleanup_results = {
+            'analytics_events': AnalyticsEvent.cleanup_expired(),
+            'user_journeys': UserJourney.objects.filter(expires_at__lt=timezone.now()).delete()[0],
+            'conversion_funnels': ConversionFunnel.objects.filter(expires_at__lt=timezone.now()).delete()[0],
+            'ab_test_assignments': ABTestAssignment.objects.filter(expires_at__lt=timezone.now()).delete()[0],
+        }
+
+        total_cleaned = sum(cleanup_results.values())
+        logger.info(f"Cleaned up {total_cleaned} expired analytics records")
+        return cleanup_results
+
+    def handle_gdpr_deletion_request(self, anonymous_id):
+        """Handle GDPR data deletion request for a specific anonymous ID"""
+        from .models import AnalyticsEvent, UserJourney, ConversionFunnel, ABTestAssignment
+
+        deletion_results = {
+            'analytics_events': AnalyticsEvent.objects.filter(anonymous_id=anonymous_id).delete()[0],
+            'user_journeys': UserJourney.objects.filter(anonymous_id=anonymous_id).delete()[0],
+            'conversion_funnels': ConversionFunnel.objects.filter(anonymous_id=anonymous_id).delete()[0],
+            'ab_test_assignments': ABTestAssignment.objects.filter(anonymous_id=anonymous_id).delete()[0],
+        }
+
+        # Clear cache data
+        session_key = f"analytics_session_{anonymous_id}"
+        cache.delete(session_key)
+
+        total_deleted = sum(deletion_results.values())
+        logger.info(f"Deleted {total_deleted} records for anonymous_id: {anonymous_id}")
+        return deletion_results
 
 
 # Global analytics instance

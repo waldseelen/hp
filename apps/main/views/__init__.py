@@ -2,7 +2,7 @@
 from .main_views import (
     home, personal_view, music_view, ai_tools_view, cybersecurity_view,
     useful_view, projects_view, project_detail_view, set_language,
-    language_status, logout_view
+    language_status, logout_view, performance_dashboard_view
 )
 from .search import SearchView, search_api, search_suggestions, TagCloudView, search_by_tag
 from .shorturl import redirect_short_url as short_url_redirect

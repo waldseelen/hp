@@ -60,6 +60,7 @@ from django.views.decorators.http import require_http_methods
 from apps.main.models import PersonalInfo, SocialLink, AITool, CybersecurityResource, MusicPlaylist, SpotifyCurrentTrack, UsefulResource
 from apps.blog.models import Post
 from apps.tools.models import Tool
+from apps.main.performance import performance_metrics, alert_manager
 import logging
 
 # Cache helper functions for home page data
@@ -685,3 +686,41 @@ def health_check(request):
             'timestamp': timezone.now().isoformat(),
             'error': str(e)
         }, status=503)
+
+
+def performance_dashboard_view(request):
+    """
+    Performance monitoring dashboard view.
+    Shows real-time metrics, health status, and alerting information.
+    """
+    try:
+        # Get performance metrics summary
+        metrics_summary = performance_metrics.get_metrics_summary(hours=24)
+        real_time_data = performance_metrics.get_real_time_data()
+        health_status = performance_metrics.get_health_status()
+        recent_alerts = alert_manager.get_recent_alerts(minutes=60)
+
+        context = {
+            'metrics_summary': metrics_summary,
+            'real_time_data': real_time_data,
+            'health_status': health_status,
+            'recent_alerts': recent_alerts,
+            'page_title': 'Performance Dashboard',
+            'meta_description': 'Real-time performance monitoring dashboard with Core Web Vitals tracking',
+            'dashboard_refresh_interval': 30000,  # 30 seconds
+        }
+
+        return render(request, 'main/dashboard.html', context)
+
+    except Exception as e:
+        logger.error(f"Error in performance dashboard view: {str(e)}")
+        context = {
+            'metrics_summary': {'metrics': {}, 'health_score': 'F', 'total_entries': 0},
+            'real_time_data': {'status': 'error', 'error': str(e)},
+            'health_status': {'status': 'unhealthy'},
+            'recent_alerts': [],
+            'page_title': 'Performance Dashboard',
+            'meta_description': 'Performance monitoring dashboard',
+            'dashboard_refresh_interval': 30000,
+        }
+        return render(request, 'main/dashboard.html', context)

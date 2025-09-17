@@ -1,16 +1,42 @@
 """
 Comprehensive Health Check System
-Monitors system components and dependencies
+=================================
+
+This module provides a complete health monitoring system for the Django portfolio website.
+Includes 7 comprehensive checks covering all critical system components with proactive monitoring,
+alerting capabilities, and uptime tracking.
+
+Features:
+- Database connectivity and performance monitoring
+- Cache system health verification
+- Disk space and memory usage monitoring
+- External service dependency checks
+- Application configuration validation
+- Security configuration verification
+- Custom service health checks
+- Email alerting with cooldown periods
+- Structured logging and history tracking
+- Uptime statistics with daily history
 """
+
+import os
+import sys
 import time
+import threading
+import socket
+import requests
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Tuple, Any
+from dataclasses import dataclass, field
+from collections import defaultdict, deque
+
 try:
     import psutil
     PSUTIL_AVAILABLE = True
 except ImportError:
     psutil = None
     PSUTIL_AVAILABLE = False
-import socket
-from datetime import datetime, timedelta
+
 from django.db import connection, connections
 from django.core.cache import cache, caches
 from django.core.mail import send_mail
@@ -18,10 +44,34 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.utils import timezone
 import logging
+import json
 import requests
 from typing import Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class HealthCheckResult:
+    """Single health check result"""
+    check_name: str
+    status: str  # 'healthy', 'warning', 'critical', 'unknown'
+    message: str
+    details: Dict[str, Any] = field(default_factory=dict)
+    response_time_ms: float = 0.0
+    timestamp: datetime = field(default_factory=timezone.now)
+    error: Optional[str] = None
+
+
+@dataclass
+class AlertConfig:
+    """Alert configuration for health checks"""
+    check_name: str
+    enabled: bool = True
+    email_enabled: bool = True
+    cooldown_minutes: int = 30
+    critical_threshold: int = 3  # Number of consecutive failures before alert
+    warning_threshold: int = 2
 
 
 class HealthCheckSystem:
@@ -33,6 +83,17 @@ class HealthCheckSystem:
         self.checks_history = {}
         self.alert_cooldown = {}
         self.alert_threshold = 300  # 5 minutes cooldown
+
+        # Initialize alert configurations for each check
+        self.alert_configs = {
+            'database': AlertConfig('database', enabled=True, email_enabled=True, cooldown_minutes=30),
+            'cache': AlertConfig('cache', enabled=True, email_enabled=True, cooldown_minutes=30),
+            'disk_space': AlertConfig('disk_space', enabled=True, email_enabled=True, cooldown_minutes=60),
+            'memory': AlertConfig('memory', enabled=True, email_enabled=True, cooldown_minutes=30),
+            'external_services': AlertConfig('external_services', enabled=True, email_enabled=False, cooldown_minutes=15),
+            'application': AlertConfig('application', enabled=True, email_enabled=True, cooldown_minutes=30),
+            'security': AlertConfig('security', enabled=True, email_enabled=True, cooldown_minutes=120)
+        }
 
     def run_all_checks(self) -> Dict:
         """Run all health checks and return comprehensive status"""
@@ -513,6 +574,74 @@ Warning Checks:
 
         except Exception as e:
             logger.error(f"Failed to send health alert: {e}")
+
+    def send_alert(self, check_name: str, status: str, message: str, details: Dict = None) -> bool:
+        """
+        Public method to send custom alerts for specific health checks
+
+        Args:
+            check_name: Name of the health check
+            status: Status (healthy, warning, error)
+            message: Alert message
+            details: Optional additional details
+
+        Returns:
+            bool: True if alert sent successfully, False otherwise
+        """
+        try:
+            # Check if alerts are enabled for this check
+            alert_config = self.alert_configs.get(check_name)
+            if not alert_config or not alert_config.enabled:
+                return False
+
+            current_time = time.time()
+            alert_key = f"custom_alert_{check_name}_{status}"
+
+            # Check cooldown
+            cooldown_seconds = alert_config.cooldown_minutes * 60
+            if alert_key in self.alert_cooldown:
+                if current_time - self.alert_cooldown[alert_key] < cooldown_seconds:
+                    return False  # Still in cooldown
+
+            # Update cooldown
+            self.alert_cooldown[alert_key] = current_time
+
+            # Prepare alert message
+            alert_message = f"""
+Custom Health Check Alert - {status.upper()}
+
+Check: {check_name}
+Status: {status}
+Message: {message}
+Timestamp: {timezone.now().isoformat()}
+
+Details: {json.dumps(details, indent=2) if details else 'None'}
+            """
+
+            # Log the alert
+            logger.warning(f"Custom Health Alert [{check_name}]: {alert_message}")
+
+            # Console output
+            print(f"CUSTOM ALERT [{check_name}]: {message}")
+
+            # Send email if enabled for this check
+            if alert_config.email_enabled and hasattr(settings, 'EMAIL_HOST') and settings.EMAIL_HOST:
+                try:
+                    send_mail(
+                        subject=f'Custom Health Alert - {check_name} - {status.upper()}',
+                        message=alert_message,
+                        from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@example.com'),
+                        recipient_list=getattr(settings, 'ADMIN_EMAIL_LIST', ['admin@example.com']),
+                        fail_silently=False
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to send custom email alert: {e}")
+
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to send custom alert for {check_name}: {e}")
+            return False
 
     def get_uptime_stats(self) -> Dict:
         """Get uptime statistics"""

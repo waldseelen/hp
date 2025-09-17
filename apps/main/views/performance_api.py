@@ -11,6 +11,8 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from apps.main.validators import validate_json_input, API_SCHEMAS
+from apps.main.performance import performance_metrics, alert_manager
+from apps.main.models import PerformanceMetric
 
 logger = logging.getLogger(__name__)
 
@@ -49,13 +51,41 @@ def collect_performance_metric(request):
                 'message': str(e)
             }, status=400)
 
+        # Add to in-memory metrics collection
+        success = performance_metrics.add_metric(
+            metric_type=metric_type,
+            value=value,
+            url=validated_data.get('url', request.META.get('HTTP_REFERER', '')),
+            user_agent=request.META.get('HTTP_USER_AGENT', ''),
+            device_type=validated_data.get('device_type', 'desktop'),
+            connection_type=validated_data.get('connection_type', 'unknown'),
+            additional_data=validated_data.get('additional_data', {})
+        )
+
+        # Also save to database for persistence (async in production)
+        try:
+            PerformanceMetric.objects.create(
+                metric_type=metric_type,
+                value=value,
+                url=validated_data.get('url', request.META.get('HTTP_REFERER', ''))[:500],
+                user_agent=request.META.get('HTTP_USER_AGENT', ''),
+                device_type=validated_data.get('device_type', 'desktop'),
+                connection_type=validated_data.get('connection_type', 'unknown'),
+                additional_data=validated_data.get('additional_data', {}),
+                ip_address=request.META.get('REMOTE_ADDR'),
+                session_id=request.session.session_key or ''
+            )
+        except Exception as e:
+            logger.warning(f"Failed to save metric to database: {e}")
+
         # Log the performance metric (sanitized)
         logger.info(f"Performance metric collected: {metric_type}={value:.2f}")
 
         return JsonResponse({
             'status': 'success',
             'message': 'Performance metric recorded',
-            'timestamp': timezone.now().isoformat()
+            'timestamp': timezone.now().isoformat(),
+            'in_memory_success': success
         }, status=201)
 
     except json.JSONDecodeError:
@@ -77,20 +107,34 @@ def performance_dashboard_data(request):
     API endpoint to get performance metrics summary for dashboard
     """
     try:
-        # Mock data for now - in a real app this would come from a database
-        dashboard_data = {
-            'status': 'success',
-            'data': {
-                'metrics_summary': {
-                    'lcp': {'average': 1.2, 'count': 100},
-                    'fid': {'average': 45, 'count': 95},
-                    'cls': {'average': 0.05, 'count': 98}
-                },
-                'total_metrics': 293,
-                'period_days': 7
-            },
-            'timestamp': timezone.now().isoformat()
-        }
+        # Get hours parameter from query string (default 1 hour)
+        hours = int(request.GET.get('hours', 1))
+        hours = min(max(hours, 1), 24)  # Limit between 1 and 24 hours
+
+        # Get data from in-memory metrics
+        if request.GET.get('realtime') == 'true':
+            # Real-time data for live dashboard
+            dashboard_data = {
+                'status': 'success',
+                'data': performance_metrics.get_real_time_data(),
+                'timestamp': timezone.now().isoformat()
+            }
+        else:
+            # Summary data for analytics
+            summary = performance_metrics.get_metrics_summary(hours=hours)
+            dashboard_data = {
+                'status': 'success',
+                'data': summary,
+                'timestamp': timezone.now().isoformat()
+            }
+
+        # Add health status
+        health_status = performance_metrics.get_health_status()
+        dashboard_data['health'] = health_status
+
+        # Add recent alerts
+        recent_alerts = alert_manager.get_recent_alerts(minutes=60)
+        dashboard_data['recent_alerts'] = recent_alerts
 
         return JsonResponse(dashboard_data)
 
@@ -98,7 +142,8 @@ def performance_dashboard_data(request):
         logger.error(f"Error getting performance dashboard data: {str(e)}")
         return JsonResponse({
             'status': 'error',
-            'message': 'Internal server error'
+            'message': 'Internal server error',
+            'timestamp': timezone.now().isoformat()
         }, status=500)
 
 

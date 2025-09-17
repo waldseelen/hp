@@ -19,6 +19,9 @@ urlpatterns = [
     path('search/', views.search_view, name='search'),
     path('search/tags/', views.tag_search_view, name='tag_search'),
     path('search/tag/<str:tag_name>/', views.tag_results_view, name='tag_results'),
+
+    # Performance monitoring dashboard
+    path('dashboard/', views.performance_dashboard_view, name='performance_dashboard'),
     
     # Short URL service
     path('s/<str:short_code>/', views.short_url_redirect, name='short_url_redirect'),

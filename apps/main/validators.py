@@ -385,18 +385,34 @@ API_SCHEMAS = {
             'required': True,
             'type': str,
             'max_length': 50,
-            'pattern': r'^(lcp|fid|cls|fcp|ttfb|page_load_time)$'
+            'pattern': r'^(lcp|fid|cls|fcp|ttfb|inp|navigation|resource|memory|custom)$'
         },
         'value': {
             'required': True,
             'type': float,
             'min_value': 0,
-            'max_value': 30000
+            'max_value': 100000
         },
         'url': {
             'required': False,
             'type': str,
-            'max_length': 200
+            'max_length': 500
+        },
+        'device_type': {
+            'required': False,
+            'type': str,
+            'max_length': 20,
+            'pattern': r'^(mobile|desktop|tablet)$'
+        },
+        'connection_type': {
+            'required': False,
+            'type': str,
+            'max_length': 20,
+            'pattern': r'^(4g|3g|2g|slow-2g|wifi|ethernet|unknown)$'
+        },
+        'additional_data': {
+            'required': False,
+            'type': dict
         }
     },
     'push_subscription': {
