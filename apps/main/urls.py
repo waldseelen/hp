@@ -22,6 +22,12 @@ urlpatterns = [
 
     # Performance monitoring dashboard
     path('dashboard/', views.performance_dashboard_view, name='performance_dashboard'),
+
+    # Design System UI Kit
+    path('ui-kit/', views.ui_kit_view, name='ui_kit'),
+
+    # PWA Offline page
+    path('offline/', views.offline_view, name='offline'),
     
     # Short URL service
     path('s/<str:short_code>/', views.short_url_redirect, name='short_url_redirect'),

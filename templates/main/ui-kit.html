@@ -1,0 +1,1152 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "UI Kit" %} - {% trans "Design System" %}{% endblock %}
+
+{% block content %}
+<div class="starfield"></div>
+
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <header class="text-center py-12 sm:py-20 animate-fade-in">
+        <h1 class="text-display-2xl heading-premium mb-6">
+            {% trans "Design System UI Kit" %}
+        </h1>
+        <p class="text-body-xl text-premium mb-8 max-w-3xl mx-auto">
+            {% trans "Living documentation of our design system components, colors, typography, and patterns." %}
+        </p>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="glass-card mb-12" aria-label="{% trans 'UI Kit Navigation' %}">
+        <div class="p-6">
+            <div class="flex flex-wrap gap-4 justify-center">
+                <a href="#colors" class="btn-premium text-sm">{% trans "Colors" %}</a>
+                <a href="#typography" class="btn-premium text-sm">{% trans "Typography" %}</a>
+                <a href="#spacing" class="btn-premium text-sm">{% trans "Spacing" %}</a>
+                <a href="#buttons" class="btn-premium text-sm">{% trans "Buttons" %}</a>
+                <a href="#forms" class="btn-premium text-sm">{% trans "Forms" %}</a>
+                <a href="#cards" class="btn-premium text-sm">{% trans "Cards" %}</a>
+                <a href="#navigation" class="btn-premium text-sm">{% trans "Navigation" %}</a>
+                <a href="#animations" class="btn-premium text-sm">{% trans "Animations" %}</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Color Palette Section -->
+    <section id="colors" class="mb-16">
+        <div class="glass-card">
+            <div class="p-8">
+                <h2 class="text-display-xl heading-premium mb-8">{% trans "Color Palette" %}</h2>
+
+                <!-- Primary Colors -->
+                <div class="mb-12">
+                    <h3 class="text-display-lg text-premium-accent mb-6">{% trans "Primary Colors (WCAG AA Compliant)" %}</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-4">
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #fefdf8;"></div>
+                            <div class="text-caption">50</div>
+                            <div class="text-overline">#fefdf8</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #fdf9ed;"></div>
+                            <div class="text-caption">100</div>
+                            <div class="text-overline">#fdf9ed</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #f9f1d4;"></div>
+                            <div class="text-caption">200</div>
+                            <div class="text-overline">#f9f1d4</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #f4e6a4;"></div>
+                            <div class="text-caption">300</div>
+                            <div class="text-overline">#f4e6a4</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #e6c547;"></div>
+                            <div class="text-caption">400</div>
+                            <div class="text-overline">#e6c547</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #c8b560;"></div>
+                            <div class="text-caption">500</div>
+                            <div class="text-overline">#c8b560</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #a89550;"></div>
+                            <div class="text-caption">600</div>
+                            <div class="text-overline">#a89550</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #8b7355;"></div>
+                            <div class="text-caption">700</div>
+                            <div class="text-overline">#8b7355</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #6b705c;"></div>
+                            <div class="text-caption">800</div>
+                            <div class="text-overline">#6b705c</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #4a4e3a;"></div>
+                            <div class="text-caption">900</div>
+                            <div class="text-overline">#4a4e3a</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Semantic Colors -->
+                <div class="mb-12">
+                    <h3 class="text-display-lg text-premium-accent mb-6">{% trans "Semantic Colors" %}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #10b981;"></div>
+                            <div class="text-body font-medium">Success</div>
+                            <div class="text-overline">#10b981</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #f59e0b;"></div>
+                            <div class="text-body font-medium">Warning</div>
+                            <div class="text-overline">#f59e0b</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #ef4444;"></div>
+                            <div class="text-body font-medium">Error</div>
+                            <div class="text-overline">#ef4444</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-20 rounded-lg border-2 border-white/20 mb-2" style="background-color: #3b82f6;"></div>
+                            <div class="text-body font-medium">Info</div>
+                            <div class="text-overline">#3b82f6</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Typography Section -->
+    <section id="typography" class="mb-16">
+        <div class="glass-card">
+            <div class="p-8">
+                <h2 class="text-display-xl heading-premium mb-8">{% trans "Typography System" %}</h2>
+
+                <!-- Font Information -->
+                <div class="mb-8 p-6 bg-secondary-800/30 rounded-lg border border-primary-600/20">
+                    <h3 class="text-body-lg text-premium-accent mb-4">{% trans "Font Families" %}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <div class="text-caption text-premium-accent">Sans Serif (Default)</div>
+                            <div class="text-body font-sans">Inter, system-ui, sans-serif</div>
+                        </div>
+                        <div>
+                            <div class="text-caption text-premium-accent">Monospace</div>
+                            <div class="text-body font-mono">JetBrains Mono, Consolas, Monaco</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typography Scale -->
+                <div class="space-y-6">
+                    <div class="border-l-4 border-primary-400 pl-6">
+                        <div class="text-display-2xl">Display 2XL (36px)</div>
+                        <div class="text-caption">Class: text-display-2xl • Weight: 800 • Line Height: 1.25</div>
+                    </div>
+                    <div class="border-l-4 border-primary-400 pl-6">
+                        <div class="text-display-xl">Display XL (30px)</div>
+                        <div class="text-caption">Class: text-display-xl • Weight: 700 • Line Height: 1.25</div>
+                    </div>
+                    <div class="border-l-4 border-primary-400 pl-6">
+                        <div class="text-display-lg">Display Large (24px)</div>
+                        <div class="text-caption">Class: text-display-lg • Weight: 600 • Line Height: 1.375</div>
+                    </div>
+                    <div class="border-l-4 border-primary-500 pl-6">
+                        <div class="text-body-xl">Body XL (20px) - Perfect for important paragraphs and descriptions</div>
+                        <div class="text-caption">Class: text-body-xl • Weight: 400 • Line Height: 1.625</div>
+                    </div>
+                    <div class="border-l-4 border-primary-500 pl-6">
+                        <div class="text-body-lg">Body Large (18px) - Great for readable content and article text</div>
+                        <div class="text-caption">Class: text-body-lg • Weight: 400 • Line Height: 1.625</div>
+                    </div>
+                    <div class="border-l-4 border-primary-500 pl-6">
+                        <div class="text-body">Body (16px) - Default body text for most content areas</div>
+                        <div class="text-caption">Class: text-body • Weight: 400 • Line Height: 1.5</div>
+                    </div>
+                    <div class="border-l-4 border-primary-600 pl-6">
+                        <div class="text-caption">Caption (14px) - Small descriptive text</div>
+                        <div class="text-caption">Class: text-caption • Weight: 500 • Line Height: 1.5</div>
+                    </div>
+                    <div class="border-l-4 border-primary-600 pl-6">
+                        <div class="text-overline">OVERLINE (12px) - LABELS AND CATEGORIES</div>
+                        <div class="text-caption">Class: text-overline • Weight: 600 • Line Height: 1.5</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Spacing Section -->
+    <section id="spacing" class="mb-16">
+        <div class="glass-card">
+            <div class="p-8">
+                <h2 class="text-display-xl heading-premium mb-8">{% trans "Base-8 Spacing System" %}</h2>
+
+                <div class="mb-6">
+                    <p class="text-body-lg text-premium mb-4">
+                        {% trans "Our spacing system follows a base-8 approach for consistent and harmonious layouts." %}
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="space-y-4">
+                        <h3 class="text-body-lg text-premium-accent">{% trans "Small Spacing" %}</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-4">
+                                <div class="w-1 h-4 bg-primary-400"></div>
+                                <div class="text-body">4px (--space-1)</div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-2 h-4 bg-primary-400"></div>
+                                <div class="text-body">8px (--space-2)</div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-3 h-4 bg-primary-400"></div>
+                                <div class="text-body">12px (--space-3)</div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-4 h-4 bg-primary-400"></div>
+                                <div class="text-body">16px (--space-4)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="text-body-lg text-premium-accent">{% trans "Medium Spacing" %}</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-4">
+                                <div class="w-6 h-4 bg-primary-500"></div>
+                                <div class="text-body">24px (--space-6)</div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-4 bg-primary-500"></div>
+                                <div class="text-body">32px (--space-8)</div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-4 bg-primary-500"></div>
+                                <div class="text-body">40px (--space-10)</div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-4 bg-primary-500"></div>
+                                <div class="text-body">48px (--space-12)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="text-body-lg text-premium-accent">{% trans "Large Spacing" %}</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-4 bg-primary-600"></div>
+                                <div class="text-body">64px (--space-16)</div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-20 h-4 bg-primary-600"></div>
+                                <div class="text-body">80px (--space-20)</div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-24 h-4 bg-primary-600"></div>
+                                <div class="text-body">96px (--space-24)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Buttons Section -->
+    <section id="buttons" class="mb-16">
+        <div class="glass-card">
+            <div class="p-8">
+                <h2 class="text-display-xl heading-premium mb-8">{% trans "Modern Button System" %}</h2>
+
+                <!-- Primary Button Types -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Button Hierarchy" %}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="text-center">
+                            <button class="btn-primary w-full mb-3">{% trans "Primary" %}</button>
+                            <div class="text-caption">btn-primary</div>
+                            <div class="text-overline">High emphasis</div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn-secondary w-full mb-3">{% trans "Secondary" %}</button>
+                            <div class="text-caption">btn-secondary</div>
+                            <div class="text-overline">Medium emphasis</div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn-tertiary w-full mb-3">{% trans "Tertiary" %}</button>
+                            <div class="text-caption">btn-tertiary</div>
+                            <div class="text-overline">Low emphasis</div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn-premium w-full mb-3">{% trans "Premium" %}</button>
+                            <div class="text-caption">btn-premium</div>
+                            <div class="text-overline">Special actions</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Semantic Button Types -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Semantic Variants" %}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <button class="btn-danger w-full mb-3">{% trans "Delete" %}</button>
+                            <div class="text-caption">btn-danger</div>
+                            <div class="text-overline">Destructive actions</div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn-success w-full mb-3">{% trans "Confirm" %}</button>
+                            <div class="text-caption">btn-success</div>
+                            <div class="text-overline">Positive actions</div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn-primary btn-ripple w-full mb-3">{% trans "With Ripple" %}</button>
+                            <div class="text-caption">btn-ripple</div>
+                            <div class="text-overline">Interactive feedback</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Button Sizes -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Size Variations" %}</h3>
+                    <div class="flex flex-wrap gap-4 items-end">
+                        <div class="text-center">
+                            <button class="btn-primary btn-sm mb-2">{% trans "Small" %}</button>
+                            <div class="text-caption">btn-sm</div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn-primary mb-2">{% trans "Default" %}</button>
+                            <div class="text-caption">btn-base</div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn-primary btn-lg mb-2">{% trans "Large" %}</button>
+                            <div class="text-caption">btn-lg</div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn-primary btn-xl mb-2">{% trans "Extra Large" %}</button>
+                            <div class="text-caption">btn-xl</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Icon Buttons -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Icon Buttons" %}</h3>
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <div class="text-center">
+                            <button class="btn-primary btn-icon-only btn-sm mb-2">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.828-2.828z"></path>
+                                </svg>
+                            </button>
+                            <div class="text-caption">Small</div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn-secondary btn-icon-only mb-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                                    <path fill-rule="evenodd" d="M4 5a2 2 0 012-2h8a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 3a1 1 0 000 2h6a1 1 0 100-2H7z"></path>
+                                </svg>
+                            </button>
+                            <div class="text-caption">Default</div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn-tertiary btn-icon-only btn-lg mb-2">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"></path>
+                                </svg>
+                            </button>
+                            <div class="text-caption">Large</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Button Groups -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Button Groups" %}</h3>
+                    <div class="space-y-4">
+                        <div class="btn-group">
+                            <button class="btn-secondary">{% trans "Option 1" %}</button>
+                            <button class="btn-secondary">{% trans "Option 2" %}</button>
+                            <button class="btn-secondary">{% trans "Option 3" %}</button>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn-primary">{% trans "Save" %}</button>
+                            <button class="btn-secondary">{% trans "Cancel" %}</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Button States -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Button States" %}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <button class="btn-primary btn-loading w-full mb-3">
+                                <svg class="btn-spinner" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                </svg>
+                                {% trans "Loading" %}
+                            </button>
+                            <div class="text-caption">btn-loading</div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn-primary w-full mb-3" disabled>{% trans "Disabled" %}</button>
+                            <div class="text-caption">disabled attribute</div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn-primary btn-fab">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"></path>
+                                </svg>
+                            </button>
+                            <div class="text-caption mt-16">btn-fab</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code Examples -->
+                <div class="mt-12 p-6 bg-gray-900 rounded-lg">
+                    <h3 class="text-body-lg text-premium-accent mb-4">{% trans "Usage Examples" %}</h3>
+                    <pre class="text-sm text-gray-300 overflow-x-auto"><code>&lt;!-- Primary Action --&gt;
+&lt;button class="btn-primary"&gt;Save Changes&lt;/button&gt;
+
+&lt;!-- Secondary Action --&gt;
+&lt;button class="btn-secondary"&gt;Cancel&lt;/button&gt;
+
+&lt;!-- Tertiary Action --&gt;
+&lt;button class="btn-tertiary"&gt;Learn More&lt;/button&gt;
+
+&lt;!-- With Size --&gt;
+&lt;button class="btn-primary btn-lg"&gt;Large Button&lt;/button&gt;
+
+&lt;!-- With Effects --&gt;
+&lt;button class="btn-primary btn-ripple"&gt;Interactive&lt;/button&gt;
+
+&lt;!-- Button Group --&gt;
+&lt;div class="btn-group"&gt;
+  &lt;button class="btn-secondary"&gt;Left&lt;/button&gt;
+  &lt;button class="btn-secondary"&gt;Right&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Forms Section -->
+    <section id="forms" class="mb-16">
+        <div class="glass-card">
+            <div class="p-8">
+                <h2 class="text-display-xl heading-premium mb-8">{% trans "Modern Form System" %}</h2>
+
+                <!-- Basic Form Elements -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Basic Form Elements" %}</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Text Input" %}</label>
+                                <input type="text" class="form-base" placeholder="Enter your text...">
+                                <div class="form-help">{% trans "This is help text for the input field" %}</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Email Input" %}</label>
+                                <input type="email" class="form-base" placeholder="your@email.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Password" %}</label>
+                                <input type="password" class="form-base" placeholder="Enter password">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Select Dropdown" %}</label>
+                                <select class="form-base form-select">
+                                    <option value="">{% trans "Choose an option" %}</option>
+                                    <option value="1">{% trans "Option 1" %}</option>
+                                    <option value="2">{% trans "Option 2" %}</option>
+                                    <option value="3">{% trans "Option 3" %}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Textarea" %}</label>
+                                <textarea class="form-base" rows="4" placeholder="Your message..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Number Input" %}</label>
+                                <input type="number" class="form-base" placeholder="123" min="0" max="100">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Date Input" %}</label>
+                                <input type="date" class="form-base">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Validation States -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Validation States" %}</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Valid Input" %}</label>
+                            <input type="email" class="form-base form-valid" value="user@example.com">
+                            <div class="form-success">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
+                                </svg>
+                                {% trans "Email format is valid" %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Invalid Input" %}</label>
+                            <input type="email" class="form-base form-invalid" value="invalid-email">
+                            <div class="form-error">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"></path>
+                                </svg>
+                                {% trans "Please enter a valid email" %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Warning Input" %}</label>
+                            <input type="text" class="form-base form-warning" value="weakpassword">
+                            <div class="form-warning-text">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"></path>
+                                </svg>
+                                {% trans "Password is weak" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Sizes -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Form Sizes" %}</h3>
+                    <div class="space-y-4">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Small Input" %}</label>
+                            <input type="text" class="form-base form-sm" placeholder="Small input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Default Input" %}</label>
+                            <input type="text" class="form-base" placeholder="Default input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Large Input" %}</label>
+                            <input type="text" class="form-base form-lg" placeholder="Large input">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checkboxes and Radio Buttons -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Checkboxes & Radio Buttons" %}</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <label class="form-label">{% trans "Checkboxes" %}</label>
+                            <div class="space-y-3">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="form-checkbox mr-3">
+                                    <span class="text-premium">{% trans "Option 1" %}</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="form-checkbox mr-3" checked>
+                                    <span class="text-premium">{% trans "Option 2 (checked)" %}</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="form-checkbox mr-3" disabled>
+                                    <span class="text-premium opacity-50">{% trans "Option 3 (disabled)" %}</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="form-label">{% trans "Radio Buttons" %}</label>
+                            <div class="space-y-3">
+                                <label class="flex items-center">
+                                    <input type="radio" name="radio-demo" class="form-radio mr-3" value="a">
+                                    <span class="text-premium">{% trans "Choice A" %}</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="radio-demo" class="form-radio mr-3" value="b" checked>
+                                    <span class="text-premium">{% trans "Choice B (selected)" %}</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="radio-demo" class="form-radio mr-3" value="c" disabled>
+                                    <span class="text-premium opacity-50">{% trans "Choice C (disabled)" %}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Special Form Elements -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Special Form Elements" %}</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <!-- Input with Icon -->
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Input with Icon" %}</label>
+                                <div class="form-input-group">
+                                    <input type="email" class="form-base" placeholder="your@email.com">
+                                    <svg class="form-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Range Input -->
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Range Slider" %}</label>
+                                <input type="range" class="form-range" min="0" max="100" value="50">
+                                <div class="form-help">{% trans "Slide to adjust value" %}</div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- File Upload -->
+                            <div class="form-group">
+                                <label class="form-label">{% trans "File Upload" %}</label>
+                                <div class="form-file">
+                                    <input type="file" id="file-upload">
+                                    <label for="file-upload" class="form-file-label">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"></path>
+                                        </svg>
+                                        {% trans "Choose file or drag here" %}
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Floating Label -->
+                            <div class="form-group">
+                                <div class="form-floating">
+                                    <input type="text" class="form-base" placeholder=" " id="floating-input">
+                                    <label for="floating-input" class="form-label">{% trans "Floating Label" %}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Examples -->
+                <div class="p-6 bg-gray-900 rounded-lg">
+                    <h3 class="text-body-lg text-premium-accent mb-4">{% trans "Usage Examples" %}</h3>
+                    <pre class="text-sm text-gray-300 overflow-x-auto"><code>&lt;!-- Basic Form Group --&gt;
+&lt;div class="form-group"&gt;
+  &lt;label class="form-label"&gt;Email Address&lt;/label&gt;
+  &lt;input type="email" class="form-base" placeholder="your@email.com"&gt;
+  &lt;div class="form-help"&gt;We'll never share your email&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Validation States --&gt;
+&lt;input class="form-base form-valid"&gt;   &lt;!-- Valid state --&gt;
+&lt;input class="form-base form-invalid"&gt; &lt;!-- Error state --&gt;
+&lt;input class="form-base form-warning"&gt; &lt;!-- Warning state --&gt;
+
+&lt;!-- Sizes --&gt;
+&lt;input class="form-base form-sm"&gt; &lt;!-- Small --&gt;
+&lt;input class="form-base"&gt;        &lt;!-- Default --&gt;
+&lt;input class="form-base form-lg"&gt; &lt;!-- Large --&gt;
+
+&lt;!-- Checkboxes & Radios --&gt;
+&lt;input type="checkbox" class="form-checkbox"&gt;
+&lt;input type="radio" class="form-radio"&gt;</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cards Section -->
+    <section id="cards" class="mb-16">
+        <div class="glass-card">
+            <div class="p-8">
+                <h2 class="text-display-xl heading-premium mb-8">{% trans "Enhanced Card System" %}</h2>
+
+                <!-- Basic Card Types -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Card Types" %}</h3>
+                    <div class="card-grid">
+                        <!-- Default Card -->
+                        <div class="card-base card-default">
+                            <div class="card-body">
+                                <h4 class="text-lg font-semibold text-premium-accent mb-3">{% trans "Default Card" %}</h4>
+                                <p class="text-premium mb-4">{% trans "Standard card with subtle glass effect and smooth hover animations." %}</p>
+                                <div class="card-actions">
+                                    <button class="btn-tertiary btn-sm">{% trans "Learn More" %}</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Glass Card -->
+                        <div class="card-base card-glass">
+                            <div class="card-body">
+                                <h4 class="text-lg font-semibold text-premium-accent mb-3">{% trans "Glass Card" %}</h4>
+                                <p class="text-premium mb-4">{% trans "Enhanced glass morphism with backdrop blur and premium lighting effects." %}</p>
+                                <div class="card-actions">
+                                    <button class="btn-secondary btn-sm">{% trans "Explore" %}</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Premium Card -->
+                        <div class="card-base card-premium">
+                            <div class="card-body">
+                                <h4 class="text-lg font-semibold text-premium-accent mb-3">{% trans "Premium Card" %}</h4>
+                                <p class="text-premium mb-4">{% trans "Elegant card with shimmer effects and golden accents for special content." %}</p>
+                                <div class="card-actions">
+                                    <button class="btn-primary btn-sm">{% trans "Get Premium" %}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Cards -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Interactive Cards" %}</h3>
+                    <div class="card-grid">
+                        <!-- Interactive Card -->
+                        <div class="card-base card-interactive">
+                            <div class="card-body">
+                                <h4 class="text-lg font-semibold text-premium-accent mb-3">{% trans "Interactive Card" %}</h4>
+                                <p class="text-premium mb-4">{% trans "Clickable card with scale animations and enhanced visual feedback." %}</p>
+                                <div class="text-sm text-premium-accent">{% trans "Click to interact" %} →</div>
+                            </div>
+                        </div>
+
+                        <!-- Feature Card -->
+                        <div class="card-base card-feature">
+                            <div class="card-body">
+                                <h4 class="text-lg font-semibold text-premium-accent mb-3">{% trans "Feature Card" %}</h4>
+                                <p class="text-premium mb-4">{% trans "Highlighted card with accent border for showcasing key features." %}</p>
+                                <div class="card-actions">
+                                    <button class="btn-success btn-sm">{% trans "View Feature" %}</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Loading Card -->
+                        <div class="card-base card-default card-loading">
+                            <div class="card-body">
+                                <h4 class="text-lg font-semibold text-premium-accent mb-3">{% trans "Loading State" %}</h4>
+                                <p class="text-premium mb-4">{% trans "Card with shimmer loading animation for dynamic content states." %}</p>
+                                <div class="card-actions">
+                                    <button class="btn-secondary btn-sm" disabled>{% trans "Loading..." %}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Cards -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Content Cards" %}</h3>
+                    <div class="card-grid">
+                        <!-- Product Card -->
+                        <div class="card-base card-product">
+                            <div class="card-badge">{% trans "New" %}</div>
+                            <div class="card-media">
+                                <div class="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+                                    <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div class="card-overlay">
+                                    <div>
+                                        <h5 class="font-semibold">{% trans "Premium Features" %}</h5>
+                                        <p class="text-sm opacity-90">{% trans "Advanced functionality" %}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="text-lg font-semibold text-premium-accent mb-3">{% trans "Product Card" %}</h4>
+                                <p class="text-premium mb-4">{% trans "Perfect for showcasing products with media, overlay effects, and badges." %}</p>
+                                <div class="card-actions">
+                                    <button class="btn-primary btn-sm">{% trans "Add to Cart" %}</button>
+                                    <button class="btn-tertiary btn-sm">{% trans "Details" %}</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Blog Card -->
+                        <div class="card-base card-blog">
+                            <div class="card-body">
+                                <div class="card-meta">
+                                    <div class="meta-item">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"></path>
+                                        </svg>
+                                        <span>{% trans "Dec 15, 2024" %}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                                        </svg>
+                                        <span>{% trans "John Doe" %}</span>
+                                    </div>
+                                </div>
+                                <h4 class="text-lg font-semibold text-premium-accent mb-3">{% trans "Blog Post Card" %}</h4>
+                                <p class="text-premium mb-4">{% trans "Ideal for blog posts with metadata, author info, and publication dates." %}</p>
+                                <div class="card-actions">
+                                    <button class="btn-secondary btn-sm">{% trans "Read More" %}</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stats Card -->
+                        <div class="card-base card-feature">
+                            <div class="card-header">
+                                <h4 class="text-lg font-semibold text-premium-accent">{% trans "Statistics Card" %}</h4>
+                            </div>
+                            <div class="card-stats">
+                                <div class="card-stat">
+                                    <div class="card-stat-value">142</div>
+                                    <div class="card-stat-label">{% trans "Projects" %}</div>
+                                </div>
+                                <div class="card-stat">
+                                    <div class="card-stat-value">58k</div>
+                                    <div class="card-stat-label">{% trans "Users" %}</div>
+                                </div>
+                                <div class="card-stat">
+                                    <div class="card-stat-value">99.9%</div>
+                                    <div class="card-stat-label">{% trans "Uptime" %}</div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <span class="text-sm text-premium">{% trans "Last updated: 2 min ago" %}</span>
+                                <button class="btn-tertiary btn-sm">{% trans "Refresh" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert Cards -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Alert Cards" %}</h3>
+                    <div class="space-y-4">
+                        <div class="card-base card-alert">
+                            <div class="card-body">
+                                <div class="flex items-start gap-3">
+                                    <svg class="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"></path>
+                                    </svg>
+                                    <div>
+                                        <h4 class="font-semibold text-premium-accent mb-1">{% trans "Information" %}</h4>
+                                        <p class="text-premium">{% trans "This is an informational alert card with important details." %}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-base card-alert alert-success">
+                            <div class="card-body">
+                                <div class="flex items-start gap-3">
+                                    <svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
+                                    </svg>
+                                    <div>
+                                        <h4 class="font-semibold text-premium-accent mb-1">{% trans "Success" %}</h4>
+                                        <p class="text-premium">{% trans "Operation completed successfully! Your changes have been saved." %}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-base card-alert alert-error">
+                            <div class="card-body">
+                                <div class="flex items-start gap-3">
+                                    <svg class="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"></path>
+                                    </svg>
+                                    <div>
+                                        <h4 class="font-semibold text-premium-accent mb-1">{% trans "Error" %}</h4>
+                                        <p class="text-premium">{% trans "An error occurred while processing your request. Please try again." %}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Sizes -->
+                <div class="mb-12">
+                    <h3 class="text-body-lg text-premium-accent mb-6">{% trans "Card Sizes" %}</h3>
+                    <div class="card-grid dense">
+                        <div class="card-base card-default card-sm">
+                            <div class="card-body">
+                                <h4 class="font-semibold text-premium-accent mb-2">{% trans "Small Card" %}</h4>
+                                <p class="text-premium text-sm">{% trans "Compact card for minimal content." %}</p>
+                            </div>
+                        </div>
+
+                        <div class="card-base card-glass">
+                            <div class="card-body">
+                                <h4 class="font-semibold text-premium-accent mb-3">{% trans "Default Card" %}</h4>
+                                <p class="text-premium">{% trans "Standard size for most content." %}</p>
+                            </div>
+                        </div>
+
+                        <div class="card-base card-premium card-lg">
+                            <div class="card-body">
+                                <h4 class="text-xl font-semibold text-premium-accent mb-4">{% trans "Large Card" %}</h4>
+                                <p class="text-premium text-lg">{% trans "Spacious card for detailed content and rich layouts." %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Usage Examples -->
+                <div class="p-6 bg-gray-900 rounded-lg">
+                    <h3 class="text-body-lg text-premium-accent mb-4">{% trans "Usage Examples" %}</h3>
+                    <pre class="text-sm text-gray-300 overflow-x-auto"><code>&lt;!-- Basic Card --&gt;
+&lt;div class="card-base card-default"&gt;
+  &lt;div class="card-body"&gt;
+    &lt;h4&gt;Card Title&lt;/h4&gt;
+    &lt;p&gt;Card content...&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Card with Header and Footer --&gt;
+&lt;div class="card-base card-glass"&gt;
+  &lt;div class="card-header"&gt;
+    &lt;h4&gt;Header Title&lt;/h4&gt;
+  &lt;/div&gt;
+  &lt;div class="card-body"&gt;
+    &lt;p&gt;Main content...&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class="card-footer"&gt;
+    &lt;span&gt;Footer info&lt;/span&gt;
+    &lt;button&gt;Action&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Product Card with Media --&gt;
+&lt;div class="card-base card-product"&gt;
+  &lt;div class="card-badge"&gt;New&lt;/div&gt;
+  &lt;div class="card-media"&gt;
+    &lt;img src="product.jpg" alt="Product"&gt;
+  &lt;/div&gt;
+  &lt;div class="card-body"&gt;
+    &lt;h4&gt;Product Name&lt;/h4&gt;
+    &lt;div class="card-actions"&gt;
+      &lt;button class="btn-primary"&gt;Buy Now&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Responsive Grid --&gt;
+&lt;div class="card-grid"&gt;
+  &lt;!-- Cards automatically arrange in responsive grid --&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation Section -->
+    <section id="navigation" class="mb-16">
+        <div class="glass-card">
+            <div class="p-8">
+                <h2 class="text-display-xl heading-premium mb-8">{% trans "Navigation Components" %}</h2>
+
+                <div class="space-y-8">
+                    <!-- Premium Navigation Links -->
+                    <div>
+                        <h3 class="text-body-lg text-premium-accent mb-4">{% trans "Premium Navigation Links" %}</h3>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#" class="nav-link-premium">Home</a>
+                            <a href="#" class="nav-link-premium">About</a>
+                            <a href="#" class="nav-link-premium">Projects</a>
+                            <a href="#" class="nav-link-premium">Blog</a>
+                            <a href="#" class="nav-link-premium">Contact</a>
+                        </div>
+                    </div>
+
+                    <!-- Glass Navigation Bar -->
+                    <div>
+                        <h3 class="text-body-lg text-premium-accent mb-4">{% trans "Glass Navigation Bar" %}</h3>
+                        <nav class="glass-nav rounded-lg p-4">
+                            <div class="flex justify-between items-center">
+                                <div class="text-premium-accent font-bold">Logo</div>
+                                <div class="hidden md:flex space-x-6">
+                                    <a href="#" class="text-premium hover:text-primary-400 transition-colors">Home</a>
+                                    <a href="#" class="text-premium hover:text-primary-400 transition-colors">About</a>
+                                    <a href="#" class="text-premium hover:text-primary-400 transition-colors">Services</a>
+                                    <a href="#" class="text-premium hover:text-primary-400 transition-colors">Contact</a>
+                                </div>
+                                <button class="md:hidden text-premium">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Animations Section -->
+    <section id="animations" class="mb-16">
+        <div class="glass-card">
+            <div class="p-8">
+                <h2 class="text-display-xl heading-premium mb-8">{% trans "Animation Examples" %}</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Fade In Animation -->
+                    <div class="text-center p-6 border border-primary-400/20 rounded-lg">
+                        <div class="w-16 h-16 bg-primary-400 rounded-full mx-auto mb-4 animate-fade-in"></div>
+                        <h3 class="text-body-lg text-premium-accent mb-2">Fade In</h3>
+                        <p class="text-caption">animate-fade-in</p>
+                    </div>
+
+                    <!-- Slide Up Animation -->
+                    <div class="text-center p-6 border border-primary-400/20 rounded-lg">
+                        <div class="w-16 h-16 bg-primary-500 rounded-full mx-auto mb-4 animate-slide-up"></div>
+                        <h3 class="text-body-lg text-premium-accent mb-2">Slide Up</h3>
+                        <p class="text-caption">animate-slide-up</p>
+                    </div>
+
+                    <!-- Neon Pulse -->
+                    <div class="text-center p-6 border border-primary-400/20 rounded-lg">
+                        <div class="w-16 h-16 bg-primary-600 rounded-full mx-auto mb-4 neon-gold"></div>
+                        <h3 class="text-body-lg text-premium-accent mb-2">Neon Pulse</h3>
+                        <p class="text-caption">neon-gold</p>
+                    </div>
+
+                    <!-- Loading Spinner -->
+                    <div class="text-center p-6 border border-primary-400/20 rounded-lg">
+                        <div class="loading-premium mx-auto mb-4"></div>
+                        <h3 class="text-body-lg text-premium-accent mb-2">Loading Spinner</h3>
+                        <p class="text-caption">loading-premium</p>
+                    </div>
+
+                    <!-- Hover Effects -->
+                    <div class="text-center p-6 border border-primary-400/20 rounded-lg">
+                        <div class="w-16 h-16 bg-primary-700 rounded-full mx-auto mb-4 hover:scale-110 transition-transform duration-300 cursor-pointer"></div>
+                        <h3 class="text-body-lg text-premium-accent mb-2">Hover Scale</h3>
+                        <p class="text-caption">hover:scale-110</p>
+                    </div>
+
+                    <!-- Transition Effects -->
+                    <div class="text-center p-6 border border-primary-400/20 rounded-lg">
+                        <div class="w-16 h-16 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full mx-auto mb-4 transition-all duration-500 hover:from-primary-600 hover:to-primary-800 cursor-pointer"></div>
+                        <h3 class="text-body-lg text-premium-accent mb-2">Gradient Transition</h3>
+                        <p class="text-caption">transition-all duration-500</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center py-12">
+        <div class="glass-card">
+            <div class="p-8">
+                <h2 class="text-display-lg heading-premium mb-4">{% trans "Design System Complete" %}</h2>
+                <p class="text-body-lg text-premium mb-6">
+                    {% trans "This UI Kit represents our comprehensive design system foundation with modern typography, accessible colors, and premium styling." %}
+                </p>
+                <div class="flex justify-center gap-4">
+                    <button class="btn-premium" onclick="window.print()">{% trans "Print Documentation" %}</button>
+                    <a href="#colors" class="btn-premium">{% trans "Back to Top" %}</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<style>
+/* Additional styles for UI Kit page */
+.animate-fade-in {
+    animation: fadeIn 2s ease-in-out infinite alternate;
+}
+
+.animate-slide-up {
+    animation: slideUp 2s ease-in-out infinite alternate;
+}
+
+/* Smooth scrolling for anchor links */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Print styles */
+@media print {
+    .starfield {
+        display: none;
+    }
+
+    .glass-card {
+        background: white !important;
+        color: black !important;
+        border: 1px solid #ccc !important;
+    }
+
+    .btn-premium {
+        background: #f0f0f0 !important;
+        color: #333 !important;
+        border: 1px solid #ccc !important;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add interaction to cards
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px) scale(1.01)';
+        });
+
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+});
+</script>
+{% endblock %}

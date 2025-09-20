@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.cache import cache
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 import hashlib
@@ -13,7 +13,7 @@ from .forms import ContactForm
 from apps.main.analytics import analytics
 
 
-def get_client_ip(request):
+def get_client_ip(request: HttpRequest) -> str:
     """Get the client's IP address from request headers"""
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -23,7 +23,7 @@ def get_client_ip(request):
 
 @csrf_protect
 @require_http_methods(["GET", "POST"])
-def contact_form(request):
+def contact_form(request: HttpRequest) -> HttpResponse:
     """Enhanced contact form with proper validation and security"""
     logger = logging.getLogger(__name__)
     
@@ -98,5 +98,5 @@ def contact_form(request):
     return render(request, 'contact/form.html', {'form': form})
 
 
-def contact_success(request):
+def contact_success(request: HttpRequest) -> HttpResponse:
     return render(request, 'contact/success.html')

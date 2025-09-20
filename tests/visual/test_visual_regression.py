@@ -466,5 +466,294 @@ class ResponsiveVisualTest(TestCase):
             )
 
 
+@pytest.mark.visual
+@pytest.mark.ui
+class Phase7UIEffectsVisualTest(TestCase):
+    """Visual regression tests for Phase 7 UI effects"""
+
+    def setUp(self):
+        """Set up for Phase 7 visual testing"""
+        self.client = Client()
+
+    def test_glassmorphism_navigation_css_presence(self):
+        """Test that glassmorphism navigation CSS is present and consistent"""
+        response = self.client.get('/static/css/output.css')
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode('utf-8')
+
+        # Check for glassmorphism navigation properties
+        glassmorphism_properties = [
+            'backdrop-filter',
+            '-webkit-backdrop-filter',
+            'nav-container',
+            'blur(',
+            'saturate('
+        ]
+
+        for prop in glassmorphism_properties:
+            self.assertIn(prop, content, f"Glassmorphism property {prop} should be present")
+
+    def test_aurora_background_css_presence(self):
+        """Test that aurora background CSS is present and consistent"""
+        response = self.client.get('/static/css/output.css')
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode('utf-8')
+
+        # Check for aurora background properties
+        aurora_properties = [
+            'aurora-background',
+            'gradient-mesh',
+            'organic-blobs',
+            'shimmer-overlay',
+            'aurora-movement',
+            'blob-movement'
+        ]
+
+        for prop in aurora_properties:
+            self.assertIn(prop, content, f"Aurora property {prop} should be present")
+
+    def test_parallax_system_css_presence(self):
+        """Test that parallax system CSS is present and consistent"""
+        response = self.client.get('/static/css/output.css')
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode('utf-8')
+
+        # Check for parallax system properties
+        parallax_properties = [
+            'parallax-container',
+            'parallax-layer',
+            'scroll-parallax',
+            'parallax-aurora',
+            'parallax-stars',
+            'parallax-geometric',
+            'will-change',
+            'transform-style',
+            'backface-visibility'
+        ]
+
+        for prop in parallax_properties:
+            self.assertIn(prop, content, f"Parallax property {prop} should be present")
+
+    def test_custom_cursor_css_presence(self):
+        """Test that custom cursor CSS is present and consistent"""
+        response = self.client.get('/static/css/output.css')
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode('utf-8')
+
+        # Check for custom cursor properties
+        cursor_properties = [
+            'custom-cursor',
+            'cursor-particle',
+            'cursor-trail',
+            'cursor.hover',
+            'cursor.click',
+            'cursor.text',
+            'cursor-ripple'
+        ]
+
+        for prop in cursor_properties:
+            self.assertIn(prop, content, f"Cursor property {prop} should be present")
+
+    def test_modern_typography_css_presence(self):
+        """Test that modern typography CSS is present and consistent"""
+        response = self.client.get('/static/css/output.css')
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode('utf-8')
+
+        # Check for typography properties
+        typography_properties = [
+            'heading-premium',
+            'heading-2',
+            'heading-3',
+            'body-text',
+            'body-small',
+            'Inter',
+            '--text-'
+        ]
+
+        for prop in typography_properties:
+            self.assertIn(prop, content, f"Typography property {prop} should be present")
+
+    def test_homepage_phase7_integration(self):
+        """Test that homepage integrates all Phase 7 features"""
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode('utf-8')
+
+        # Check for Phase 7 integration in HTML
+        phase7_features = [
+            'nav-container',
+            'parallax-container',
+            'aurora-background',
+            'gradient-mesh',
+            'heading-premium',
+            'heading-2',
+            'parallax.js',
+            'cursor.js',
+            'animations.js'
+        ]
+
+        for feature in phase7_features:
+            self.assertIn(feature, content, f"Phase 7 feature {feature} should be integrated")
+
+    def test_accessibility_features_presence(self):
+        """Test that accessibility features are maintained in Phase 7"""
+        response = self.client.get('/static/css/output.css')
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode('utf-8')
+
+        # Check for accessibility features
+        accessibility_features = [
+            'prefers-reduced-motion',
+            'prefers-contrast',
+            'hover: none',
+            'pointer: coarse',
+            'focus:',
+            'aria-'
+        ]
+
+        for feature in accessibility_features:
+            self.assertIn(feature, content, f"Accessibility feature {feature} should be present")
+
+    def test_performance_optimizations_presence(self):
+        """Test that performance optimizations are maintained"""
+        response = self.client.get('/static/css/output.css')
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode('utf-8')
+
+        # Check for performance optimizations
+        performance_features = [
+            'will-change',
+            'transform3d',
+            'translateZ',
+            'backface-visibility',
+            'transform-style',
+            'gpu-accelerated'
+        ]
+
+        for feature in performance_features:
+            self.assertIn(feature, content, f"Performance feature {feature} should be present")
+
+
+@pytest.mark.visual
+@pytest.mark.ui
+class Phase7VisualIntegrityTest(TestCase):
+    """Test visual integrity of Phase 7 implementation"""
+
+    def setUp(self):
+        """Set up for visual integrity testing"""
+        self.client = Client()
+
+    def test_css_file_size_reasonable(self):
+        """Test that CSS file size is reasonable after Phase 7 additions"""
+        response = self.client.get('/static/css/output.css')
+        self.assertEqual(response.status_code, 200)
+
+        # Check file size is reasonable (under 3MB for all features)
+        content_length = len(response.content)
+        self.assertLess(content_length, 3 * 1024 * 1024, "CSS file should be under 3MB")
+        self.assertGreater(content_length, 100 * 1024, "CSS file should have substantial content")
+
+    def test_javascript_files_load_correctly(self):
+        """Test that all Phase 7 JavaScript files load correctly"""
+        js_files = [
+            '/static/js/animations.js',
+            '/static/js/parallax.js',
+            '/static/js/cursor.js'
+        ]
+
+        for js_file in js_files:
+            response = self.client.get(js_file)
+            self.assertEqual(response.status_code, 200, f"{js_file} should load successfully")
+
+            # Check reasonable file size
+            content_length = len(response.content)
+            self.assertGreater(content_length, 1000, f"{js_file} should have substantial content")
+
+    def test_no_css_conflicts(self):
+        """Test that there are no obvious CSS conflicts"""
+        response = self.client.get('/static/css/output.css')
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode('utf-8')
+
+        # Check that critical classes are not overridden
+        critical_patterns = [
+            '.nav-container',
+            '.parallax-container',
+            '.custom-cursor',
+            '.aurora-background'
+        ]
+
+        for pattern in critical_patterns:
+            # Count occurrences - should not be duplicated excessively
+            count = content.count(pattern)
+            self.assertGreater(count, 0, f"{pattern} should be present")
+            self.assertLess(count, 10, f"{pattern} should not be excessively duplicated")
+
+    def test_theme_compatibility_maintained(self):
+        """Test that theme switching still works with Phase 7"""
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode('utf-8')
+
+        # Check for theme switching infrastructure
+        theme_features = [
+            'darkMode',
+            'x-data',
+            'dark:',
+            'theme-toggle'
+        ]
+
+        for feature in theme_features:
+            self.assertIn(feature, content, f"Theme feature {feature} should be maintained")
+
+    def test_responsive_design_maintained(self):
+        """Test that responsive design works with Phase 7 features"""
+        response = self.client.get('/static/css/output.css')
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode('utf-8')
+
+        # Check for responsive utilities
+        responsive_features = [
+            '@media',
+            'sm:',
+            'md:',
+            'lg:',
+            'xl:'
+        ]
+
+        for feature in responsive_features:
+            self.assertIn(feature, content, f"Responsive feature {feature} should be maintained")
+
+    def test_fallback_support_present(self):
+        """Test that fallbacks are present for Phase 7 features"""
+        response = self.client.get('/static/css/output.css')
+        self.assertEqual(response.status_code, 200)
+
+        content = response.content.decode('utf-8')
+
+        # Check for fallback support
+        fallback_features = [
+            '-webkit-backdrop-filter',  # Webkit fallback
+            'prefers-reduced-motion',   # Motion preference fallback
+            'hover: none',              # Touch device fallback
+            '@supports'                 # Feature detection
+        ]
+
+        for feature in fallback_features:
+            self.assertIn(feature, content, f"Fallback feature {feature} should be present")
+
+
 if __name__ == '__main__':
     pytest.main([__file__])

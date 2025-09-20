@@ -27,7 +27,14 @@
       "Bash(npx tailwindcss:*)",
       "Bash(start http://localhost:8000)",
       "Bash(dir:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(move:*)",
+      "Bash(venvScripts:*)",
+      "Bash(call venvScriptsactivate.bat)",
+      "Bash(npm run test:lighthouse:*)",
+      "Bash(git config:*)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)"
     ],
     "deny": [],
     "ask": [],

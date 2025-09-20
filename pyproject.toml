@@ -107,10 +107,13 @@ markers = [
     "unit: Unit tests that test individual functions/methods",
     "integration: Integration tests that test multiple components",
     "e2e: End-to-end tests that test full user workflows",
-    "ui: Tests for UI/UX components and features",
-    "slow: Tests that take longer than usual to run",
-    "visual: Visual regression tests",
+    "ui: Tests for UI/UX components and features from Phase 7",
+    "visual: Visual regression tests for UI components",
     "responsive: Responsive design tests",
+    "accessibility: Accessibility feature tests",
+    "theme: Theme switching and dark mode tests",
+    "animation: Animation and interaction tests",
+    "slow: Tests that take longer than usual to run",
 ]
 
 [tool.coverage.run]

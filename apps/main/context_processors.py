@@ -1,9 +1,11 @@
+from typing import Dict, Any, List
 from django.conf import settings
 from django.urls import resolve
+from django.http import HttpRequest
 from .models import SocialLink, PersonalInfo
 
 
-def social_links(request):
+def social_links(request: HttpRequest) -> Dict[str, Any]:
     """
     Context processor to provide global social links for the footer.
     """
@@ -14,7 +16,7 @@ def social_links(request):
     }
 
 
-def global_context(request):
+def global_context(request: HttpRequest) -> Dict[str, Any]:
     """
     Global context processor to provide site-wide context variables.
     """
@@ -30,7 +32,7 @@ def global_context(request):
     }
 
 
-def breadcrumbs(request):
+def breadcrumbs(request: HttpRequest) -> Dict[str, List[Dict[str, Any]]]:
     """
     Context processor to provide breadcrumb navigation for all templates.
     """
@@ -98,7 +100,7 @@ def breadcrumbs(request):
         return {'breadcrumbs': [{'title': 'Ana Sayfa', 'url': '/'}]}
 
 
-def language_context(request):
+def language_context(request: HttpRequest) -> Dict[str, Any]:
     """
     Add language-related context to all templates.
     Provides current language, available languages, and helper functions.
@@ -120,7 +122,7 @@ def language_context(request):
     }
 
 
-def csp_nonce(request):
+def csp_nonce(request: HttpRequest) -> Dict[str, str]:
     """
     Context processor to provide CSP nonce for templates.
     Allows templates to use inline scripts and styles securely.

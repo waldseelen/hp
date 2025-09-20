@@ -36,14 +36,40 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['Inter', 'system-ui', 'sans-serif'],
+        'mono': ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
+        'display': ['Inter', 'system-ui', 'sans-serif'],
+      },
+      fontSize: {
+        'xs': ['0.75rem', { lineHeight: '1rem' }],
+        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
+        'base': ['1rem', { lineHeight: '1.5rem' }],
+        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
+        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
+        '2xl': ['1.5rem', { lineHeight: '2rem' }],
+        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
+        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
+        '5xl': ['3rem', { lineHeight: '1' }],
+        '6xl': ['3.75rem', { lineHeight: '1' }],
+        '7xl': ['4.5rem', { lineHeight: '1' }],
+        '8xl': ['6rem', { lineHeight: '1' }],
+        '9xl': ['8rem', { lineHeight: '1' }],
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '128': '32rem',
+        '144': '36rem',
+      },
       colors: {
-        // Primary brand colors (gold/khaki theme)
+        // Primary brand colors (gold/khaki theme) - WCAG AA Compliant
         primary: {
           50: '#fefdf8',
           100: '#fdf9ed',
           200: '#f9f1d4',
           300: '#f4e6a4',
-          400: '#FFD700',
+          400: '#e6c547', // Improved contrast
           500: '#c8b560',
           600: '#a89550',
           700: '#8b7355',
@@ -152,10 +178,21 @@ module.exports = {
           900: '#581c87'
         }
       },
+      transitionTimingFunction: {
+        'bounce': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
+      },
+      transitionDuration: {
+        '2000': '2000ms',
+        '3000': '3000ms',
+      },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'slide-up': 'slideUp 0.3s ease-out',
         'starfield': 'starfield 20s linear infinite',
+        'float': 'float 3s ease-in-out infinite',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'bounce-gentle': 'bounce 2s infinite',
       },
       keyframes: {
         fadeIn: {
@@ -169,6 +206,10 @@ module.exports = {
         starfield: {
           '0%': { transform: 'translateY(0px)' },
           '100%': { transform: 'translateY(-100px)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
         }
       }
     },

@@ -12,10 +12,11 @@ Provides comprehensive views for the portfolio site with:
 import json
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Union, Tuple
+from django.http import HttpRequest, HttpResponse, JsonResponse, Http404
+from django.template.response import TemplateResponse
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponse, Http404
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
@@ -62,7 +63,7 @@ CACHE_TIMEOUT_DAILY = 86400  # 24 hours
 
 
 @trace_function(operation_name="view.home", description="Home page view with analytics", tags={"view_type": "main"})
-def home(request):
+def home(request: HttpRequest) -> HttpResponse:
     """
     Enhanced home page view with analytics, performance optimization, and rich metadata.
     Features real-time stats, visitor tracking, and progressive enhancement.
@@ -194,7 +195,7 @@ def home(request):
         return render(request, 'main/home.html', context)
 
 
-def personal_view(request):
+def personal_view(request: HttpRequest) -> HttpResponse:
     """
     About/Personal page view with personal information.
     """
@@ -239,7 +240,7 @@ def personal_view(request):
         return render(request, 'main/personal.html', context)
 
 
-def music_view(request):
+def music_view(request: HttpRequest) -> HttpResponse:
     """
     Music page view with playlists and current track.
     """
@@ -289,7 +290,7 @@ def music_view(request):
         return render(request, 'main/music.html', context)
 
 
-def ai_tools_view(request):
+def ai_tools_view(request: HttpRequest) -> HttpResponse:
     """
     AI Tools page view with AI resources and tools.
     """
@@ -322,7 +323,7 @@ def ai_tools_view(request):
         return render(request, 'main/ai.html', context)
 
 
-def cybersecurity_view(request):
+def cybersecurity_view(request: HttpRequest) -> HttpResponse:
     """
     Cybersecurity page view with security content and resources.
     """
@@ -363,7 +364,7 @@ def cybersecurity_view(request):
         return render(request, 'main/cybersecurity.html', context)
 
 
-def useful_view(request):
+def useful_view(request: HttpRequest) -> HttpResponse:
     """
     Useful resources page view with categorized tools and websites.
     """
@@ -417,7 +418,7 @@ def useful_view(request):
 
 # Enhanced API and utility views
 @require_http_methods(["GET"])
-def search_view(request):
+def search_view(request: HttpRequest) -> HttpResponse:
     """
     Enhanced search view with faceted search, analytics, and suggestions
     """
@@ -490,7 +491,7 @@ def search_view(request):
         return render(request, 'search/search.html', context)
 
 @require_http_methods(["GET"])
-def search_ajax(request):
+def search_ajax(request: HttpRequest) -> JsonResponse:
     """
     AJAX search endpoint for real-time suggestions and results
     """
@@ -548,7 +549,7 @@ def search_ajax(request):
         }, status=500)
 
 @require_http_methods(["GET"])
-def projects_view(request):
+def projects_view(request: HttpRequest) -> HttpResponse:
     """
     Enhanced projects listing page with filtering and search
     """
@@ -614,7 +615,7 @@ def projects_view(request):
         return render(request, 'main/projects.html', context)
 
 @require_http_methods(["GET"])
-def project_detail_view(request, slug):
+def project_detail_view(request: HttpRequest, slug: str) -> HttpResponse:
     """
     Enhanced project detail view with related projects and analytics
     """
@@ -655,7 +656,7 @@ def project_detail_view(request, slug):
         context = create_fallback_context('project_detail', 'Project Details - Technical Error', e)
         return render(request, 'main/project_detail.html', context)
 
-def logout_view(request):
+def logout_view(request: HttpRequest) -> HttpResponse:
     """
     Enhanced logout view with proper cleanup and analytics
     """
@@ -678,7 +679,7 @@ def logout_view(request):
 
 
 # Utility functions
-def get_client_ip(request):
+def get_client_ip(request: HttpRequest) -> str:
     """Get the real client IP address"""
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -687,7 +688,7 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR', '127.0.0.1')
     return ip
 
-def get_visitor_location(ip_address):
+def get_visitor_location(ip_address: str) -> Dict[str, str]:
     """Get visitor location from IP (placeholder for GeoIP integration)"""
     # This would integrate with a GeoIP service
     # For now, return a placeholder
@@ -697,7 +698,7 @@ def get_visitor_location(ip_address):
         'timezone': 'UTC'
     }
 
-def get_portfolio_statistics():
+def get_portfolio_statistics() -> Dict[str, Union[int, str]]:
     """Calculate and return portfolio statistics"""
     try:
         cache_key = 'portfolio_statistics'
@@ -733,7 +734,7 @@ def get_portfolio_statistics():
             'last_updated': timezone.now().strftime('%Y-%m-%d'),
         }
 
-def get_search_categories():
+def get_search_categories() -> List[Dict[str, str]]:
     """Get available search categories"""
     return [
         {'value': 'all', 'label': 'All Categories', 'icon': '🔍'},
@@ -745,7 +746,7 @@ def get_search_categories():
         {'value': 'useful_resources', 'label': 'Resources', 'icon': '🔗'},
     ]
 
-def get_sort_options():
+def get_sort_options() -> List[Dict[str, str]]:
     """Get available sort options"""
     return [
         {'value': 'relevance', 'label': 'Most Relevant'},
@@ -754,7 +755,7 @@ def get_sort_options():
         {'value': 'category', 'label': 'By Category'},
     ]
 
-def create_fallback_context(page_id, title, error=None):
+def create_fallback_context(page_id: str, title: str, error: Optional[Exception] = None) -> Dict[str, Any]:
     """Create fallback context for error situations"""
     return {
         'page_title': title,
@@ -766,7 +767,7 @@ def create_fallback_context(page_id, title, error=None):
     }
 
 @ratelimit(key='ip', rate='200/h', method=ratelimit_ALL)
-def log_page_view(request, page_id, location=None):
+def log_page_view(request: HttpRequest, page_id: str, location: Optional[Dict[str, str]] = None) -> None:
     """Log page view for analytics (implement as needed)"""
     try:
         # This would typically integrate with analytics services
@@ -781,7 +782,7 @@ def log_page_view(request, page_id, location=None):
         logger.error(f"Error logging page view: {str(e)}")
 
 @ratelimit(key='ip', rate='100/h', method=ratelimit_ALL)
-def log_search_query(request, query, category, result_count):
+def log_search_query(request: HttpRequest, query: str, category: str, result_count: int) -> None:
     """Log search query for analytics"""
     try:
         logger.info(f"Search performed: '{query}' in '{category}' - {result_count} results", extra={
@@ -795,7 +796,7 @@ def log_search_query(request, query, category, result_count):
     except Exception as e:
         logger.error(f"Error logging search query: {str(e)}")
 
-def log_user_action(request, action, user_id=None):
+def log_user_action(request: HttpRequest, action: str, user_id: Optional[str] = None) -> None:
     """Log user actions for analytics"""
     try:
         logger.info(f"User action: {action}", extra={
@@ -812,7 +813,7 @@ def log_user_action(request, action, user_id=None):
 # ==========================
 
 @require_http_methods(["GET", "POST"])
-def set_language(request):
+def set_language(request: HttpRequest) -> HttpResponse:
     """
     Set the language preference for the user.
     Compatible with Django's built-in set_language view but with enhanced features.
@@ -850,7 +851,7 @@ def set_language(request):
 
 
 @require_http_methods(["GET"])
-def language_status(request):
+def language_status(request: HttpRequest) -> JsonResponse:
     """
     Return current language status as JSON.
     Useful for JavaScript language management.
@@ -872,7 +873,7 @@ def language_status(request):
     })
 
 
-def get_language_context(request):
+def get_language_context(request: HttpRequest) -> Dict[str, Any]:
     """
     Get language-related context for templates.
     This can be used in context processors or views.
@@ -926,7 +927,7 @@ from .models import PerformanceMetric, WebPushSubscription, NotificationLog, Err
 @permission_classes([AllowAny])
 @csrf_exempt
 @method_decorator(ratelimit(key='ip', rate=settings.API_RATE_LIMITS.get('performance', '100/h'), method='POST'), name='post')
-def collect_performance_metric(request):
+def collect_performance_metric(request: HttpRequest) -> Response:
     """
     API endpoint to collect performance metrics from frontend
     Rate limited and validates incoming data
@@ -970,7 +971,7 @@ def collect_performance_metric(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def performance_dashboard_data(request):
+def performance_dashboard_data(request: HttpRequest) -> Response:
     """
     API endpoint to get performance metrics summary for dashboard
     Requires authentication for admin access
@@ -1057,7 +1058,7 @@ def performance_dashboard_data(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 @method_decorator(ratelimit(key='ip', rate=settings.API_RATE_LIMITS.get('webpush', '10/m'), method='POST'), name='post')
-def subscribe_push_notifications(request):
+def subscribe_push_notifications(request: HttpRequest) -> Response:
     """
     API endpoint to subscribe to push notifications
     Rate limited to prevent abuse
@@ -1121,7 +1122,7 @@ def subscribe_push_notifications(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @method_decorator(ratelimit(key='ip', rate=settings.API_RATE_LIMITS.get('webpush', '10/m'), method='POST'), name='post')
-def send_push_notification(request):
+def send_push_notification(request: HttpRequest) -> Response:
     """
     API endpoint to send push notifications
     Requires authentication for admin use
@@ -1191,7 +1192,7 @@ def send_push_notification(request):
 @permission_classes([AllowAny])
 @csrf_exempt
 @method_decorator(ratelimit(key='ip', rate='50/h', method='POST'), name='post')
-def log_error(request):
+def log_error(request: HttpRequest) -> Response:
     """
     API endpoint to log errors from frontend
     Rate limited to prevent spam
@@ -1235,7 +1236,7 @@ def log_error(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def health_check(request):
+def health_check(request: HttpRequest) -> Response:
     """
     Health check endpoint for monitoring and load balancer
     Returns system status and basic metrics
@@ -1317,7 +1318,7 @@ class PerformanceDashboardView(APIView):
     """
     permission_classes = [IsAuthenticated]
     
-    def get(self, request):
+    def get(self, request: HttpRequest) -> HttpResponse:
         """Render performance dashboard template"""
         if not request.user.is_staff:
             raise Http404("Dashboard not found")
@@ -1343,7 +1344,7 @@ class PerformanceDashboardView(APIView):
 # UTILITY FUNCTIONS FOR API ENDPOINTS
 # ==========================================================================
 
-def alert_performance_issue(metric):
+def alert_performance_issue(metric: 'PerformanceMetric') -> None:
     """
     Alert about performance issues
     Can be extended to send notifications or create alerts
@@ -1362,7 +1363,7 @@ def alert_performance_issue(metric):
     #     send_performance_alert(metric)
 
 
-def alert_critical_error(error_log):
+def alert_critical_error(error_log: 'ErrorLog') -> None:
     """
     Alert about critical errors
     Can be extended to send immediate notifications
@@ -1384,7 +1385,7 @@ def alert_critical_error(error_log):
 
 @require_http_methods(["GET"])
 @ratelimit(key='ip', rate='30/m', method='GET')
-def performance_summary(request):
+def performance_summary(request: HttpRequest) -> Response:
     """
     API endpoint for performance summary data
     """
@@ -1392,7 +1393,7 @@ def performance_summary(request):
 
 
 @require_http_methods(["GET"])
-def tag_search_view(request):
+def tag_search_view(request: HttpRequest) -> HttpResponse:
     """
     Tag search view - shows all available tags
     """
@@ -1428,7 +1429,7 @@ def tag_search_view(request):
 
 
 @require_http_methods(["GET"])
-def tag_results_view(request, tag_name):
+def tag_results_view(request: HttpRequest, tag_name: str) -> HttpResponse:
     """
     Show content filtered by tag
     """
@@ -1468,7 +1469,7 @@ def tag_results_view(request, tag_name):
 
 
 @require_http_methods(["GET"])
-def short_url_redirect(request, short_code):
+def short_url_redirect(request: HttpRequest, short_code: str) -> HttpResponse:
     """
     Handle short URL redirects
     """
@@ -1492,7 +1493,7 @@ def short_url_redirect(request, short_code):
 
 
 @require_http_methods(["GET"])
-def error_summary(request):
+def error_summary(request: HttpRequest) -> JsonResponse:
     """
     API endpoint for error summary data
     """
@@ -1536,7 +1537,7 @@ def error_summary(request):
 @require_http_methods(["POST"])
 @csrf_exempt
 @ratelimit(key='ip', rate='10/m', method='POST')
-def webpush_unsubscribe(request):
+def webpush_unsubscribe(request: HttpRequest) -> JsonResponse:
     """
     Unsubscribe from push notifications
     """
@@ -1572,7 +1573,7 @@ def webpush_unsubscribe(request):
 
 @require_http_methods(["POST"])
 @csrf_exempt
-def test_push_notification(request):
+def test_push_notification(request: HttpRequest) -> JsonResponse:
     """
     Send a test push notification
     """
@@ -1616,7 +1617,7 @@ def test_push_notification(request):
 
 
 @require_http_methods(["GET"])
-def get_vapid_public_key(request):
+def get_vapid_public_key(request: HttpRequest) -> JsonResponse:
     """
     Get VAPID public key for push notification subscription
     """
@@ -1634,7 +1635,7 @@ def get_vapid_public_key(request):
 
 
 @require_http_methods(["GET"])
-def manifest_json(request):
+def manifest_json(request: HttpRequest) -> JsonResponse:
     """
     Serve the PWA manifest.json dynamically with proper JSON structure
     """
@@ -1653,15 +1654,21 @@ def manifest_json(request):
             "orientation": "portrait-primary",
             "icons": [
                 {
-                    "src": request.build_absolute_uri("/static/images/favicon-192x192.png"),
+                    "src": request.build_absolute_uri("/static/images/favicon-192x192.svg"),
                     "sizes": "192x192",
-                    "type": "image/png",
+                    "type": "image/svg+xml",
                     "purpose": "any maskable"
                 },
                 {
-                    "src": request.build_absolute_uri("/static/images/favicon-512x512.png"),
+                    "src": request.build_absolute_uri("/static/images/favicon-512x512.svg"),
                     "sizes": "512x512",
-                    "type": "image/png",
+                    "type": "image/svg+xml",
+                    "purpose": "any"
+                },
+                {
+                    "src": request.build_absolute_uri("/static/images/icon-base.svg"),
+                    "sizes": "any",
+                    "type": "image/svg+xml",
                     "purpose": "any"
                 }
             ],
@@ -1700,7 +1707,7 @@ def manifest_json(request):
 
 
 @require_http_methods(["GET"])
-def analytics_json(request):
+def analytics_json(request: HttpRequest) -> JsonResponse:
     """
     Enhanced analytics endpoint for frontend performance tracking
     """
@@ -1737,7 +1744,7 @@ def analytics_json(request):
 
 @require_http_methods(["POST"])
 @csrf_exempt
-def csp_violation_report(request):
+def csp_violation_report(request: HttpRequest) -> HttpResponse:
     """
     Handle CSP violation reports
     """
@@ -1766,7 +1773,7 @@ def csp_violation_report(request):
 
 @require_http_methods(["POST"])
 @csrf_exempt
-def network_error_report(request):
+def network_error_report(request: HttpRequest) -> HttpResponse:
     """
     Handle Network Error Logging (NEL) reports
     """
@@ -1791,7 +1798,7 @@ def network_error_report(request):
 @require_http_methods(["POST"])
 @csrf_exempt
 @ratelimit(key='ip', rate='50/h', method='POST')
-def webpush_log(request):
+def webpush_log(request: HttpRequest) -> JsonResponse:
     """
     Log webpush events from service worker
     """
@@ -1829,7 +1836,7 @@ def webpush_log(request):
 # ==========================================================================
 
 @require_http_methods(["GET"])
-def monitoring_dashboard(request):
+def monitoring_dashboard(request: HttpRequest) -> HttpResponse:
     """
     Main monitoring dashboard view
     """
@@ -1869,7 +1876,7 @@ def monitoring_dashboard(request):
 
 
 @require_http_methods(["GET"])
-def performance_analytics_view(request):
+def performance_analytics_view(request: HttpRequest) -> HttpResponse:
     """
     Performance analytics dashboard
     """
@@ -1889,7 +1896,7 @@ def performance_analytics_view(request):
 
 
 @require_http_methods(["GET"])
-def error_logs_view(request):
+def error_logs_view(request: HttpRequest) -> HttpResponse:
     """
     Error logs dashboard
     """
@@ -1910,8 +1917,8 @@ def error_logs_view(request):
         return render(request, '500.html', status=500)
 
 
-@require_http_methods(["GET"])  
-def notification_logs_view(request):
+@require_http_methods(["GET"])
+def notification_logs_view(request: HttpRequest) -> HttpResponse:
     """
     Notification logs dashboard
     """
@@ -1991,5 +1998,61 @@ class UsefulResourceListAPIView(ListAPIView):
     ordering_fields = ['order', 'name', 'rating']
     ordering = ['category', 'order', 'name']
     filterset_fields = ['category', 'type', 'is_featured', 'is_free']
+
+
+@require_http_methods(["GET"])
+def ui_kit_view(request: HttpRequest) -> HttpResponse:
+    """
+    Design System UI Kit page for living documentation
+    Displays all design system components, colors, typography, and patterns.
+    """
+    try:
+        context = {
+            'title': _('Design System UI Kit'),
+            'meta_description': _('Living documentation of our design system components, colors, typography, and patterns.'),
+            'meta_keywords': _('design system, UI kit, components, colors, typography, CSS, Tailwind'),
+            'breadcrumbs': [
+                {'name': _('Home'), 'url': '/'},
+                {'name': _('UI Kit'), 'url': None}
+            ]
+        }
+        return render(request, 'main/ui-kit.html', context)
+    except Exception as e:
+        logger.error(f"UI Kit view error: {e}")
+        return render(request, '500.html', status=500)
+
+
+@require_http_methods(["GET"])
+def offline_view(request: HttpRequest) -> HttpResponse:
+    """
+    Offline page for PWA when user has no internet connection
+    This page is cached by the service worker and served when offline
+    """
+    try:
+        context = {
+            'title': _('Offline'),
+            'meta_description': _('You are currently offline. Some features may be limited.'),
+            'page_id': 'offline',
+        }
+        return render(request, 'offline.html', context)
+    except Exception as e:
+        logger.error(f"Offline view error: {e}")
+        # Return a very basic offline page as fallback
+        basic_offline_html = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Offline</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body>
+            <h1>You're Offline</h1>
+            <p>No internet connection detected.</p>
+            <button onclick="window.location.reload()">Try Again</button>
+        </body>
+        </html>
+        """
+        return HttpResponse(basic_offline_html, content_type='text/html')
 
 

@@ -1,0 +1,381 @@
+/* Responsive Design Overrides and Fixes
+================================================ */
+
+/* Base Layout Fixes */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container responsive behavior */
+.container {
+    width: 100%;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1320px;
+    }
+}
+
+/* Navigation Responsive Fixes */
+nav {
+    width: 100%;
+    position: relative;
+    z-index: 1000;
+}
+
+/* Mobile Navigation */
+@media (max-width: 767px) {
+    .md\:hidden {
+        display: block !important;
+    }
+
+    .hidden.md\:flex {
+        display: none !important;
+    }
+
+    /* Mobile menu items */
+    .mobile-nav-item,
+    .mobile-nav-link {
+        padding: 0.75rem 1rem;
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Fix mobile menu animation */
+    [x-show] {
+        transition: all 0.3s ease;
+    }
+}
+
+/* Desktop Navigation */
+@media (min-width: 768px) {
+    .md\:hidden {
+        display: none !important;
+    }
+
+    .hidden.md\:flex {
+        display: flex !important;
+    }
+
+    .md\:flex {
+        display: flex !important;
+    }
+}
+
+/* Grid System Responsive */
+.grid {
+    display: grid;
+    width: 100%;
+}
+
+@media (max-width: 639px) {
+    .sm\:grid-cols-1 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 640px) {
+    .sm\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 768px) {
+    .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .md\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .lg\:grid-cols-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* Card Components */
+.card, .glass-card {
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+/* Typography Responsive */
+@media (max-width: 640px) {
+    h1, .heading-1 {
+        font-size: 1.875rem !important;
+        line-height: 2.25rem;
+    }
+
+    h2, .heading-2 {
+        font-size: 1.5rem !important;
+        line-height: 2rem;
+    }
+
+    h3, .heading-3 {
+        font-size: 1.25rem !important;
+        line-height: 1.75rem;
+    }
+
+    .body-large {
+        font-size: 1rem !important;
+        line-height: 1.5rem;
+    }
+
+    .text-\[12rem\] {
+        font-size: 3rem !important;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+    h1, .heading-1 {
+        font-size: 2.25rem !important;
+    }
+
+    h2, .heading-2 {
+        font-size: 1.875rem !important;
+    }
+
+    .text-\[12rem\] {
+        font-size: 6rem !important;
+    }
+}
+
+/* Spacing Utilities */
+@media (max-width: 640px) {
+    .py-12 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+
+    .py-20 {
+        padding-top: 3rem !important;
+        padding-bottom: 3rem !important;
+    }
+
+    .px-4 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .mb-8 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .space-x-4 > * + * {
+        margin-left: 0.75rem !important;
+    }
+}
+
+/* Button Responsive */
+.btn, .btn-primary, .btn-secondary, .btn-premium {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+    .btn, .btn-primary, .btn-secondary, .btn-premium {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* Images Responsive */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Table Responsive */
+@media (max-width: 768px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+/* Form Elements */
+input, textarea, select {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Footer Responsive */
+footer .grid {
+    gap: 1.5rem;
+}
+
+@media (max-width: 767px) {
+    footer .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 768px) {
+    footer .grid.md\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Utility Classes */
+.flex-shrink-0 {
+    flex-shrink: 0 !important;
+}
+
+.w-4 {
+    width: 1rem !important;
+    max-width: 1rem !important;
+}
+
+.h-4 {
+    height: 1rem !important;
+    max-height: 1rem !important;
+}
+
+.w-5 {
+    width: 1.25rem !important;
+    max-width: 1.25rem !important;
+}
+
+.h-5 {
+    height: 1.25rem !important;
+    max-height: 1.25rem !important;
+}
+
+.w-6 {
+    width: 1.5rem !important;
+    max-width: 1.5rem !important;
+}
+
+.h-6 {
+    height: 1.5rem !important;
+    max-height: 1.5rem !important;
+}
+
+/* Fix for floating elements */
+.fixed {
+    position: fixed !important;
+}
+
+.bottom-6 {
+    bottom: 1.5rem !important;
+}
+
+.right-6 {
+    right: 1.5rem !important;
+}
+
+/* Z-index management */
+.z-10 { z-index: 10 !important; }
+.z-40 { z-index: 40 !important; }
+.z-50 { z-index: 50 !important; }
+.-z-10 { z-index: -10 !important; }
+
+/* Overflow fixes */
+.overflow-hidden {
+    overflow: hidden !important;
+}
+
+.overflow-x-auto {
+    overflow-x: auto !important;
+}
+
+.overflow-y-auto {
+    overflow-y: auto !important;
+}
+
+/* Display utilities */
+@media (max-width: 767px) {
+    .hidden-mobile {
+        display: none !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .hidden-desktop {
+        display: none !important;
+    }
+}
+
+/* Starfield background positioning */
+.starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -10;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Main content wrapper */
+main {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-height: calc(100vh - 64px);
+}
+
+/* Skip navigation improvements */
+.skip-nav {
+    position: absolute;
+    left: -9999px;
+}
+
+.skip-nav:focus {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 9999;
+    padding: 0.5rem 1rem;
+    background-color: #a89550;
+    color: white;
+    border-radius: 0.5rem;
+}

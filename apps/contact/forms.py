@@ -1,6 +1,7 @@
 """
 Contact forms with proper validation and sanitization
 """
+from typing import Any, Dict, Optional
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.html import strip_tags
@@ -41,7 +42,7 @@ class ContactForm(forms.ModelForm):
             })
         }
 
-    def clean_name(self):
+    def clean_name(self) -> str:
         """Validate and sanitize name field"""
         name = self.cleaned_data.get('name')
         if not name:
@@ -75,7 +76,7 @@ class ContactForm(forms.ModelForm):
         
         return name
 
-    def clean_email(self):
+    def clean_email(self) -> str:
         """Validate email field"""
         email = self.cleaned_data.get('email')
         if not email:
@@ -98,7 +99,7 @@ class ContactForm(forms.ModelForm):
         
         return email
 
-    def clean_subject(self):
+    def clean_subject(self) -> str:
         """Validate and sanitize subject field"""
         subject = self.cleaned_data.get('subject')
         if not subject:
@@ -126,7 +127,7 @@ class ContactForm(forms.ModelForm):
         
         return subject
 
-    def clean_message(self):
+    def clean_message(self) -> str:
         """Validate and sanitize message field"""
         message = self.cleaned_data.get('message')
         if not message:
@@ -159,7 +160,7 @@ class ContactForm(forms.ModelForm):
         
         return message
 
-    def clean_website(self):
+    def clean_website(self) -> str:
         """Validate honeypot field"""
         website = self.cleaned_data.get('website')
         if website:
@@ -167,7 +168,7 @@ class ContactForm(forms.ModelForm):
             raise ValidationError('Invalid form submission detected.')
         return website
 
-    def clean(self):
+    def clean(self) -> Dict[str, Any]:
         """Additional cross-field validation"""
         cleaned_data = super().clean()
         
