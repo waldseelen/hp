@@ -145,8 +145,7 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
             'magnetometer=(), '
             'microphone=(), '
             'payment=(), '
-            'usb=(), '
-            'interest-cohort=()'
+            'usb=()'
         )
         
         # Add Report-To header for multiple security violation reporting

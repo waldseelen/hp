@@ -18,6 +18,7 @@
 
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Portfolio">
@@ -93,54 +94,12 @@
 
     <!-- Search Autocomplete System -->
     <script src="{% static 'js/search-autocomplete.js' %}?v={% now 'U' %}"></script>
-    <style>
-        /* Image optimization styles */
-        img.lazy-load {
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
 
-        img.lazy-loaded {
-            opacity: 1;
-        }
+    <!-- Inline Styles (moved to external file for CSP compliance) -->
+    <link rel="stylesheet" href="{% static 'css/inline-styles.css' %}?v={% now 'U' %}">
 
-        img.placeholder {
-            filter: blur(5px);
-            transform: scale(1.1);
-            transition: all 0.3s ease-in-out;
-        }
-
-        img.progressive-load {
-            background: linear-gradient(90deg, #f0f0f0 25%, transparent 37%, #f0f0f0 63%);
-            background-size: 400% 100%;
-            animation: shimmer 1.5s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 100% 50%; }
-            100% { background-position: -100% 50%; }
-        }
-
-        /* WebP support styles */
-        .webp-support .webp-fallback { display: none; }
-        .no-webp-support .webp-only { display: none; }
-
-        /* Loading placeholder */
-        .image-loading {
-            background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
-                        linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
-                        linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
-                        linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-            animation: loading-pattern 2s linear infinite;
-        }
-
-        @keyframes loading-pattern {
-            0% { background-position: 0 0, 0 10px, 10px -10px, -10px 0px; }
-            100% { background-position: 20px 20px, 20px 30px, 30px 10px, 10px 20px; }
-        }
-    </style>
+    <!-- Cookie Consent Styles -->
+    <link rel="stylesheet" href="{% static 'css/cookie-consent.css' %}?v={% now 'U' %}">
 
     {% block extra_head %}{% endblock %}
 </head>
