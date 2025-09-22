@@ -19,6 +19,12 @@
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any"
+    },
+    {
+      "src": "{% load static %}{% static 'favicon.ico' %}",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon",
+      "purpose": "any"
     }
   ],
   "categories": ["portfolio", "developer", "technology"],

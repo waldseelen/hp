@@ -26,7 +26,7 @@ def redirect_short_url(request, short_code):
             })
     
     # Log the click
-    short_url.increment_click()
+    short_url.increment_clicks()
     
     # Track click details (optional)
     try:
@@ -67,7 +67,8 @@ def shorturl_create(request):
                 title=title,
                 description=description,
                 password=password,
-                expires_at=expires_at
+                expires_at=expires_at,
+                created_by=request.user
             )
             
             return JsonResponse({
@@ -160,7 +161,8 @@ def shorturl_api(request):
         # Create new short URL
         short_url = ShortURL.objects.create(
             original_url=original_url,
-            title=data.get('title', '')
+            title=data.get('title', ''),
+            created_by=request.user
         )
         
         return JsonResponse({

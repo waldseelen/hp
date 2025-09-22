@@ -1,6 +1,11 @@
-# 🚀 Professional Portfolio Site
+# 🚀 Professional Portfolio Website
 
-A modern, professional portfolio website built with Django and styled with Tailwind CSS. Features a clean, responsive design optimized for performance and SEO.
+[![Django](https://img.shields.io/badge/Django-5.1+-green.svg)](https://www.djangoproject.com/)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./docs/guides/README.md)
+
+> A modern, full-stack portfolio website built with Django 5.1, featuring advanced security, performance optimization, and professional architecture.
 
 ## ✨ Features
 
@@ -155,11 +160,11 @@ The site is fully responsive with breakpoints optimized for:
 ## 🚀 Deployment
 
 ### Railway Deployment
-The site is configured for easy deployment on Railway:
+The repository ships with Railway configuration, a startup script, and a CI workflow.
 
-1. **Connect Repository**: Link your GitHub repository
-2. **Environment Variables**: Set required environment variables
-3. **Automatic Deployment**: Railway handles the deployment automatically
+1. **One-time setup**: Provision a project + PostgreSQL service on Railway and set the variables described in the [Railway deployment guide](docs/deployment/railway.md).
+2. **CI deployment**: Add a `RAILWAY_TOKEN` secret in GitHub and let the `Deploy to Railway` workflow deploy on every push to `main`.
+3. **Manual deploy**: Alternatively run `railway up` locally after `railway login` and `railway init`.
 
 ### Docker Deployment
 ```dockerfile
@@ -191,6 +196,18 @@ This project has been fully updated and optimized:
 - ✅ Professional appearance enhanced
 - ✅ Code quality improved
 - ✅ Functionality validated
+
+## 📚 Documentation
+
+Comprehensive documentation is available in the `docs/` folder:
+
+- **[📖 Complete Documentation](./docs/README.md)** - Main documentation index
+- **[⚙️ Setup Guides](./docs/setup/README.md)** - Installation and configuration
+- **[🚢 Deployment](./docs/deployment/README.md)** - Production deployment guides
+- **[⚡ Performance](./docs/performance/README.md)** - Performance optimization
+- **[🏗️ Architecture](./docs/architecture/README.md)** - System architecture and design
+- **[📋 Development Guides](./docs/guides/README.md)** - Development workflows and standards
+- **[🔌 API Documentation](./docs/api/README.md)** - API and integrations
 
 ## 📝 License
 

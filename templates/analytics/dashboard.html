@@ -1,1 +1,344 @@
-{% extends"base.html" %} {% load static %} {% block title %}Analytics Dashboard{% endblock %} {% block extra_css %} <style> .analytics-container { max-width: 1400px; margin: 0 auto; padding: 2rem; } .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; } .metric-card { background: var(--card-bg, white); border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); } .metric-value { font-size: 2rem; font-weight: bold; color: var(--primary-color, #007bff); } .metric-label { color: var(--text-muted, #6c757d); font-size: 0.875rem; margin-top: 0.5rem; } .chart-container { background: var(--card-bg, white); border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 2rem; } .chart-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; } .funnel-container { display: flex; flex-direction: column; gap: 0.5rem; } .funnel-step { display: flex; align-items: center; gap: 1rem; } .funnel-bar { flex-grow: 1; height: 40px; background: linear-gradient(90deg, var(--primary-color, #007bff) var(--percentage), #e9ecef var(--percentage)); border-radius: 4px; position: relative; display: flex; align-items: center; padding: 0 1rem; } .funnel-label { color: white; font-weight: 500; z-index: 1; } .funnel-value { margin-left: auto; color: white; z-index: 1; } .journey-path { display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: var(--bg-light, #f8f9fa); border-radius: 4px; margin-bottom: 0.5rem; } .journey-arrow { color: var(--text-muted, #6c757d); } .ab-test-variant { display: flex; justify-content: space-between; padding: 1rem; background: var(--bg-light, #f8f9fa); border-radius: 4px; margin-bottom: 0.5rem; } .variant-winner { background: #d4edda; border: 1px solid #28a745; } .period-selector { display: flex; gap: 0.5rem; margin-bottom: 2rem; } .period-btn { padding: 0.5rem 1rem; border: 1px solid var(--border-color, #dee2e6); background: white; border-radius: 4px; cursor: pointer; transition: all 0.2s; } .period-btn.active { background: var(--primary-color, #007bff); color: white; border-color: var(--primary-color, #007bff); } .data-table { width: 100%; border-collapse: collapse; } .data-table th, .data-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color, #dee2e6); } .data-table th { font-weight: 600; background: var(--bg-light, #f8f9fa); } </style> {% endblock %} {% block content %} <div class="analytics-container"> <h1>Analytics Dashboard</h1> {% if error %} <div class="alert alert-danger">{{ error }}</div> {% else %} <!-- Period Selector --> <div class="period-selector"> <button class="period-btn {% if period_days == 1 %}active{% endif %}" data-days="1">Today</button> <button class="period-btn {% if period_days == 7 %}active{% endif %}" data-days="7">7 Days</button> <button class="period-btn {% if period_days == 30 %}active{% endif %}" data-days="30">30 Days</button> </div> <!-- Key Metrics --> <div class="metrics-grid"> <div class="metric-card"> <div class="metric-value">{{ metrics.total_page_views|default:0 }}</div> <div class="metric-label">Total Page Views</div> </div> <div class="metric-card"> <div class="metric-value">{{ metrics.total_events|default:0 }}</div> <div class="metric-label">Total Events</div> </div> <div class="metric-card"> <div class="metric-value">{{ metrics.total_conversions|default:0 }}</div> <div class="metric-label">Total Conversions</div> </div> <div class="metric-card"> <div class="metric-value">{{ metrics.conversion_rate|default:0 }}%</div> <div class="metric-label">Conversion Rate</div> </div> </div> <!-- Page Views Chart --> <div class="chart-container"> <h2 class="chart-title">Page Views Over Time</h2> <canvas id="pageViewsChart"></canvas> </div> <!-- Top Pages --> <div class="chart-container"> <h2 class="chart-title">Top Pages</h2> <table class="data-table"> <thead> <tr> <th>Page</th> <th>Views</th> </tr> </thead> <tbody> {% for page, views in summary.top_pages.items|slice:":10" %} <tr> <td>{{ page }}</td> <td>{{ views }}</td> </tr> {% empty %} <tr> <td colspan="2">No data available</td> </tr> {% endfor %} </tbody> </table> </div> <!-- Device Breakdown --> <div class="chart-container"> <h2 class="chart-title">Device Breakdown</h2> <div style="max-width: 300px;"> <canvas id="deviceChart"></canvas> </div> </div> <!-- Browser Stats --> <div class="chart-container"> <h2 class="chart-title">Browser Distribution</h2> <div style="max-width: 300px;"> <canvas id="browserChart"></canvas> </div> </div> <!-- Events --> <div class="chart-container"> <h2 class="chart-title">Event Tracking</h2> <table class="data-table"> <thead> <tr> <th>Event</th> <th>Count</th> </tr> </thead> <tbody> {% for event, count in summary.events.items %} <tr> <td>{{ event }}</td> <td>{{ count }}</td> </tr> {% empty %} <tr> <td colspan="2">No events tracked</td> </tr> {% endfor %} </tbody> </table> </div> <!-- Conversions --> <div class="chart-container"> <h2 class="chart-title">Conversions</h2> <table class="data-table"> <thead> <tr> <th>Type</th> <th>Count</th> </tr> </thead> <tbody> {% for type, count in summary.conversions.items %} <tr> <td>{{ type }}</td> <td>{{ count }}</td> </tr> {% empty %} <tr> <td colspan="2">No conversions tracked</td> </tr> {% endfor %} </tbody> </table> </div> {% endif %} </div> {% endblock %} {% block extra_js %} <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <script> document.addEventListener('DOMContentLoaded', function() { // Period selector document.querySelectorAll('.period-btn').forEach(btn => { btn.addEventListener('click', function() { const days = this.dataset.days; window.location.href = `?days=${days}`; }); }); // Page Views Chart const pageViewsCtx = document.getElementById('pageViewsChart'); if (pageViewsCtx) { const pageViewsData = {{ summary.page_views|safe|default:"{}" }}; new Chart(pageViewsCtx, { type: 'line', data: { labels: Object.keys(pageViewsData), datasets: [{ label: 'Page Views', data: Object.values(pageViewsData), borderColor: 'rgb(75, 192, 192)', tension: 0.1 }] }, options: { responsive: true, maintainAspectRatio: false, height: 300 } }); } // Device Chart const deviceCtx = document.getElementById('deviceChart'); if (deviceCtx) { const deviceData = {{ summary.devices|safe|default:"{}" }}; new Chart(deviceCtx, { type: 'doughnut', data: { labels: ['Mobile', 'Desktop'], datasets: [{ data: [deviceData.mobile || 0, deviceData.desktop || 0], backgroundColor: ['#36a2eb', '#ff6384'] }] } }); } // Browser Chart const browserCtx = document.getElementById('browserChart'); if (browserCtx) { const browserData = {{ summary.browsers|safe|default:"{}" }}; new Chart(browserCtx, { type: 'pie', data: { labels: Object.keys(browserData), datasets: [{ data: Object.values(browserData), backgroundColor: [ '#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff' ] }] } }); } // Auto-refresh every 60 seconds setTimeout(() => { location.reload(); }, 60000); }); </script> {% endblock %}
+
+{% extends 'base/base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Analytics Dashboard" %}{% endblock %}
+
+{% block extra_head %}
+<style>
+  .analytics-shell {
+    width: min(100%, 72rem);
+    margin: 0 auto;
+    display: grid;
+    gap: clamp(var(--space-5), 4vw, var(--space-6));
+    padding-block: clamp(var(--space-5), 6vw, var(--space-7));
+  }
+
+  .analytics-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: clamp(var(--space-4), 4vw, var(--space-6));
+    box-shadow: var(--shadow-xs);
+  }
+
+  .metrics-grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+
+  .metric-card {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    background: rgba(15, 23, 42, 0.45);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .metric-value {
+    font-size: clamp(1.75rem, 3.2vw, 2.25rem);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .metric-label {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    letter-spacing: 0.03em;
+  }
+
+  .analytics-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .analytics-table th,
+  .analytics-table td {
+    padding: var(--space-3);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+    text-align: left;
+    font-size: var(--font-size-sm);
+  }
+
+  .analytics-table th {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+  }
+
+  .chart-wrapper {
+    position: relative;
+    min-height: 18rem;
+  }
+
+  .period-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .period-btn {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: inherit;
+    font-weight: var(--font-weight-medium);
+    transition: all var(--motion-duration-sm) var(--motion-ease-standard);
+  }
+
+  .period-btn:is(:hover, :focus-visible),
+  .period-btn.active {
+    border-color: rgba(230, 197, 71, 0.45);
+    background: rgba(230, 197, 71, 0.14);
+    color: var(--color-primary);
+  }
+
+  .status-indicator {
+    display: inline-flex;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: var(--radius-full);
+    margin-right: var(--space-2);
+  }
+
+  .status-critical {
+    background: #f87171;
+  }
+
+  .status-warning {
+    background: #fbbf24;
+  }
+
+  .status-info {
+    background: #38bdf8;
+  }
+
+  @media (max-width: 48rem) {
+    .analytics-shell {
+      padding-inline: var(--space-4);
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="analytics-shell" data-animate="fade">
+    <header class="stack" style="gap: var(--space-2); text-align: center;">
+      <span class="text-eyebrow">{% trans "Insights" %}</span>
+      <h1 class="heading-display-lg">{% trans "Analytics Dashboard" %}</h1>
+      <p class="section-subheading">{% trans "Monitor key performance metrics, engagement funnels and conversion health in real time." %}</p>
+    </header>
+
+    <div class="analytics-section">
+      <div class="period-selector" data-animate="fade">
+        <button class="period-btn{% if period_days == 1 %} active{% endif %}" type="button" data-days="1">{% trans "Today" %}</button>
+        <button class="period-btn{% if period_days == 7 %} active{% endif %}" type="button" data-days="7">{% trans "Last 7 Days" %}</button>
+        <button class="period-btn{% if period_days == 30 %} active{% endif %}" type="button" data-days="30">{% trans "Last 30 Days" %}</button>
+      </div>
+    </div>
+
+    {% if error %}
+      <div class="analytics-section" role="alert">
+        <p class="body-text">{{ error }}</p>
+      </div>
+    {% else %}
+      <div class="analytics-section">
+        <h2 class="heading-title">{% trans "Key Metrics" %}</h2>
+        <div class="metrics-grid">
+          <article class="metric-card">
+            <span class="metric-label">{% trans "Total Page Views" %}</span>
+            <span class="metric-value">{{ metrics.total_page_views|default:0 }}</span>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">{% trans "Tracked Events" %}</span>
+            <span class="metric-value">{{ metrics.total_events|default:0 }}</span>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">{% trans "Conversions" %}</span>
+            <span class="metric-value">{{ metrics.total_conversions|default:0 }}</span>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">{% trans "Conversion Rate" %}</span>
+            <span class="metric-value">{{ metrics.conversion_rate|default:0 }}%</span>
+          </article>
+        </div>
+      </div>
+
+      <div class="analytics-section">
+        <h2 class="heading-title">{% trans "Page Views" %}</h2>
+        <div class="chart-wrapper">
+          <canvas id="pageViewsChart" aria-label="{% trans 'Page views over time' %}" role="img"></canvas>
+        </div>
+      </div>
+
+      <div class="analytics-section">
+        <h2 class="heading-title">{% trans "Top Pages" %}</h2>
+        <table class="analytics-table">
+          <thead>
+            <tr>
+              <th scope="col">{% trans "Page" %}</th>
+              <th scope="col">{% trans "Views" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for page, views in summary.top_pages.items|slice:':10' %}
+              <tr>
+                <td>{{ page }}</td>
+                <td>{{ views }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="2">{% trans "No data available." %}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="analytics-section" style="display: grid; gap: var(--space-4);">
+        <div>
+          <h2 class="heading-title">{% trans "Device Breakdown" %}</h2>
+          <div class="chart-wrapper" style="max-width: 20rem;">
+            <canvas id="deviceChart" aria-label="{% trans 'Device distribution' %}" role="img"></canvas>
+          </div>
+        </div>
+        <div>
+          <h2 class="heading-title">{% trans "Browser Distribution" %}</h2>
+          <div class="chart-wrapper" style="max-width: 20rem;">
+            <canvas id="browserChart" aria-label="{% trans 'Browser distribution' %}" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="analytics-section">
+        <h2 class="heading-title">{% trans "Event Tracking" %}</h2>
+        <table class="analytics-table">
+          <thead>
+            <tr>
+              <th scope="col">{% trans "Event" %}</th>
+              <th scope="col">{% trans "Count" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for event, count in summary.events.items %}
+              <tr>
+                <td>{{ event }}</td>
+                <td>{{ count }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="2">{% trans "No events tracked." %}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="analytics-section">
+        <h2 class="heading-title">{% trans "Conversions" %}</h2>
+        <table class="analytics-table">
+          <thead>
+            <tr>
+              <th scope="col">{% trans "Type" %}</th>
+              <th scope="col">{% trans "Count" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for conversion_type, total in summary.conversions.items %}
+              <tr>
+                <td>{{ conversion_type }}</td>
+                <td>{{ total }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="2">{% trans "No conversions tracked." %}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const selectorButtons = document.querySelectorAll('.period-btn');
+    selectorButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const days = button.dataset.days;
+        if (days) {
+          const url = new URL(window.location.href);
+          url.searchParams.set('days', days);
+          window.location.assign(url.toString());
+        }
+      });
+    });
+
+    const pageViewsTarget = document.getElementById('pageViewsChart');
+    if (pageViewsTarget) {
+      const pageViewsData = {{ summary.page_views|default:'{}'|safe }};
+      new Chart(pageViewsTarget, {
+        type: 'line',
+        data: {
+          labels: Object.keys(pageViewsData),
+          datasets: [{
+            label: '{% trans "Page Views" %}',
+            data: Object.values(pageViewsData),
+            borderColor: 'rgb(96, 165, 250)',
+            tension: 0.12,
+            fill: false,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      });
+    }
+
+    const deviceTarget = document.getElementById('deviceChart');
+    if (deviceTarget) {
+      const deviceData = {{ summary.devices|default:'{}'|safe }};
+      new Chart(deviceTarget, {
+        type: 'doughnut',
+        data: {
+          labels: ['{% trans "Mobile" %}', '{% trans "Desktop" %}'],
+          datasets: [{
+            data: [deviceData.mobile || 0, deviceData.desktop || 0],
+            backgroundColor: ['#38bdf8', '#a855f7'],
+          }],
+        },
+        options: { responsive: true, maintainAspectRatio: true },
+      });
+    }
+
+    const browserTarget = document.getElementById('browserChart');
+    if (browserTarget) {
+      const browserData = {{ summary.browsers|default:'{}'|safe }};
+      new Chart(browserTarget, {
+        type: 'pie',
+        data: {
+          labels: Object.keys(browserData),
+          datasets: [{
+            data: Object.values(browserData),
+            backgroundColor: ['#f97316', '#10b981', '#6366f1', '#facc15', '#ef4444'],
+          }],
+        },
+        options: { responsive: true, maintainAspectRatio: true },
+      });
+    }
+
+    window.setTimeout(() => {
+      window.location.reload();
+    }, 60000);
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,215 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Müzik - Portfolio{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Hero Section -->
+    <section class="text-center py-12 sm:py-20 animate-fade-in">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="heading-1 mb-6 animate-slide-up">
+                <span class="inline-flex items-center">
+                    <svg class="w-12 h-12 mr-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                    </svg>
+                    Müzik
+                </span>
+            </h1>
+            <p class="body-large mb-8 animate-slide-up" style="animation-delay: 0.1s">
+                Müzik tutkum ve projelerim
+            </p>
+        </div>
+    </section>
+
+    <!-- Music Content -->
+    <div class="max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Favorite Artists -->
+            <div class="card animate-slide-up" style="animation-delay: 0.2s">
+                <div class="p-6">
+                    <h2 class="heading-2 mb-6">
+                        <span class="inline-flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-red-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
+                            Favori Sanatçılar
+                        </span>
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-4 bg-gray-800/20 rounded-lg hover:bg-gray-800/40 transition-colors">
+                            <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Electronic</h3>
+                                <p class="text-sm text-gray-400">Synthwave, Ambient, Techno</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-4 bg-gray-800/20 rounded-lg hover:bg-gray-800/40 transition-colors">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-700 rounded-lg flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Progressive Rock</h3>
+                                <p class="text-sm text-gray-400">Complex compositions, instrumental</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-4 bg-gray-800/20 rounded-lg hover:bg-gray-800/40 transition-colors">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-700 rounded-lg flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Jazz Fusion</h3>
+                                <p class="text-sm text-gray-400">Improvisation, complex harmonies</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Music Projects -->
+            <div class="card animate-slide-up" style="animation-delay: 0.3s">
+                <div class="p-6">
+                    <h2 class="heading-2 mb-6">
+                        <span class="inline-flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                            </svg>
+                            Müzik Projeleri
+                        </span>
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-primary-500 pl-4">
+                            <h3 class="heading-3 mb-2">Ambient Soundscapes</h3>
+                            <p class="body-small text-gray-400 mb-3">Elektronik müzik projesi</p>
+                            <p class="body-text">Coding yaparken konsantrasyon için atmosferik ve ambient müzikler üretimi.</p>
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                <span class="tag">Ableton Live</span>
+                                <span class="tag">Synthesizer</span>
+                                <span class="tag">Ambient</span>
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-primary-500 pl-4">
+                            <h3 class="heading-3 mb-2">Audio Visualizer</h3>
+                            <p class="body-small text-gray-400 mb-3">Web tabanlı görselleştirme aracı</p>
+                            <p class="body-text">Müziği gerçek zamanlı olarak analiz eden ve görsel efektler üreten web uygulaması.</p>
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                <span class="tag">JavaScript</span>
+                                <span class="tag">Web Audio API</span>
+                                <span class="tag">Canvas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Listening -->
+        <div class="card animate-slide-up mt-8" style="animation-delay: 0.4s">
+            <div class="p-6">
+                <h2 class="heading-2 mb-6">
+                    <span class="inline-flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                        Şu An Dinlediklerim
+                    </span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-purple-600/20 to-blue-600/20 p-6 rounded-lg border border-gray-700/30">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-semibold mb-2">Lo-Fi Hip Hop</h3>
+                            <p class="text-sm text-gray-400">Coding sessions için</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-green-600/20 to-teal-600/20 p-6 rounded-lg border border-gray-700/30">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-semibold mb-2">Synthwave</h3>
+                            <p class="text-sm text-gray-400">80s nostalgia</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-red-600/20 to-pink-600/20 p-6 rounded-lg border border-gray-700/30">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-semibold mb-2">Progressive Metal</h3>
+                            <p class="text-sm text-gray-400">Complex rhythms</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Music Tools & Software -->
+        <div class="card animate-slide-up mt-8" style="animation-delay: 0.5s">
+            <div class="p-6">
+                <h2 class="heading-2 mb-6">
+                    <span class="inline-flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                        </svg>
+                        Kullandığım Araçlar
+                    </span>
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="text-center p-4 bg-gray-800/20 rounded-lg hover:bg-gray-800/40 transition-colors">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-lg mx-auto mb-3 flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">AL</span>
+                        </div>
+                        <h3 class="font-semibold text-sm">Ableton Live</h3>
+                        <p class="text-xs text-gray-400">DAW</p>
+                    </div>
+                    
+                    <div class="text-center p-4 bg-gray-800/20 rounded-lg hover:bg-gray-800/40 transition-colors">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg mx-auto mb-3 flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">FL</span>
+                        </div>
+                        <h3 class="font-semibold text-sm">FL Studio</h3>
+                        <p class="text-xs text-gray-400">Sequencer</p>
+                    </div>
+                    
+                    <div class="text-center p-4 bg-gray-800/20 rounded-lg hover:bg-gray-800/40 transition-colors">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-700 rounded-lg mx-auto mb-3 flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">SP</span>
+                        </div>
+                        <h3 class="font-semibold text-sm">Spotify</h3>
+                        <p class="text-xs text-gray-400">Streaming</p>
+                    </div>
+                    
+                    <div class="text-center p-4 bg-gray-800/20 rounded-lg hover:bg-gray-800/40 transition-colors">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-700 rounded-lg mx-auto mb-3 flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">AU</span>
+                        </div>
+                        <h3 class="font-semibold text-sm">Audacity</h3>
+                        <p class="text-xs text-gray-400">Audio Editor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

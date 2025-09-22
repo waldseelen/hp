@@ -82,14 +82,23 @@ def pytest_configure():
 def django_db_setup():
     """Set up the Django database for testing."""
     from django.core.management import call_command
-    from django.test.utils import setup_test_environment, teardown_test_environment
-    
-    setup_test_environment()
+    from django.test.utils import setup_test_environment, teardown_test_environment, _TestState
+
+    already_setup = hasattr(_TestState, "saved_data")
+
+    if not already_setup:
+        setup_test_environment()
+
     call_command('migrate', '--run-syncdb', verbosity=0)
-    
-    yield
-    
-    teardown_test_environment()
+
+    try:
+        yield
+    finally:
+        if not already_setup:
+            teardown_test_environment()
+
+
+
 
 
 @pytest.fixture

@@ -1,0 +1,255 @@
+
+{% extends "base/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "CodePlay - Programming Playground" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/playground.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="ds-container playground-hero">
+    <div class="playground-hero__text">
+      <div class="playground-pill-row">
+        <span class="playground-pill">{% trans "Tarayıcıda Anında Kodla" %}</span>
+        <span class="playground-pill">{% trans "AI destekli editör" %}</span>
+      </div>
+      <h1 class="playground-hero__title">
+        <span class="text-gradient-primary">Code</span>
+        <span class="text-gradient-accent">Play</span>
+      </h1>
+      <p class="playground-hero__tagline">{% trans "Instagram kadar basit, VS Code kadar güçlü" %}</p>
+      <p class="playground-hero__description">{% trans "Kod yaz, Enter'a bas, sonucu gör. Kurulum yok, sadece tarayıcıda programlama keyfi." %}</p>
+      <div class="playground-hero__actions">
+        <a href="{% url 'playground:editor' %}" class="playground-btn playground-btn-run">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+          </svg>
+          {% trans "Hemen Başla" %}
+        </a>
+        <a href="{% url 'playground:gallery' %}" class="playground-btn playground-btn-share">
+          {% trans "Galeriyi Keşfet" %}
+        </a>
+      </div>
+      <p class="playground-hero__hint">{% trans "Kurulum olmadan saniyeler içinde üret." %}</p>
+      <div class="playground-hero__stats">
+        <div class="playground-stat">
+          <span class="playground-stat__value">120K+</span>
+          <span class="playground-stat__label">{% trans "Çalıştırılan Kod" %}</span>
+        </div>
+        <div class="playground-stat">
+          <span class="playground-stat__value">25+</span>
+          <span class="playground-stat__label">{% trans "Desteklenen Dil" %}</span>
+        </div>
+        <div class="playground-stat">
+          <span class="playground-stat__value">7/24</span>
+          <span class="playground-stat__label">{% trans "Hazır Bulut Editör" %}</span>
+        </div>
+      </div>
+    </div>
+    <div class="playground-hero__media">
+      <div class="playground-code-card">
+        <div class="playground-code-card__toolbar">
+          <div class="playground-code-dots">
+            <span class="playground-code-dot"></span>
+            <span class="playground-code-dot"></span>
+            <span class="playground-code-dot"></span>
+          </div>
+          <span>playground.py</span>
+        </div>
+        <div class="playground-code-body">
+          <div class="playground-code-line">
+            <span>1</span>
+            <span>from codeplay import Editor</span>
+          </div>
+          <div class="playground-code-line">
+            <span>2</span>
+            <span>editor = Editor(language="python")</span>
+          </div>
+          <div class="playground-code-line is-highlight">
+            <span>3</span>
+            <span>result = editor.run("print('Hello, CodePlay!')")</span>
+          </div>
+          <div class="playground-code-line">
+            <span>4</span>
+            <span>print(result.output)</span>
+          </div>
+          <div class="playground-code-line">
+            <span>5</span>
+            <span># Saniyeler içinde paylaş</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="ds-container">
+    <header class="playground-section__header">
+      <span class="playground-section__eyebrow">{% trans "Nasıl çalışır?" %}</span>
+      <h2 class="playground-section__title">{% trans "Dakikalar içinde üretime hazır olun" %}</h2>
+      <p class="playground-section__subtitle">{% trans "CodePlay, fikirlerinizi hızlıca hayata geçirmeniz için tasarlandı." %}</p>
+    </header>
+    <div class="playground-card-grid playground-card-grid--three">
+      <article class="playground-card" data-animate-card>
+        <span class="playground-card__eyebrow">01</span>
+        <h3 class="playground-card__title">{% trans "Dilini seç" %}</h3>
+        <p class="playground-card__text">{% trans "Desteklenen dil ve şablonlardan sana en uygununu belirle." %}</p>
+      </article>
+      <article class="playground-card" data-animate-card>
+        <span class="playground-card__eyebrow">02</span>
+        <h3 class="playground-card__title">{% trans "Kodunu yaz" %}</h3>
+        <p class="playground-card__text">{% trans "AI yardımcısı ile üretkenliğini artır." %}</p>
+      </article>
+      <article class="playground-card" data-animate-card>
+        <span class="playground-card__eyebrow">03</span>
+        <h3 class="playground-card__title">{% trans "Sonucu paylaş" %}</h3>
+        <p class="playground-card__text">{% trans "Tek tıkla çıktını kaydet ve toplulukla paylaş." %}</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+{% if templates %}
+<section class="page-section">
+  <div class="ds-container">
+    <header class="playground-section__header">
+      <span class="playground-section__eyebrow">{% trans "Şablonlar" %}</span>
+      <h2 class="playground-section__title">{% trans "Popüler başlangıç şablonları" %}</h2>
+      <p class="playground-section__subtitle">{% trans "Tek tıkla editöre aktarabileceğin hazır kod setleri." %}</p>
+    </header>
+    <div class="playground-card-grid playground-card-grid--three">
+      {% for template in templates %}
+      <article class="playground-card" data-animate-card>
+        <div class="playground-template">
+          <span class="playground-template__emoji">{{ template.emoji }}</span>
+          <div>
+            <h3 class="playground-card__title">{{ template.name }}</h3>
+            <span class="playground-template__language">{{ template.language.icon }} {{ template.language.name }}</span>
+          </div>
+        </div>
+        <p class="playground-card__text">{{ template.description }}</p>
+        <button onclick="loadTemplate({{ template.id }})" class="playground-btn playground-template__action">
+          {% trans "Şablonu kullan" %}
+        </button>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="page-section">
+  <div class="ds-container">
+    <header class="playground-section__header">
+      <span class="playground-section__eyebrow">{% trans "Özellikler" %}</span>
+      <h2 class="playground-section__title">{% trans "Neden CodePlay?" %}</h2>
+      <p class="playground-section__subtitle">{% trans "Modern araçlarla üretken kodlama deneyimi." %}</p>
+    </header>
+    <div class="playground-card-grid playground-card-grid--four">
+      <article class="playground-card" data-animate-card>
+        <div class="playground-feature__icon">⚡</div>
+        <h3 class="playground-card__title">{% trans "Anında çalışır" %}</h3>
+        <p class="playground-card__text">{% trans "Kod yaz, Enter'a bas, sonucu hemen gör." %}</p>
+      </article>
+      <article class="playground-card" data-animate-card>
+        <div class="playground-feature__icon">☁️</div>
+        <h3 class="playground-card__title">{% trans "Kurulum yok" %}</h3>
+        <p class="playground-card__text">{% trans "Tarayıcında çalışır, hiçbir şey yüklemez." %}</p>
+      </article>
+      <article class="playground-card" data-animate-card>
+        <div class="playground-feature__icon">🤖</div>
+        <h3 class="playground-card__title">{% trans "AI yardımcısı" %}</h3>
+        <p class="playground-card__text">{% trans "Akıllı kod tamamlama ve öneriler." %}</p>
+      </article>
+      <article class="playground-card" data-animate-card>
+        <div class="playground-feature__icon">🔗</div>
+        <h3 class="playground-card__title">{% trans "Kolay paylaşım" %}</h3>
+        <p class="playground-card__text">{% trans "Kodunu bir bağlantıyla herkesle paylaş." %}</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+{% if recent_snippets %}
+<section class="page-section">
+  <div class="ds-container">
+    <header class="playground-section__header">
+      <span class="playground-section__eyebrow">{% trans "Topluluk" %}</span>
+      <h2 class="playground-section__title">{% trans "Son paylaşılanlar" %}</h2>
+      <p class="playground-section__subtitle">{% trans "Editörden en yeni projeleri keşfedin." %}</p>
+    </header>
+    <div class="playground-card-grid playground-card-grid--three">
+      {% for snippet in recent_snippets %}
+      <a href="{% url 'playground:snippet_detail' snippet.id %}" class="playground-card playground-snippet" data-animate-card>
+        <div class="playground-snippet__meta">
+          <span>{{ snippet.language.icon }} {{ snippet.language.name }}</span>
+          <span>{% blocktrans with time=snippet.created_at|timesince %}{{ time }} önce{% endblocktrans %}</span>
+        </div>
+        <h3 class="playground-card__title">{{ snippet.title|default:"Untitled Code" }}</h3>
+        <div class="playground-snippet__stats">
+          <span>👁️ {{ snippet.views }}</span>
+          <span>❤️ {{ snippet.likes }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    <div class="text-center" style="margin-top: var(--space-6);">
+      <a href="{% url 'playground:gallery' %}" class="playground-btn playground-btn-save">
+        {% trans "Tümünü gör" %}
+      </a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="page-section">
+  <div class="ds-container playground-cta" data-animate-card>
+    <div class="playground-cta__copy">
+      <span class="playground-section__eyebrow">{% trans "Hazır mısın?" %}</span>
+      <h2 class="playground-cta__title">{% trans "CodePlay ile dakikalar içinde demo hazırla" %}</h2>
+      <p class="playground-cta__description">{% trans "Editörde kodunu yaz, kaydet ve galeride ilham ol." %}</p>
+    </div>
+    <div class="playground-cta__actions">
+      <a href="{% url 'playground:editor' %}" class="playground-btn playground-btn-run">
+        {% trans "Editöre git" %}
+      </a>
+      <a href="{% url 'playground:gallery' %}" class="playground-btn playground-btn-share">
+        {% trans "Galeriyi keşfet" %}
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  const cards = document.querySelectorAll('[data-animate-card]');
+  if (!('IntersectionObserver' in window)) {
+    cards.forEach((card) => card.classList.add('is-visible'));
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.2 });
+  cards.forEach((card) => {
+    card.classList.add('will-animate');
+    observer.observe(card);
+  });
+})();
+
+function loadTemplate(templateId) {
+  window.location.href = `{% url 'playground:editor' %}?template=${templateId}`;
+}
+</script>
+{% endblock %}

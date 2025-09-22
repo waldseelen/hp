@@ -1,0 +1,230 @@
+from django.utils.cache import patch_response_headers
+from django.utils.deprecation import MiddlewareMixin
+import re
+import secrets
+import base64
+
+
+class CacheControlMiddleware(MiddlewareMixin):
+    """Add appropriate cache control headers based on content type and URL patterns"""
+    
+    def process_response(self, request, response):
+        # Don't cache admin, auth, or API endpoints
+        no_cache_patterns = [
+            r'^/admin/',
+            r'^/api/',
+            r'^/logout/',
+            r'^/s/',  # Short URLs shouldn't be cached
+        ]
+        
+        path = request.path
+        for pattern in no_cache_patterns:
+            if re.match(pattern, path):
+                response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                response['Pragma'] = 'no-cache'
+                response['Expires'] = '0'
+                return response
+        
+        # Cache static files for long time
+        if path.startswith('/static/') or path.startswith('/media/'):
+            # 1 year cache for static files
+            patch_response_headers(response, cache_timeout=31536000)
+            response['Cache-Control'] = 'public, max-age=31536000, immutable'
+            return response
+        
+        # Cache feeds for shorter time
+        if '/feed/' in path or path.endswith('.xml'):
+            # 1 hour cache for feeds and XML
+            patch_response_headers(response, cache_timeout=3600)
+            response['Cache-Control'] = 'public, max-age=3600'
+            return response
+        
+        # Cache regular pages
+        content_type = response.get('Content-Type', '').lower()
+        if 'text/html' in content_type:
+            # 5 minutes cache for HTML pages
+            patch_response_headers(response, cache_timeout=300)
+            response['Cache-Control'] = 'public, max-age=300'
+        elif 'application/json' in content_type:
+            # 1 minute cache for JSON
+            patch_response_headers(response, cache_timeout=60)
+            response['Cache-Control'] = 'public, max-age=60'
+        
+        return response
+
+
+class SecurityHeadersMiddleware(MiddlewareMixin):
+    """Add security and performance headers with nonce-based CSP"""
+    
+    def process_request(self, request):
+        # Generate a unique nonce for each request
+        nonce_bytes = secrets.token_bytes(32)
+        nonce = base64.b64encode(nonce_bytes).decode('utf-8')
+        request.csp_nonce = nonce
+        return None
+    
+    def process_response(self, request, response):
+        # Security headers
+        response['X-Content-Type-Options'] = 'nosniff'
+        response['X-Frame-Options'] = 'DENY'
+        response['X-XSS-Protection'] = '1; mode=block'
+        response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        
+        # Performance headers
+        response['X-DNS-Prefetch-Control'] = 'on'
+        
+        # HSTS for HTTPS (only add in production)
+        if request.is_secure():
+            response['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        
+        # Get the nonce from request
+        nonce = getattr(request, 'csp_nonce', '')
+        
+        # Enhanced Content Security Policy with nonce-based inline allowlist
+        # More restrictive and secure CSP directives
+        csp_directives = [
+            "default-src 'self'",
+            # Script sources - only allow specific CDNs and self with nonce
+            f"script-src 'self' 'nonce-{nonce}' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://cdn.tailwindcss.com",
+            # Style sources - only allow specific style sources with nonce and Alpine.js inline styles
+            f"style-src 'self' 'nonce-{nonce}' 'unsafe-inline' 'unsafe-hashes' https://fonts.googleapis.com https://cdn.jsdelivr.net",
+            # Font sources - restrict to Google Fonts and self
+            "font-src 'self' https://fonts.gstatic.com https://r2cdn.perplexity.ai data:",
+            # Image sources - restrict to self, data URIs and HTTPS only
+            "img-src 'self' data: https: blob:",
+            # Media sources - self and HTTPS only
+            "media-src 'self' https:",
+            # Connection sources - restrict API calls
+            "connect-src 'self' https://api.github.com https://cdn.jsdelivr.net",
+            # Worker sources - self and blob URLs only
+            "worker-src 'self' blob:",
+            # Frame/child sources - none to prevent iframe embedding
+            "child-src 'none'",
+            "frame-src 'none'",
+            # Object sources - completely disabled
+            "object-src 'none'",
+            # Base URI - restrict to self only
+            "base-uri 'self'",
+            # Frame ancestors - prevent clickjacking
+            "frame-ancestors 'none'",
+            # Form actions - restrict to self
+            "form-action 'self'",
+            # Manifest source - self only
+            "manifest-src 'self'",
+            # Upgrade insecure requests
+            "upgrade-insecure-requests",
+            # Block mixed content
+            "block-all-mixed-content"
+        ]
+        
+        # Add report-uri and report-to in production
+        if not getattr(request, 'DEBUG', True):
+            csp_directives.append("report-uri /api/security/csp-report/")
+            csp_directives.append("report-to default")
+        
+        response['Content-Security-Policy'] = '; '.join(csp_directives)
+        
+        # Add additional security headers
+        response['X-Permitted-Cross-Domain-Policies'] = 'none'
+
+        # Use less restrictive COEP in development to allow CDN resources
+        from django.conf import settings
+        if getattr(settings, 'DEBUG', False):
+            response['Cross-Origin-Embedder-Policy'] = 'credentialless'
+        else:
+            response['Cross-Origin-Embedder-Policy'] = 'require-corp'
+        response['Cross-Origin-Opener-Policy'] = 'same-origin'
+        response['Cross-Origin-Resource-Policy'] = 'same-origin'
+        
+        # Additional security headers
+        response['Permissions-Policy'] = (
+            'accelerometer=(), '
+            'camera=(), '
+            'geolocation=(self), '
+            'gyroscope=(), '
+            'magnetometer=(), '
+            'microphone=(), '
+            'payment=(), '
+            'usb=(), '
+            'browsing-topics=()'
+        )
+        
+        # Add Report-To header for multiple security violation reporting
+        if not getattr(request, 'DEBUG', True):
+            import json
+            report_endpoints = [
+                {
+                    "group": "default",
+                    "max_age": 10886400,
+                    "endpoints": [{"url": "/api/security/csp-report/"}],
+                    "include_subdomains": True
+                },
+                {
+                    "group": "network-errors",
+                    "max_age": 10886400,
+                    "endpoints": [{"url": "/api/security/network-error-report/"}],
+                    "include_subdomains": True
+                }
+            ]
+            response['Report-To'] = json.dumps(report_endpoints)
+            response['NEL'] = json.dumps({
+                "report_to": "network-errors",
+                "max_age": 10886400,
+                "include_subdomains": True,
+                "failure_fraction": 0.1
+            })
+        
+        # Preload hints for critical resources
+        if request.path == '/':
+            preload_links = [
+                '</static/css/output.css>; rel=preload; as=style',
+                '</static/css/custom.min.css>; rel=preload; as=style',
+                '</static/js/main.min.js>; rel=preload; as=script',
+            ]
+            if preload_links:
+                response['Link'] = ', '.join(preload_links)
+        
+        return response
+
+
+class CompressionMiddleware(MiddlewareMixin):
+    """Additional compression settings"""
+    
+    def process_response(self, request, response):
+        # Add Vary header for better caching
+        vary_headers = response.get('Vary', '').split(', ') if response.get('Vary') else []
+        
+        # Add encoding to vary for compressed responses
+        if 'Accept-Encoding' not in vary_headers:
+            vary_headers.append('Accept-Encoding')
+        
+        # Add User-Agent for mobile optimization
+        if 'User-Agent' not in vary_headers:
+            vary_headers.append('User-Agent')
+        
+        response['Vary'] = ', '.join(filter(None, vary_headers))
+        
+        return response
+
+
+class PerformanceMiddleware(MiddlewareMixin):
+    """Performance monitoring and optimization middleware"""
+    
+    def process_request(self, request):
+        # Add request start time for performance monitoring
+        import time
+        request._performance_start = time.time()
+        return None
+    
+    def process_response(self, request, response):
+        # Calculate request processing time
+        if hasattr(request, '_performance_start'):
+            import time
+            processing_time = time.time() - request._performance_start
+            response['X-Response-Time'] = f'{processing_time:.3f}s'
+        
+        # Add performance hints
+        response['X-DNS-Prefetch-Control'] = 'on'
+        response['X-Preload'] = 'dns-prefetch'
+        
+        return response

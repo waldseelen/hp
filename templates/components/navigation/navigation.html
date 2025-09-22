@@ -1,0 +1,69 @@
+{% load static %}
+{% load i18n %}
+
+<nav id="navigation"
+     class="nav-shell"
+     data-nav-shell
+     role="navigation"
+     aria-label="{% trans 'Main navigation' %}">
+  <div class="ds-container nav-shell__inner">
+    <a href="{% url 'home' %}" class="nav-shell__brand">
+      <span class="logo-text">Portfolio</span><span class="logo-highlight">.</span>
+    </a>
+
+    <div class="nav-shell__menu" role="menubar">
+      <a href="{% url 'home' %}"
+         class="nav-shell__link{% if request.resolver_match.url_name == 'home' %} is-active{% endif %}"
+         role="menuitem">
+        {% trans "Home" %}
+      </a>
+      <a href="{% url 'main:personal' %}"
+         class="nav-shell__link{% if request.resolver_match.url_name == 'personal' %} is-active{% endif %}"
+         role="menuitem">
+        {% trans "About" %}
+      </a>
+      <a href="{% url 'tools:list' %}"
+         class="nav-shell__link{% if 'tools' in request.resolver_match.namespace %} is-active{% endif %}"
+         role="menuitem">
+        {% trans "Projects" %}
+      </a>
+      <a href="{% url 'blog:list' %}"
+         class="nav-shell__link{% if 'blog' in request.resolver_match.namespace %} is-active{% endif %}"
+         role="menuitem">
+        {% trans "Blog" %}
+      </a>
+      <a href="{% url 'playground:index' %}"
+         class="nav-shell__link{% if 'playground' in request.resolver_match.namespace %} is-active{% endif %}"
+         role="menuitem">
+        {% trans "Playground" %}
+      </a>
+      <a href="{% url 'main:ai' %}"
+         class="nav-shell__link{% if request.resolver_match.url_name == 'ai' %} is-active{% endif %}"
+         role="menuitem">
+        {% trans "AI Tools" %}
+      </a>
+      <a href="{% url 'main:cybersecurity' %}"
+         class="nav-shell__link{% if request.resolver_match.url_name == 'cybersecurity' %} is-active{% endif %}"
+         role="menuitem">
+        {% trans "Cybersecurity" %}
+      </a>
+      <a href="{% url 'contact:form' %}"
+         class="nav-shell__link{% if 'contact' in request.resolver_match.namespace %} is-active{% endif %}"
+         role="menuitem">
+        {% trans "Contact" %}
+      </a>
+    </div>
+
+    <div class="nav-shell__actions">
+      <button class="search-trigger"
+              type="button"
+              data-search-trigger
+              aria-label="{% trans 'Open search' %}">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5" stroke-linecap="round"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>

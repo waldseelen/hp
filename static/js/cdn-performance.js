@@ -9,6 +9,15 @@
 
 class CDNPerformanceMonitor {
     constructor() {
+        const globalConfig = window.CDN_MONITOR_CONFIG || {};
+        this.config = {
+            criticalAssets: Array.isArray(globalConfig.criticalAssets) && globalConfig.criticalAssets.length
+                ? globalConfig.criticalAssets
+                : ['/static/css/output.css', '/static/js/image-optimization.js'],
+            performanceEndpoint: typeof globalConfig.performanceEndpoint === 'string' && globalConfig.performanceEndpoint.trim()
+                ? globalConfig.performanceEndpoint
+                : null
+        };
         this.metrics = {
             ttfb: [],
             loadTimes: [],
@@ -143,7 +152,6 @@ class CDNPerformanceMonitor {
         if (ttfb > 200) {
             console.warn(`High TTFB detected: ${ttfb.toFixed(2)}ms`);
         }
-    }
 
     /**
      * Get asset type from URL
@@ -178,7 +186,6 @@ class CDNPerformanceMonitor {
             if (entry.transferSize === 0) {
                 console.log(`CDN cache hit: ${entry.name}`);
             }
-        }
     }
 
     /**
@@ -189,7 +196,6 @@ class CDNPerformanceMonitor {
             'cdn.', 'assets.', 'static.',
             'cloudflare', 'cloudfront', 'fastly',
             'jsdelivr', 'unpkg', 'cdnjs'
-        ];
 
         return cdnPatterns.some(pattern => hostname.includes(pattern));
     }
@@ -242,12 +248,12 @@ class CDNPerformanceMonitor {
      * Monitor critical assets loading
      */
     monitorCriticalAssets() {
-        const criticalAssets = [
-            '/static/css/output.css',
-            '/static/js/image-optimization.js'
-        ];
+        const assets = Array.isArray(this.config.criticalAssets) ? this.config.criticalAssets : [];
+        if (!assets.length) {
+            return;
+        }
 
-        criticalAssets.forEach(asset => {
+        assets.forEach(asset => {
             const startTime = performance.now();
 
             fetch(asset, { method: 'HEAD' })
@@ -311,10 +317,11 @@ class CDNPerformanceMonitor {
      */
     reportMetrics() {
         const summary = this.getPerformanceSummary();
+        // Send to analytics endpoint if configured
+        const endpoint = this.config.performanceEndpoint;
 
-        // Send to analytics endpoint
-        if ('navigator' in window && 'sendBeacon' in navigator) {
-            const data = JSON.stringify({
+        if (endpoint) {
+            const payload = JSON.stringify({
                 type: 'cdn_performance',
                 metrics: summary,
                 timestamp: Date.now(),
@@ -322,9 +329,17 @@ class CDNPerformanceMonitor {
                 url: window.location.href
             });
 
-            navigator.sendBeacon('/api/performance/', data);
+            if ('navigator' in window && 'sendBeacon' in navigator) {
+                const sent = navigator.sendBeacon(endpoint, payload);
+                if (!sent && window.fetch) {
+                    fetch(endpoint, { method: 'POST', body: payload, keepalive: true, headers: { 'Content-Type': 'application/json' } }).catch(() => {});
+                }
+            } else if (window.fetch) {
+                fetch(endpoint, { method: 'POST', body: payload, keepalive: true, headers: { 'Content-Type': 'application/json' } }).catch(() => {});
+            }
+        } else {
+            console.debug('CDN performance endpoint disabled; metrics logging only.');
         }
-
         console.log('CDN Performance Summary:', summary);
     }
 

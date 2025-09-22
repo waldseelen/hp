@@ -1,0 +1,114 @@
+
+{% extends 'base/base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Tools" %} - {% trans "Portfolio" %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/collection.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="ds-container">
+    <header class="collection-hero">
+      <h1 class="collection-hero__title">{% trans "Tools & Resources" %}</h1>
+      <p class="collection-hero__subtitle">{% trans "Curated utilities for development, security and productivity." %}</p>
+    </header>
+
+    <form method="GET" class="collection-form">
+      <div class="collection-form__row">
+        <div>
+          <label class="collection-card__meta" style="margin-bottom: var(--space-1);">{% trans "Search" %}</label>
+          <input type="text" name="search" value="{{ search_query }}" placeholder="{% trans 'Search tools...' %}" class="collection-input search-input">
+        </div>
+        <div>
+          <label class="collection-card__meta" style="margin-bottom: var(--space-1);">{% trans "Category" %}</label>
+          <select name="category" class="collection-select">
+            <option value="">{% trans "All categories" %}</option>
+            {% for category in categories %}
+            <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="collection-search-actions">
+          <button type="submit" class="collection-btn collection-btn--primary">{% trans "Filter" %}</button>
+          {% if search_query or selected_category %}
+          <a href="{% url 'tools:list' %}" class="collection-btn">{% trans "Clear" %}</a>
+          {% endif %}
+        </div>
+      </div>
+    </form>
+
+    {% if favorites and not search_query and not selected_category %}
+    <section style="margin-top: var(--space-6);">
+      <header class="collection-hero" style="margin-bottom: var(--space-4);">
+        <h2 class="collection-hero__title" style="font-size: clamp(2rem, 4vw, 2.5rem);">{% trans "Favorites" %}</h2>
+        <p class="collection-hero__subtitle">{% trans "Frequently used picks." %}</p>
+      </header>
+      <div class="collection-grid collection-grid--three">
+        {% for tool in favorites %}
+        <article class="collection-card" data-animate-card>
+          <div class="collection-card__meta">
+            <span class="collection-tag">{{ tool.category }}</span>
+            <span>{% trans "Favorite" %}</span>
+          </div>
+          <h3 class="collection-card__title">
+            <a href="{{ tool.url }}" target="_blank">{{ tool.title }}</a>
+          </h3>
+          <p class="collection-card__excerpt">{{ tool.description|truncatewords:26 }}</p>
+          <div class="collection-card__footer">
+            <span>{{ tool.created_at|date:"d F Y" }}</span>
+            <a href="{{ tool.url }}" target="_blank" class="collection-btn" style="padding: var(--space-1) var(--space-3);">{% trans "Visit" %}</a>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if tools %}
+    <div class="collection-grid collection-grid--three" style="margin-top: var(--space-6);">
+      {% for tool in tools %}
+      <article class="collection-card" data-animate-card>
+        <div class="collection-card__meta">
+          <span class="collection-tag">{{ tool.category }}</span>
+          {% if tool.is_favorite %}<span>{% trans "Favorite" %}</span>{% endif %}
+        </div>
+        <h3 class="collection-card__title">
+          <a href="{{ tool.url }}" target="_blank">{{ tool.title }}</a>
+        </h3>
+        <p class="collection-card__excerpt">{{ tool.description|truncatewords:26 }}</p>
+        <div class="collection-card__footer">
+          <span>{{ tool.created_at|date:"d F Y" }}</span>
+          <a href="{{ tool.url }}" target="_blank" class="collection-btn" style="padding: var(--space-1) var(--space-3);">{% trans "Visit" %}</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <div class="collection-pagination">
+      {% if page_obj.has_previous %}
+      <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">{% trans "First" %}</a>
+      <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">{% trans "Previous" %}</a>
+      {% endif %}
+      <span>{% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}Page {{ current }} of {{ total }}{% endblocktrans %}</span>
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">{% trans "Next" %}</a>
+      <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">{% trans "Last" %}</a>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="collection-empty">
+      {% if search_query or selected_category %}
+        {% trans "No tools matched your filters." %}
+      {% else %}
+        {% trans "No tools available yet." %}
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

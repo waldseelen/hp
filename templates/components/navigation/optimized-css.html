@@ -1,0 +1,33 @@
+
+{# Optimized CSS Loading Helper #}
+{# Usage: {% include 'components/navigation/optimized-css.html' %} #}
+{% load static %}
+
+<!-- Critical CSS - Inline for immediate rendering -->
+{% if critical_css %}
+<style>
+  {{ critical_css|safe }}
+</style>
+{% endif %}
+
+<!-- Main CSS bundle - high priority -->
+<link rel="preload" href="{% static 'css/optimized/main.min.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript>
+  <link rel="stylesheet" href="{% static 'css/optimized/main.min.css' %}">
+</noscript>
+
+<!-- Enhanced CSS bundle - deferred -->
+<link rel="preload" href="{% static 'css/optimized/enhanced.min.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'" media="print" onload="this.onload=null;this.media='all'"
+<script>
+  window.addEventListener('load', () => {
+    window.setTimeout(() => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '{% static "css/optimized/tailwind.min.css" %}';
+      document.head.appendChild(link);
+    }, 120);
+  });
+</script>
+<noscript>
+  <link rel="stylesheet" href="{% static 'css/optimized/tailwind.min.css' %}">
+</noscript>

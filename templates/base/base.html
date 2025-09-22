@@ -1,0 +1,173 @@
+{% load static %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% trans "Portfolio" %}{% endblock %}</title>
+
+    <!-- Meta Tags -->
+    <meta name="description" content="{% trans 'Full Stack Developer & Cybersecurity Enthusiast Portfolio' %}">
+    <meta name="keywords" content="{% trans 'Django, Python, Web Development, Cybersecurity' %}">
+    <meta name="author" content="{% trans 'Portfolio' %}">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/icons/favicon.ico' %}">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Portfolio">
+    <meta name="application-name" content="Portfolio">
+    <meta name="msapplication-TileColor" content="#0f172a">
+    <meta name="msapplication-navbutton-color" content="#0f172a">
+
+    <!-- PWA Icons -->
+    <link rel="apple-touch-icon" href="{% static 'images/favicon-192x192.svg' %}">
+    <link rel="mask-icon" href="{% static 'images/icon-base.svg' %}" color="#e6c547">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Default Open Graph Meta Tags -->
+    <meta property="og:site_name" content="Portfolio - Full Stack Developer">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{% block og_title %}{{ block.super }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{% trans 'Full Stack Developer & Cybersecurity Enthusiast Portfolio' %}{% endblock %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% block og_image %}{{ request.build_absolute_uri }}{% static 'images/og-default.png' %}{% endblock %}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Default Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@portfolio_dev">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ block.super }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{% trans 'Full Stack Developer & Cybersecurity Enthusiast Portfolio' %}{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ request.build_absolute_uri }}{% static 'images/og-default.png' %}{% endblock %}">
+
+    <!-- SEO Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
+
+    <!-- Resource Hints for Performance -->
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+
+    <!-- CDN Resource Hints -->
+    {% if CDN_ENABLED and CDN_DOMAIN %}
+    <link rel="dns-prefetch" href="//{{ CDN_DOMAIN }}">
+    <link rel="preconnect" href="https://{{ CDN_DOMAIN }}" crossorigin>
+    {% endif %}
+
+    <!-- Design system -->
+    <link rel="stylesheet" href="{% static 'css/base/design-tokens.css' %}?v={% now 'U' %}">
+
+    <!-- Tailwind CSS (local build) -->
+    <link rel="stylesheet" href="{% static 'css/tailwind.min.css' %}?v={% now 'U' %}">
+    <link rel="stylesheet" href="{% static 'css/base/output.css' %}?v={% now 'U' %}">
+
+    <!-- Design system layers -->
+    <link rel="stylesheet" href="{% static 'css/base/app-base.css' %}?v={% now 'U' %}">
+    <link rel="stylesheet" href="{% static 'css/base/app-typography.css' %}?v={% now 'U' %}">
+    <link rel="stylesheet" href="{% static 'css/components/app-components.css' %}?v={% now 'U' %}">
+
+    <!-- App scripts -->
+    <script>
+        window.CDN_MONITOR_CONFIG = Object.assign({
+            criticalAssets: ["{% static 'css/project-base.css' %}"],
+            performanceEndpoint: null
+        }, window.CDN_MONITOR_CONFIG || {});
+    </script>
+    <script src="{% static 'js/image-optimization.js' %}?v={% now 'U' %}" defer></script>
+    <script src="{% static 'js/cdn-performance.js' %}?v={% now 'U' %}" defer></script>
+    <script src="{% static 'js/search-autocomplete.js' %}?v={% now 'U' %}" defer></script>
+
+    <!-- Cookie Consent -->
+    <link rel="stylesheet" href="{% static 'css/cookie-consent.css' %}?v={% now 'U' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="body-base starfield has-custom-cursor antialiased font-sans" id="app-body">
+    <a href="#main-content" class="skip-link">{% trans "Skip to main content" %}</a>
+    <div class="cursor-blackhole" aria-hidden="true"></div>
+    <div class="starfield-layer" aria-hidden="true"></div>
+
+    <!-- Navigation -->
+    {% include 'components/navigation/navigation.html' %}
+
+    <main id="main-content">
+        {% if messages %}
+            <div class="ds-container" role="status" aria-live="polite">
+                <div class="stack" style="margin-block: var(--space-3);">
+                    {% for message in messages %}
+                        <div class="surface{% if message.tags == 'error' %} surface--elevated{% endif %}" data-animate="fade">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-shell" role="contentinfo" aria-label="{% trans 'Site footer' %}">
+        <div class="footer-shell__wrapper">
+            <div class="footer-shell__brand">
+                <h3 class="footer-shell__title">{% trans "Portfolio" %}</h3>
+                <p class="footer-shell__description">{% trans "Full Stack Developer & Cybersecurity Enthusiast passionate about creating innovative solutions." %}</p>
+            </div>
+            <nav class="footer-shell__links" aria-label="{% trans 'Quick links' %}">
+                <h4 class="footer-shell__heading">{% trans "Quick Links" %}</h4>
+                <div class="footer-shell__grid">
+                    <a href="{% url 'home' %}" class="footer-link">{% trans "Home" %}</a>
+                    <a href="{% url 'main:personal' %}" class="footer-link">{% trans "About" %}</a>
+                    <a href="{% url 'blog:list' %}" class="footer-link">{% trans "Blog" %}</a>
+                    <a href="{% url 'tools:list' %}" class="footer-link">{% trans "Projects" %}</a>
+                    <a href="{% url 'main:music' %}" class="footer-link">{% trans "Music" %}</a>
+                    <a href="{% url 'main:useful' %}" class="footer-link">{% trans "Useful" %}</a>
+                    <a href="{% url 'contact:form' %}" class="footer-link">{% trans "Contact" %}</a>
+                    <a href="{% url 'playground:index' %}" class="footer-link">{% trans "Playground" %}</a>
+                </div>
+            </nav>
+            <div class="footer-shell__social">
+                <h4 class="footer-shell__heading">{% trans "Connect" %}</h4>
+                <ul class="footer-shell__social-list">
+                    {% for link in global_social_links %}
+                        <li>
+                            <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="footer-link footer-link--pill"
+                               aria-label="{{ link.platform|title }} - {{ link.description|default:'Visit my profile' }}">
+                                {{ link.platform|title }}
+                            </a>
+                        </li>
+                    {% empty %}
+                        <li class="footer-shell__muted">{% trans "New channels coming soon." %}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="footer-shell__bottom">
+            <span>&copy; {{ now|date:'Y' }} {% trans 'Portfolio. All rights reserved.' %}</span>
+            <div class="footer-shell__muted">
+                <span>{% trans "Built with accessibility and performance in mind." %}</span>
+            </div>
+        </div>
+    </footer>
+
+    {% include 'components/navigation/search-modal.html' %}
+
+    {% block extra_scripts %}{% endblock %}
+    <script src="{% static 'js/ui-shell.js' %}?v={% now 'U' %}" defer></script>
+</body>
+</html>

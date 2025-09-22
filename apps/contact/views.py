@@ -43,7 +43,7 @@ def contact_form(request: HttpRequest) -> HttpResponse:
             logger.warning(f"Rate limit exceeded for IP: {client_ip}")
             analytics.track_event(request, 'contact_form_rate_limited')
             messages.error(request, 'Too many messages sent. Please wait a minute before trying again.')
-            return render(request, 'contact/form.html', {'form': ContactForm()})
+            return render(request, 'pages/contact/form.html', {'form': ContactForm()})
         
         # Process form with validation
         form = ContactForm(request.POST)
@@ -95,8 +95,8 @@ def contact_form(request: HttpRequest) -> HttpResponse:
     else:
         form = ContactForm()
     
-    return render(request, 'contact/form.html', {'form': form})
+    return render(request, 'pages/contact/form.html', {'form': form})
 
 
 def contact_success(request: HttpRequest) -> HttpResponse:
-    return render(request, 'contact/success.html')
+    return render(request, 'pages/contact/success.html')

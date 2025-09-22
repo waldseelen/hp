@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Portfolio{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/project-base.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <a class="skip-link" href="#main-content">İçeriğe geç</a>
+    <div class="site-shell">
+        <header class="site-header" role="banner">
+            <div class="container site-header__inner">
+                <a class="site-logo" href="{% url 'home' %}">Portfolio</a>
+                <nav class="site-nav" aria-label="Ana menü">
+                    <ul class="site-nav__list">
+                        <li><a class="site-nav__link" href="{% url 'home' %}">Ana Sayfa</a></li>
+                        <li><a class="site-nav__link" href="{% url 'playground:index' %}">Playground</a></li>
+                        <li><a class="site-nav__link" href="{% url 'blog:list' %}">Blog</a></li>
+                        <li><a class="site-nav__link" href="{% url 'tools:list' %}">Araçlar</a></li>
+                        <li><a class="site-nav__link" href="{% url 'main:ai' %}">AI Araçları</a></li>
+                        <li><a class="site-nav__link" href="{% url 'main:cybersecurity' %}">Siber Güvenlik</a></li>
+                        <li><a class="site-nav__link" href="{% url 'contact:form' %}">İletişim</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main-content" class="site-main" role="main">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="site-footer" role="contentinfo">
+            <div class="container site-footer__inner">
+                <p>&copy; {{ now|date:'Y' }} Portfolio. Tüm hakları saklıdır.</p>
+                <p class="text-muted">Modern web geliştirme, AI ve siber güvenlik odaklı çalışmalar.</p>
+            </div>
+        </footer>
+    </div>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+

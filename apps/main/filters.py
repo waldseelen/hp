@@ -413,4 +413,4 @@ def apply_date_range_filter(queryset, date_range, date_field='created_at'):
     if date_range in date_ranges:
         return queryset.filter(**{f"{date_field}__gte": date_ranges[date_range]})
     
-    return querysetryset
+    return queryset

@@ -1,0 +1,81 @@
+
+{% extends 'base/base.html' %}
+{% load static i18n schema_tags %}
+
+{% block title %}{% trans "Blog" %} - {% trans "Portfolio" %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/collection.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="ds-container">
+    <header class="collection-hero">
+      <h1 class="collection-hero__title">{% trans "Blog" %}</h1>
+      <p class="collection-hero__subtitle">{% trans "Thoughts, tutorials and insights from the studio." %}</p>
+    </header>
+
+    <form method="GET" class="collection-form">
+      <div class="collection-form__row">
+        <div>
+          <label class="collection-card__meta" style="margin-bottom: var(--space-1);">{% trans "Search" %}</label>
+          <input type="text" name="search" value="{{ search_query }}" placeholder="{% trans 'Search posts, tools, and more...' %}"
+                 class="collection-input search-input" autocomplete="off">
+        </div>
+        <div class="collection-search-actions">
+          <button type="submit" class="collection-btn collection-btn--primary">{% trans "Filter" %}</button>
+          {% if search_query %}
+          <a href="{% url 'blog:list' %}" class="collection-btn">{% trans "Clear" %}</a>
+          {% endif %}
+        </div>
+      </div>
+    </form>
+
+    {% if posts %}
+    <div class="collection-grid collection-grid--three" style="margin-top: var(--space-6);">
+      {% for post in posts %}
+      <article class="collection-card" data-animate-card>
+        <div class="collection-card__meta">
+          <span>{% trans "Blog Post" %}</span>
+          <span>{{ post.published_at|date:"d F Y" }}</span>
+        </div>
+        <h2 class="collection-card__title">
+          <a href="{{ post.get_absolute_url }}" class="collection-card__title">{{ post.title }}</a>
+        </h2>
+        {% if post.excerpt %}
+        <p class="collection-card__excerpt">{{ post.excerpt|truncatewords:32 }}</p>
+        {% endif %}
+        <div class="collection-card__footer">
+          <span>{% trans "Read time" %}: {{ post.read_time }}'</span>
+          <a href="{{ post.get_absolute_url }}" class="collection-btn" style="padding: var(--space-1) var(--space-3);">{% trans "Read" %}</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <div class="collection-pagination">
+      {% if page_obj.has_previous %}
+      <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">{% trans "First" %}</a>
+      <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">{% trans "Previous" %}</a>
+      {% endif %}
+      <span>{% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}Page {{ current }} of {{ total }}{% endblocktrans %}</span>
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">{% trans "Next" %}</a>
+      <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">{% trans "Last" %}</a>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="collection-empty">
+      {% if search_query %}
+        {% trans "No posts matched your query." %}
+      {% else %}
+        {% trans "There are no blog posts yet." %}
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

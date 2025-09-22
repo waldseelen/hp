@@ -1,0 +1,46 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_list admin_dashboard %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block content %}
+<div id="content" class="dashboard">
+  <div class="dashboard__header">
+    <h1 class="dashboard__title">Kontrol Paneli</h1>
+    <p class="dashboard__subtitle">Guncel verileri ve islemleri tek ekranda goruntuleyin.</p>
+  </div>
+
+  <div class="dashboard__grid">
+    <article class="stat-card">
+      <span class="stat-card__label">Blog Yazi Sayisi</span>
+      <span class="stat-card__value">{% model_count 'blog' 'Post' %}</span>
+      <span class="stat-card__meta">Yayinlanan icerik</span>
+    </article>
+    <article class="stat-card">
+      <span class="stat-card__label">Iletisim Mesajlari</span>
+      <span class="stat-card__value">{% model_count 'contact' 'ContactMessage' %}</span>
+      <span class="stat-card__meta">Son iletiler</span>
+    </article>
+    <article class="stat-card">
+      <span class="stat-card__label">Arac Kutuphanesi</span>
+      <span class="stat-card__value">{% model_count 'tools' 'Tool' %}</span>
+      <span class="stat-card__meta">Aktif araclar</span>
+    </article>
+    <article class="stat-card">
+      <span class="stat-card__label">Sosyal Baglantilar</span>
+      <span class="stat-card__value">{% model_count 'main' 'SocialLink' %}</span>
+      <span class="stat-card__meta">Yayinda olan linkler</span>
+    </article>
+  </div>
+
+  <section class="dashboard__section">
+    <header class="dashboard__section-header">
+      <h2 class="dashboard__section-title">Yonetim Modulleri</h2>
+      <p class="dashboard__section-subtitle">Asagidaki tablolardan iceriklerinizi yonetin.</p>
+    </header>
+    <div class="dashboard__apps">
+      {{ block.super }}
+    </div>
+  </section>
+</div>
+{% endblock %}

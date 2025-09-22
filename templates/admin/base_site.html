@@ -1,29 +1,47 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
-{% block title %}{{ title }} | Portfolio Admin{% endblock %}
+{% block title %}Yonetim Paneli | {{ block.super }}{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/css/overrides.css' %}" />
+{% endblock %}
 
 {% block branding %}
-<h1 id="site-name">
-    <a href="{% url 'admin:index' %}">
-        🎯 Portfolio Admin Panel
-    </a>
-</h1>
+  <div class="admin-brand">
+    <span class="admin-brand__badge">BA</span>
+    <div class="admin-brand__text">
+      <span class="admin-brand__title">Bugra Akin</span>
+      <span class="admin-brand__subtitle">Yonetim Paneli</span>
+    </div>
+  </div>
 {% endblock %}
 
-{% block extrahead %}
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/custom_admin.css' %}">
-<style>
-    /* Inline additional styles */
-    #site-name a {
-        color: white !important;
-        text-decoration: none !important;
-        font-size: 24px !important;
-        font-weight: bold !important;
-    }
-    
-    #site-name a:hover {
-        color: #e5e7eb !important;
-    }
-</style>
+{% block usertools %}
+  {% if has_permission %}
+    <div class="admin-user-tools">
+      <span class="admin-user-tools__welcome">
+        Merhaba, {{ request.user.get_short_name|default:request.user.get_username }}
+      </span>
+      <div class="admin-user-tools__actions">
+        {% if site_url %}
+          <a class="admin-button admin-button--secondary" href="{{ site_url }}" target="_blank" rel="noopener">
+            Siteyi Gor
+          </a>
+        {% endif %}
+        <a class="admin-button admin-button--secondary" href="{% url 'admin:password_change' %}">
+          Sifre Degistir
+        </a>
+        <form method="post" action="{% url 'admin:logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="admin-button admin-button--danger">
+            Cikis
+          </button>
+        </form>
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}
+
+{% block nav-global %}{% endblock %}

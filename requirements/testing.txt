@@ -1,0 +1,11 @@
+# Testing requirements
+-r development.txt
+
+# Additional testing tools
+playwright==1.37.0
+coverage==7.3.0
+pytest-xdist==3.3.1
+pytest-mock==3.11.1
+pytest-html==3.2.0
+selenium==4.12.0
+django-test-plus==2.2.0

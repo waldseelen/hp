@@ -24,7 +24,7 @@ from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
 # Import models
 from apps.blog.models import Post
-from .models import AITool, CybersecurityResource, UsefulResource
+from .models import Project, AITool, CybersecurityResource, UsefulResource
 from apps.tools.models import Tool
 
 # Setup logging
@@ -46,6 +46,17 @@ class SearchEngine:
                 'url_field': 'slug',
                 'category': 'Blog Posts',
                 'icon': '📝'
+            },
+            'projects': {
+                'model': Project,
+                'fields': ['title', 'description', 'detailed_description'],
+                'tag_field': 'tech_stack',
+                'weight': 9,
+                'filters': Q(is_visible=True),
+                'url_name': 'main:project_detail',
+                'url_field': 'slug',
+                'category': 'Projects',
+                'icon': '🚀'
             },
             'tools': {
                 'model': Tool,
@@ -449,8 +460,18 @@ class SearchEngine:
         except Exception:
             pass
         
-        # Recent projects - disabled (no Project model)
-        # Projects functionality will be added in a future phase
+        # Recent projects
+        try:
+            recent_projects = Project.objects.filter(is_visible=True).order_by('-created_at')[:limit//2]
+            for project in recent_projects:
+                recent_items.append({
+                    'title': project.title,
+                    'type': 'Project',
+                    'url': project.get_absolute_url(),
+                    'icon': '🚀'
+                })
+        except Exception:
+            pass
         
         return recent_items[:limit]
 

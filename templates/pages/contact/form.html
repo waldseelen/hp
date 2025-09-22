@@ -1,0 +1,114 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Contact" %} - {% trans "Portfolio" %}{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="ds-container stack" data-animate="fade">
+        <div class="stack" style="align-items: center; text-align: center; gap: var(--space-3);">
+            <span class="text-eyebrow">{% trans "Let's collaborate" %}</span>
+            <h1 class="heading-display-lg text-gradient-accent">{% trans "Get In Touch" %}</h1>
+            <p class="lead text-muted">{% trans "Contact Bu&#287;ra AKIN" %}</p>
+        </div>
+
+        <div class="contact-shell">
+            <div class="form-panel" data-animate="fade">
+                <h2 class="heading-display-sm" style="margin-bottom: var(--space-4);">{% trans "Send a Message" %}</h2>
+                <form method="POST" class="form-group" data-validate role="form" aria-label="{% trans 'Contact form' %}">
+                    {% csrf_token %}
+                    <input type="text" name="website" hidden tabindex="-1" autocomplete="off" aria-hidden="true">
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="name">{% trans "Name" %} *</label>
+                            <input type="text" id="name" name="name" required class="input" placeholder="{% trans 'Your name' %}" aria-describedby="name-help" autocomplete="name">
+                        </div>
+                        <div class="form-field">
+                            <label for="email">{% trans "Email" %} *</label>
+                            <input type="email" id="email" name="email" required class="input" placeholder="your@email.com" aria-describedby="email-help" autocomplete="email">
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="subject">{% trans "Subject" %} *</label>
+                        <input type="text" id="subject" name="subject" required class="input" placeholder="{% trans 'What\'s this about?' %}" aria-describedby="subject-help">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="message">{% trans "Message" %} *</label>
+                        <textarea id="message" name="message" rows="6" required class="textarea" placeholder="{% trans 'Tell me what\'s on your mind...' %}" aria-describedby="message-help"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--block" data-loading="{% trans 'Sending...' %}">
+                        {% trans "Send Message" %}
+                    </button>
+                </form>
+            </div>
+
+            <aside class="contact-panel" data-animate="fade">
+                <div class="surface">
+                    <h2 class="heading-title">{% trans "Ways to reach me" %}</h2>
+                    <div class="stack">
+                        <div class="contact-card">
+                            <div class="contact-card__icon">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 8a2 2 0 00-2-2h-3l-1.447-2.894A2 2 0 0012.763 2h-1.526a2 2 0 00-1.789 1.106L8 6H5a2 2 0 00-2 2v11a1 1 0 001 1h16a1 1 0 001-1V8z"></path>
+                                </svg>
+                            </div>
+                            <div class="contact-card__content">
+                                <p class="contact-card__title">{% trans "Email" %}</p>
+                                <p class="contact-card__detail">contact@bugraak.in</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-card">
+                            <div class="contact-card__icon" style="color: var(--color-primary);">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5.727c0-.89.724-1.612 1.614-1.612h1.884c.724 0 1.35.464 1.569 1.148l.843 2.53a1.614 1.614 0 01-.363 1.603l-1.118 1.118a12.903 12.903 0 005.149 5.149l1.118-1.118a1.614 1.614 0 011.603-.363l2.53.843a1.614 1.614 0 011.148 1.569v1.884A1.614 1.614 0 0118.273 21H17.5C10.596 21 5 15.404 5 8.5V7.34">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="contact-card__content">
+                                <p class="contact-card__title">{% trans "Phone" %}</p>
+                                <p class="contact-card__detail">+90 (555) 555 55 55</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-card">
+                            <div class="contact-card__icon" style="color: var(--color-accent);">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="contact-card__content">
+                                <p class="contact-card__title">{% trans "Location" %}</p>
+                                <p class="contact-card__detail">Ankara, T&uuml;rkiye</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="surface surface--elevated">
+                    <h2 class="heading-title">{% trans "Frequently Asked Questions" %}</h2>
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <h3 class="faq-item__question">{% trans "What is the best way to contact you?" %}</h3>
+                            <p class="faq-item__answer">{% trans "You can reach me via email through this form. I check messages daily." %}</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-item__question">{% trans "Do you do freelance projects?" %}</h3>
+                            <p class="faq-item__answer">{% trans "Yes! I'm always happy to discuss new opportunities and projects." %}</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-item__question">{% trans "What are my areas of expertise?" %}</h3>
+                            <p class="faq-item__answer">{% trans "Electrical Engineering, Embedded Systems, Linux, AI, Cloud and Cybersecurity." %}</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

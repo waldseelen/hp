@@ -1,0 +1,133 @@
+
+{% load static i18n %}
+
+{# Animation System Showcase #}
+<link rel="stylesheet" href="{% static 'css/advanced-animations.css' %}">
+<script src="{% static 'js/animation-controller.js' %}" defer></script>
+<script src="{% static 'js/reduced-motion-manager.js' %}" defer></script>
+
+<section class="hero-animated py-20">
+  <div class="container mx-auto px-4">
+    <div class="animate-stagger text-center">
+      <h1 class="text-5xl font-bold mb-6 animate-fade-in-up">{% trans "Advanced Animation System" %}</h1>
+      <p class="text-xl text-gray-300 mb-8 animate-fade-in-up delay-200">{% trans "Micro-interactions and smooth transitions with accessibility support." %}</p>
+      <div class="flex justify-center gap-4 animate-fade-in-up delay-300">
+        <button class="btn-interactive btn-primary">{% trans "Interactive Button" %}</button>
+        <button class="btn-interactive btn-outline">{% trans "Hover Effect" %}</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-16">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-12 scroll-reveal">{% trans "Animation Examples" %}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <article class="card-interactive bg-gray-800 rounded-lg p-6 animate-fade-in-up">
+        <div class="w-12 h-12 bg-primary-500 rounded-lg mb-4 animate-pulse-subtle"></div>
+        <h3 class="text-xl font-semibold mb-2">{% trans "Fade In Up" %}</h3>
+        <p class="text-gray-400">{% trans "Smooth entrance animation from the bottom." %}</p>
+      </article>
+      <article class="card-interactive bg-gray-800 rounded-lg p-6 animate-scale-in delay-200">
+        <div class="w-12 h-12 bg-green-500 rounded-lg mb-4 animate-breathe"></div>
+        <h3 class="text-xl font-semibold mb-2">{% trans "Scale In" %}</h3>
+        <p class="text-gray-400">{% trans "Growing entrance with a subtle bounce effect." %}</p>
+      </article>
+      <article class="card-interactive bg-gray-800 rounded-lg p-6 animate-bounce-in delay-300">
+        <div class="w-12 h-12 bg-blue-500 rounded-lg mb-4 morph-circle-to-square"></div>
+        <h3 class="text-xl font-semibold mb-2">{% trans "Bounce In" %}</h3>
+        <p class="text-gray-400">{% trans "Elastic entrance animation." %}</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="py-16 bg-gray-800">
+  <div class="container mx-auto px-4 grid gap-12 md:grid-cols-2">
+    <div class="scroll-scale">
+      <h3 class="text-xl font-semibold mb-6">{% trans "Animated Form" %}</h3>
+      <form class="space-y-6">
+        <div class="input-animated">
+          <input type="text" placeholder="{% trans 'Your name' %}" class="w-full px-4 py-3 bg-gray-700 rounded-lg border border-gray-600 text-white focus:border-primary-500 transition-colors">
+          <div class="input-line"></div>
+        </div>
+        <div class="input-animated">
+          <input type="email" placeholder="{% trans 'Your email' %}" class="w-full px-4 py-3 bg-gray-700 rounded-lg border border-gray-600 text-white focus:border-primary-500 transition-colors">
+          <div class="input-line"></div>
+        </div>
+        <button type="submit" class="btn-interactive btn-primary w-full">{% trans "Submit Form" %}</button>
+      </form>
+    </div>
+    <div class="scroll-scale">
+      <h3 class="text-xl font-semibold mb-6">{% trans "Loading Animations" %}</h3>
+      <div class="space-y-6">
+        <div class="flex items-center gap-4">
+          <div class="loading-spinner"></div>
+          <span>{% trans "Spinner" %}</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="loading-dots"><div></div><div></div><div></div></div>
+          <span>{% trans "Dots" %}</span>
+        </div>
+        <button class="btn-interactive btn-secondary" data-loading-button>
+          <span class="btn-text">{% trans "Click to Load" %}</span>
+          <div class="loading-spinner small" hidden></div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 parallax-container" style="background: linear-gradient(45deg, #1e293b, #334155);">
+  <div class="container mx-auto px-4">
+    <div class="text-center parallax-layer" data-parallax="0.5">
+      <h2 class="text-4xl font-bold mb-6 scroll-reveal">{% trans "Parallax Effect" %}</h2>
+      <p class="text-xl text-gray-300 scroll-reveal delay-200">{% trans "This section moves at a different speed when scrolling." %}</p>
+    </div>
+  </div>
+</section>
+
+<section class="py-16">
+  <div class="container mx-auto px-4">
+    <div class="bg-gray-800 rounded-lg p-8 scroll-reveal">
+      <h2 class="text-2xl font-bold mb-4">{% trans "Accessibility Features" %}</h2>
+      <ul class="space-y-2 text-gray-300">
+        <li>• {% trans "Respects prefers-reduced-motion settings." %}</li>
+        <li>• {% trans "Manual toggle for user control." %}</li>
+        <li>• {% trans "Performance monitoring and optimisation." %}</li>
+        <li>• {% trans "Keyboard shortcuts (Ctrl+Alt+M)." %}</li>
+        <li>• {% trans "GPU acceleration for smooth performance." %}</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .btn-interactive.loading .btn-text { opacity: 0; }
+  .btn-interactive.loading .loading-spinner { display: block !important; width: 20px; height: 20px; border-width: 2px; }
+  .loading-spinner.small { width: 20px; height: 20px; border-width: 2px; margin: 0 auto; }
+  @media (max-width: 768px) {
+    .hero-animated { padding: 3rem 0; }
+    .hero-animated h1 { font-size: 2.5rem; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-loading-button]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const spinner = button.querySelector('.loading-spinner');
+        const text = button.querySelector('.btn-text');
+        if (!spinner || !text) {
+          return;
+        }
+        button.classList.add('loading');
+        spinner.hidden = false;
+        setTimeout(() => {
+          button.classList.remove('loading');
+          spinner.hidden = true;
+        }, 2000);
+      });
+    });
+  });
+</script>

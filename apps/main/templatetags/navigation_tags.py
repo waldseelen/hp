@@ -62,61 +62,6 @@ def is_current_page(context, url_name):
         return False
 
 
-@register.inclusion_tag('partials/breadcrumb.html', takes_context=True)
-def render_breadcrumb(context):
-    """
-    Renders breadcrumb navigation using the breadcrumbs from context processor.
-    
-    Usage: {% render_breadcrumb %}
-    """
-    # Get breadcrumbs from context processor
-    breadcrumbs = context.get('breadcrumbs', [{'title': 'Ana Sayfa', 'url': '/'}])
-    return {'breadcrumbs': breadcrumbs}
-
-
-@register.simple_tag(takes_context=True)
-def get_breadcrumbs(context):
-    """
-    Returns breadcrumbs list for use in templates.
-    
-    Usage: {% get_breadcrumbs as breadcrumbs %}
-    """
-    return context.get('breadcrumbs', [{'title': 'Ana Sayfa', 'url': '/'}])
-
-
-@register.simple_tag(takes_context=True) 
-def is_active_nav(context, url_name):
-    """
-    Checks if a navigation item should be marked as active.
-    Returns True if the current page matches the URL name.
-    
-    Usage: {% is_active_nav 'home' %}
-    """
-    request = context['request']
-    try:
-        resolved_match = resolve(request.path)
-        current_url_name = resolved_match.url_name
-        namespace = resolved_match.namespace
-        
-        # Handle different URL patterns
-        if current_url_name == url_name:
-            return True
-        
-        # Check namespace matches
-        full_url_name = f"{namespace}:{url_name}" if namespace else url_name
-        if full_url_name == f"{namespace}:{current_url_name}" if namespace else current_url_name:
-            return True
-            
-        # Check section matches
-        if namespace and url_name in namespace:
-            return True
-            
-        return False
-        
-    except Exception:
-        return False
-
-
 @register.inclusion_tag('navigation/breadcrumb.html', takes_context=True)
 def breadcrumb(context):
     """
@@ -138,9 +83,6 @@ def breadcrumb(context):
         'personal': 'Hakkımda',
         'music': 'Müzik',
         'admin': 'Admin',
-        'ai': 'AI Araçları',
-        'cybersecurity': 'Siber Güvenlik',
-        'useful': 'Useful',
     }
     
     current_path = ''

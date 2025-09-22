@@ -45,118 +45,96 @@ HATA YÖNETİMİ:
 - Django cache framework: Redis/Memcached desteği
 """
 
-from typing import Dict, List, Any, Optional, Union
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.core.cache import cache
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.db.models import QuerySet
-from ..cache_utils import (
-    CacheManager, cache_result, cache_queryset_medium, cache_long,
-    cache_page_data, ModelCacheManager
-)
 from django.utils import timezone
-from django.views.decorators.http import require_http_methods
 from apps.main.models import PersonalInfo, SocialLink, AITool, CybersecurityResource, MusicPlaylist, SpotifyCurrentTrack, UsefulResource
 from apps.blog.models import Post
 from apps.tools.models import Tool
-from apps.main.performance import performance_metrics, alert_manager
 import logging
-
-# Cache helper functions for home page data
-@cache_queryset_medium
-def get_cached_personal_info() -> List[PersonalInfo]:
-    """Get cached personal information"""
-    return list(PersonalInfo.objects.filter(
-        is_visible=True
-    ).order_by('order', 'key'))
-
-@cache_queryset_medium
-def get_cached_social_links() -> List[SocialLink]:
-    """Get cached social links"""
-    return list(SocialLink.objects.filter(
-        is_visible=True
-    ).order_by('order', 'platform'))
-
-@cache_queryset_medium
-def get_cached_recent_posts():
-    """Get cached recent blog posts"""
-    return list(Post.objects.select_related('author').filter(
-        status='published',
-        published_at__lte=timezone.now()
-    ).order_by('-published_at')[:3])
-
-@cache_queryset_medium
-def get_cached_favorite_tools():
-    """Get cached favorite tools"""
-    return list(Tool.objects.visible().filter(
-        is_favorite=True
-    ).order_by('category', 'title')[:6])
-
-@cache_queryset_medium
-def get_cached_featured_ai_tools():
-    """Get cached featured AI tools"""
-    return list(AITool.objects.filter(
-        is_featured=True,
-        is_visible=True
-    ).order_by('order', 'name')[:4])
-
-@cache_queryset_medium
-def get_cached_urgent_security():
-    """Get cached urgent security resources"""
-    return list(CybersecurityResource.objects.filter(
-        is_urgent=True,
-        is_visible=True
-    ).order_by('-severity_level', 'title')[:3])
-
-@cache_queryset_medium
-def get_cached_featured_blog_categories():
-    """Get cached featured blog categories"""
-    from apps.main.models import BlogCategory
-    return list(BlogCategory.objects.filter(
-        is_visible=True
-    ).order_by('order', 'name')[:6])
 
 logger = logging.getLogger(__name__)
 
 
-def get_client_ip(request):
-    """Get the real client IP address"""
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0].strip()
-    else:
-        ip = request.META.get('REMOTE_ADDR', '127.0.0.1')
-    return ip
-
-
-@cache_page_data('home', timeout=CacheManager.TIMEOUTS['medium'])
-def home(request: HttpRequest) -> HttpResponse:
+def home(request):
     """
     Home page view with optimized queries and caching.
-    Uses individual cached functions for better cache granularity.
-
-    Args:
-        request: HTTP request object
-
-    Returns:
-        HttpResponse: Rendered home page template with context data
     """
     try:
-        # Use cached helper functions for better granular caching
+        # Cache key for the home page data
+        cache_key = 'home_page_data'
+        cached_data = cache.get(cache_key)
+        
+        if cached_data is None:
+            # Fetch data with optimized queries
+            personal_info = PersonalInfo.objects.filter(
+                is_visible=True
+            ).order_by('order', 'key')
+            
+            social_links = SocialLink.objects.filter(
+                is_visible=True
+            ).order_by('order', 'platform')
+            
+            # Get recent published posts with author info
+            recent_posts = Post.objects.select_related('author').filter(
+                status='published',
+                published_at__lte=timezone.now()
+            ).order_by('-published_at')[:3]
+            
+            # Get favorite tools
+            favorite_tools = Tool.objects.visible().filter(
+                is_favorite=True
+            ).order_by('category', 'title')[:6]
+            
+            # Get featured AI tools
+            featured_ai_tools = AITool.objects.filter(
+                is_featured=True,
+                is_visible=True
+            ).order_by('order', 'name')[:4]
+            
+            # Get urgent cybersecurity resources
+            urgent_security = CybersecurityResource.objects.filter(
+                is_urgent=True,
+                is_visible=True
+            ).order_by('-severity_level', 'title')[:3]
+            
+            # current_activities = []  # Model removed
+            
+            # Get featured blog categories
+            from apps.main.models import BlogCategory
+            featured_blog_categories = BlogCategory.objects.filter(
+                is_visible=True
+            ).order_by('order', 'name')[:6]
+            
+            cached_data = {
+                'personal_info': list(personal_info),
+                'social_links': list(social_links),
+                'recent_posts': list(recent_posts),
+                'favorite_tools': list(favorite_tools),
+                'featured_ai_tools': list(featured_ai_tools),
+                'urgent_security': list(urgent_security),
+                # 'current_activities': [],  # Model removed
+                'featured_blog_categories': list(featured_blog_categories),
+            }
+            
+            # Cache for 15 minutes
+            cache.set(cache_key, cached_data, 900)
+        
         context = {
-            'personal_info': get_cached_personal_info(),
-            'social_links': get_cached_social_links(),
-            'recent_posts': get_cached_recent_posts(),
-            'favorite_tools': get_cached_favorite_tools(),
-            'featured_ai_tools': get_cached_featured_ai_tools(),
-            'urgent_security': get_cached_urgent_security(),
-            'featured_blog_categories': get_cached_featured_blog_categories(),
+            'personal_info': cached_data['personal_info'],
+            'social_links': cached_data['social_links'],
+            'recent_posts': cached_data['recent_posts'],
+            'favorite_tools': cached_data['favorite_tools'],
+            'featured_ai_tools': cached_data['featured_ai_tools'],
+            'urgent_security': cached_data['urgent_security'],
+            # 'current_activities': [],  # Model removed
+            'featured_blog_categories': cached_data['featured_blog_categories'],
             'page_title': 'Home',
             'meta_description': 'Full Stack Developer & Cybersecurity Enthusiast Portfolio',
         }
         
-        return render(request, 'main/home.html', context)
+        return render(request, 'pages/portfolio/home.html', context)
         
     except Exception as e:
         logger.error(f"Error in home view: {str(e)}")
@@ -173,18 +151,12 @@ def home(request: HttpRequest) -> HttpResponse:
             'page_title': 'Home',
             'meta_description': 'Portfolio',
         }
-        return render(request, 'main/home.html', context)
+        return render(request, 'pages/portfolio/home.html', context)
 
 
-def personal_view(request: HttpRequest) -> HttpResponse:
+def personal_view(request):
     """
     About/Personal page view with personal information, certificates and skills.
-
-    Args:
-        request: HTTP request object
-
-    Returns:
-        HttpResponse: Rendered personal/about page template
     """
     try:
         cache_key = 'personal_page_data'
@@ -225,7 +197,7 @@ def personal_view(request: HttpRequest) -> HttpResponse:
             'meta_description': 'Kişisel bilgiler, sertifikalar, yetenekler ve deneyimler',
         }
         
-        return render(request, 'main/personal.html', context)
+        return render(request, 'pages/portfolio/personal.html', context)
         
     except Exception as e:
         logger.error(f"Error in personal view: {str(e)}")
@@ -238,7 +210,7 @@ def personal_view(request: HttpRequest) -> HttpResponse:
             'page_title': 'Hakkımda',
             'meta_description': 'Kişisel bilgiler',
         }
-        return render(request, 'main/personal.html', context)
+        return render(request, 'pages/portfolio/personal.html', context)
 
 
 def music_view(request):
@@ -277,7 +249,7 @@ def music_view(request):
             'meta_description': 'Müzik playlistleri, şu an çaldığım şarkılar ve favori sanatçılar',
         }
         
-        return render(request, 'main/music.html', context)
+        return render(request, 'pages/portfolio/music.html', context)
         
     except Exception as e:
         logger.error(f"Error in music view: {str(e)}")
@@ -288,18 +260,12 @@ def music_view(request):
             'page_title': 'Müzik',
             'meta_description': 'Müzik',
         }
-        return render(request, 'main/music.html', context)
+        return render(request, 'pages/portfolio/music.html', context)
 
 
-def ai_tools_view(request: HttpRequest) -> HttpResponse:
+def ai_tools_view(request):
     """
     AI Tools page view with AI resources and tools.
-
-    Args:
-        request: HTTP request object
-
-    Returns:
-        HttpResponse: Rendered AI tools page template
     """
     try:
         # Get AI tools by category
@@ -318,7 +284,7 @@ def ai_tools_view(request: HttpRequest) -> HttpResponse:
             'meta_description': 'Yapay zeka araçları ve platformları - Sevdiğim AI yer imleri',
         }
         
-        return render(request, 'main/ai.html', context)
+        return render(request, 'pages/portfolio/ai.html', context)
         
     except Exception as e:
         logger.error(f"Error in ai_tools view: {str(e)}")
@@ -327,18 +293,12 @@ def ai_tools_view(request: HttpRequest) -> HttpResponse:
             'page_title': 'AI Araçları',
             'meta_description': 'Yapay zeka araçları',
         }
-        return render(request, 'main/ai.html', context)
+        return render(request, 'pages/portfolio/ai.html', context)
 
 
-def cybersecurity_view(request: HttpRequest) -> HttpResponse:
+def cybersecurity_view(request):
     """
     Cybersecurity page view with security content and resources.
-
-    Args:
-        request: HTTP request object
-
-    Returns:
-        HttpResponse: Rendered cybersecurity page template
     """
     try:
         # Get cybersecurity resources by type
@@ -364,7 +324,7 @@ def cybersecurity_view(request: HttpRequest) -> HttpResponse:
             'meta_description': 'Siber güvenlik kaynakları, araçları ve güncel bilgiler',
         }
         
-        return render(request, 'main/cybersecurity.html', context)
+        return render(request, 'pages/portfolio/cybersecurity.html', context)
         
     except Exception as e:
         logger.error(f"Error in cybersecurity view: {str(e)}")
@@ -374,7 +334,7 @@ def cybersecurity_view(request: HttpRequest) -> HttpResponse:
             'page_title': 'Siber Güvenlik',
             'meta_description': 'Siber güvenlik',
         }
-        return render(request, 'main/cybersecurity.html', context)
+        return render(request, 'pages/portfolio/cybersecurity.html', context)
 
 
 def useful_view(request):
@@ -416,7 +376,7 @@ def useful_view(request):
             'meta_description': 'Faydalı araçlar, siteler ve uygulamalar koleksiyonu',
         }
         
-        return render(request, 'main/useful.html', context)
+        return render(request, 'pages/portfolio/useful.html', context)
         
     except Exception as e:
         logger.error(f"Error in useful view: {str(e)}")
@@ -426,7 +386,7 @@ def useful_view(request):
             'page_title': 'Useful Resources',
             'meta_description': 'Faydalı kaynaklar',
         }
-        return render(request, 'main/useful.html', context)
+        return render(request, 'pages/portfolio/useful.html', context)
 
 
 def projects_view(request):
@@ -469,7 +429,7 @@ def projects_view(request):
             'meta_description': 'Geliştirdiğim projeler ve portföy çalışmaları',
         }
         
-        return render(request, 'main/projects.html', context)
+        return render(request, 'pages/portfolio/projects.html', context)
         
     except Exception as e:
         logger.error(f"Error in projects view: {str(e)}")
@@ -480,7 +440,7 @@ def projects_view(request):
             'page_title': 'Projeler',
             'meta_description': 'Projeler',
         }
-        return render(request, 'main/projects.html', context)
+        return render(request, 'pages/portfolio/projects.html', context)
 
 
 def project_detail_view(request, slug):
@@ -510,11 +470,6 @@ def project_detail_view(request, slug):
                 is_featured=True
             ).exclude(pk=project.pk)[:4]
         
-        # Add dynamic breadcrumb for this project
-        request.breadcrumbs_extra = [
-            {'title': project.title, 'url': None}
-        ]
-        
         context = {
             'project': project,
             'related_projects': related_projects,
@@ -522,7 +477,7 @@ def project_detail_view(request, slug):
             'meta_description': project.description[:160] if project.description else f'{project.title} proje detayları',
         }
         
-        return render(request, 'main/project_detail.html', context)
+        return render(request, 'pages/portfolio/project_detail.html', context)
         
     except Exception as e:
         logger.error(f"Error in project_detail view: {str(e)}")
@@ -539,188 +494,3 @@ def logout_view(request):
     except Exception as e:
         logger.error(f"Error in logout view: {str(e)}")
         return redirect('home')
-
-
-# Internationalization Views
-# ==========================
-
-@require_http_methods(["GET", "POST"])
-def set_language(request):
-    """
-    Set the language preference for the user.
-    Compatible with Django's built-in set_language view but with enhanced features.
-    """
-    from django.utils import translation
-    from django.conf import settings
-    from django.urls import reverse
-    
-    next_url = request.POST.get('next', request.GET.get('next'))
-    language = request.POST.get('language', request.GET.get('language'))
-    
-    # Validate language
-    if language and language in [lang[0] for lang in settings.LANGUAGES]:
-        # Activate the language for this request
-        translation.activate(language)
-        
-        # Create the response
-        if next_url:
-            response = redirect(next_url)
-        else:
-            response = redirect('/')
-        
-        # Set the language cookie
-        response.set_cookie(
-            'django_language', 
-            language,
-            max_age=365 * 24 * 60 * 60,  # 1 year
-            httponly=False,  # Allow JavaScript access for client-side management
-            samesite='Lax'
-        )
-        
-        # Log the language change
-        try:
-            logger.info(f"Language changed to {language} for user", extra={
-                'language': language,
-                'ip_address': get_client_ip(request),
-                'timestamp': timezone.now().isoformat(),
-            })
-        except Exception:
-            pass  # Silently fail logging
-        
-        return response
-    
-    # If language is invalid, redirect to previous page or home
-    return redirect(next_url or '/')
-
-
-@require_http_methods(["GET"])
-def language_status(request):
-    """
-    Return current language status as JSON.
-    Useful for JavaScript language management.
-    """
-    from django.utils import translation
-    from django.conf import settings
-    
-    current_language = translation.get_language()
-    available_languages = [
-        {
-            'code': lang[0],
-            'name': str(lang[1]),
-            'is_current': lang[0] == current_language
-        }
-        for lang in settings.LANGUAGES
-    ]
-    
-    return JsonResponse({
-        'current_language': current_language,
-        'available_languages': available_languages,
-        'rtl': translation.get_language_bidi(),
-    })
-
-
-@require_http_methods(["GET"])  
-def health_check(request):
-    """
-    API endpoint for system health check
-    Returns JSON with system status information
-    """
-    import time
-    import django
-    from django.db import connection
-    
-    try:
-        # Check database connectivity
-        start_time = time.time()
-        cursor = connection.cursor()
-        cursor.execute("SELECT 1")
-        db_time = time.time() - start_time
-        db_status = "healthy"
-        
-        # Check cache if Redis is configured
-        cache_status = "not_configured"
-        cache_time = 0
-        try:
-            from django.core.cache import cache
-            start_time = time.time()
-            cache.set('health_check', 'ok', 1)
-            if cache.get('health_check') == 'ok':
-                cache_time = time.time() - start_time
-                cache_status = "healthy"
-            else:
-                cache_status = "error"
-        except Exception:
-            cache_status = "error"
-        
-        # System information
-        health_data = {
-            'status': 'healthy',
-            'timestamp': timezone.now().isoformat(),
-            'services': {
-                'database': {
-                    'status': db_status,
-                    'response_time_ms': round(db_time * 1000, 2)
-                },
-                'cache': {
-                    'status': cache_status,
-                    'response_time_ms': round(cache_time * 1000, 2)
-                }
-            },
-            'environment': {
-                'debug': settings.DEBUG,
-                'django_version': django.get_version(),
-            }
-        }
-        
-        # Determine overall status
-        if db_status != "healthy":
-            health_data['status'] = 'unhealthy'
-            return JsonResponse(health_data, status=503)
-        
-        return JsonResponse(health_data)
-        
-    except Exception as e:
-        logger.error(f"Health check error: {e}")
-        return JsonResponse({
-            'status': 'unhealthy',
-            'timestamp': timezone.now().isoformat(),
-            'error': str(e)
-        }, status=503)
-
-
-def performance_dashboard_view(request):
-    """
-    Performance monitoring dashboard view.
-    Shows real-time metrics, health status, and alerting information.
-    """
-    try:
-        # Get performance metrics summary
-        metrics_summary = performance_metrics.get_metrics_summary(hours=24)
-        real_time_data = performance_metrics.get_real_time_data()
-        health_status = performance_metrics.get_health_status()
-        recent_alerts = alert_manager.get_recent_alerts(minutes=60)
-
-        context = {
-            'metrics_summary': metrics_summary,
-            'real_time_data': real_time_data,
-            'health_status': health_status,
-            'recent_alerts': recent_alerts,
-            'page_title': 'Performance Dashboard',
-            'meta_description': 'Real-time performance monitoring dashboard with Core Web Vitals tracking',
-            'dashboard_refresh_interval': 30000,  # 30 seconds
-        }
-
-        return render(request, 'main/dashboard.html', context)
-
-    except Exception as e:
-        logger.error(f"Error in performance dashboard view: {str(e)}")
-        context = {
-            'metrics_summary': {'metrics': {}, 'health_score': 'F', 'total_entries': 0},
-            'real_time_data': {'status': 'error', 'error': str(e)},
-            'health_status': {'status': 'unhealthy'},
-            'recent_alerts': [],
-            'page_title': 'Performance Dashboard',
-            'meta_description': 'Performance monitoring dashboard',
-            'dashboard_refresh_interval': 30000,
-        }
-        return render(request, 'main/dashboard.html', context)

@@ -169,7 +169,7 @@ class TagCloudView(TemplateView):
     def _collect_all_tags(self):
         """Collect tags from all models"""
         from apps.blog.models import Post
-        from apps.main.models import AITool
+        from apps.main.models import Project, AITool
         from apps.tools.models import Tool
         
         tag_data = {}
@@ -185,8 +185,16 @@ class TagCloudView(TemplateView):
         except Exception:
             pass
         
-        # Projects - disabled (no Project model)
-        # Projects functionality will be added in a future phase
+        # Projects
+        try:
+            projects = Project.objects.filter(is_visible=True)
+            for project in projects:
+                if project.tech_stack:
+                    for tech in project.tech_stack:
+                        if tech.strip():
+                            self._add_tag(tag_data, tech.strip(), 'project', project)
+        except Exception:
+            pass
         
         # Tools
         try:

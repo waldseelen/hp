@@ -1,1 +1,1 @@
-web: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn portfolio_site.wsgi:application --bind 0.0.0.0:$PORT
+web: bash scripts/railway-start.sh

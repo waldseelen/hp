@@ -1,0 +1,220 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Hakkımda - Portfolio{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Hero Section -->
+    <section class="text-center py-12 sm:py-20 animate-fade-in">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="heading-1 mb-6 animate-slide-up">
+                Hakkımda
+            </h1>
+            <p class="body-large mb-8 animate-slide-up" style="animation-delay: 0.1s">
+                Kişisel bilgiler, yetenekler ve deneyimlerim
+            </p>
+        </div>
+    </section>
+
+    <!-- About Content -->
+    <div class="max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Bio Section -->
+            <div class="lg:col-span-2">
+                <div class="card animate-slide-up mb-8" style="animation-delay: 0.2s">
+                    <div class="p-6">
+                        <h2 class="heading-2 mb-6">Bio</h2>
+                        {% for info in personal_info %}
+                            {% if info.key == 'bio' or info.key == 'about' %}
+                                <div class="prose prose-gray max-w-none">
+                                    {% if info.type == 'markdown' %}
+                                        {{ info.value|linebreaks }}
+                                    {% else %}
+                                        <p class="body-text">{{ info.value }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% empty %}
+                            <p class="body-text">
+                                Full Stack Developer ve Siber Güvenlik Uzmanı olarak teknoloji dünyasında aktif olarak yer almaktayım. 
+                                Modern web teknolojileri ve güvenlik alanında uzmanlaşmış durumdayım.
+                            </p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Experience Section -->
+                <div class="card animate-slide-up mb-8" style="animation-delay: 0.3s">
+                    <div class="p-6">
+                        <h2 class="heading-2 mb-6">Deneyim</h2>
+                        {% for info in personal_info %}
+                            {% if info.key == 'experience' %}
+                                <div class="prose prose-gray max-w-none">
+                                    {% if info.type == 'markdown' %}
+                                        {{ info.value|linebreaks }}
+                                    {% else %}
+                                        <p class="body-text">{{ info.value }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% empty %}
+                            <div class="space-y-6">
+                                <div class="border-l-4 border-primary-500 pl-4">
+                                    <h3 class="heading-3 mb-2">Full Stack Developer</h3>
+                                    <p class="body-small text-gray-400 mb-3">2020 - Günümüz</p>
+                                    <p class="body-text">Modern web uygulamaları ve API'ler geliştirme, 
+                                    React, Django, Node.js gibi teknolojilerle projeler üretme.</p>
+                                </div>
+                                <div class="border-l-4 border-primary-500 pl-4">
+                                    <h3 class="heading-3 mb-2">Siber Güvenlik Uzmanı</h3>
+                                    <p class="body-small text-gray-400 mb-3">2019 - Günümüz</p>
+                                    <p class="body-text">Web uygulamaları güvenlik analizi, penetrasyon testleri, 
+                                    güvenlik açığı tespiti ve çözümü.</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Education Section -->
+                <div class="card animate-slide-up" style="animation-delay: 0.4s">
+                    <div class="p-6">
+                        <h2 class="heading-2 mb-6">Eğitim</h2>
+                        {% for info in personal_info %}
+                            {% if info.key == 'education' %}
+                                <div class="prose prose-gray max-w-none">
+                                    {% if info.type == 'markdown' %}
+                                        {{ info.value|linebreaks }}
+                                    {% else %}
+                                        <p class="body-text">{{ info.value }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% empty %}
+                            <div class="space-y-4">
+                                <div class="border-l-4 border-primary-500 pl-4">
+                                    <h3 class="heading-3 mb-2">Bilgisayar Mühendisliği</h3>
+                                    <p class="body-small text-gray-400 mb-2">Lisans Derecesi</p>
+                                    <p class="body-text">Algoritma, veri yapıları, yazılım mühendisliği ve 
+                                    siber güvenlik alanlarında temel ve ileri seviye eğitim.</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills & Social Sidebar -->
+            <div class="lg:col-span-1">
+                <!-- Skills Section -->
+                <div class="card animate-slide-up mb-8" style="animation-delay: 0.5s">
+                    <div class="p-6">
+                        <h2 class="heading-2 mb-6">Yetenekler</h2>
+                        {% for info in personal_info %}
+                            {% if info.key == 'skills' %}
+                                <div class="prose prose-gray max-w-none">
+                                    {% if info.type == 'markdown' %}
+                                        {{ info.value|linebreaks }}
+                                    {% else %}
+                                        <p class="body-text">{{ info.value }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% empty %}
+                            <div class="space-y-4">
+                                <div>
+                                    <h3 class="heading-3 mb-3">Frontend</h3>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="tag">React</span>
+                                        <span class="tag">JavaScript</span>
+                                        <span class="tag">TypeScript</span>
+                                        <span class="tag">Tailwind CSS</span>
+                                        <span class="tag">HTML5</span>
+                                        <span class="tag">CSS3</span>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="heading-3 mb-3">Backend</h3>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="tag">Python</span>
+                                        <span class="tag">Django</span>
+                                        <span class="tag">Node.js</span>
+                                        <span class="tag">PostgreSQL</span>
+                                        <span class="tag">Redis</span>
+                                        <span class="tag">API Design</span>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="heading-3 mb-3">Siber Güvenlik</h3>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="tag">Penetration Testing</span>
+                                        <span class="tag">OWASP</span>
+                                        <span class="tag">Vulnerability Assessment</span>
+                                        <span class="tag">Network Security</span>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="heading-3 mb-3">DevOps</h3>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="tag">Docker</span>
+                                        <span class="tag">Git</span>
+                                        <span class="tag">Linux</span>
+                                        <span class="tag">CI/CD</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Social Links -->
+                {% if social_links %}
+                <div class="card animate-slide-up" style="animation-delay: 0.6s">
+                    <div class="p-6">
+                        <h2 class="heading-2 mb-6">Sosyal Bağlantılar</h2>
+                        <div class="space-y-3">
+                            {% for link in social_links %}
+                                <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer"
+                                   class="flex items-center p-3 rounded-lg bg-gray-800/20 hover:bg-gray-800/40 transition-colors group">
+                                    <div class="social-icon-small mr-3">
+                                        {% if link.platform|lower == 'github' %}
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                                            </svg>
+                                        {% elif link.platform|lower == 'linkedin' %}
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                            </svg>
+                                        {% elif link.platform|lower == 'twitter' or link.platform|lower == 'x' %}
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                                            </svg>
+                                        {% else %}
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                                            </svg>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="font-semibold text-sm">{{ link.platform|title }}</h3>
+                                        {% if link.description %}
+                                            <p class="text-xs text-gray-400">{{ link.description }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

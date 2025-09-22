@@ -6,7 +6,7 @@ from .models import Tool
 
 class ToolListView(ListView):
     model = Tool
-    template_name = 'tools/list.html'
+    template_name = 'pages/tools/list.html'
     context_object_name = 'tools'
     paginate_by = 20
     
@@ -38,7 +38,7 @@ class ToolListView(ListView):
 
 class ToolDetailView(DetailView):
     model = Tool
-    template_name = 'tools/detail.html'
+    template_name = 'pages/tools/detail.html'
     context_object_name = 'tool'
 
     def get_queryset(self):

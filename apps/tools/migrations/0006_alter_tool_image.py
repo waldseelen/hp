@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='tool',
             name='image',
-            field=models.ImageField(blank=True, help_text='Upload an image/screenshot for this tool', null=True, upload_to='tools/', validators=[apps.main.file_validators.ImageValidator(max_size=5242880)]),
+            field=models.ImageField(blank=True, help_text='Upload an image/screenshot for this tool', null=True, upload_to='tools/', validators=[apps.main.file_validators.image_validator]),
         ),
     ]

@@ -1,1 +1,1 @@
-# Logging package
+# Django Template Error Resolution Logging Package

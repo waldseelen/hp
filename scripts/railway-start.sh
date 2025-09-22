@@ -34,7 +34,7 @@ warning() {
 log "Starting Django Portfolio Site on Railway..."
 
 # Check environment
-log "Environment: ${DJANGO_SETTINGS_MODULE:-portfolio_site.settings.production}"
+log "Environment: ${DJANGO_SETTINGS_MODULE:-project.settings.production}"
 log "Debug mode: ${DEBUG:-False}"
 log "Port: ${PORT:-8000}"
 
@@ -81,7 +81,7 @@ else
 fi
 
 # Create superuser if needed (only in staging)
-if [ "$DEBUG" = "True" ] && [ "$DJANGO_SETTINGS_MODULE" = "portfolio_site.settings.development" ]; then
+if [ "$DEBUG" = "True" ] && [ "$DJANGO_SETTINGS_MODULE" = "project.settings.development" ]; then
     log "Creating default superuser for staging..."
     python manage.py shell -c "
 from django.contrib.auth import get_user_model;

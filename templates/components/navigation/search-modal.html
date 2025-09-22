@@ -1,0 +1,84 @@
+
+{% load i18n %}
+<div id="search-modal" class="search-modal" hidden>
+  <div class="search-modal__backdrop" data-search-dismiss></div>
+  <div class="search-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="search-modal-title">
+    <div class="search-modal__header">
+      <h2 id="search-modal-title">{% trans "Search" %}</h2>
+      <button type="button" class="search-modal__close" data-search-dismiss aria-label="{% trans 'Close search' %}">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6m0 12L6 6" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="search-modal__body">
+      <div class="search-modal__input-wrap">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5" stroke-linecap="round"></path>
+        </svg>
+        <input type="search"
+               id="search-input"
+               class="search-modal__input search-input"
+               placeholder="{% trans 'Search across articles, projects, tools…' %}"
+               autocomplete="off"
+               spellcheck="false"
+               aria-describedby="search-modal-hint">
+      </div>
+      <p id="search-modal-hint" class="search-modal__hint">
+        {% trans "Use" %} <kbd>Ctrl</kbd><kbd>K</kbd> {% trans "to open quickly." %}
+      </p>
+
+      <div id="search-loading" class="search-modal__loading" hidden>
+        <div class="search-modal__spinner"></div>
+        <span>{% trans "Searching…" %}</span>
+      </div>
+
+      <div id="search-no-results" class="search-modal__empty" hidden>
+        <p class="search-modal__empty-title">{% trans "No results found" %}</p>
+        <p class="search-modal__empty-text">{% trans "Try another keyword." %}</p>
+      </div>
+
+      <div id="search-results" class="search-modal__results"></div>
+
+      <div id="search-recent" class="search-modal__recent">
+        <div class="search-modal__recent-head">
+          <h3>{% trans "Recent searches" %}</h3>
+          <button type="button" data-search-clear class="search-modal__clear">{% trans "Clear" %}</button>
+        </div>
+        <div id="recent-searches-list" class="search-modal__recent-list"></div>
+      </div>
+
+      <div id="search-suggestions" class="search-modal__suggestions">
+        <h3>{% trans "Popular" %}</h3>
+        <div class="search-modal__suggestion-items">
+          <button type="button" class="search-modal__suggestion" data-suggestion="django">Django</button>
+          <button type="button" class="search-modal__suggestion" data-suggestion="python">Python</button>
+          <button type="button" class="search-modal__suggestion" data-suggestion="security">Security</button>
+          <button type="button" class="search-modal__suggestion" data-suggestion="ai">AI</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="search-modal__footer">
+      <div class="search-modal__shortcut">{% trans "Navigate" %} <kbd>↑</kbd><kbd>↓</kbd></div>
+      <div class="search-modal__shortcut">{% trans "Open" %} <kbd>Enter</kbd></div>
+      <div class="search-modal__shortcut">{% trans "Close" %} <kbd>Esc</kbd></div>
+    </div>
+  </div>
+</div>
+
+<template id="search-result-template">
+  <div class="search-modal__result" role="button">
+    <div class="search-modal__result-icon"></div>
+    <div class="search-modal__result-body">
+      <h4 class="search-modal__result-title"></h4>
+      <p class="search-modal__result-text"></p>
+      <div class="search-modal__result-meta">
+        <span class="search-modal__result-tag"></span>
+        <span class="search-modal__result-date"></span>
+      </div>
+    </div>
+  </div>
+</template>

@@ -4,8 +4,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from .models import (
     Admin, PersonalInfo, SocialLink, AITool, CybersecurityResource,
-    BlogCategory, BlogPost, MusicPlaylist, SpotifyCurrentTrack, UsefulResource,
-    PerformanceMetric, WebPushSubscription, ErrorLog, NotificationLog
+    BlogCategory, BlogPost, MusicPlaylist, SpotifyCurrentTrack, UsefulResource
 )
 
 
@@ -325,82 +324,3 @@ class UsefulResourceAdmin(admin.ModelAdmin):
             return format_html('<img src="{}" style="max-height: 100px; max-width: 200px;" />', obj.image.url)
         return "No image"
     useful_image_preview.short_description = 'Image Preview'
-
-
-# ==========================================================================
-# MONITORING & ANALYTICS ADMIN
-# ==========================================================================
-
-@admin.register(PerformanceMetric)
-class PerformanceMetricAdmin(admin.ModelAdmin):
-    list_display = ('metric_type', 'value', 'url', 'user_agent_short', 'ip_address', 'timestamp')
-    list_filter = ('metric_type', 'timestamp')
-    search_fields = ('url', 'user_agent', 'ip_address')
-    ordering = ('-timestamp',)
-    readonly_fields = ('timestamp', 'user_agent', 'ip_address')
-    date_hierarchy = 'timestamp'
-    
-    def user_agent_short(self, obj):
-        if obj.user_agent:
-            return obj.user_agent[:50] + '...' if len(obj.user_agent) > 50 else obj.user_agent
-        return '-'
-    user_agent_short.short_description = 'User Agent'
-
-
-@admin.register(WebPushSubscription)
-class WebPushSubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('endpoint_short', 'user_agent_short', 'enabled', 'created_at', 'last_success')
-    list_filter = ('enabled', 'created_at', 'last_success')
-    search_fields = ('endpoint', 'user_agent')
-    ordering = ('-created_at',)
-    readonly_fields = ('created_at', 'updated_at')
-    
-    def endpoint_short(self, obj):
-        if obj.endpoint:
-            return obj.endpoint[:50] + '...' if len(obj.endpoint) > 50 else obj.endpoint
-        return '-'
-    endpoint_short.short_description = 'Endpoint'
-    
-    def user_agent_short(self, obj):
-        if obj.user_agent:
-            return obj.user_agent[:40] + '...' if len(obj.user_agent) > 40 else obj.user_agent
-        return '-'
-    user_agent_short.short_description = 'User Agent'
-
-
-@admin.register(ErrorLog)
-class ErrorLogAdmin(admin.ModelAdmin):
-    list_display = ('level', 'message_short', 'url', 'user_agent_short', 'last_occurred')
-    list_filter = ('level', 'last_occurred')
-    search_fields = ('message', 'url', 'user_agent')
-    ordering = ('-last_occurred',)
-    readonly_fields = ('created_at', 'updated_at', 'first_occurred', 'last_occurred')
-    date_hierarchy = 'last_occurred'
-    
-    def message_short(self, obj):
-        if obj.message:
-            return obj.message[:60] + '...' if len(obj.message) > 60 else obj.message
-        return '-'
-    message_short.short_description = 'Message'
-    
-    def user_agent_short(self, obj):
-        if obj.user_agent:
-            return obj.user_agent[:40] + '...' if len(obj.user_agent) > 40 else obj.user_agent
-        return '-'
-    user_agent_short.short_description = 'User Agent'
-
-
-@admin.register(NotificationLog)
-class NotificationLogAdmin(admin.ModelAdmin):
-    list_display = ('notification_type', 'title_short', 'status', 'created_at')
-    list_filter = ('notification_type', 'status', 'created_at')
-    search_fields = ('title', 'body')
-    ordering = ('-created_at',)
-    readonly_fields = ('created_at', 'updated_at', 'sent_at', 'delivered_at')
-    date_hierarchy = 'created_at'
-    
-    def title_short(self, obj):
-        if obj.title:
-            return obj.title[:60] + '...' if len(obj.title) > 60 else obj.title
-        return '-'
-    title_short.short_description = 'Title'

@@ -1,1 +1,124 @@
-{% extends"base.html" %} {% load static %} {% load seo_tags %} {% block title %} {% if query %} Search Results for"{{ query }}" {% else %} Search {% endif %} {% endblock %} {% block meta_description %} {% if query %} Search results for"{{ query }}" - Find blog posts, projects, tools, and resources on this portfolio site. {% else %} Search through blog posts, projects, AI tools, cybersecurity resources and more on this developer portfolio. {% endif %} {% endblock %} {% block extra_head %} <style> .search-highlight { background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%); color: #1f2937; padding: 0 4px; border-radius: 3px; font-weight: 500; } .filter-chip { @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200; transition: all 0.2s; } .filter-chip:hover { @apply bg-gray-200 dark:bg-gray-600; } .filter-chip.active { @apply bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200; } .search-result-card { @apply bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-200; } .search-result-card:hover { transform: translateY(-2px); } </style> {% endblock %} {% block content %} <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12"> <div class="container mx-auto px-4 max-w-7xl"> <!-- Search Header --> <div class="text-center mb-12"> <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4"> {% if query %} Search Results {% else %} Search Portfolio {% endif %} </h1> {% if query %} <p class="text-xl text-gray-600 dark:text-gray-300"> Results for"<span class="font-semibold text-primary-600">{{ query }}</span>" </p> {% else %} <p class="text-xl text-gray-600 dark:text-gray-300"> Find blog posts, projects, tools, and resources </p> {% endif %} </div> <!-- Search Form --> <div class="max-w-4xl mx-auto mb-12"> <form method="GET" action="{% url 'main:search' %}" class="relative" id="searchForm"> <div class="relative"> <input type="text" name="q" value="{{ query }}" placeholder="Search for anything..." class="w-full px-6 py-4 pl-12 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:border-primary-500 dark:focus:border-primary-400 focus:outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-white" autocomplete="off" id="searchInput" > <svg class="absolute left-4 top-5 w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path> </svg> <!-- Search Suggestions --> <div id="searchSuggestions" class="absolute top-full left-0 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg mt-1 hidden z-50"> <!-- Suggestions will be populated by JavaScript --> </div> </div> <!-- Category Filters --> <div class="flex flex-wrap gap-2 mt-4" id="categoryFilters"> {% for category in search_categories %} <label class="filter-chip cursor-pointer {% if category.key in selected_categories %}active{% endif %}"> <input type="checkbox" name="category" value="{{ category.key }}" class="hidden" {% if category.key in selected_categories %}checked{% endif %} > <span class="mr-2">{{ category.icon }}</span> {{ category.name }} </label> {% endfor %} </div> <button type="submit" class="hidden">Search</button> </form> </div> {% if query %} <!-- Search Results --> <div class="grid grid-cols-4 gap-8"> <!-- Main Results --> <div class="col-span-3"> {% if has_results %} <!-- Results Summary --> <div class="flex justify-between items-center mb-6"> <p class="text-gray-600 dark:text-gray-400"> Found <strong>{{ search_results.total_count }}</strong> results {% if page_obj.paginator.num_pages > 1 %} (Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}) {% endif %} </p> <!-- Sort Options --> <select id="sortSelect" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"> <option value="relevance">Most Relevant</option> <option value="-created_at">Newest First</option> <option value="created_at">Oldest First</option> <option value="title">Title A-Z</option> <option value="-title">Title Z-A</option> </select> </div> <!-- Results Grid --> <div class="space-y-6"> {% for result in page_obj %} <div class="search-result-card"> <div class="flex items-start justify-between mb-3"> <div class="flex items-center"> <span class="text-2xl mr-3">{{ result.category_icon }}</span> <div> <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-1"> {% if result.url %} <a href="{{ result.url }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"> {{ result.title }} </a> {% else %} {{ result.title }} {% endif %} </h3> <p class="text-sm text-gray-500 dark:text-gray-400"> {{ result.category_name }} {% if result.metadata.date %} • {{ result.metadata.date }} {% endif %} </p> </div> </div> <div class="text-sm text-gray-400 dark:text-gray-500"> Score: {{ result.relevance_score }} </div> </div> {% if result.description %} <p class="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed"> {{ result.description }} </p> {% endif %} {% if result.tags %} <div class="flex flex-wrap gap-2"> {% for tag in result.tags %} <a href="{% url 'main:search_by_tag' tag %}" class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md text-xs hover:bg-primary-100 dark:hover:bg-primary-900 transition-colors"> {{ tag }} </a> {% endfor %} </div> {% endif %} </div> {% endfor %} </div> <!-- Pagination --> {% if page_obj.paginator.num_pages > 1 %} <div class="flex justify-center mt-12"> <nav class="flex items-center space-x-2"> {% if page_obj.has_previous %} <a href="?q={{ query }}&page=1{% for cat in selected_categories %}&category={{ cat }}{% endfor %}" class="px-4 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"> First </a> <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}{% for cat in selected_categories %}&category={{ cat }}{% endfor %}" class="px-4 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"> Previous </a> {% endif %} {% for num in page_obj.paginator.page_range %} {% if page_obj.number == num %} <span class="px-4 py-2 bg-primary-600 text-white rounded-md">{{ num }}</span> {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <a href="?q={{ query }}&page={{ num }}{% for cat in selected_categories %}&category={{ cat }}{% endfor %}" class="px-4 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"> {{ num }} </a> {% endif %} {% endfor %} {% if page_obj.has_next %} <a href="?q={{ query }}&page={{ page_obj.next_page_number }}{% for cat in selected_categories %}&category={{ cat }}{% endfor %}" class="px-4 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"> Next </a> <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}{% for cat in selected_categories %}&category={{ cat }}{% endfor %}" class="px-4 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"> Last </a> {% endif %} </nav> </div> {% endif %} {% else %} <!-- No Results --> <div class="text-center py-12"> <svg class="mx-auto w-24 h-24 text-gray-400 dark:text-gray-600 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.034 0-3.9-.62-5.439-1.68m0 0a8.001 8.001 0 1110.878 0M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path> </svg> <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4"> No results found </h3> <p class="text-gray-600 dark:text-gray-400 mb-6"> Sorry, we couldn't find any results for"<strong>{{ query }}</strong>" </p> {% if suggestions %} <div class="mb-6"> <p class="text-gray-600 dark:text-gray-400 mb-3">Try these suggestions:</p> <div class="flex flex-wrap justify-center gap-2"> {% for suggestion in suggestions %} <a href="?q={{ suggestion.text }}" class="px-4 py-2 bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200 rounded-lg hover:bg-primary-200 dark:hover:bg-primary-800 transition-colors"> {{ suggestion.text }} </a> {% endfor %} </div> </div> {% endif %} <div class="space-y-2 text-gray-600 dark:text-gray-400"> <p><strong>Tips for better results:</strong></p> <ul class="text-sm space-y-1"> <li>• Check your spelling</li> <li>• Try different keywords</li> <li>• Use fewer words</li> <li>• Try different categories</li> </ul> </div> </div> {% endif %} </div> <!-- Sidebar --> <div class="col-span-1"> <div class="sticky top-6 space-y-6"> <!-- Category Results --> {% if search_results.categories %} <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700"> <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Results by Category</h3> <div class="space-y-2"> {% for category, count in search_results.categories.items %} <div class="flex justify-between items-center text-sm"> <span class="text-gray-600 dark:text-gray-400"> {% for cat in search_categories %} {% if cat.key == category %}{{ cat.name }}{% endif %} {% endfor %} </span> <span class="font-medium text-gray-900 dark:text-white">{{ count }}</span> </div> {% endfor %} </div> </div> {% endif %} <!-- Popular Searches --> {% if popular_searches %} <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700"> <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Popular Searches</h3> <div class="flex flex-wrap gap-2"> {% for search_term in popular_searches %} <a href="?q={{ search_term }}" class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md text-sm hover:bg-primary-100 dark:hover:bg-primary-900 transition-colors"> {{ search_term }} </a> {% endfor %} </div> </div> {% endif %} <!-- Recent Content --> {% if recent_content %} <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700"> <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Recent Content</h3> <div class="space-y-3"> {% for item in recent_content %} <div class="flex items-start"> <span class="mr-2">{{ item.icon }}</span> <div class="min-w-0 flex-1"> <a href="{{ item.url }}" class="text-sm font-medium text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors block truncate"> {{ item.title }} </a> <p class="text-xs text-gray-500 dark:text-gray-400">{{ item.type }}</p> </div> </div> {% endfor %} </div> </div> {% endif %} </div> </div> </div> {% else %} <!-- Search Landing Page --> <div class="max-w-4xl mx-auto"> <!-- Popular Searches --> {% if popular_searches %} <div class="mb-12"> <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Popular Searches</h2> <div class="flex flex-wrap justify-center gap-3"> {% for search_term in popular_searches %} <a href="?q={{ search_term }}" class="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-md transition-all text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400"> {{ search_term }} </a> {% endfor %} </div> </div> {% endif %} <!-- Recent Content --> {% if recent_content %} <div class="mb-12"> <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Recent Content</h2> <div class="grid grid-cols-2 gap-4"> {% for item in recent_content %} <a href="{{ item.url }}" class="flex items-center p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-md transition-all"> <span class="text-2xl mr-4">{{ item.icon }}</span> <div class="min-w-0 flex-1"> <h3 class="font-medium text-gray-900 dark:text-white truncate">{{ item.title }}</h3> <p class="text-sm text-gray-500 dark:text-gray-400">{{ item.type }}</p> </div> </a> {% endfor %} </div> </div> {% endif %} </div> {% endif %} </div> </div> {% endblock %} {% block extra_scripts %} <script> document.addEventListener('DOMContentLoaded', function() { const searchForm = document.getElementById('searchForm'); const searchInput = document.getElementById('searchInput'); const categoryFilters = document.querySelectorAll('input[name="category"]'); const searchSuggestions = document.getElementById('searchSuggestions'); let suggestionTimeout; // Auto-submit form when category filters change categoryFilters.forEach(filter => { filter.addEventListener('change', function() { // Update filter chip appearance const label = this.closest('label'); if (this.checked) { label.classList.add('active'); } else { label.classList.remove('active'); } // Auto-submit if there's a query if (searchInput.value.trim()) { searchForm.submit(); } }); }); // Search suggestions searchInput.addEventListener('input', function() { clearTimeout(suggestionTimeout); const query = this.value.trim(); if (query.length < 2) { searchSuggestions.classList.add('hidden'); return; } suggestionTimeout = setTimeout(() => { fetch(`/search/suggestions/?q=${encodeURIComponent(query)}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } }) .then(response => response.json()) .then(data => { if (data.suggestions && data.suggestions.length > 0) { let html = ''; data.suggestions.forEach(suggestion => { html += ` <div class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-b-0 suggestion-item" data-suggestion="${suggestion.text}"> <span class="text-gray-900 dark:text-white">${suggestion.text}</span> <span class="text-xs text-gray-500 dark:text-gray-400 ml-2">${suggestion.type || ''}</span> </div> `; }); searchSuggestions.innerHTML = html; searchSuggestions.classList.remove('hidden'); // Add click handlers for suggestions document.querySelectorAll('.suggestion-item').forEach(item => { item.addEventListener('click', function() { searchInput.value = this.dataset.suggestion; searchSuggestions.classList.add('hidden'); searchForm.submit(); }); }); } else { searchSuggestions.classList.add('hidden'); } }) .catch(error => { console.error('Error fetching suggestions:', error); searchSuggestions.classList.add('hidden'); }); }, 300); }); // Hide suggestions when clicking outside document.addEventListener('click', function(e) { if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) { searchSuggestions.classList.add('hidden'); } }); // Handle keyboard navigation in suggestions searchInput.addEventListener('keydown', function(e) { const suggestions = document.querySelectorAll('.suggestion-item'); let current = document.querySelector('.suggestion-item.highlighted'); if (e.key === 'ArrowDown') { e.preventDefault(); if (!current) { suggestions[0]?.classList.add('highlighted'); } else { current.classList.remove('highlighted'); const next = current.nextElementSibling || suggestions[0]; next.classList.add('highlighted'); } } else if (e.key === 'ArrowUp') { e.preventDefault(); if (!current) { suggestions[suggestions.length - 1]?.classList.add('highlighted'); } else { current.classList.remove('highlighted'); const prev = current.previousElementSibling || suggestions[suggestions.length - 1]; prev.classList.add('highlighted'); } } else if (e.key === 'Enter') { if (current) { e.preventDefault(); searchInput.value = current.dataset.suggestion; searchSuggestions.classList.add('hidden'); searchForm.submit(); } } else if (e.key === 'Escape') { searchSuggestions.classList.add('hidden'); } }); }); </script> {% endblock %}
+
+{% extends 'base/base.html' %}
+{% load static i18n %}
+
+{% block title %}
+  {% if query %}
+    {% blocktrans with q=query %}Search results for "{{ q }}"{% endblocktrans %}
+  {% else %}
+    {% trans "Search" %}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="ds-container stack" style="gap: var(--space-6);">
+    <header class="stack" style="gap: var(--space-2); text-align: center;">
+      <span class="text-eyebrow">{% trans "Search" %}</span>
+      {% if query %}
+        <h1 class="heading-display-lg">{% blocktrans with q=query %}Results for "{{ q }}"{% endblocktrans %}</h1>
+      {% else %}
+        <h1 class="heading-display-lg">{% trans "Search the portfolio" %}</h1>
+      {% endif %}
+      <p class="section-subheading">{% trans "Find blog posts, projects, tools and resources." %}</p>
+    </header>
+
+    <form method="get" action="{% url 'main:search' %}" class="surface stack" style="gap: var(--space-4);">
+      <label class="stack" style="gap: var(--space-2);">
+        <span class="metric-label">{% trans "Search query" %}</span>
+        <input type="text" name="q" value="{{ query }}" placeholder="{% trans 'Search for anything…' %}" class="input" autocomplete="off">
+      </label>
+
+      {% if search_categories %}
+        <fieldset class="stack" style="gap: var(--space-2);">
+          <legend class="metric-label">{% trans "Filter by category" %}</legend>
+          <div class="cluster" style="gap: var(--space-2);">
+            {% for category in search_categories %}
+              {% with active=category.key|default:'' %}
+              <label class="badge" style="cursor: pointer;">
+                <input type="checkbox" name="category" value="{{ category.key }}" class="visually-hidden"
+                       {% if category.key in selected_categories %}checked{% endif %}>
+                <span>{{ category.icon }} {{ category.name }}</span>
+              </label>
+              {% endwith %}
+            {% endfor %}
+          </div>
+        </fieldset>
+      {% endif %}
+
+      <div class="cluster" style="justify-content: flex-end;">
+        <button type="submit" class="btn btn--primary">{% trans "Search" %}</button>
+      </div>
+    </form>
+
+    {% if query %}
+      {% if has_results %}
+        <div class="stack" style="gap: var(--space-5);">
+          <div class="cluster" style="justify-content: space-between;">
+            <p class="text-muted">
+              {% blocktrans with total=search_results.total_count %}Found {{ total }} result(s){% endblocktrans %}
+              {% if page_obj.paginator.num_pages > 1 %}
+                {% blocktrans with page=page_obj.number pages=page_obj.paginator.num_pages %}(page {{ page }} of {{ pages }}){% endblocktrans %}
+              {% endif %}
+            </p>
+            <div>
+              <label class="visually-hidden" for="sortSelect">{% trans "Sort order" %}</label>
+              <select id="sortSelect" name="sort" class="select">
+                <option value="relevance">{% trans "Most relevant" %}</option>
+                <option value="-created_at">{% trans "Newest first" %}</option>
+                <option value="created_at">{% trans "Oldest first" %}</option>
+                <option value="title">{% trans "Title A–Z" %}</option>
+                <option value="-title">{% trans "Title Z–A" %}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="stack" style="gap: var(--space-4);">
+            {% for result in page_obj %}
+              <article class="surface surface--elevated stack" style="gap: var(--space-2);">
+                <div class="cluster" style="justify-content: space-between; align-items: flex-start;">
+                  <div class="stack" style="gap: var(--space-1);">
+                    <h2 class="heading-title">
+                      {% if result.url %}
+                        <a href="{{ result.url }}" class="text-gradient-primary">{{ result.title }}</a>
+                      {% else %}
+                        {{ result.title }}
+                      {% endif %}
+                    </h2>
+                    <p class="text-muted" style="font-size: var(--font-size-sm);">
+                      {{ result.category_name }}
+                      {% if result.metadata.date %}
+                        • {{ result.metadata.date }}
+                      {% endif %}
+                    </p>
+                  </div>
+                  <span class="badge">{% trans "Score" %}: {{ result.relevance_score }}</span>
+                </div>
+                {% if result.snippet %}
+                  <p class="text-muted">{{ result.snippet|truncatechars:180 }}</p>
+                {% endif %}
+              </article>
+            {% endfor %}
+          </div>
+
+          {% if page_obj.has_other_pages %}
+            <nav class="cluster" style="justify-content: center; gap: var(--space-2);" aria-label="{% trans 'Pagination' %}">
+              {% if page_obj.has_previous %}
+                <a class="btn btn--secondary" href="?q={{ query }}&page={{ page_obj.previous_page_number }}">{% trans "Previous" %}</a>
+              {% endif %}
+              <span class="badge">{% blocktrans with page=page_obj.number pages=page_obj.paginator.num_pages %}Page {{ page }} of {{ pages }}{% endblocktrans %}</span>
+              {% if page_obj.has_next %}
+                <a class="btn btn--secondary" href="?q={{ query }}&page={{ page_obj.next_page_number }}">{% trans "Next" %}</a>
+              {% endif %}
+            </nav>
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="surface" role="status">
+          <p class="text-muted">{% trans "No results found. Try adjusting your query or filters." %}</p>
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
