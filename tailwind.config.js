@@ -32,7 +32,7 @@
  * @type {import('tailwindcss').Config}
  */
 module.exports = {
-  content: ['./templates/**/*.html', './**/templates/**/*.html'],
+  content: ['./templates/**/*.html', './**/templates/**/*.html', './static/css/components/**/*.css'],
   darkMode: 'class',
   theme: {
     extend: {
@@ -63,119 +63,75 @@ module.exports = {
         '144': '36rem',
       },
       colors: {
-        // Primary brand colors (gold/khaki theme) - WCAG AA Compliant
         primary: {
-          50: '#fefdf8',
-          100: '#fdf9ed',
-          200: '#f9f1d4',
-          300: '#f4e6a4',
-          400: '#e6c547', // Improved contrast
-          500: '#c8b560',
-          600: '#a89550',
-          700: '#8b7355',
-          800: '#6b705c',
-          900: '#4a4e3a'
+          50: '#fef9e8',
+          100: '#fdeec2',
+          200: '#fbe291',
+          300: '#f6d55f',
+          400: '#f5d85c',
+          500: '#e6c547',
+          600: '#c9a73b',
+          700: '#a9862f',
+          800: '#866724',
+          900: '#6c521d'
         },
-        // Secondary colors (grays for dark theme)
         secondary: {
-          50: '#f9fafb',
-          100: '#f3f4f6',
-          200: '#e5e7eb',
-          300: '#d1d5db',
-          400: '#9ca3af',
-          500: '#6b7280',
-          600: '#4b5563',
-          700: '#374151',
-          800: '#1f2937',
-          900: '#111827'
+          50: '#f8fafc',
+          100: '#e2e8f0',
+          200: '#cbd5f5',
+          300: '#a8b7d6',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#16213b',
+          900: '#0b1220'
         },
-        // Semantic colors for UI components
+        accent: {
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb'
+        },
+        surface: {
+          DEFAULT: '#111827',
+          elevated: '#16213b',
+          darkest: '#040a16'
+        },
+        text: {
+          DEFAULT: '#e2e8f0',
+          muted: '#94a3b8',
+          inverse: '#0b1220'
+        },
         success: {
-          50: '#ecfdf5',
-          100: '#d1fae5',
-          200: '#a7f3d0',
-          300: '#6ee7b7',
-          400: '#34d399',
-          500: '#10b981',
-          600: '#059669',
-          700: '#047857',
-          800: '#065f46',
-          900: '#064e3b'
+          100: '#dcfce7',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#34d399',
+          600: '#059669'
         },
         warning: {
-          50: '#fffbeb',
           100: '#fef3c7',
-          200: '#fde68a',
           300: '#fcd34d',
           400: '#fbbf24',
           500: '#f59e0b',
-          600: '#d97706',
-          700: '#b45309',
-          800: '#92400e',
-          900: '#78350f'
+          600: '#d97706'
         },
         error: {
-          50: '#fef2f2',
           100: '#fee2e2',
-          200: '#fecaca',
           300: '#fca5a5',
           400: '#f87171',
           500: '#ef4444',
-          600: '#dc2626',
-          700: '#b91c1c',
-          800: '#991b1b',
-          900: '#7f1d1d'
+          600: '#dc2626'
         },
         info: {
-          50: '#eff6ff',
           100: '#dbeafe',
-          200: '#bfdbfe',
           300: '#93c5fd',
           400: '#60a5fa',
           500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a'
-        },
-        // Cybersecurity theme colors
-        cyber: {
-          50: '#fef2f2',
-          100: '#fee2e2',
-          200: '#fecaca',
-          300: '#fca5a5',
-          400: '#f87171',
-          500: '#ef4444',
-          600: '#dc2626',
-          700: '#b91c1c',
-          800: '#991b1b',
-          900: '#7f1d1d'
-        },
-        // AI/Tech theme colors
-        tech: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a'
-        },
-        // Music theme colors
-        music: {
-          50: '#faf5ff',
-          100: '#f3e8ff',
-          200: '#e9d5ff',
-          300: '#d8b4fe',
-          400: '#c084fc',
-          500: '#a855f7',
-          600: '#9333ea',
-          700: '#7c2d12',
-          800: '#6b21a8',
-          900: '#581c87'
+          600: '#2563eb'
         }
       },
       transitionTimingFunction: {

@@ -155,7 +155,7 @@ function initLoadingStates() {
 
     loadingButtons.forEach(button => {
         button.addEventListener('click', function() {
-            if (!this.classList.contains('loading')) {
+            if (!this.classList.contains('btn-loading')) {
                 showLoadingState(this);
             }
         });
@@ -163,29 +163,44 @@ function initLoadingStates() {
 }
 
 function showLoadingState(button) {
-    const originalText = button.textContent;
+    if (!button || button.classList.contains('btn-loading')) return;
+
+    const originalHtml = button.innerHTML;
     const loadingText = button.getAttribute('data-loading') || 'Loading...';
 
-    button.classList.add('loading', 'opacity-75', 'cursor-not-allowed');
+    button.classList.add('btn-loading');
     button.disabled = true;
+    button.setAttribute('aria-disabled', 'true');
+    button.setAttribute('aria-busy', 'true');
+    button.setAttribute('aria-live', 'polite');
+
     button.innerHTML = `
-        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        <svg class="btn-spinner loading-spinner loading-spinner-sm mr-2" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" class="opacity-25"></circle>
+            <path fill="currentColor" class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        ${loadingText}
+        <span class="loading-text">${loadingText}</span>
     `;
 
-    // Store original text for later restoration
-    button.setAttribute('data-original-text', originalText);
+    button.setAttribute('data-original-html', originalHtml);
 }
 
 function hideLoadingState(button) {
-    const originalText = button.getAttribute('data-original-text');
-    button.classList.remove('loading', 'opacity-75', 'cursor-not-allowed');
+    if (!button) return;
+
+    const originalHtml = button.getAttribute('data-original-html');
+
+    button.classList.remove('btn-loading');
     button.disabled = false;
-    button.textContent = originalText;
-    button.removeAttribute('data-original-text');
+    button.removeAttribute('aria-disabled');
+    button.removeAttribute('aria-busy');
+    button.removeAttribute('aria-live');
+
+    if (originalHtml !== null) {
+        button.innerHTML = originalHtml;
+    }
+
+    button.removeAttribute('data-original-html');
 }
 
 // Mobile Menu Enhancements
@@ -221,24 +236,6 @@ function initMobileMenu() {
 
 // Performance Optimizations
 function initPerformanceOptimizations() {
-    // Lazy load images
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.classList.remove('lazy');
-                    imageObserver.unobserve(img);
-                }
-            });
-        });
-
-        document.querySelectorAll('img[data-src]').forEach(img => {
-            imageObserver.observe(img);
-        });
-    }
-
     // Optimize animations for reduced motion preference
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         document.documentElement.style.setProperty('--animation-duration', '0.01ms');
@@ -371,24 +368,3 @@ window.addEventListener('error', function(e) {
     }
 });
 
-// Service Worker registration (if available)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        // Check if service worker file exists first
-        fetch('/static/sw.js', {method: 'HEAD'})
-            .then(response => {
-                if (response.ok) {
-                    navigator.serviceWorker.register('/static/sw.js')
-                        .then(function(registration) {
-                            console.log('ServiceWorker registration successful');
-                        })
-                        .catch(function(err) {
-                            console.log('ServiceWorker registration failed');
-                        });
-                }
-            })
-            .catch(function() {
-                console.log('Service worker file not available');
-            });
-    });
-}

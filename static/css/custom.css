@@ -1,0 +1,147 @@
+:root {
+  --layout-max-width: 72rem;
+  --layout-shell-padding: clamp(1rem, 2vw, 1.5rem);
+  --layout-container-padding: clamp(1.25rem, 2.5vw, 2rem);
+  --layout-nav-gap: 1rem;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: var(--layout-shell-padding);
+  font-family: var(--font-family-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+  padding: var(--layout-container-padding);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--layout-nav-gap);
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+nav a {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  transition: color 0.2s ease;
+}
+
+nav a:hover,
+nav a:focus {
+  color: var(--color-primary);
+}
+
+nav a:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+main a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+main a:hover,
+main a:focus {
+  color: var(--color-primary-strong);
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 1rem;
+  }
+
+  .container {
+    padding: 1.25rem;
+  }
+
+  nav {
+    gap: 0.75rem;
+  }
+}
+
+/* Scroll progress indicator */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 60;
+}
+
+.scroll-progress__track {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(148, 163, 184, 0.18);
+}
+
+.scroll-progress__indicator {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-strong));
+  transition: width 0.2s ease-out;
+}
+
+/* Back to top button */
+.back-to-top {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  transform: translateY(1rem);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 60;
+}
+
+.back-to-top .icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.back-to-top.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.back-to-top:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}

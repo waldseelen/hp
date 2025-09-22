@@ -192,6 +192,20 @@
   overflow: hidden;
 }
 
+.playground-hero__media svg {
+  width: clamp(180px, 28vw, 320px);
+  max-height: 320px;
+  display: block;
+  margin-inline: auto;
+}
+
+@media (max-width: var(--breakpoint-sm)) {
+  .playground-hero__media svg {
+    width: clamp(140px, 60vw, 240px);
+  }
+}
+
+
 .playground-code-card {
   display: grid;
   gap: var(--space-4);

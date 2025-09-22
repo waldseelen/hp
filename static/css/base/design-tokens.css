@@ -2,22 +2,22 @@
   color-scheme: dark light;
 
   /* Color tokens */
-  --color-bg: #0b1220;
-  --color-surface: #111827;
-  --color-surface-elevated: #16213b;
-  --color-border: rgba(148, 163, 184, 0.18);
-  --color-border-strong: rgba(148, 163, 184, 0.32);
+  --color-bg: #040a16;
+  --color-surface: #0b1324;
+  --color-surface-elevated: #131f36;
+  --color-border: rgba(148, 163, 184, 0.16);
+  --color-border-strong: rgba(148, 163, 184, 0.28);
   --color-text: #e2e8f0;
   --color-text-muted: #94a3b8;
   --color-text-inverse: #0b1220;
   --color-primary: #e6c547;
   --color-primary-strong: #f5d85c;
-  --color-primary-muted: rgba(230, 197, 71, 0.12);
+  --color-primary-muted: rgba(230, 197, 71, 0.16);
   --color-accent: #60a5fa;
   --color-accent-strong: #3b82f6;
   --color-success: #34d399;
-  --color-error: #f87171;
   --color-warning: #fbbf24;
+  --color-error: #f87171;
   --color-info: #38bdf8;
   --color-focus-ring: rgba(96, 165, 250, 0.65);
 
@@ -82,11 +82,6 @@
   --breakpoint-md: 48rem;    /* 768px */
   --breakpoint-lg: 64rem;    /* 1024px */
   --breakpoint-xl: 80rem;    /* 1280px */
-  --breakpoint-2xl: 96rem;   /* 1536px */
-
-  /* Container tokens */
-  --container-max: 74rem;
-  --container-padding-inline: clamp(var(--space-3), 4vw, var(--space-6));
 
   /* Motion */
   --motion-duration-sm: 120ms;
@@ -102,10 +97,10 @@
   --color-surface-elevated: #131f36;
   --color-border: rgba(148, 163, 184, 0.16);
   --color-border-strong: rgba(148, 163, 184, 0.28);
-  --color-text: #f8fafc;
+  --color-text: #e2e8f0;
   --color-text-muted: #cbd5f5;
   --color-text-inverse: #0b1220;
-  --color-focus-ring: rgba(96, 165, 250, 0.75);
+  --color-primary-muted: rgba(230, 197, 71, 0.16);
 }
 
 [data-theme='light'] {

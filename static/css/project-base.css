@@ -1,3 +1,7 @@
+/* Project-specific layout layer
+ * Relies on design tokens declared in static/css/base/design-tokens.css
+ */
+
 :root {
   --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --color-bg: #060912;
@@ -534,6 +538,138 @@ ol {
   height: 1rem;
 }
 
+
+.tile-grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.tile-grid--two {
+  grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+}
+
+.tile-grid--three {
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+}
+
+.card--step {
+  position: relative;
+  padding-top: clamp(var(--space-4), 3vw, var(--space-5));
+}
+
+.step-number {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: rgba(59, 130, 246, 0.18);
+  color: var(--color-heading);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.12);
+}
+
+.card--step .card__title {
+  margin-top: var(--space-3);
+}
+
+.card__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.card__list a {
+  color: var(--color-heading);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.card__list a:hover,
+.card__list a:focus-visible {
+  color: var(--color-secondary);
+}
+
+.card__list span {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+.card--template {
+  display: grid;
+  gap: var(--space-3);
+  position: relative;
+}
+
+.card--template .card__footer {
+  margin-top: auto;
+}
+
+.template-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.template-meta .template-emoji {
+  font-size: 2rem;
+}
+
+.template-language {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.snippet-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.snippet-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.snippet-stats {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.snippet-stats span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.cta-panel {
+  display: grid;
+  gap: var(--space-3);
+  align-items: center;
+  padding: clamp(var(--space-4), 4vw, var(--space-6));
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.35), rgba(8, 145, 178, 0.3));
+  box-shadow: var(--shadow-soft);
+}
+
 .tag {
   display: inline-flex;
   align-items: center;
@@ -725,6 +861,8 @@ ol {
 .card__icon--blue { background: rgba(59, 130, 246, 0.18); color: #60a5fa; }
 .card__icon--red { background: rgba(239, 68, 68, 0.18); color: #fca5a5; }
 .card__icon--green { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }
+.card__icon--purple { background: rgba(139, 92, 246, 0.18); color: #c4b5fd; }
+.card__icon--orange { background: rgba(249, 115, 22, 0.2); color: #fdba74; }
 .section-actions {
   margin-top: var(--space-5);
 }
@@ -732,4 +870,3 @@ ol {
 .section-actions.section-actions--compact {
   margin-top: var(--space-4);
 }
-

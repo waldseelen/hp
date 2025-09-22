@@ -270,6 +270,7 @@
       const response = await fetch(`/api/search/autocomplete/?q=${encodeURIComponent(query)}`, {
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'application/json',
         },
       });
 

@@ -79,9 +79,10 @@
     <!-- Design system layers -->
     <link rel="stylesheet" href="{% static 'css/base/app-base.css' %}?v={% now 'U' %}">
     <link rel="stylesheet" href="{% static 'css/base/app-typography.css' %}?v={% now 'U' %}">
-    <link rel="stylesheet" href="{% static 'css/components/app-components.css' %}?v={% now 'U' %}">
+    <link rel="stylesheet" href="{% static 'css/components/components-compiled.css' %}?v={% now 'U' %}">
 
     <!-- App scripts -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" integrity="sha384-Rpe/8orFUm5Q1GplYBHxbuA8Az8O8C5sAoOsdbRWkqPjKFaxPgGZipj4zeHL7lxX" crossorigin="anonymous"></script>
     <script>
         window.CDN_MONITOR_CONFIG = Object.assign({
             criticalAssets: ["{% static 'css/project-base.css' %}"],
@@ -90,6 +91,7 @@
     </script>
     <script src="{% static 'js/image-optimization.js' %}?v={% now 'U' %}" defer></script>
     <script src="{% static 'js/cdn-performance.js' %}?v={% now 'U' %}" defer></script>
+    <script src="{% static 'js/performance.min.js' %}?v={% now 'U' %}" defer></script>
     <script src="{% static 'js/search-autocomplete.js' %}?v={% now 'U' %}" defer></script>
 
     <!-- Cookie Consent -->
@@ -99,6 +101,11 @@
 </head>
 <body class="body-base starfield has-custom-cursor antialiased font-sans" id="app-body">
     <a href="#main-content" class="skip-link">{% trans "Skip to main content" %}</a>
+    <div class="scroll-progress" aria-hidden="false">
+      <div class="scroll-progress__track">
+        <div class="scroll-progress__indicator" data-scroll-progress role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="{% trans 'Scroll progress' %}"></div>
+      </div>
+    </div>
     <div class="cursor-blackhole" aria-hidden="true"></div>
     <div class="starfield-layer" aria-hidden="true"></div>
 
@@ -165,6 +172,14 @@
         </div>
     </footer>
 
+    <button id="back-to-top" class="back-to-top" type="button" aria-label="{% trans 'Back to top' %}" aria-hidden="true" tabindex="-1">
+      <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+      </svg>
+    </button>
+
+    {% include 'components/navigation/toast-notifications.html' %}
+    {% include 'components/navigation/loading-overlay.html' %}
     {% include 'components/navigation/search-modal.html' %}
 
     {% block extra_scripts %}{% endblock %}

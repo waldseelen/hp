@@ -7,18 +7,6 @@
   let searchModalInput = null;
   let previouslyFocused = null;
 
-  function initSearchTrigger() {
-    const trigger = doc.querySelector('[data-search-trigger]');
-    if (!trigger) {
-      return;
-    }
-
-    trigger.addEventListener('click', (event) => {
-      event.preventDefault();
-      openSearchModal();
-    });
-  }
-
   function initNavigation() {
     const nav = doc.querySelector('[data-nav-shell]');
     if (!nav) {
@@ -145,12 +133,6 @@
     }
 
     searchModalInput = searchModal.querySelector('.search-modal__input');
-    const dismissors = searchModal.querySelectorAll('[data-search-dismiss]');
-
-    dismissors.forEach((element) => {
-      element.addEventListener('click', () => {
-        closeSearchModal();
-      });
     });
 
     searchModal.addEventListener('mousedown', (event) => {
@@ -162,12 +144,18 @@
     doc.addEventListener('keydown', (event) => {
       const key = event.key.toLowerCase();
       if ((event.ctrlKey || event.metaKey) && key === 'k') {
+        const active = doc.activeElement;
+        const isEditable = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable);
+        if (isEditable) {
+          return;
+        }
+
         event.preventDefault();
-        openSearchModal();
+        window.dispatchEvent(new CustomEvent('open-search'));
       }
 
       if (key === 'escape' && searchModal.classList.contains('is-visible')) {
-        closeSearchModal();
+        window.dispatchEvent(new CustomEvent('close-search'));
       }
     });
 
@@ -193,10 +181,56 @@
     window.searchAutocomplete?.reset();
     window.dispatchEvent(new CustomEvent('openSearchModal'));
     searchModal.removeAttribute('hidden');
+    searchModal.setAttribute('aria-hidden', 'false');
     requestAnimationFrame(() => {
       searchModal.classList.add('is-visible');
       searchModalInput?.focus({ preventScroll: true });
     });
+  }
+
+  function initScrollProgress() {
+    const progressBar = doc.querySelector('[data-scroll-progress]');
+    if (!progressBar) {
+      return;
+    }
+
+    const update = () => {
+      const scrollTop = window.pageYOffset || doc.documentElement.scrollTop || 0;
+      const documentHeight = doc.documentElement.scrollHeight - window.innerHeight;
+      const progress = documentHeight > 0 ? (scrollTop / documentHeight) * 100 : 0;
+      progressBar.style.width = `${progress}%`;
+      progressBar.setAttribute('aria-valuenow', progress.toFixed(0));
+      progressBar.setAttribute('aria-valuetext', `${Math.round(progress)}%`);
+    };
+
+    const schedule = () => window.requestAnimationFrame(update);
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    update();
+  }
+
+  function initBackToTop() {
+    const backToTopBtn = doc.getElementById('back-to-top');
+    if (!backToTopBtn) {
+      return;
+    }
+
+    const toggleVisibility = () => {
+      const shouldShow = window.pageYOffset > 400;
+      backToTopBtn.classList.toggle('is-visible', shouldShow);
+      backToTopBtn.setAttribute('aria-hidden', (!shouldShow).toString());
+      backToTopBtn.setAttribute('tabindex', shouldShow ? '0' : '-1');
+    };
+
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    const schedule = () => window.requestAnimationFrame(toggleVisibility);
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    toggleVisibility();
   }
 
   function closeSearchModal() {
@@ -207,6 +241,7 @@
     searchModal.classList.remove('is-visible');
     searchModalInput?.blur();
     window.dispatchEvent(new CustomEvent('closeSearchModal'));
+    searchModal.setAttribute('aria-hidden', 'true');
     window.setTimeout(() => {
       if (!searchModal.classList.contains('is-visible')) {
         searchModal.setAttribute('hidden', '');
@@ -222,10 +257,14 @@
   window.closeSearchModal = closeSearchModal;
 
   document.addEventListener('DOMContentLoaded', () => {
-    initSearchTrigger();
     initNavigation();
     initRevealAnimations();
     initStarfield();
     initSearchModal();
+    initScrollProgress();
+    initBackToTop();
   });
+
+  window.addEventListener('open-search', openSearchModal);
+  window.addEventListener('close-search', closeSearchModal);
 })();

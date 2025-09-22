@@ -1,14 +1,14 @@
 {
   "name": "best",
   "version": "1.0.0",
-  "description": "PACKAGE.JSON - Node.js Proje Konfigürasyonu (Django Portfolio Projesi) | Bu dosya Django portfolio projesinin Node.js bağımlılıklarını ve Tailwind CSS build konfigürasyonunu yönetir. Modern, profesyonel portfolio web sitesi için gerekli frontend araçlarını içerir. TailwindCSS CLI kullanarak CSS build işlemlerini otomatikleştirir. Development ve production ortamları için optimize edilmiştir. Responsive tasarım ve dark theme desteği sağlar. Django ile entegre çalışacak şekilde yapılandırılmıştır.",
+  "description": "PACKAGE.JSON - Node.js Proje Konfig\u00c3\u00bcrasyonu (Django Portfolio Projesi) | Bu dosya Django portfolio projesinin Node.js ba\u00c4\u0178\u00c4\u00b1ml\u00c4\u00b1l\u00c4\u00b1klar\u00c4\u00b1n\u00c4\u00b1 ve Tailwind CSS build konfig\u00c3\u00bcrasyonunu y\u00c3\u00b6netir. Modern, profesyonel portfolio web sitesi i\u00c3\u00a7in gerekli frontend ara\u00c3\u00a7lar\u00c4\u00b1n\u00c4\u00b1 i\u00c3\u00a7erir. TailwindCSS CLI kullanarak CSS build i\u00c5\u0178lemlerini otomatikle\u00c5\u0178tirir. Development ve production ortamlar\u00c4\u00b1 i\u00c3\u00a7in optimize edilmi\u00c5\u0178tir. Responsive tasar\u00c4\u00b1m ve dark theme deste\u00c4\u0178i sa\u00c4\u0178lar. Django ile entegre \u00c3\u00a7al\u00c4\u00b1\u00c5\u0178acak \u00c5\u0178ekilde yap\u00c4\u00b1land\u00c4\u00b1r\u00c4\u00b1lm\u00c4\u00b1\u00c5\u0178t\u00c4\u00b1r.",
   "main": "index.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
     "build:css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify",
-    "build:components": "echo \"Building components...\"",
+    "build:components": "tailwindcss -i ./static/css/components.css -o ./static/css/components/components-compiled.css --minify",
     "build:all": "npm run build:css && npm run build:components",
     "watch:css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
     "dev": "npm run watch:css",

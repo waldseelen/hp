@@ -1,11 +1,11 @@
 
 {% load i18n %}
-<div id="search-modal" class="search-modal" hidden>
-  <div class="search-modal__backdrop" data-search-dismiss></div>
+<div id="search-modal" class="search-modal" hidden x-data="{}" aria-hidden="true">
+  <div class="search-modal__backdrop" @click="$dispatch('close-search')"></div>
   <div class="search-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="search-modal-title">
     <div class="search-modal__header">
       <h2 id="search-modal-title">{% trans "Search" %}</h2>
-      <button type="button" class="search-modal__close" data-search-dismiss aria-label="{% trans 'Close search' %}">
+      <button type="button" class="search-modal__close" @click="$dispatch('close-search')" aria-label="{% trans 'Close search' %}">
         <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6m0 12L6 6" />
         </svg>
