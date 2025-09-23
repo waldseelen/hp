@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Dict
+from typing import Dict, List
 
 from django.shortcuts import render
 from django.urls import NoReverseMatch, reverse
@@ -17,34 +17,25 @@ def _safe_url(name: str, default: str = '/') -> str:
 def _navigation_links() -> List[Dict[str, str]]:
     return [
         {
-            'title': _('Return to homepage'),
-            'description': _('Start fresh from the main dashboard.'),
+            'title': _('Back to homepage'),
             'url': _safe_url('home'),
-            'icon': 'home',
         },
         {
-            'title': _('Browse recent blog posts'),
-            'description': _('Catch up on the latest tutorials and articles.'),
+            'title': _('Visit the blog'),
             'url': _safe_url('blog:list', '/blog/'),
-            'icon': 'blog',
         },
         {
-            'title': _('Explore featured projects'),
-            'description': _('See portfolio highlights and case studies.'),
+            'title': _('Explore projects'),
             'url': _safe_url('tools:list', '/tools/'),
-            'icon': 'rocket',
         },
         {
-            'title': _('Get in touch'),
-            'description': _('Have a question? Reach out through the contact form.'),
+            'title': _('Contact support'),
             'url': _safe_url('contact:form', '/contact/'),
-            'icon': 'mail',
         },
     ]
 
 
-def custom_404(request, exception):
-    """Custom 404 error handler with helpful navigation."""
+def error_404_view(request, exception, template_name='errors/404.html'):
     request.breadcrumbs_override = [
         {'name': _('Error')},
         {'name': '404'},
@@ -54,18 +45,14 @@ def custom_404(request, exception):
         'request_path': request.path,
         'site_name': 'Portfolio',
         'error_code': '404',
-        'error_message': _('The page you are looking for does not exist.'),
+        'error_message': _('Page not found'),
         'navigation_links': _navigation_links(),
         'search_placeholder': _('Search the site...'),
-        'show_search': True,
-        'suggested_terms': ['AI', 'Cybersecurity', 'Full Stack'],
-        'support_email': 'support@example.com',
     }
-    return render(request, 'errors/404.html', context, status=404)
+    return render(request, template_name, context=context, status=404)
 
 
-def custom_500(request):
-    """Custom 500 error handler that offers recovery options."""
+def error_500_view(request, template_name='errors/500.html'):
     request.breadcrumbs_override = [
         {'name': _('Error')},
         {'name': '500'},
@@ -74,11 +61,10 @@ def custom_500(request):
     context = {
         'site_name': 'Portfolio',
         'error_code': '500',
-        'error_message': _('Something went wrong on our side.'),
+        'error_message': _('Server error'),
         'navigation_links': _navigation_links(),
         'support_email': 'support@example.com',
         'retry_suggestion': _('Please try again in a moment or return to a safe page.'),
         'show_search': False,
     }
-    return render(request, 'errors/500.html', context, status=500)
-
+    return render(request, template_name, context=context, status=500)

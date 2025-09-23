@@ -54,6 +54,11 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.main.context_processors.social_links',
+                'apps.main.context_processors.global_context',
+                'apps.main.context_processors.breadcrumbs',
+                'apps.main.context_processors.language_context',
+                'apps.main.context_processors.csp_nonce',
             ],
         },
     },
@@ -116,3 +121,4 @@ CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SAMESITE = "Lax"
 SECURE_REFERRER_POLICY = "same-origin"
+

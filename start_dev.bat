@@ -1,35 +1,4 @@
-@echo off
-title Django Development Server
-color 0A
-echo.
-echo ========================================
-echo     Django Development Server
-echo ========================================
-echo.
 
-REM Function to check if port 8000 is in use
-for /f "tokens=5" %%a in ('netstat -an ^| findstr ":8000"') do (
-    echo [!] Port 8000 is already in use!
-    echo [!] Stopping existing Django processes...
-    taskkill /f /im python.exe >nul 2>&1
-    timeout /t 2 /nobreak > nul
-)
-
-REM Check if virtual environment exists and activate it
-if exist "venv\Scripts\activate.bat" (
-    echo [+] Activating virtual environment...
-    call venv\Scripts\activate.bat
-    echo [✓] Virtual environment activated
-) else (
-    echo [!] Virtual environment not found!
-    echo [?] Would you like to create one? (Y/N)
-    set /p create_venv=
-    if /i "%create_venv%"=="Y" (
-        echo [+] Creating virtual environment...
-        python -m venv venv
-        call venv\Scripts\activate.bat
-        echo [✓] Virtual environment created and activated
-    ) else (
         echo [!] Using system Python
     )
 )

@@ -108,11 +108,12 @@ urlpatterns += i18n_patterns(
     prefix_default_language=False,
 )
 
-# Custom error handlers (commented out temporarily)
-# handler404 = 'apps.main.error_handlers.custom_404_handler'
-# handler500 = 'apps.main.error_handlers.custom_500_handler'
+# Custom error handlers
+handler404 = 'project.views.custom_404'
+handler500 = 'project.views.custom_500'
 # handler403 = 'apps.main.error_handlers.custom_403_handler'
 # handler400 = 'apps.main.error_handlers.custom_400_handler'
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
