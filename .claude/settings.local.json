@@ -65,7 +65,8 @@
       "Bash(npm run optimize:fonts:*)",
       "Bash(npm run optimize:icons:*)",
       "Bash(npm run accessibility:full:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(npm run:*)"
     ],
     "deny": [],
     "ask": [],
