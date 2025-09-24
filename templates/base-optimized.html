@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Portfolio{% endblock %}</title>
+
+    <!-- Critical CSS inlined for above-the-fold content -->
+    <style>
+        {% block critical_css %}
+        /* Critical CSS will be inlined here per page */
+        {% endblock %}
+    </style>
+
+    <!-- Preload important CSS -->
+    <link rel="preload" href="{% static 'css/output.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'css/output.css' %}"></noscript>
+
+    <!-- Fallback for non-critical CSS -->
+    <link rel="preload" href="{% static 'css/custom.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'css/custom.css' %}"></noscript>
+
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="/">Ana Sayfa</a>
+            <a href="/playground/">Playground</a>
+            <a href="/blog/">Blog</a>
+            <a href="/tools/">Araçlar</a>
+            <a href="/contact/">İletişim</a>
+        </nav>
+
+        <main>
+            {% block content %}
+            <h1>Hoş Geldiniz!</h1>
+            <p>Bu site çalışıyor.</p>
+            {% endblock %}
+        </main>
+    </div>
+
+    <!-- CSS loading polyfill for older browsers -->
+    <script>
+        // CSS loading polyfill
+        !function(e){"use strict";var t=function(t,n,r){function o(e){if(i.body)return e();setTimeout(function(){o(e)})}function a(){d.addEventListener&&d.removeEventListener("load",a),d.media=r||"all"}var i=e.document,d=i.createElement("link");if(n)d.href=n;else{if(!t)return;d.href=t.href,d.crossOrigin=t.crossOrigin}return d.rel="stylesheet",d.media="only x",o(function(){i.head.appendChild(d)}),d.addEventListener&&d.addEventListener("load",a),d.onloadcssdefined=function(e){for(var t,n=0;n<i.styleSheets.length;n++)i.styleSheets[n].href&&i.styleSheets[n].href.indexOf(d.href)>-1&&(t=!0);t?e():setTimeout(function(){d.onloadcssdefined(e)})},d.onloadcssdefined(a),d};"undefined"!=typeof exports?exports.loadCSS=t:e.loadCSS=t}("undefined"!=typeof global?global:this);
+    </script>
+</body>
+</html>

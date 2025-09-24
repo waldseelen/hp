@@ -7,21 +7,24 @@ from .models import UsefulResource, AITool, CybersecurityResource
 
 
 class StaticViewSitemap(Sitemap):
-    """Sitemap for static pages"""
+    """Sitemap for static pages with enhanced SEO metadata"""
     priority = 0.8
-    changefreq = 'monthly'
-    
+    changefreq = 'weekly'
+    protocol = 'https'
+
     def items(self):
         return [
             'home',
-            'main:personal', 
+            'main:personal',
             'main:projects',
             'main:ai',
-            'main:cybersecurity', 
+            'main:cybersecurity',
             'main:useful',
             'main:music',
             'contact:form',
             'blog:list',
+            'tools:list',
+            'main:playground_index',
         ]
     
     def location(self, item):

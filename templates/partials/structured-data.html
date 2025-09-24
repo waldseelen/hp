@@ -1,0 +1,119 @@
+{% load static %}
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "{% block schema_type %}WebSite{% endblock %}",
+      "@id": "{{ request.scheme }}://{{ request.get_host }}/#website",
+      "url": "{{ request.scheme }}://{{ request.get_host }}/",
+      "name": "Professional Web Developer Portfolio",
+      "description": "Modern portfolio showcasing expertise in Django, JavaScript, and full-stack web development",
+      "publisher": {
+        "@id": "{{ request.scheme }}://{{ request.get_host }}/#person"
+      },
+      "potentialAction": [
+        {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "{{ request.scheme }}://{{ request.get_host }}/search/?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      ],
+      "inLanguage": "tr-TR",
+      "copyrightYear": "{{ current_year|default:'2024' }}",
+      "dateModified": "{% now 'c' %}"
+    },
+    {
+      "@type": "Person",
+      "@id": "{{ request.scheme }}://{{ request.get_host }}/#person",
+      "name": "Professional Web Developer",
+      "url": "{{ request.scheme }}://{{ request.get_host }}/",
+      "image": {
+        "@type": "ImageObject",
+        "url": "{{ request.scheme }}://{{ request.get_host }}{% static 'images/profile.jpg' %}",
+        "width": 400,
+        "height": 400
+      },
+      "sameAs": [
+        "https://github.com/webdeveloper",
+        "https://linkedin.com/in/webdeveloper",
+        "https://twitter.com/webdeveloper"
+      ],
+      "jobTitle": "Full Stack Web Developer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Freelance"
+      },
+      "alumniOf": {
+        "@type": "Organization",
+        "name": "Computer Science"
+      },
+      "knowsAbout": [
+        "Django",
+        "Python",
+        "JavaScript",
+        "React",
+        "Vue.js",
+        "Node.js",
+        "PostgreSQL",
+        "Docker",
+        "AWS",
+        "Web Development",
+        "Full Stack Development"
+      ],
+      "hasOccupation": {
+        "@type": "Occupation",
+        "name": "Web Developer",
+        "occupationLocation": {
+          "@type": "Country",
+          "name": "Turkey"
+        },
+        "skills": [
+          "Django",
+          "Python",
+          "JavaScript",
+          "HTML",
+          "CSS",
+          "PostgreSQL",
+          "Git",
+          "Docker"
+        ]
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "{{ request.scheme }}://{{ request.get_host }}/#organization",
+      "name": "Professional Web Developer Portfolio",
+      "url": "{{ request.scheme }}://{{ request.get_host }}/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo.svg' %}",
+        "width": 200,
+        "height": 60
+      },
+      "founder": {
+        "@id": "{{ request.scheme }}://{{ request.get_host }}/#person"
+      },
+      "foundingDate": "2024",
+      "description": "Professional web development services specializing in Django and modern JavaScript frameworks",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "TR"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "url": "{{ request.scheme }}://{{ request.get_host }}/contact/"
+      }
+    }
+    {% block additional_schema %}{% endblock %}
+  ]
+}
+</script>
+
+{% block page_specific_schema %}{% endblock %}

@@ -1,0 +1,114 @@
+<!-- Optimized Script Loading Strategy -->
+
+<!-- Critical scripts - loaded immediately -->
+<script src="{% static 'js/dist/core.high.bundle.js' %}" defer></script>
+
+<!-- Main UI scripts - loaded with dependency -->
+<script src="{% static 'js/dist/main.medium.bundle.js' %}" defer></script>
+
+<!-- Non-critical scripts - lazy loaded after page load -->
+<script>
+  // Lazy load non-critical scripts after page interaction or idle time
+  (function() {
+    let scriptsLoaded = false;
+
+    function loadNonCriticalScripts() {
+      if (scriptsLoaded) return;
+      scriptsLoaded = true;
+
+      const scripts = [
+        {
+          src: '{% static "js/dist/analytics.low.bundle.js" %}',
+          priority: 'low'
+        },
+        {
+          src: '{% static "js/dist/animations.low.bundle.js" %}',
+          priority: 'low',
+          condition: () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        },
+        {
+          src: '{% static "js/dist/components.medium.bundle.js" %}',
+          priority: 'medium'
+        }
+      ];
+
+      // Load scripts based on priority and conditions
+      scripts.forEach((scriptConfig, index) => {
+        if (scriptConfig.condition && !scriptConfig.condition()) {
+          return; // Skip loading if condition fails
+        }
+
+        const delay = scriptConfig.priority === 'low' ? index * 200 : 0;
+
+        setTimeout(() => {
+          const script = document.createElement('script');
+          script.src = scriptConfig.src;
+          script.async = true;
+
+          // Add loading indicator
+          script.onload = () => {
+            console.log(`✅ Loaded: ${scriptConfig.src}`);
+          };
+
+          script.onerror = () => {
+            console.warn(`❌ Failed to load: ${scriptConfig.src}`);
+          };
+
+          document.head.appendChild(script);
+        }, delay);
+      });
+    }
+
+    // Load on first user interaction
+    const events = ['click', 'scroll', 'keydown', 'touchstart'];
+    events.forEach(event => {
+      document.addEventListener(event, loadNonCriticalScripts, {
+        once: true,
+        passive: true
+      });
+    });
+
+    // Load after idle time as fallback
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        setTimeout(loadNonCriticalScripts, 2000);
+      });
+    } else {
+      setTimeout(loadNonCriticalScripts, 3000);
+    }
+
+    // Load immediately if page is already interactive
+    if (document.readyState === 'complete') {
+      setTimeout(loadNonCriticalScripts, 1000);
+    }
+  })();
+</script>
+
+<!-- Service Worker registration - lowest priority -->
+<script>
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    window.addEventListener('load', () => {
+      // Register service worker after page load
+      setTimeout(() => {
+        navigator.serviceWorker.register('{% static "js/sw.js" %}', {
+          scope: '/'
+        }).then(registration => {
+          console.log('SW registered:', registration);
+        }).catch(error => {
+          console.log('SW registration failed:', error);
+        });
+      }, 2000);
+    });
+  }
+</script>
+
+<!-- Performance monitoring - loaded conditionally -->
+<script>
+  // Only load performance monitoring in production or when explicitly enabled
+  if (location.hostname !== 'localhost' || localStorage.getItem('enablePerformanceMonitoring')) {
+    const script = document.createElement('script');
+    script.src = '{% static "js/performance.min.js" %}';
+    script.async = true;
+    document.head.appendChild(script);
+  }
+</script>

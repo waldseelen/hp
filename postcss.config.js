@@ -8,14 +8,14 @@ const isProduction = process.env.NODE_ENV === 'production';
 module.exports = {
   plugins: [
     // Tailwind CSS
-    require('tailwindcss'),
+    require('@tailwindcss/postcss'),
     
     // Autoprefixer for vendor prefixes
     require('autoprefixer'),
     
     // PurgeCSS for production builds
     ...(isProduction ? [
-      require('@fullhuman/postcss-purgecss')({
+      require('@fullhuman/postcss-purgecss').default({
         content: [
           './templates/**/*.html',
           './static/js/**/*.js',

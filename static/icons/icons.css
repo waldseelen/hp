@@ -1,0 +1,15 @@
+/* Icon Font System */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  fill: currentColor;
+}
+
+.icon-sm { width: 0.75em; height: 0.75em; }
+.icon-lg { width: 1.25em; height: 1.25em; }
+.icon-xl { width: 1.5em; height: 1.5em; }
+.icon-2xl { width: 2em; height: 2em; }
+
+/* Icon Classes */

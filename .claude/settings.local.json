@@ -57,7 +57,15 @@
       "Bash(start chrome --incognito http://localhost:8000/playground/)",
       "Bash(start http://localhost:8000/)",
       "Bash(npm run build:components:*)",
-      "Bash(start http://localhost:8000/contact/)"
+      "Bash(start http://localhost:8000/contact/)",
+      "Bash(NODE_ENV=production npm run build:css)",
+      "Bash(NODE_ENV=production npm run purge:css)",
+      "Bash(set NODE_ENV=production)",
+      "Bash(npm run purge:css:*)",
+      "Bash(npm run optimize:fonts:*)",
+      "Bash(npm run optimize:icons:*)",
+      "Bash(npm run accessibility:full:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": [],

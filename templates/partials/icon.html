@@ -1,0 +1,12 @@
+{% comment %}
+Icon Template Tags
+Usage: {% icon "home" size="md" class="icon-primary" %}
+{% endcomment %}
+
+{% load static %}
+
+{% if icon_name %}
+<svg class="icon icon-sprite {{ class|default:'' }} icon-{{ size|default:'md' }}" aria-hidden="true">
+  <use href="{% static 'icons/sprites/icons.svg' %}#icon-{{ icon_name }}"></use>
+</svg>
+{% endif %}

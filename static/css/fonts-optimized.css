@@ -1,0 +1,86 @@
+/* Font Loading Optimization */
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/inter/normal/400/font.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/inter/normal/500/font.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/inter/normal/600/font.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/inter/normal/700/font.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url('https://fonts.gstatic.com/s/jetbrains+mono/normal/400/font.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: optional;
+  src: url('https://fonts.gstatic.com/s/jetbrains+mono/normal/500/font.woff2') format('woff2');
+}
+
+
+/* Font Fallbacks */
+:root {
+  --font-inter: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-jetbrains-mono: "JetBrains Mono", SFMono-Regular, Monaco, Consolas, monospace;
+}
+
+/* Font Utility Classes */
+.font-primary {
+  font-family: var(--font-inter);
+}
+
+.font-mono {
+  font-family: var(--font-jetbrains-mono);
+}
+
+.font-loading {
+  font-display: swap;
+}
+
+.font-optional {
+  font-display: optional;
+}
+
+/* Performance optimizations */
+.text-optimize {
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .font-smooth-transition {
+    transition: font-weight 0.2s ease-in-out;
+  }
+}

@@ -1,0 +1,76 @@
+{% load static %}
+
+<!-- Basic Meta Tags -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Primary Meta Tags -->
+<title>{% block title %}{% block page_title %}Portfolio{% endblock %} - Professional Web Developer{% endblock %}</title>
+<meta name="title" content="{% block meta_title %}{% block page_title %}Portfolio{% endblock %} - Professional Web Developer{% endblock %}">
+<meta name="description" content="{% block meta_description %}Modern portfolio showcasing expertise in Django, JavaScript, and full-stack web development. Explore projects, tools, and insights from a professional web developer.{% endblock %}">
+<meta name="keywords" content="{% block meta_keywords %}web developer, Django, JavaScript, Python, full-stack, portfolio, projects, tools, blog{% endblock %}">
+<meta name="author" content="Professional Web Developer">
+<meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
+
+<!-- Language and Locale -->
+<meta name="language" content="Turkish">
+<meta name="geo.region" content="TR">
+<meta name="geo.placename" content="Turkey">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="{% block og_type %}website{% endblock %}">
+<meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
+<meta property="og:title" content="{% block og_title %}{% block meta_title %}{% block page_title %}Portfolio{% endblock %} - Professional Web Developer{% endblock %}{% endblock %}">
+<meta property="og:description" content="{% block og_description %}{% block meta_description %}Modern portfolio showcasing expertise in Django, JavaScript, and full-stack web development. Explore projects, tools, and insights from a professional web developer.{% endblock %}{% endblock %}">
+<meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/og-image.jpg' %}{% endblock %}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{% block og_image_alt %}Professional Web Developer Portfolio{% endblock %}">
+<meta property="og:site_name" content="Professional Web Developer Portfolio">
+<meta property="og:locale" content="tr_TR">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="{% block twitter_url %}{{ request.build_absolute_uri }}{% endblock %}">
+<meta property="twitter:title" content="{% block twitter_title %}{% block og_title %}{% block meta_title %}{% block page_title %}Portfolio{% endblock %} - Professional Web Developer{% endblock %}{% endblock %}{% endblock %}">
+<meta property="twitter:description" content="{% block twitter_description %}{% block og_description %}{% block meta_description %}Modern portfolio showcasing expertise in Django, JavaScript, and full-stack web development. Explore projects, tools, and insights from a professional web developer.{% endblock %}{% endblock %}{% endblock %}">
+<meta property="twitter:image" content="{% block twitter_image %}{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/og-image.jpg' %}{% endblock %}{% endblock %}">
+<meta property="twitter:image:alt" content="{% block twitter_image_alt %}{% block og_image_alt %}Professional Web Developer Portfolio{% endblock %}{% endblock %}">
+<meta property="twitter:creator" content="@webdeveloper">
+<meta property="twitter:site" content="@webdeveloper">
+
+<!-- Additional Meta Tags -->
+<meta name="theme-color" content="#3b82f6">
+<meta name="msapplication-navbutton-color" content="#3b82f6">
+<meta name="apple-mobile-web-app-status-bar-style" content="#3b82f6">
+<meta name="msapplication-TileColor" content="#3b82f6">
+<meta name="application-name" content="Portfolio">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
+
+<!-- Alternate Languages -->
+<link rel="alternate" hreflang="tr" href="{{ request.build_absolute_uri }}">
+<link rel="alternate" hreflang="en" href="{{ request.build_absolute_uri }}en/">
+<link rel="alternate" hreflang="x-default" href="{{ request.build_absolute_uri }}">
+
+<!-- Preconnect for Performance -->
+<link rel="preconnect" href="//fonts.googleapis.com">
+<link rel="preconnect" href="//fonts.gstatic.com" crossorigin>
+
+<!-- DNS Prefetch -->
+<link rel="dns-prefetch" href="//www.google-analytics.com">
+
+<!-- Manifest for PWA -->
+<link rel="manifest" href="{% static 'manifest.json' %}">
+
+<!-- Icons -->
+<link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+<link rel="icon" type="image/svg+xml" href="{% static 'images/favicon-192x192.svg' %}">
+<link rel="apple-touch-icon" href="{% static 'images/favicon-192x192.svg' %}">
+<link rel="mask-icon" href="{% static 'images/icon-base.svg' %}" color="#3b82f6">
+
+<!-- Schema.org structured data will be added in structured-data.html -->
+
+{% block extra_meta %}{% endblock %}
