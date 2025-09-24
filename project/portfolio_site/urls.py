@@ -19,6 +19,7 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
+from django.views.generic import RedirectView
 from main.views import home, logout_view
 
 urlpatterns = [
@@ -31,6 +32,7 @@ urlpatterns = [
     path('projects/', lambda request: redirect('tools:tool_list'), name='projects_redirect'),
     path('contact/', include('contact.urls')),
     path('chat/', include('chat.urls')),
+    path('favicon.ico', RedirectView.as_view(url='/static/images/icons/favicon.ico', permanent=True)),
 ]
 
 if settings.DEBUG:

@@ -18,69 +18,83 @@
         <div class="grid lg:grid-cols-2 gap-12">
             <!-- Contact Form -->
             <div class="bg-gray-800/50 backdrop-blur-sm rounded-lg p-8">
-                <h2 class="text-2xl font-semibold mb-6">Send a Message</h2>
+                <h2 id="contact-form-heading" class="text-2xl font-semibold mb-6">Send a Message</h2>
                 
-                <form method="POST" class="space-y-6" data-validate>
+                <form method="POST" class="space-y-6" data-validate role="form" aria-labelledby="contact-form-heading">
                     {% csrf_token %}
                     
                     <!-- Honeypot field - hidden from users -->
                     <input type="text" name="website" style="display:none !important;" tabindex="-1" autocomplete="off">
                     
-                    <div class="grid md:grid-cols-2 gap-6">
+                    <fieldset class="grid md:grid-cols-2 gap-6">
+                        <legend class="sr-only">Personal Information</legend>
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-300 mb-2">
                                 Name *
                             </label>
-                            <input type="text" 
-                                   id="name" 
-                                   name="name" 
+                            <input type="text"
+                                   id="name"
+                                   name="name"
                                    required
+                                   aria-label="Full name (required)"
+                                   aria-describedby="name-error"
                                    class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
                                    placeholder="Your name">
                         </div>
-                        
+
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
                                 Email *
                             </label>
-                            <input type="email" 
-                                   id="email" 
-                                   name="email" 
+                            <input type="email"
+                                   id="email"
+                                   name="email"
                                    required
+                                   aria-label="Email address (required)"
+                                   aria-describedby="email-error"
                                    class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
                                    placeholder="your@email.com">
                         </div>
-                    </div>
+                    </fieldset>
                     
-                    <div>
-                        <label for="subject" class="block text-sm font-medium text-gray-300 mb-2">
-                            Subject *
-                        </label>
-                        <input type="text" 
-                               id="subject" 
-                               name="subject" 
-                               required
-                               class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
-                               placeholder="What's this about?">
-                    </div>
+                    <fieldset>
+                        <legend class="sr-only">Message Details</legend>
+                        <div class="mb-6">
+                            <label for="subject" class="block text-sm font-medium text-gray-300 mb-2">
+                                Subject *
+                            </label>
+                            <input type="text"
+                                   id="subject"
+                                   name="subject"
+                                   required
+                                   aria-label="Message subject (required)"
+                                   aria-describedby="subject-error"
+                                   class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-gray-400"
+                                   placeholder="What's this about?">
+                        </div>
+
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-300 mb-2">
+                                Message *
+                            </label>
+                            <textarea id="message"
+                                      name="message"
+                                      rows="6"
+                                      required
+                                      aria-label="Your message (required)"
+                                      aria-describedby="message-error"
+                                      class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-gray-400 resize-vertical"
+                                      placeholder="Tell me what's on your mind..."></textarea>
+                        </div>
+                    </fieldset>
                     
-                    <div>
-                        <label for="message" class="block text-sm font-medium text-gray-300 mb-2">
-                            Message *
-                        </label>
-                        <textarea id="message" 
-                                  name="message" 
-                                  rows="6" 
-                                  required
-                                  class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-gray-400 resize-vertical"
-                                  placeholder="Tell me what's on your mind..."></textarea>
-                    </div>
-                    
-                    <button type="submit" 
+                    <button type="submit"
                             class="w-full bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg transition-colors font-semibold"
-                            data-loading="Sending...">
+                            data-loading="Sending..."
+                            aria-describedby="submit-help">
                         Send Message
                     </button>
+                    <div id="submit-help" class="sr-only">Press Enter or click to submit your contact form</div>
                 </form>
             </div>
             

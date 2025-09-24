@@ -16,14 +16,19 @@
     
     <!-- Search -->
     <div class="max-w-2xl mx-auto mb-12">
-        <form method="GET" class="relative">
-            <input type="text" 
-                   name="search" 
+        <form method="GET" class="relative" role="search" aria-labelledby="blog-search-heading">
+            <h2 id="blog-search-heading" class="sr-only">Search blog posts</h2>
+            <label for="blog-search" class="sr-only">Search blog posts</label>
+            <input type="text"
+                   id="blog-search"
+                   name="search"
                    value="{{ search_query }}"
-                   placeholder="Search posts..." 
+                   placeholder="Search posts..."
+                   aria-label="Search blog posts by title or content"
                    class="w-full px-6 py-4 bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none text-white placeholder-gray-400">
-            <button type="submit" 
-                    class="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md transition-colors">
+            <button type="submit"
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                    aria-label="Execute search">
                 Search
             </button>
         </form>

@@ -33,7 +33,7 @@ class UIEnhancements {
         // Window events
         window.addEventListener('load', () => this.onWindowLoad());
         window.addEventListener('resize', () => this.onWindowResize());
-        window.addEventListener('scroll', () => this.onWindowScroll(), { passive: true });
+        window.addEventListener('scroll', this.throttle(this.onWindowScroll, 16), { passive: true });
         
         // Page visibility
         document.addEventListener('visibilitychange', () => this.onVisibilityChange());
@@ -69,9 +69,14 @@ class UIEnhancements {
         this.scrollManager.updateScrollProgress();
     }
 
-    onWindowScroll() {
-        this.scrollManager.handleScroll();
-        this.animationManager.handleScrollAnimations();
+    onWindowScroll = () => {
+        if (!this.scrollAnimationFrame) {
+            this.scrollAnimationFrame = requestAnimationFrame(() => {
+                this.scrollManager.handleScroll();
+                this.animationManager.handleScrollAnimations();
+                this.scrollAnimationFrame = null;
+            });
+        }
     }
 
     onVisibilityChange() {
@@ -118,17 +123,42 @@ class UIEnhancements {
         
         const images = document.querySelectorAll('img[data-src]');
         if ('IntersectionObserver' in window) {
+            const observerOptions = {
+                root: null,
+                rootMargin: '50px',
+                threshold: 0.1
+            };
+
             const imageObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const img = entry.target;
+
+                        // Add error handling for failed image loads
+                        img.addEventListener('error', () => {
+                            img.classList.remove('loading');
+                            img.classList.add('load-error');
+
+                            // Try fallback image if available
+                            if (img.dataset.fallback) {
+                                img.src = img.dataset.fallback;
+                            } else {
+                                // Use placeholder or hide image
+                                img.style.display = 'none';
+                                console.warn('Image failed to load:', img.dataset.src);
+                            }
+                        });
+
+                        img.addEventListener('load', () => {
+                            img.classList.remove('loading');
+                            img.classList.add('loaded');
+                        });
+
                         img.src = img.dataset.src;
-                        img.classList.remove('loading');
-                        img.classList.add('loaded');
                         observer.unobserve(img);
                     }
                 });
-            });
+            }, observerOptions);
 
             images.forEach(img => {
                 img.classList.add('loading');
@@ -229,9 +259,10 @@ class UIEnhancements {
         cards.forEach(card => {
             // Mouse move effect for cards
             card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+                const { clientX, clientY } = e;
+                const { left, top } = card.getBoundingClientRect();
+                const x = clientX - left;
+                const y = clientY - top;
                 
                 card.style.setProperty('--mouse-x', `${x}px`);
                 card.style.setProperty('--mouse-y', `${y}px`);
@@ -246,10 +277,11 @@ class UIEnhancements {
 
     createRippleEffect(e, element) {
         const ripple = document.createElement('span');
-        const rect = element.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
+        const { width, height, left, top } = element.getBoundingClientRect();
+        const size = Math.max(width, height);
+        const { clientX, clientY } = e;
+        const x = clientX - left - size / 2;
+        const y = clientY - top - size / 2;
 
         ripple.style.cssText = `
             width: ${size}px;
@@ -360,14 +392,14 @@ class ToastManager {
         this.defaultDuration = 5000;
     }
 
-    show(message, type = 'info', options = {}) {
+    show = (message, type = 'info', options = {}) => {
         const id = Date.now().toString();
         const toast = this.createToast(id, message, type, options);
-        
+
         if (this.container) {
             this.container.appendChild(toast);
             this.toasts.set(id, toast);
-            
+
             // Trigger entrance animation
             requestAnimationFrame(() => {
                 toast.classList.add('toast-entering');
@@ -710,7 +742,7 @@ class SearchManager {
         if (!this.modal || !this.input) return;
 
         // Setup event listeners
-        this.input.addEventListener('input', (e) => this.handleInput(e.target.value));
+        this.input.addEventListener('input', this.debounce((e) => this.handleInput(e.target.value), 300));
         this.input.addEventListener('keydown', (e) => this.handleKeydown(e));
         
         // Setup filter buttons
@@ -1116,9 +1148,9 @@ class KeyboardManager {
     getKeyString(e) {
         let key = e.key.toLowerCase();
         
-        if (e.ctrlKey) key = 'ctrl+' + key;
-        if (e.altKey) key = 'alt+' + key;
-        if (e.shiftKey && key.length > 1) key = 'shift+' + key;
+        if (e.ctrlKey) key = `ctrl+${key}`;
+        if (e.altKey) key = `alt+${key}`;
+        if (e.shiftKey && key.length > 1) key = `shift+${key}`;
         
         return key;
     }

@@ -94,29 +94,34 @@
 
             <!-- Chat Input -->
             <div class="border-t border-gray-700/50 p-4">
-                <form class="flex items-center space-x-3" id="chatForm">
+                <form class="flex items-center space-x-3" id="chatForm" role="form" aria-labelledby="chat-form-heading">
+                    <h3 id="chat-form-heading" class="sr-only">Send a chat message</h3>
                     <div class="flex-1">
-                        <input 
-                            type="text" 
+                        <label for="messageInput" class="sr-only">Your message</label>
+                        <input
+                            type="text"
                             id="messageInput"
                             placeholder="Mesajınızı yazın..."
+                            aria-label="Type your message here"
+                            aria-describedby="chat-status"
                             class="input w-full pr-12"
                             disabled
                         />
                     </div>
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         class="btn-primary px-6 py-2 flex items-center"
+                        aria-label="Send message"
                         disabled
                     >
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                         </svg>
                         Gönder
                     </button>
                 </form>
-                <p class="text-xs text-gray-500 mt-2 text-center">
-                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <p id="chat-status" class="text-xs text-gray-500 mt-2 text-center" role="status" aria-live="polite">
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     Sohbet özelliği şu anda geliştirme aşamasındadır
