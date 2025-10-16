@@ -1,5 +1,5 @@
 {% extends "base-optimized.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block critical_css %}
 /* Home page critical CSS - will be replaced by extracted critical CSS */
@@ -43,6 +43,6 @@ p {
 {% endblock %}
 
 {% block content %}
-<h1>Hoş Geldiniz!</h1>
-<p>Bu site çalışıyor ve performans optimizasyonları ile hızlandırılmıştır.</p>
+<h1>{% trans "Welcome!" %}</h1>
+<p>{% trans "This site is running and optimized for performance." %}</p>
 {% endblock %}

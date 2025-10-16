@@ -1,0 +1,244 @@
+{% load i18n %}
+
+<section class="section hero-section">
+  <div class="container hero-section__inner">
+    <div>
+      <span class="eyebrow">{% trans 'Security-led delivery' %}</span>
+      <h1 class="hero-title">{% trans 'Cybersecurity Playbook' %}</h1>
+      <p class="hero-lead">{% trans 'My approach for understanding threats, hardening defenses, and staying ahead of evolving risks.' %}</p>
+      <div class="hero-bio">
+        {% trans 'From foundational principles to enterprise tooling, this hub gathers the tactics I use to strengthen both personal and organisational security posture.' %}
+      </div>
+      <div class="button-row hero-actions">
+        <a href="{% url 'main:ai' %}" class="btn btn--primary" data-cursor-interactive>{% trans 'Explore AI security tools' %}</a>
+        <a href="{% url 'contact:form' %}" class="btn btn--ghost" data-cursor-interactive>{% trans 'Request an audit' %}</a>
+      </div>
+      <div class="tag-group" data-animate>
+        <span class="tag">Zero Trust</span>
+        <span class="tag">MFA</span>
+        <span class="tag">Threat Intel</span>
+        <span class="tag">Incident Response</span>
+      </div>
+    </div>
+    <div class="hero-media" aria-hidden="true">
+      <div class="card card--interactive">
+        <div class="card__icon card__icon--red">🛡️</div>
+        <h3 class="card__title">{% trans 'Threat-model first mindset' %}</h3>
+        <p class="card__text">{% trans 'Assets → attack surface → control checklist → testing → monitoring.' %}</p>
+        <div class="card__footer">
+          <span class="tag">OWASP · NIST CSF</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <header class="section__header align-start">
+      <span class="eyebrow">{% trans 'Core layers' %}</span>
+      <h2 class="section-title">{% trans 'Building blocks of a resilient defense' %}</h2>
+      <p class="section-lead">{% trans 'Identity, encryption, and observability form the backbone of every security programme.' %}</p>
+    </header>
+    <div class="tile-grid tile-grid--three">
+      <article class="card" data-animate-card>
+        <div class="card__icon card__icon--blue">🔐</div>
+        <h3 class="card__title">{% trans 'Identity & access' %}</h3>
+        <ul class="card__list">
+          <li><span>{% trans 'MFA / ZTNA on every critical account' %}</span></li>
+          <li><span>{% trans 'Privilege matrices and least access policies' %}</span></li>
+          <li><span>{% trans 'Session and device monitoring' %}</span></li>
+        </ul>
+      </article>
+      <article class="card" data-animate-card>
+        <div class="card__icon card__icon--green">🔑</div>
+        <h3 class="card__title">{% trans 'Encryption' %}</h3>
+        <ul class="card__list">
+          <li><span>AES-256 · TLS 1.3</span></li>
+          <li><span>{% trans 'Key management and rotation' %}</span></li>
+          <li><span>{% trans 'End-to-end and zero-knowledge patterns' %}</span></li>
+        </ul>
+      </article>
+      <article class="card" data-animate-card>
+        <div class="card__icon card__icon--purple">📊</div>
+        <h3 class="card__title">{% trans 'Visibility' %}</h3>
+        <ul class="card__list">
+          <li><span>{% trans 'SIEM alerting and log integrity' %}</span></li>
+          <li><span>{% trans 'Asset inventory and classification' %}</span></li>
+          <li><span>{% trans 'Continuous security assessment' %}</span></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <header class="section__header align-start">
+      <span class="eyebrow">{% trans 'Threat landscape' %}</span>
+      <h2 class="section-title">{% trans 'Common attack patterns' %}</h2>
+      <p class="section-lead">{% trans 'What each attack targets and the countermeasures that matter most.' %}</p>
+    </header>
+    <div class="tile-grid tile-grid--three">
+      <article class="card card--interactive" data-animate-card>
+        <div class="card__icon card__icon--red">🎯</div>
+        <h3 class="card__title">Phishing</h3>
+        <p class="card__text">{% trans 'Impersonation emails, SMS messages, and clone login pages.' %}</p>
+        <ul class="card__list">
+          <li><span>{% trans 'Security awareness training' %}</span></li>
+          <li><span>{% trans 'Email filtering and DMARC enforcement' %}</span></li>
+        </ul>
+      </article>
+      <article class="card card--interactive" data-animate-card>
+        <div class="card__icon card__icon--orange">💾</div>
+        <h3 class="card__title">Ransomware</h3>
+        <p class="card__text">{% trans 'Malware that encrypts data and demands payment.' %}</p>
+        <ul class="card__list">
+          <li><span>{% trans 'Offline backups and restore drills' %}</span></li>
+          <li><span>{% trans 'EDR / XDR behavioural analytics' %}</span></li>
+        </ul>
+      </article>
+      <article class="card card--interactive" data-animate-card>
+        <div class="card__icon card__icon--blue">🧪</div>
+        <h3 class="card__title">Injection & API abuse</h3>
+        <p class="card__text">{% trans 'SQL/command injection and unauthorised API usage.' %}</p>
+        <ul class="card__list">
+          <li><span>OWASP Top 10</span></li>
+          <li><span>{% trans 'Input validation and WAF rules' %}</span></li>
+        </ul>
+      </article>
+      <article class="card card--interactive" data-animate-card>
+        <div class="card__icon card__icon--green">🌐</div>
+        <h3 class="card__title">DDoS</h3>
+        <p class="card__text">{% trans 'Distributed attacks that interrupt availability.' %}</p>
+        <ul class="card__list">
+          <li><span>{% trans 'Caching and global CDNs' %}</span></li>
+          <li><span>{% trans 'Automated rate limiting' %}</span></li>
+        </ul>
+      </article>
+      <article class="card card--interactive" data-animate-card>
+        <div class="card__icon card__icon--purple">🗣️</div>
+        <h3 class="card__title">Social engineering</h3>
+        <p class="card__text">{% trans 'Human-layer manipulation to extract credentials or data.' %}</p>
+        <ul class="card__list">
+          <li><span>{% trans 'Identity verification procedures' %}</span></li>
+          <li><span>{% trans 'Privacy-aware social profiles' %}</span></li>
+        </ul>
+      </article>
+      <article class="card card--interactive" data-animate-card>
+        <div class="card__icon card__icon--red">⚠️</div>
+        <h3 class="card__title">Zero-day exploits</h3>
+        <p class="card__text">{% trans 'Targeting vulnerabilities before patches exist.' %}</p>
+        <ul class="card__list">
+          <li><span>{% trans 'Rapid patch management' %}</span></li>
+          <li><span>{% trans 'Attack surface reduction' %}</span></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <header class="section__header align-start">
+      <span class="eyebrow">{% trans 'Tooling' %}</span>
+      <h2 class="section-title">{% trans 'Security platforms I rate highly' %}</h2>
+      <p class="section-lead">{% trans 'Visibility, testing, and response layers I deploy most often.' %}</p>
+    </header>
+    <div class="tile-grid tile-grid--three">
+      <article class="card" data-animate-card>
+        <div class="card__icon card__icon--blue">📈</div>
+        <h3 class="card__title">{% trans 'Monitoring & analytics' %}</h3>
+        <ul class="card__list">
+          <li><a href="https://www.elastic.co/" target="_blank" rel="noopener noreferrer">Elastic Stack</a><span>{% trans 'Log analytics' %}</span></li>
+          <li><a href="https://sentry.io/" target="_blank" rel="noopener noreferrer">Sentry</a><span>{% trans 'Application errors' %}</span></li>
+          <li><a href="https://www.datadoghq.com/" target="_blank" rel="noopener noreferrer">Datadog</a><span>{% trans 'Unified observability' %}</span></li>
+        </ul>
+      </article>
+      <article class="card" data-animate-card>
+        <div class="card__icon card__icon--green">🧠</div>
+        <h3 class="card__title">{% trans 'Testing & analysis' %}</h3>
+        <ul class="card__list">
+          <li><a href="https://portswigger.net/burp" target="_blank" rel="noopener noreferrer">Burp Suite</a><span>{% trans 'Web application pentesting' %}</span></li>
+          <li><a href="https://owasp.org/www-project-zap/" target="_blank" rel="noopener noreferrer">OWASP ZAP</a><span>{% trans 'Automated scanning' %}</span></li>
+          <li><a href="https://www.shodan.io/" target="_blank" rel="noopener noreferrer">Shodan</a><span>{% trans 'Attack surface discovery' %}</span></li>
+        </ul>
+      </article>
+      <article class="card" data-animate-card>
+        <div class="card__icon card__icon--red">🛠️</div>
+        <h3 class="card__title">{% trans 'Defense & response' %}</h3>
+        <ul class="card__list">
+          <li><a href="https://security.microsoft.com" target="_blank" rel="noopener noreferrer">Microsoft Defender</a><span>{% trans 'Enterprise protection' %}</span></li>
+          <li><a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer">Cloudflare</a><span>{% trans 'WAF and DDoS mitigation' %}</span></li>
+          <li><a href="https://www.crowdstrike.com/" target="_blank" rel="noopener noreferrer">CrowdStrike Falcon</a><span>{% trans 'Endpoint security' %}</span></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <header class="section__header align-start">
+      <span class="eyebrow">{% trans 'Best practices' %}</span>
+      <h2 class="section-title">{% trans 'Habits that reduce risk every day' %}</h2>
+      <p class="section-lead">{% trans 'Controls I recommend for individuals and teams alike.' %}</p>
+    </header>
+    <div class="tile-grid tile-grid--two">
+      <article class="card" data-animate-card>
+        <div class="card__icon card__icon--green">🧍</div>
+        <h3 class="card__title">{% trans 'Personal safeguards' %}</h3>
+        <ul class="card__list">
+          <li><span>{% trans 'Unique passwords for every service' %}</span></li>
+          <li><span>{% trans 'Password manager plus hardware security keys' %}</span></li>
+          <li><span>{% trans 'Automated software updates' %}</span></li>
+          <li><span>{% trans 'VPN whenever using public Wi‑Fi' %}</span></li>
+        </ul>
+      </article>
+      <article class="card" data-animate-card>
+        <div class="card__icon card__icon--blue">🏢</div>
+        <h3 class="card__title">{% trans 'Enterprise safeguards' %}</h3>
+        <ul class="card__list">
+          <li><span>{% trans 'Regular security enablement' %}</span></li>
+          <li><span>{% trans 'Documented incident response plan' %}</span></li>
+          <li><span>{% trans 'Backup and disaster recovery playbooks' %}</span></li>
+          <li><span>{% trans 'Policy and access reviews' %}</span></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <header class="section__header align-start">
+      <span class="eyebrow">{% trans 'Threat intelligence' %}</span>
+      <h2 class="section-title">{% trans 'Trends worth watching' %}</h2>
+      <p class="section-lead">{% trans 'Quick notes to stay current with emerging attacker tactics.' %}</p>
+    </header>
+    <article class="card card--interactive" data-animate-card>
+      <h3 class="card__title">{% trans 'Focus areas for 2025' %}</h3>
+      <ul class="card__list">
+        <li><span>{% trans 'AI-assisted attacks demand automated detection and response' %}</span></li>
+        <li><span>{% trans 'Supply-chain due diligence and third-party contracts need fresh scrutiny' %}</span></li>
+        <li><span>{% trans 'Cloud configuration and privacy-centric logging are becoming the baseline' %}</span></li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-panel" data-animate>
+      <div>
+        <span class="eyebrow">{% trans 'Let’s collaborate' %}</span>
+        <h2 class="section-title">{% trans 'Schedule a security review' %}</h2>
+        <p class="card__text">{% trans 'Need a rapid checklist, a threat model, or an automation plan for your product? I’m happy to help you chart the next steps.' %}</p>
+      </div>
+      <div class="button-row">
+        <a href="{% url 'contact:form' %}" class="btn btn--primary" data-cursor-interactive>{% trans 'Book a session' %}</a>
+        <a href="mailto:security@portfolio.dev" class="btn btn--ghost" data-cursor-interactive>{% trans 'Send an email' %}</a>
+      </div>
+    </div>
+  </div>
+</section>

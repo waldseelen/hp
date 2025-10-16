@@ -40,6 +40,57 @@ main {
   isolation: isolate;
 }
 
+.ds-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-padding-inline);
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-padding-inline);
+}
+
+.ds-container--content {
+  max-width: var(--container-content);
+}
+
+.ds-container--wide {
+  max-width: var(--container-wide);
+}
+
+[data-animate],
+[data-animate-card],
+.scroll-reveal,
+.scroll-reveal-left,
+.scroll-reveal-right {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-ready [data-animate],
+.reveal-ready [data-animate-card],
+.reveal-ready .scroll-reveal,
+.reveal-ready .scroll-reveal-left,
+.reveal-ready .scroll-reveal-right {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity var(--motion-duration-md) var(--motion-ease-standard),
+              transform var(--motion-duration-md) var(--motion-ease-emphasized);
+}
+
+.reveal-ready [data-animate].is-visible,
+.reveal-ready [data-animate-card].is-visible,
+.reveal-ready .scroll-reveal.is-visible,
+.reveal-ready .scroll-reveal-left.is-visible,
+.reveal-ready .scroll-reveal-right.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
 img,
 svg,
 video,

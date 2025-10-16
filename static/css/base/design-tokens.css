@@ -61,6 +61,12 @@
   --space-7: 2rem;    /* 32px */
   --space-8: 2.5rem;  /* 40px */
 
+  /* Layout tokens */
+  --container-max: 75rem; /* 1200px */
+  --container-content: 58rem; /* 928px */
+  --container-wide: 90rem; /* 1440px */
+  --container-padding-inline: clamp(1.25rem, 4vw, 3rem);
+
   /* Radii */
   --radius-xs: 0.375rem;
   --radius-sm: 0.5rem;

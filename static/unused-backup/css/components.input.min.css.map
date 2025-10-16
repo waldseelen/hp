@@ -1,1 +1,0 @@
-{"version":3,"sources":["components.input.css"],"names":[],"mappings":"AAAA,cAAc,CACd,oBAAoB,CACpB,mBAAmB,CAGnB,0BAA0B","file":"components.input.min.css","sourcesContent":["@tailwind base;\r\n@tailwind components;\r\n@tailwind utilities;\r\n\r\n/* Import components styles */\r\n@import './components.css';"]}

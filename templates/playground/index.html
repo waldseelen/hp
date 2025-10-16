@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base/base.html' %}
 {% load static %}
 {% load i18n %}
 
@@ -8,42 +8,42 @@
 <section class="section hero-section">
   <div class="container hero-section__inner">
     <div>
-      <span class="eyebrow">{% trans "Tarayıcıda anında kodla" %}</span>
+      <span class="eyebrow">{% trans 'Code instantly in your browser' %}</span>
       <h1 class="hero-title">
         <span class="text-gradient-primary">Code</span>
         <span class="text-gradient-accent">Play</span>
       </h1>
-      <p class="hero-lead">{% trans "Instagram kadar basit, VS Code kadar güçlü" %}</p>
+      <p class="hero-lead">{% trans 'As easy as Instagram, as powerful as VS Code' %}</p>
       <div class="hero-bio">
-        {% trans "Kodunu yaz, Enter'a bas ve sonucu anında gör. Kurulum yok, yalnızca tarayıcıdan kodlayarak üretmenin özgürlüğü." %}
+        {% trans "Write your code, hit Enter, and see the output immediately. No installs—just the freedom of building right from the browser." %}
       </div>
       <div class="button-row hero-actions">
         <a href="{% url 'playground:editor' %}" class="btn btn--primary" data-cursor-interactive>
-          {% trans "Hemen Başla" %}
+          {% trans 'Start now' %}
         </a>
         <a href="{% url 'playground:gallery' %}" class="btn btn--ghost" data-cursor-interactive>
-          {% trans "Galeriyi Keşfet" %}
+          {% trans 'Explore gallery' %}
         </a>
       </div>
       <div class="stat-grid" data-animate>
         <div class="stat-card">
           <span class="stat-value">120K+</span>
-          <span class="stat-label">{% trans "Çalıştırılan Kod" %}</span>
+          <span class="stat-label">{% trans 'Executions' %}</span>
         </div>
         <div class="stat-card">
           <span class="stat-value">25+</span>
-          <span class="stat-label">{% trans "Desteklenen Dil" %}</span>
+          <span class="stat-label">{% trans 'Languages supported' %}</span>
         </div>
         <div class="stat-card">
-          <span class="stat-value">7/24</span>
-          <span class="stat-label">{% trans "Hazır Bulut Editör" %}</span>
+          <span class="stat-value">24/7</span>
+          <span class="stat-label">{% trans 'Cloud editor uptime' %}</span>
         </div>
       </div>
     </div>
     <div class="feature-grid__visual">
       <div class="playground-visual" aria-hidden="true">
         <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="playground-illustration-title">
-          <title id="playground-illustration-title">{% trans "CodePlay editör önizlemesi" %}</title>
+          <title id="playground-illustration-title">{% trans 'CodePlay editor preview' %}</title>
           <defs>
             <linearGradient id="playgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#6366f1" stop-opacity="0.45" />
@@ -70,64 +70,69 @@
 <section class="section">
   <div class="container">
     <header class="section__header align-start">
-      <span class="eyebrow">{% trans "Nasıl çalışır" %}</span>
-      <h2 class="section-title">{% trans "Dakikalar içinde üretime hazır ol" %}</h2>
-      <p class="section-lead">{% trans "Tek yapmanız gereken dili seçmek, kodu yazmak ve sonucu paylaşmak." %}</p>
+      <span class="eyebrow">{% trans 'How it works' %}</span>
+      <h2 class="section-title">{% trans 'Ship something in minutes' %}</h2>
+      <p class="section-lead">{% trans 'Pick a language, write your code, share the result. That’s it.' %}</p>
     </header>
     <div class="tile-grid tile-grid--three">
       <article class="card card--step" data-animate-card>
         <span class="step-number">01</span>
-        <h3 class="card__title">{% trans "Dilini seç" %}</h3>
-        <p class="card__text">{% trans "Hazır şablonlar arasından projen için en uygun temeli belirle." %}</p>
+        <h3 class="card__title">{% trans 'Choose a language' %}</h3>
+        <p class="card__text">{% trans 'Start from curated templates tailored to your favourite stack.' %}</p>
         <ul class="card__list">
-          <li><span>Python, JavaScript, Go, Rust...</span></li>
-          <li><span>{% trans "Framework şablonları" %}</span></li>
+          <li><span>Python, JavaScript, Go, Rust…</span></li>
+          <li><span>{% trans 'Framework presets' %}</span></li>
         </ul>
       </article>
       <article class="card card--step" data-animate-card>
         <span class="step-number">02</span>
-        <h3 class="card__title">{% trans "Kodunu yaz" %}</h3>
-        <p class="card__text">{% trans "AI destekli önerilerle hızlıca deney yap; anlık geri bildirim al." %}</p>
+        <h3 class="card__title">{% trans 'Write your code' %}</h3>
+        <p class="card__text">{% trans 'Experiment quickly with AI-assisted hints and immediate output.' %}</p>
         <ul class="card__list">
-          <li><span>{% trans "Otomatik formatlama" %}</span></li>
-          <li><span>{% trans "Canlı çıktı penceresi" %}</span></li>
+          <li><span>{% trans 'Auto formatting' %}</span></li>
+          <li><span>{% trans 'Live preview pane' %}</span></li>
         </ul>
       </article>
       <article class="card card--step" data-animate-card>
         <span class="step-number">03</span>
-        <h3 class="card__title">{% trans "Paylaş ve iterasyon yap" %}</h3>
-        <p class="card__text">{% trans "Tek tıkla çıktıyı kaydet, bağlantı paylaş ve geri bildirim topla." %}</p>
+        <h3 class="card__title">{% trans 'Share and iterate' %}</h3>
+        <p class="card__text">{% trans 'Generate shareable links, collect feedback, and keep improving.' %}</p>
         <ul class="card__list">
-          <li><span>{% trans "Galeriye gönder" %}</span></li>
-          <li><span>{% trans "Takımla paylaş" %}</span></li>
+          <li><span>{% trans 'Version history' %}</span></li>
+          <li><span>{% trans 'Embed-ready snippets' %}</span></li>
         </ul>
       </article>
     </div>
   </div>
 </section>
 
-{% if templates %}
+{% if starter_templates %}
 <section class="section section--tint">
   <div class="container">
     <header class="section__header align-start">
-      <span class="eyebrow">{% trans "Şablonlar" %}</span>
-      <h2 class="section-title">{% trans "Hazır başlangıç paketleri" %}</h2>
-      <p class="section-lead">{% trans "Favori dilini seç ve düzenleyiciye saniyeler içinde aktar." %}</p>
+      <span class="eyebrow">{% trans 'Starter templates' %}</span>
+      <h2 class="section-title">{% trans 'Kick off with ready-made blueprints' %}</h2>
+      <p class="section-lead">{% trans 'Jump straight into prototyping with curated templates for popular stacks.' %}</p>
     </header>
-    <div class="tile-grid tile-grid--three">
-      {% for template in templates %}
-      <article class="card card--template" data-animate-card>
-        <div class="template-meta">
-          <span class="template-emoji">{{ template.emoji }}</span>
-          <div>
-            <h3 class="card__title">{{ template.name }}</h3>
-            <span class="template-language">{{ template.language.icon }} {{ template.language.name }}</span>
+    <div class="tile-grid tile-grid--two">
+      {% for template in starter_templates %}
+      <article class="card card--interactive" data-animate-card>
+        <div class="template-card">
+          <div class="template-card__header">
+            <span class="tag tag--outline">{{ template.language.icon }} {{ template.language.name }}</span>
+            <span class="text-xs text-gray-400">{{ template.get_complexity_display }}</span>
           </div>
-        </div>
-        <p class="card__text">{{ template.description }}</p>
-        <div class="card__footer">
+          <h3 class="card__title">{{ template.title }}</h3>
+          <p class="card__text">{{ template.description }}</p>
+          {% if template.tags %}
+          <div class="template-card__tags">
+            {% for tag in template.tags %}
+            <span class="tag tag--outline">{{ tag }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
           <button onclick="loadTemplate({{ template.id }})" class="btn btn--secondary" data-cursor-interactive>
-            {% trans "Şablonu kullan" %}
+            {% trans 'Use template' %}
           </button>
         </div>
       </article>
@@ -140,30 +145,30 @@
 <section class="section">
   <div class="container">
     <header class="section__header align-start">
-      <span class="eyebrow">{% trans "Öne çıkan özellikler" %}</span>
-      <h2 class="section-title">{% trans "Neden CodePlay?" %}</h2>
-      <p class="section-lead">{% trans "Modern araçlar, kesintisiz deneyim ve paylaşımı kolaylaştıran akış." %}</p>
+      <span class="eyebrow">{% trans 'Highlights' %}</span>
+      <h2 class="section-title">{% trans 'Why CodePlay?' %}</h2>
+      <p class="section-lead">{% trans 'Modern tooling, frictionless collaboration, and a workflow built for iteration.' %}</p>
     </header>
     <div class="tile-grid tile-grid--two">
       <article class="card" data-animate-card>
         <div class="card__icon card__icon--blue">⚡</div>
-        <h3 class="card__title">{% trans "Anında sonuç" %}</h3>
-        <p class="card__text">{% trans "Kodunuzu çalıştırır çalıştırmaz çıktıyı görün; geri bildirim döngüsünü hızlandırın." %}</p>
+        <h3 class="card__title">{% trans 'Instant output' %}</h3>
+        <p class="card__text">{% trans 'See results the moment you run your code and keep the feedback loop tight.' %}</p>
       </article>
       <article class="card" data-animate-card>
-        <div class="card__icon card__icon--green">🤝</div>
-        <h3 class="card__title">{% trans "Gerçek zamanlı paylaşım" %}</h3>
-        <p class="card__text">{% trans "Bağlantı paylaşın, ekibinizin yorumlarını toplayın ve aynı kod üzerinde yineleyin." %}</p>
+        <div class="card__icon card__icon--green">🔗</div>
+        <h3 class="card__title">{% trans 'Real-time sharing' %}</h3>
+        <p class="card__text">{% trans 'Share links, gather comments, and build together in real time.' %}</p>
       </article>
       <article class="card" data-animate-card>
-        <div class="card__icon card__icon--red">🧠</div>
-        <h3 class="card__title">{% trans "AI destekli öneriler" %}</h3>
-        <p class="card__text">{% trans "Kod tamamlama, hata tahminleri ve öğrenme kaynakları tek yerde." %}</p>
+        <div class="card__icon card__icon--red">🤖</div>
+        <h3 class="card__title">{% trans 'AI-powered' %}</h3>
+        <p class="card__text">{% trans 'Code completions, error insights, and learning nudges built in.' %}</p>
       </article>
       <article class="card" data-animate-card>
         <div class="card__icon card__icon--blue">🛡️</div>
-        <h3 class="card__title">{% trans "Güvenli izole ortam" %}</h3>
-        <p class="card__text">{% trans "Her yürütme izole konteynerde yapılır, verilerin güvende kalır." %}</p>
+        <h3 class="card__title">{% trans 'Secure sandboxes' %}</h3>
+        <p class="card__text">{% trans 'Every execution runs in an isolated container, keeping your data safe.' %}</p>
       </article>
     </div>
   </div>
@@ -173,28 +178,28 @@
 <section class="section section--tint">
   <div class="container">
     <header class="section__header align-start">
-      <span class="eyebrow">{% trans "Topluluk" %}</span>
-      <h2 class="section-title">{% trans "Son paylaşılan projeler" %}</h2>
-      <p class="section-lead">{% trans "Diğer geliştiricilerin ne üzerinde çalıştığını keşfedin ve ilham alın." %}</p>
+      <span class="eyebrow">{% trans 'Community' %}</span>
+      <h2 class="section-title">{% trans 'Fresh snippets from builders' %}</h2>
+      <p class="section-lead">{% trans 'Browse the latest experiments and get inspired by fellow developers.' %}</p>
     </header>
     <div class="tile-grid tile-grid--two">
       {% for snippet in recent_snippets %}
       <a href="{% url 'playground:snippet_detail' snippet.id %}" class="card card--interactive" data-animate-card>
         <div class="snippet-meta">
           <span class="tag tag--outline">{{ snippet.language.icon }} {{ snippet.language.name }}</span>
-          <span>{% blocktrans with time=snippet.created_at|timesince %}{{ time }} önce{% endblocktrans %}</span>
+          <span>{% blocktrans with time=snippet.created_at|timesince %}{{ time }} ago{% endblocktrans %}</span>
         </div>
         <h3 class="card__title">{{ snippet.title|default:"Untitled Code" }}</h3>
         <div class="snippet-stats">
-          <span>👁 {{ snippet.views }}</span>
-          <span>⭐ {{ snippet.likes }}</span>
+          <span>👁️ {{ snippet.views }}</span>
+          <span>❤️ {{ snippet.likes }}</span>
         </div>
       </a>
       {% endfor %}
     </div>
     <div class="button-row center section-actions">
       <a href="{% url 'playground:gallery' %}" class="btn btn--ghost" data-cursor-interactive>
-        {% trans "Tümünü gör" %}
+        {% trans 'View all' %}
       </a>
     </div>
   </div>
@@ -205,13 +210,13 @@
   <div class="container">
     <div class="cta-panel" data-animate>
       <div>
-        <span class="eyebrow">{% trans "Hazır mısın?" %}</span>
-        <h2 class="section-title">{% trans "Dakikalar içinde demo hazırla" %}</h2>
-        <p class="card__text">{% trans "Playground editöründe kodunu yaz, kaydet ve galeride yerini al. Yeni özellikler düzenli olarak ekleniyor." %}</p>
+        <span class="eyebrow">{% trans 'Ready to try it?' %}</span>
+        <h2 class="section-title">{% trans 'Spin up a demo in minutes' %}</h2>
+        <p class="card__text">{% trans 'Write your code in the Playground editor, save it, and showcase it in the gallery. New features land regularly.' %}</p>
       </div>
       <div class="button-row">
-        <a href="{% url 'playground:editor' %}" class="btn btn--primary" data-cursor-interactive>{% trans "Editöre git" %}</a>
-        <a href="{% url 'playground:gallery' %}" class="btn btn--ghost" data-cursor-interactive>{% trans "Galeriyi keşfet" %}</a>
+        <a href="{% url 'playground:editor' %}" class="btn btn--primary" data-cursor-interactive>{% trans 'Open editor' %}</a>
+        <a href="{% url 'playground:gallery' %}" class="btn btn--ghost" data-cursor-interactive>{% trans 'Browse gallery' %}</a>
       </div>
     </div>
   </div>
@@ -240,7 +245,8 @@
 })();
 
 function loadTemplate(templateId) {
-  window.location.href = `{% url 'playground:editor' %}?template=${templateId}`;
+  window.location.href = {% url 'playground:editor' %}?template=;
 }
 </script>
 {% endblock %}
+

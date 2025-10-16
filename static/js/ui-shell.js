@@ -257,8 +257,14 @@
   window.closeSearchModal = closeSearchModal;
 
   document.addEventListener('DOMContentLoaded', () => {
+    if (doc.body) {
+      doc.body.classList.add('reveal-ready');
+    }
+
     initNavigation();
-    initRevealAnimations();
+    window.requestAnimationFrame(() => {
+      initRevealAnimations();
+    });
     initStarfield();
     initSearchModal();
     initScrollProgress();

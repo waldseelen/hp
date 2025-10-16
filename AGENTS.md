@@ -34,3 +34,38 @@
 ## Security & Configuration Tips
 - Copy `.env.example` to `.env` and populate secrets locally; never commit the result.
 - Run `make security` before release branches to execute Bandit and resolve high-severity findings.
+
+## Agent Memory Bank (Codex CLI)
+- Purpose: Maintain persistent project context across sessions. I must read all files in `memory-bank/` at the start of every task and keep them current.
+- Location: Root `memory-bank/` directory with core Markdown files.
+- Priority: Keep `activeContext.md` and `progress.md` freshest; they guide current work.
+
+### Memory Bank Structure
+- Core files:
+  - `projectbrief.md` — Scope, goals, and source of truth
+  - `productContext.md` — Why/how the product should work
+  - `activeContext.md` — Current focus, recent changes, next steps
+  - `systemPatterns.md` — Architecture, patterns, critical paths
+  - `techContext.md` — Tech stack, dependencies, tooling
+  - `progress.md` — Status, what works, known gaps
+- Additional context: Add subfolders or docs under `memory-bank/` for APIs, integrations, tests, and deploys when complexity warrants it.
+
+### Core Workflows
+- Plan Mode:
+  - Read all memory bank files
+  - Verify completeness; if gaps, propose a plan
+  - Develop a strategy and share the approach
+- Act Mode:
+  - Re-check memory bank
+  - Update docs as context changes
+  - Execute the task, then document changes
+
+### Update Triggers
+- After significant changes or discoveries
+- When the user requests “update memory bank” (must review all files)
+- When context needs clarification or decisions shift
+
+### Repo-Specific Notes
+- Follow the commands and conventions above when proposing or executing changes.
+- Preferred structure and naming are enforced by the linters and `make format`.
+- Keep coverage ≥ 85% and run targeted test suites as appropriate.

@@ -1,194 +1,136 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Gizlilik Politikası{% endblock %}
+{% block title %}{% trans 'Privacy Policy' %}{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8 max-w-4xl">
     <div class="bg-white rounded-lg shadow-lg p-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Gizlilik Politikası</h1>
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">{% trans 'Privacy Policy' %}</h1>
 
         <div class="text-sm text-gray-600 mb-8">
-            <p><strong>Son güncelleme:</strong> {{ "now"|date:"d F Y" }}</p>
-            <p><strong>Yürürlük tarihi:</strong> {{ "now"|date:"d F Y" }}</p>
+            <p><strong>{% trans 'Last update' %}:</strong> {{ "now"|date:"F d, Y" }}</p>
+            <p><strong>{% trans 'Effective date' %}:</strong> {{ "now"|date:"F d, Y" }}</p>
         </div>
 
         <div class="prose prose-lg max-w-none">
             <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">1. Giriş</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">{% trans '1. Introduction' %}</h2>
                 <p class="text-gray-700 leading-relaxed mb-4">
-                    Bu Gizlilik Politikası, kişisel verilerinizin nasıl toplandığını, kullanıldığını, saklandığını ve korunduğunu açıklar.
-                    KVKK (Kişisel Verilerin Korunması Kanunu) ve GDPR (Genel Veri Koruma Yönetmeliği) uyarınca hazırlanmıştır.
+                    {% trans "This privacy policy explains how your personal data is collected, used, and protected. It has been prepared in alignment with GDPR (General Data Protection Regulation) and relevant local legislation." %}
                 </p>
                 <p class="text-gray-700 leading-relaxed">
-                    Web sitemizi kullanarak bu gizlilik politikasını kabul etmiş sayılırsınız.
+                    {% trans 'By using this website you acknowledge that you have read and accepted this privacy policy.' %}
                 </p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">2. Toplanan Veriler</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">{% trans '2. Data We Collect' %}</h2>
 
-                <h3 class="text-xl font-semibold text-gray-800 mb-3">2.1 Kişisel Veriler</h3>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">{% trans '2.1 Personal data' %}</h3>
                 <ul class="list-disc pl-6 text-gray-700 mb-4">
-                    <li>Ad ve soyadınız</li>
-                    <li>E-posta adresiniz</li>
-                    <li>İletişim bilgileriniz</li>
-                    <li>İletişim formunda paylaştığınız bilgiler</li>
+                    <li>{% trans 'First and last name' %}</li>
+                    <li>{% trans 'Email address' %}</li>
+                    <li>{% trans 'Contact information' %}</li>
+                    <li>{% trans 'Information you provide through contact forms' %}</li>
                 </ul>
 
-                <h3 class="text-xl font-semibold text-gray-800 mb-3">2.2 Teknik Veriler</h3>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">{% trans '2.2 Technical data' %}</h3>
                 <ul class="list-disc pl-6 text-gray-700 mb-4">
-                    <li>IP adresiniz</li>
-                    <li>Tarayıcı bilgileri</li>
-                    <li>Cihaz bilgileri</li>
-                    <li>Site kullanım istatistikleri</li>
-                    <li>Çerez verileri</li>
+                    <li>{% trans 'IP address' %}</li>
+                    <li>{% trans 'Browser and device information' %}</li>
+                    <li>{% trans 'Usage statistics and analytics events' %}</li>
+                    <li>{% trans 'Cookie identifiers and preferences' %}</li>
                 </ul>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">3. Verilerin Kullanım Amaçları</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">{% trans '3. How Your Data Is Used' %}</h2>
                 <ul class="list-disc pl-6 text-gray-700">
-                    <li>İletişim taleplerinize yanıt vermek</li>
-                    <li>Site performansını iyileştirmek</li>
-                    <li>Güvenlik sağlamak</li>
-                    <li>Yasal yükümlülükleri yerine getirmek</li>
-                    <li>Kullanıcı deneyimini geliştirmek</li>
+                    <li>{% trans 'Responding to enquiries and providing support' %}</li>
+                    <li>{% trans 'Improving website performance and experience' %}</li>
+                    <li>{% trans 'Maintaining platform security and integrity' %}</li>
+                    <li>{% trans 'Fulfilling legal and regulatory obligations' %}</li>
+                    <li>{% trans 'Developing new features and optimising workflows' %}</li>
                 </ul>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">4. Çerezler</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">{% trans '4. Cookies' %}</h2>
                 <p class="text-gray-700 leading-relaxed mb-4">
-                    Web sitemiz aşağıdaki çerez türlerini kullanır:
+                    {% trans 'We use the following categories of cookies to deliver a reliable experience:' %}
                 </p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div class="border border-gray-200 rounded-lg p-4">
-                        <h4 class="font-semibold text-gray-800 mb-2">Gerekli Çerezler</h4>
-                        <p class="text-sm text-gray-600">Sitenin çalışması için gerekli olan çerezler</p>
+                        <h4 class="font-semibold text-gray-800 mb-2">{% trans 'Essential cookies' %}</h4>
+                        <p class="text-sm text-gray-600">{% trans 'Required for the website to function and keep you signed in.' %}</p>
                     </div>
                     <div class="border border-gray-200 rounded-lg p-4">
-                        <h4 class="font-semibold text-gray-800 mb-2">İşlevsel Çerezler</h4>
-                        <p class="text-sm text-gray-600">Gelişmiş özellikler için kullanılan çerezler</p>
+                        <h4 class="font-semibold text-gray-800 mb-2">{% trans 'Functional cookies' %}</h4>
+                        <p class="text-sm text-gray-600">{% trans 'Enable additional features such as theme, language, or preference storage.' %}</p>
                     </div>
                     <div class="border border-gray-200 rounded-lg p-4">
-                        <h4 class="font-semibold text-gray-800 mb-2">Analitik Çerezler</h4>
-                        <p class="text-sm text-gray-600">Site kullanımını analiz etmek için</p>
+                        <h4 class="font-semibold text-gray-800 mb-2">{% trans 'Analytics cookies' %}</h4>
+                        <p class="text-sm text-gray-600">{% trans 'Help us measure performance and user journeys anonymously.' %}</p>
                     </div>
                     <div class="border border-gray-200 rounded-lg p-4">
-                        <h4 class="font-semibold text-gray-800 mb-2">Pazarlama Çerezleri</h4>
-                        <p class="text-sm text-gray-600">Kişiselleştirilmiş içerik için</p>
+                        <h4 class="font-semibold text-gray-800 mb-2">{% trans 'Marketing cookies' %}</h4>
+                        <p class="text-sm text-gray-600">{% trans 'Used to personalise communication when you opt in.' %}</p>
                     </div>
                 </div>
 
-                <p class="text-gray-700 leading-relaxed">
-                    Çerez tercihlerinizi istediğiniz zaman değiştirebilirsiniz.
-                    <button class="cookie-settings-btn text-blue-600 hover:text-blue-800 underline">
-                        Çerez ayarlarını yönet
-                    </button>
-                </p>
+                <p class="text-gray-700 leading-relaxed">{% trans 'You can update your cookie preferences at any time via the privacy dashboard.' %}</p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">5. Veri Saklama</h2>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    Kişisel verileriniz, toplandıkları amaç için gerekli olan süre boyunca saklanır:
-                </p>
-                <ul class="list-disc pl-6 text-gray-700">
-                    <li><strong>İletişim verileri:</strong> 3 yıl</li>
-                    <li><strong>Çerez verileri:</strong> 1 yıl</li>
-                    <li><strong>Log kayıtları:</strong> 6 ay</li>
-                    <li><strong>Hesap verileri:</strong> Hesap silinene kadar</li>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">{% trans '5. Data Retention' %}</h2>
+                <p class="text-gray-700 leading-relaxed">{% trans 'Personal data is retained only for as long as necessary to fulfil the purposes listed below:' %}</p>
+                <ul class="list-disc pl-6 text-gray-700 mt-4">
+                    <li><strong>{% trans 'Contact enquiries' %}:</strong> {% trans '3 years' %}</li>
+                    <li><strong>{% trans 'Cookie preferences' %}:</strong> {% trans '12 months' %}</li>
+                    <li><strong>{% trans 'Log records' %}:</strong> {% trans '6 months' %}</li>
                 </ul>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">6. Veri Güvenliği</h2>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    Verilerinizin güvenliğini sağlamak için aşağıdaki önlemleri alıyoruz:
-                </p>
-                <ul class="list-disc pl-6 text-gray-700">
-                    <li>SSL/TLS şifreleme</li>
-                    <li>Güvenli sunucu altyapısı</li>
-                    <li>Düzenli güvenlik güncellemeleri</li>
-                    <li>Erişim kontrolü</li>
-                    <li>Veri yedekleme</li>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">{% trans '6. Data Security' %}</h2>
+                <p class="text-gray-700 leading-relaxed">{% trans 'We apply industry best practices to protect your data:' %}</p>
+                <ul class="list-disc pl-6 text-gray-700 mt-4">
+                    <li>{% trans 'TLS encryption for data in transit' %}</li>
+                    <li>{% trans 'Hardened infrastructure and least privilege access' %}</li>
+                    <li>{% trans 'Regular security reviews and dependency updates' %}</li>
+                    <li>{% trans 'Access logging and anomaly detection' %}</li>
                 </ul>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">7. Haklarınız</h2>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    KVKK ve GDPR kapsamında aşağıdaki haklara sahipsiniz:
-                </p>
-                <ul class="list-disc pl-6 text-gray-700 mb-4">
-                    <li>Verileriniz hakkında bilgi alma hakkı</li>
-                    <li>Verilerin düzeltilmesini isteme hakkı</li>
-                    <li>Verilerin silinmesini isteme hakkı</li>
-                    <li>Veri taşınabilirliği hakkı</li>
-                    <li>İşlemeye itiraz etme hakkı</li>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">{% trans '7. Your Rights' %}</h2>
+                <p class="text-gray-700 leading-relaxed">{% trans 'Depending on your jurisdiction you may have the right to:' %}</p>
+                <ul class="list-disc pl-6 text-gray-700 mt-4">
+                    <li>{% trans 'Request a copy of the personal data we hold about you' %}</li>
+                    <li>{% trans 'Ask for inaccurate data to be corrected' %}</li>
+                    <li>{% trans 'Request deletion of data when legally permitted' %}</li>
+                    <li>{% trans 'Object to processing or request restrictions' %}</li>
+                    <li>{% trans 'Port your data to another service provider' %}</li>
                 </ul>
-
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h4 class="font-semibold text-blue-800 mb-2">Haklarınızı Kullanın</h4>
-                    <p class="text-blue-700 text-sm mb-3">
-                        Kişisel veri haklarınızı kullanmak için gizlilik kontrol panelinizi ziyaret edin.
-                    </p>
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'privacy_dashboard' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                            Gizlilik Kontrol Paneli
-                        </a>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                            Giriş Yapın
-                        </a>
-                    {% endif %}
-                </div>
+                <p class="text-gray-700 leading-relaxed mt-4">{% trans 'To exercise these rights please contact us via the details below.' %}</p>
             </section>
 
             <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">8. Üçüncü Taraf Hizmetler</h2>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    Web sitemizde kullanılan üçüncü taraf hizmetler:
-                </p>
-                <ul class="list-disc pl-6 text-gray-700">
-                    <li><strong>Google Fonts:</strong> Font yükleme</li>
-                    <li><strong>CDN Hizmetleri:</strong> İçerik dağıtımı</li>
-                    <li><strong>Analitik Hizmetler:</strong> Site analizi (onay verdiğiniz takdirde)</li>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">{% trans '8. Third-Party Services' %}</h2>
+                <p class="text-gray-700 leading-relaxed">{% trans 'We may use trusted third-party providers for hosting, analytics, and email delivery. Each provider is carefully evaluated for compliance with our privacy and security standards.' %}</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">{% trans '9. Contact' %}</h2>
+                <p class="text-gray-700 leading-relaxed">{% trans 'If you have any questions about this policy or the way we handle data, please reach out to:' %}</p>
+                <ul class="list-disc pl-6 text-gray-700 mt-2">
+                    <li>Email: <a href="mailto:privacy@bugraak.in" class="text-primary-600 hover:underline">privacy@bugraak.in</a></li>
+                    <li>{% trans 'Subject: Privacy Enquiry' %}</li>
                 </ul>
             </section>
-
-            <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">9. İletişim</h2>
-                <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                    <h4 class="font-semibold text-gray-800 mb-3">Veri Sorumlusu</h4>
-                    <p class="text-gray-700 mb-2"><strong>E-posta:</strong> privacy@example.com</p>
-                    <p class="text-gray-700 mb-4"><strong>Adres:</strong> [Adres bilgisi]</p>
-
-                    <p class="text-sm text-gray-600">
-                        Gizlilik politikası ile ilgili sorularınız için yukarıdaki iletişim bilgilerini kullanabilir
-                        veya <a href="{% url 'contact:form' %}" class="text-blue-600 hover:text-blue-800 underline">iletişim formu</a>nu kullanabilirsiniz.
-                    </p>
-                </div>
-            </section>
-
-            <section class="mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">10. Politika Güncellemeleri</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    Bu gizlilik politikası gerekli durumlarda güncellenebilir. Önemli değişiklikler
-                    web sitesinde duyurulacak ve e-posta ile bildirilecektir.
-                </p>
-            </section>
-        </div>
-
-        <div class="mt-8 pt-6 border-t border-gray-200">
-            <p class="text-sm text-gray-500 text-center">
-                Bu sayfa son olarak {{ "now"|date:"d F Y" }} tarihinde güncellenmiştir.
-            </p>
         </div>
     </div>
 </div>
-
-<script src="{% static 'js/cookie-consent.js' %}"></script>
 {% endblock %}

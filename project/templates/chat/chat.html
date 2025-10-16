@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Sohbet - Portfolio{% endblock %}
+{% block title %}{% trans 'Chat' %} - {% trans 'Portfolio' %}{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Hero Section -->
     <section class="text-center py-8 sm:py-12 animate-fade-in">
         <div class="max-w-5xl mx-auto">
             <h1 class="heading-1 mb-4 animate-slide-up">
@@ -12,19 +12,17 @@
                     <svg class="w-12 h-12 mr-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
-                    Sohbet
+                    {% trans 'Chat' %}
                 </span>
             </h1>
             <p class="body-large mb-6 animate-slide-up" style="animation-delay: 0.1s">
-                Canlı sohbet ve mesajlaşma
+                {% trans 'Live chat and messaging' %}
             </p>
         </div>
     </section>
 
-    <!-- Chat Interface -->
     <div class="max-w-4xl mx-auto animate-fade-in" style="animation-delay: 0.2s">
         <div class="card overflow-hidden">
-            <!-- Chat Header -->
             <div class="bg-gray-800/40 border-b border-gray-700/50 p-4">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
@@ -35,19 +33,17 @@
                         </div>
                         <div>
                             <h3 class="font-semibold">Portfolio Chat</h3>
-                            <p class="text-sm text-gray-400">Online</p>
+                            <p class="text-sm text-gray-400">{% trans 'Online' %}</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2">
                         <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                        <span class="text-sm text-gray-400">Aktif</span>
+                        <span class="text-sm text-gray-400">{% trans 'Active' %}</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Chat Messages Area -->
             <div class="h-96 p-4 overflow-y-auto bg-gray-900/20" id="chatMessages">
-                <!-- Welcome Message -->
                 <div class="flex items-start mb-4">
                     <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,13 +52,12 @@
                     </div>
                     <div class="flex-1">
                         <div class="bg-gray-800/40 rounded-lg p-3 max-w-xs">
-                            <p class="text-sm">Merhaba! Portfolio sohbet bölümüne hoş geldiniz. Bu alan geliştirilme aşamasındadır.</p>
+                            <p class="text-sm">{% trans 'Hello! Welcome to the chat preview. We are still polishing the live experience.' %}</p>
                         </div>
-                        <p class="text-xs text-gray-500 mt-1">Şimdi</p>
+                        <p class="text-xs text-gray-500 mt-1">{% trans 'Just now' %}</p>
                     </div>
                 </div>
 
-                <!-- Sample Messages -->
                 <div class="flex items-start mb-4 flex-row-reverse">
                     <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-700 rounded-full flex items-center justify-center ml-3 flex-shrink-0">
                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,9 +66,9 @@
                     </div>
                     <div class="flex-1 text-right">
                         <div class="bg-primary-600/40 rounded-lg p-3 max-w-xs ml-auto">
-                            <p class="text-sm">Teşekkürler! Harika bir portfolio site.</p>
+                            <p class="text-sm">{% trans 'Thanks! This portfolio site is fantastic.' %}</p>
                         </div>
-                        <p class="text-xs text-gray-500 mt-1">2 dakika önce</p>
+                        <p class="text-xs text-gray-500 mt-1">{% trans '2 minutes ago' %}</p>
                     </div>
                 </div>
 
@@ -85,108 +80,72 @@
                     </div>
                     <div class="flex-1">
                         <div class="bg-gray-800/40 rounded-lg p-3 max-w-xs">
-                            <p class="text-sm">Yakında gerçek zamanlı mesajlaşma özelliği eklenecek!</p>
+                            <p class="text-sm">{% trans 'Real-time messaging support is arriving soon!' %}</p>
                         </div>
-                        <p class="text-xs text-gray-500 mt-1">1 dakika önce</p>
+                        <p class="text-xs text-gray-500 mt-1">{% trans '1 minute ago' %}</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Chat Input -->
             <div class="border-t border-gray-700/50 p-4">
-                <form class="flex items-center space-x-3" id="chatForm" role="form" aria-labelledby="chat-form-heading">
-                    <h3 id="chat-form-heading" class="sr-only">Send a chat message</h3>
+                <form class="flex items-center space-x-3" id="chatForm" role="form" aria-label="{% trans 'Chat message form' %}">
                     <div class="flex-1">
-                        <label for="messageInput" class="sr-only">Your message</label>
-                        <input
-                            type="text"
-                            id="messageInput"
-                            placeholder="Mesajınızı yazın..."
-                            aria-label="Type your message here"
-                            aria-describedby="chat-status"
-                            class="input w-full pr-12"
-                            disabled
-                        />
+                        <label for="messageInput" class="sr-only">{% trans 'Your message' %}</label>
+                        <input type="text"
+                               id="messageInput"
+                               placeholder="{% trans 'Type your message...' %}"
+                               class="input w-full pr-12 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                               disabled
+                               aria-label="{% trans 'Type your message here' %}">
                     </div>
-                    <button
-                        type="submit"
-                        class="btn-primary px-6 py-2 flex items-center"
-                        aria-label="Send message"
-                        disabled
-                    >
+                    <button type="submit"
+                            class="btn-primary px-6 py-2 flex items-center focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-gray-900"
+                            disabled
+                            aria-label="{% trans 'Send message' %}">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                         </svg>
-                        Gönder
+                        {% trans 'Send' %}
                     </button>
                 </form>
-                <p id="chat-status" class="text-xs text-gray-500 mt-2 text-center" role="status" aria-live="polite">
-                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    Sohbet özelliği şu anda geliştirme aşamasındadır
-                </p>
             </div>
         </div>
+    </div>
 
-        <!-- Chat Features Coming Soon -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <div class="card animate-slide-up" style="animation-delay: 0.3s">
-                <div class="p-6 text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                    </div>
-                    <h3 class="heading-3 mb-2">Gerçek Zamanlı</h3>
-                    <p class="body-small text-gray-400">WebSocket ile anlık mesajlaşma</p>
+    <div class="mt-12 grid gap-6 md:grid-cols-3">
+        <div class="card animate-slide-up" style="animation-delay: 0.3s">
+            <div class="p-6 text-center">
+                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
                 </div>
+                <h3 class="heading-3 mb-2">{% trans 'Real-time' %}</h3>
+                <p class="body-small text-gray-400">{% trans 'Instant messaging via WebSocket transport' %}</p>
             </div>
-
-            <div class="card animate-slide-up" style="animation-delay: 0.4s">
-                <div class="p-6 text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2v-1"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12v-1a2 2 0 012-2h10a2 2 0 012 2v3a2 2 0 01-2 2H9l-4 4v-4H5a2 2 0 01-2-2z"/>
-                        </svg>
-                    </div>
-                    <h3 class="heading-3 mb-2">Grup Sohbeti</h3>
-                    <p class="body-small text-gray-400">Birden fazla kişiyle sohbet imkanı</p>
+        </div>
+        <div class="card animate-slide-up" style="animation-delay: 0.4s">
+            <div class="p-6 text-center">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m6 7h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2v-1"/>
+                    </svg>
                 </div>
+                <h3 class="heading-3 mb-2">{% trans 'Group chat' %}</h3>
+                <p class="body-small text-gray-400">{% trans 'Join conversations with multiple team members at once.' %}</p>
             </div>
-
-            <div class="card animate-slide-up" style="animation-delay: 0.5s">
-                <div class="p-6 text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                    <h3 class="heading-3 mb-2">Dosya Paylaşımı</h3>
-                    <p class="body-small text-gray-400">Dosya ve görsel paylaşma özelliği</p>
+        </div>
+        <div class="card animate-slide-up" style="animation-delay: 0.5s">
+            <div class="p-6 text-center">
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
                 </div>
+                <h3 class="heading-3 mb-2">{% trans 'File sharing' %}</h3>
+                <p class="body-small text-gray-400">{% trans 'Share files and visuals effortlessly' %}</p>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-// Placeholder JavaScript for future chat functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('chatForm');
-    const messageInput = document.getElementById('messageInput');
-    const chatMessages = document.getElementById('chatMessages');
-
-    // Scroll to bottom of chat
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-
-    // Form submission placeholder
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        // Future: Send message via WebSocket
-        messageInput.value = '';
-    });
-});
-</script>
 {% endblock %}

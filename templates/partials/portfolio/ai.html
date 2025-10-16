@@ -1,0 +1,208 @@
+{% load i18n %}
+<section class="section hero-section">
+  <div class="container hero-section__inner">
+    <div>
+      <span class="eyebrow">{% trans 'Daily AI toolkit' %}</span>
+      <h1 class="hero-title">{% trans 'Curated AI Platforms' %}</h1>
+      <p class="hero-lead">{% trans 'A collection of the AI assistants, automation services, and creative tools I rely on every day.' %}</p>
+      <div class="hero-bio">
+        {% trans "Explore the platforms I trust for research, prototyping, automation, and content creation. Each category highlights the tools that consistently deliver results." %}
+      </div>
+      <div class="button-row hero-actions">
+        <a href="{% url 'tools:list' %}" class="btn btn--primary" data-cursor-interactive>{% trans 'Browse all tools' %}</a>
+        <a href="{% url 'contact:form' %}" class="btn btn--ghost" data-cursor-interactive>{% trans 'Suggest a tool' %}</a>
+      </div>
+      <div class="tag-group" data-animate>
+        <span class="tag">{% trans 'Automation' %}</span>
+        <span class="tag">{% trans 'Productivity' %}</span>
+        <span class="tag">{% trans 'Content' %}</span>
+        <span class="tag">{% trans 'Development' %}</span>
+      </div>
+    </div>
+    <div class="hero-media" aria-hidden="true">
+      <div class="card card--interactive">
+        <div class="card__icon card__icon--blue">🤖</div>
+        <h3 class="card__title">{% trans 'My daily AI workflow' %}</h3>
+        <p class="card__text">{% trans 'Ideate → generate visuals → refine copy → automate delivery.' %}</p>
+        <div class="card__footer">
+          <span class="tag">ChatGPT • Notion AI • Zapier</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <header class="section__header align-start">
+      <span class="eyebrow">{% trans 'Platform categories' %}</span>
+      <h2 class="section-title">{% trans 'AI services I recommend' %}</h2>
+      <p class="section-lead">{% trans 'Each card captures how I use these platforms in practice. All of them are active parts of my workflow.' %}</p>
+    </header>
+    <div class="tile-grid tile-grid--two">
+      <article class="card card--tool" data-animate-card>
+        <div class="card__icon card__icon--blue">💡</div>
+        <div class="card__body">
+          <h3 class="card__title">{% trans 'General assistants' %}</h3>
+          <p class="card__text">{% trans 'Conversation-first AI platforms for research and ideation.' %}</p>
+          <ul class="card__list">
+            <li><a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><span>{% trans 'Versatile reasoning model' %}</span></li>
+            <li><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a><span>{% trans 'Multimodal exploration' %}</span></li>
+            <li><a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">Claude</a><span>{% trans 'Long-form analysis' %}</span></li>
+            <li><a href="https://www.perplexity.ai/" target="_blank" rel="noopener noreferrer">Perplexity AI</a><span>{% trans 'Source-backed answers' %}</span></li>
+            <li><a href="https://aistudio.google.com/welcome" target="_blank" rel="noopener noreferrer">Google AI Studio</a><span>{% trans 'API integrations' %}</span></li>
+            <li><a href="https://chat.deepseek.com/" target="_blank" rel="noopener noreferrer">DeepSeek</a><span>{% trans 'Code and math focus' %}</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card card--tool" data-animate-card>
+        <div class="card__icon card__icon--purple">🎨</div>
+        <div class="card__body">
+          <h3 class="card__title">{% trans 'Visual creation' %}</h3>
+          <p class="card__text">{% trans 'Tools for rapid mood-boards, scene design, and presentation assets.' %}</p>
+          <ul class="card__list">
+            <li><a href="https://leonardo.ai/" target="_blank" rel="noopener noreferrer">Leonardo AI</a><span>{% trans 'Illustrations & game assets' %}</span></li>
+            <li><a href="https://krea.ai/" target="_blank" rel="noopener noreferrer">Krea.ai</a><span>{% trans 'Realtime visual editing' %}</span></li>
+            <li><a href="https://www.canva.com/" target="_blank" rel="noopener noreferrer">Canva Magic Studio</a><span>{% trans 'Slides & social media' %}</span></li>
+            <li><a href="https://gamma.app/" target="_blank" rel="noopener noreferrer">Gamma</a><span>{% trans 'AI-powered presentations' %}</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card card--tool" data-animate-card>
+        <div class="card__icon card__icon--green">⚙️</div>
+        <div class="card__body">
+          <h3 class="card__title">{% trans 'Productivity & automation' %}</h3>
+          <p class="card__text">{% trans 'Services I use to automate repetitive tasks and orchestrate projects.' %}</p>
+          <ul class="card__list">
+            <li><a href="https://www.notion.so/product/ai" target="_blank" rel="noopener noreferrer">Notion AI</a><span>{% trans 'Knowledge base automation' %}</span></li>
+            <li><a href="https://zapier.com/" target="_blank" rel="noopener noreferrer">Zapier</a><span>{% trans 'No-code workflows' %}</span></li>
+            <li><a href="https://www.make.com/" target="_blank" rel="noopener noreferrer">Make</a><span>{% trans 'Visual pipelines' %}</span></li>
+            <li><a href="https://get.motionapp.com/" target="_blank" rel="noopener noreferrer">Motion</a><span>{% trans 'Intelligent scheduling' %}</span></li>
+            <li><a href="https://www.plusdocs.com/" target="_blank" rel="noopener noreferrer">Plus AI</a><span>{% trans 'Automated slide decks' %}</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card card--tool" data-animate-card>
+        <div class="card__icon card__icon--red">✍️</div>
+        <div class="card__body">
+          <h3 class="card__title">{% trans 'Content & writing' %}</h3>
+          <p class="card__text">{% trans 'Assistants that help structure newsletters, blog posts, and documentation.' %}</p>
+          <ul class="card__list">
+            <li><a href="https://www.jasper.ai/" target="_blank" rel="noopener noreferrer">Jasper</a><span>{% trans 'Brand voice copy' %}</span></li>
+            <li><a href="https://www.typely.com/" target="_blank" rel="noopener noreferrer">Typely</a><span>{% trans 'Grammar insights' %}</span></li>
+            <li><a href="https://www.grammarly.com/" target="_blank" rel="noopener noreferrer">Grammarly</a><span>{% trans 'Tone and consistency' %}</span></li>
+            <li><a href="https://www.copy.ai/" target="_blank" rel="noopener noreferrer">Copy.ai</a><span>{% trans 'Marketing copy' %}</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card card--tool" data-animate-card>
+        <div class="card__icon card__icon--orange">🎙️</div>
+        <div class="card__body">
+          <h3 class="card__title">{% trans 'Audio & video' %}</h3>
+          <p class="card__text">{% trans 'Great for podcast summaries, voice cloning, and scripted edits.' %}</p>
+          <ul class="card__list">
+            <li><a href="https://www.descript.com/" target="_blank" rel="noopener noreferrer">Descript</a><span>{% trans 'Edit audio like text' %}</span></li>
+            <li><a href="https://www.resemble.ai/" target="_blank" rel="noopener noreferrer">Resemble AI</a><span>{% trans 'Custom voice synthesis' %}</span></li>
+            <li><a href="https://www.play.ht/" target="_blank" rel="noopener noreferrer">Play.ht</a><span>{% trans 'Text-to-speech libraries' %}</span></li>
+            <li><a href="https://www.podcastle.ai/" target="_blank" rel="noopener noreferrer">Podcastle</a><span>{% trans 'Podcast production' %}</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card card--tool" data-animate-card>
+        <div class="card__icon card__icon--teal">👨‍💻</div>
+        <div class="card__body">
+          <h3 class="card__title">{% trans 'Coding & development' %}</h3>
+          <p class="card__text">{% trans 'Assistants that boost consistency and speed in software projects.' %}</p>
+          <ul class="card__list">
+            <li><a href="https://codeium.com/" target="_blank" rel="noopener noreferrer">Codeium</a><span>{% trans 'Multi-language code completion' %}</span></li>
+            <li><a href="https://copilot.microsoft.com" target="_blank" rel="noopener noreferrer">GitHub Copilot</a><span>{% trans 'Inline code suggestions' %}</span></li>
+            <li><a href="https://cursor.sh/" target="_blank" rel="noopener noreferrer">Cursor</a><span>{% trans 'AI-native IDE' %}</span></li>
+            <li><a href="https://www.tabnine.com/" target="_blank" rel="noopener noreferrer">Tabnine</a><span>{% trans 'Team-aware coding' %}</span></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section__header align-start">
+      <span class="eyebrow">{% trans 'How I evaluate AI platforms' %}</span>
+      <h2 class="section-title">{% trans 'Selection criteria' %}</h2>
+      <p class="section-lead">{% trans 'Every tool here is vetted for privacy, security, and long-term maintainability before joining production workflows.' %}</p>
+    </div>
+    <div class="ds-grid ds-grid--cols-1 ds-grid--md-3 gap-6">
+      <article class="card card--inline">
+        <div class="card__icon">🔒</div>
+        <div>
+          <h3 class="card__title">{% trans 'Security posture' %}</h3>
+          <p class="card__text">{% trans 'Clear data policies, granular permissions, and strong auditing.' %}</p>
+        </div>
+      </article>
+      <article class="card card--inline">
+        <div class="card__icon">⚡</div>
+        <div>
+          <h3 class="card__title">{% trans 'Performance & UX' %}</h3>
+          <p class="card__text">{% trans 'Fast responses with thoughtful interfaces that respect focus time.' %}</p>
+        </div>
+      </article>
+      <article class="card card--inline">
+        <div class="card__icon">🧩</div>
+        <div>
+          <h3 class="card__title">{% trans 'Integration flexibility' %}</h3>
+          <p class="card__text">{% trans 'APIs and automation hooks that slide into existing tooling.' %}</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <div class="section__header align-start">
+      <span class="eyebrow">{% trans 'Stay informed' %}</span>
+      <h2 class="section-title">{% trans 'My AI reading list' %}</h2>
+      <p class="section-lead">{% trans 'Newsletters, podcasts, and communities I track to keep up with new releases.' %}</p>
+    </div>
+    <div class="ds-grid ds-grid--cols-1 ds-grid--md-2 gap-6">
+      <article class="card card--stack">
+        <h3 class="card__title">{% trans 'Newsletters & blogs' %}</h3>
+        <ul class="card__list card__list--tight">
+          <li><a href="https://www.ben-evans.com/newsletter" target="_blank" rel="noopener noreferrer">Benedict Evans</a></li>
+          <li><a href="https://www.aisnakeoil.com/" target="_blank" rel="noopener noreferrer">AI Snake Oil</a></li>
+          <li><a href="https://www.latent.space/" target="_blank" rel="noopener noreferrer">Latent Space</a></li>
+          <li><a href="https://www.generalist.com/" target="_blank" rel="noopener noreferrer">The Generalist</a></li>
+        </ul>
+      </article>
+      <article class="card card--stack">
+        <h3 class="card__title">{% trans 'Communities & podcasts' %}</h3>
+        <ul class="card__list card__list--tight">
+          <li><a href="https://huggingface.co/" target="_blank" rel="noopener noreferrer">Hugging Face</a></li>
+          <li><a href="https://www.reddit.com/r/MachineLearning/" target="_blank" rel="noopener noreferrer">r/MachineLearning</a></li>
+          <li><a href="https://practicalai.fm/" target="_blank" rel="noopener noreferrer">Practical AI</a></li>
+          <li><a href="https://lexfridman.com/podcast/" target="_blank" rel="noopener noreferrer">Lex Fridman Podcast</a></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section__header align-start">
+      <span class="eyebrow">{% trans 'Need a tailored stack?' %}</span>
+      <h2 class="section-title">{% trans 'Let’s design an AI workflow for your team' %}</h2>
+      <p class="section-lead">{% trans 'From ideation to deployment, I help teams evaluate AI services, integrate them safely, and measure their impact.' %}</p>
+    </div>
+    <div class="button-row">
+      <a class="btn btn--primary" href="{% url 'contact:form' %}">{% trans 'Start a consultation' %}</a>
+      <a class="btn btn--ghost" href="{% url 'tools:list' %}">{% trans 'View more tools' %}</a>
+    </div>
+  </div>
+</section>

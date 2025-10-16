@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Hesap Silme - Portfolio{% endblock %}
+{% block title %}{% trans 'Account Deletion - Portfolio' %}{% endblock %}
 
 {% block extra_head %}
-<meta name="description" content="Hesabınızı ve kişisel verilerinizi güvenli şekilde silin.">
+<meta name="description" content="Delete your account and personal data securely." />
 {% endblock %}
 
 {% block content %}
@@ -12,282 +12,146 @@
     <div class="bg-gray-800/50 backdrop-blur-md rounded-xl shadow-2xl border border-gray-700/50 p-8">
         <div class="mb-8">
             <h1 class="text-4xl font-bold bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent mb-4">
-                Hesap Silme
+                {% trans 'Account deletion' %}
             </h1>
             <p class="text-gray-300 text-lg">
-                KVKK ve GDPR haklarınız kapsamında hesabınızı ve kişisel verilerinizi silebilirsiniz.
+                {% trans 'Submit a removal request to permanently erase your account and personal data in line with GDPR requirements.' %}
             </p>
             <div class="w-24 h-1 bg-gradient-to-r from-red-400 to-red-600 rounded-full mt-4"></div>
         </div>
 
-        <!-- Warning Notice -->
         <div class="bg-red-900/30 border border-red-600/50 rounded-lg p-6 mb-8">
             <div class="flex items-start">
                 <svg class="w-8 h-8 text-red-400 mr-4 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 <div>
-                    <h3 class="text-xl font-bold text-red-300 mb-3">⚠️ UYARI: GERİ DÖNDÜRÜLEMEZ İŞLEM</h3>
+                    <h3 class="text-xl font-bold text-red-300 mb-3">{% trans 'Warning: irreversible action' %}</h3>
                     <p class="text-red-200 mb-3">
-                        Bu işlem kalıcıdır ve geri alınamaz. Hesabınız silindikten sonra:
+                        {% trans 'Once your account is deleted the following actions cannot be undone:' %}
                     </p>
                     <ul class="text-red-200 text-sm space-y-1">
-                        <li>• Tüm kişisel verileriniz sistemden kaldırılır</li>
-                        <li>• İletişim geçmişiniz silinir</li>
-                        <li>• Hesabınıza tekrar erişemezsiniz</li>
-                        <li>• Bu işlem geri alınamaz</li>
+                        <li>• {% trans 'All personal data will be removed from our systems' %}</li>
+                        <li>• {% trans 'Communication history and saved content will be deleted' %}</li>
+                        <li>• {% trans 'You will permanently lose access to your account' %}</li>
+                        <li>• {% trans 'Backups will be purged within 30 days' %}</li>
                     </ul>
                 </div>
             </div>
         </div>
 
         <div class="space-y-8">
-            <!-- Deletion Types -->
             <section>
                 <h2 class="text-2xl font-semibold text-white mb-6 flex items-center">
                     <svg class="w-6 h-6 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
-                    Silme Türü Seçin
+                    {% trans 'Choose deletion type' %}
                 </h2>
 
                 <form method="post" id="deletionForm" class="space-y-6">
                     {% csrf_token %}
 
                     <div class="grid md:grid-cols-2 gap-6">
-                        <!-- Soft Delete -->
                         <label class="relative cursor-pointer">
                             <input type="radio" name="deletion_type" value="soft" class="sr-only peer" checked>
                             <div class="bg-gray-700/30 border border-gray-600 peer-checked:border-yellow-500 peer-checked:bg-yellow-900/20 rounded-lg p-6 transition-all hover:bg-gray-700/50">
                                 <div class="flex items-center justify-center mb-4">
                                     <svg class="w-10 h-10 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                     </svg>
                                 </div>
-                                <h3 class="text-lg font-semibold text-yellow-300 text-center mb-3">Anonimleştirme</h3>
-                                <p class="text-gray-300 text-sm text-center mb-4">Verileriniz anonim hale getirilir</p>
-
+                                <h3 class="text-lg font-semibold text-yellow-300 text-center mb-3">{% trans 'Anonymise my data' %}</h3>
+                                <p class="text-gray-300 text-sm text-center mb-4">{% trans 'Personal identifiers will be removed but usage analytics are kept in aggregate form.' %}</p>
                                 <div class="space-y-2 text-xs text-gray-300">
                                     <div class="flex items-start">
                                         <svg class="w-4 h-4 text-green-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                                         </svg>
-                                        <span>Kişisel bilgiler maskelenir</span>
+                                        <span>{% trans 'Keeps anonymised metrics for service quality' %}</span>
                                     </div>
                                     <div class="flex items-start">
                                         <svg class="w-4 h-4 text-green-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                                         </svg>
-                                        <span>İstatistikler korunur</span>
+                                        <span>{% trans 'Allows account recovery within 30 days' %}</span>
                                     </div>
                                     <div class="flex items-start">
-                                        <svg class="w-4 h-4 text-green-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        <svg class="w-4 h-4 text-red-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11V5a1 1 0 10-2 0v2a1 1 0 001 1h.01a1 1 0 00.99-1zM11 9a1 1 0 00-2 0v4a1 1 0 002 0V9zm0 6a1 1 0 10-2 0 1 1 0 002 0z" clip-rule="evenodd" />
                                         </svg>
-                                        <span>KVKK/GDPR uyumlu</span>
-                                    </div>
-                                    <div class="flex items-start">
-                                        <svg class="w-4 h-4 text-yellow-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        <span>Hesap devre dışı kalır</span>
+                                        <span>{% trans 'Some aggregated data remains for analytics' %}</span>
                                     </div>
                                 </div>
                             </div>
                         </label>
 
-                        <!-- Hard Delete -->
                         <label class="relative cursor-pointer">
                             <input type="radio" name="deletion_type" value="hard" class="sr-only peer">
                             <div class="bg-gray-700/30 border border-gray-600 peer-checked:border-red-500 peer-checked:bg-red-900/20 rounded-lg p-6 transition-all hover:bg-gray-700/50">
                                 <div class="flex items-center justify-center mb-4">
                                     <svg class="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7h14zm-9 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3" />
                                     </svg>
                                 </div>
-                                <h3 class="text-lg font-semibold text-red-300 text-center mb-3">Kalıcı Silme</h3>
-                                <p class="text-gray-300 text-sm text-center mb-4">Tüm verileriniz tamamen silinir</p>
-
+                                <h3 class="text-lg font-semibold text-red-300 text-center mb-3">{% trans 'Permanent deletion' %}</h3>
+                                <p class="text-gray-300 text-sm text-center mb-4">{% trans 'Remove all data and close the account immediately.' %}</p>
                                 <div class="space-y-2 text-xs text-gray-300">
                                     <div class="flex items-start">
-                                        <svg class="w-4 h-4 text-red-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                        <svg class="w-4 h-4 text-green-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                                         </svg>
-                                        <span>Tüm veriler silinir</span>
-                                    </div>
-                                    <div class="flex items-start">
-                                        <svg class="w-4 h-4 text-red-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        <span>Hesap tamamen kaldırılır</span>
-                                    </div>
-                                    <div class="flex items-start">
-                                        <svg class="w-4 h-4 text-red-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        <span>Geri döndürülemez</span>
+                                        <span>{% trans 'All personal information deleted from primary systems' %}</span>
                                     </div>
                                     <div class="flex items-start">
                                         <svg class="w-4 h-4 text-green-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                                         </svg>
-                                        <span>Unutulma hakkı tam uyumluluk</span>
+                                        <span>{% trans 'Backups flushed within 30 days' %}</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <svg class="w-4 h-4 text-red-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11V5a1 1 0 10-2 0v2a1 1 0 001 1h.01a1 1 0 00.99-1zM11 9a1 1 0 00-2 0v4a1 1 0 002 0V9zm0 6a1 1 0 10-2 0 1 1 0 002 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span>{% trans 'Account cannot be restored after this action' %}</span>
                                     </div>
                                 </div>
                             </div>
                         </label>
                     </div>
 
-                    <!-- Reason -->
-                    <div>
-                        <label for="reason" class="block text-sm font-medium text-gray-300 mb-2">
-                            Silme Sebebi (İsteğe Bağlı)
-                        </label>
-                        <textarea name="reason" id="reason" rows="3"
-                                  class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                  placeholder="Hesabınızı silme sebebinizi belirtebilirsiniz (isteğe bağlı)"></textarea>
-                    </div>
-
-                    <!-- Confirmation -->
                     <div class="bg-gray-700/30 border border-gray-600 rounded-lg p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4">Son Onay</h3>
-                        <p class="text-gray-300 text-sm mb-4">
-                            Bu işlemi onaylamak için aşağıdaki kutuya <strong>"delete my account"</strong> yazın:
-                        </p>
-                        <input type="text" name="confirmation" id="confirmation"
-                               class="w-full bg-gray-600/50 border border-gray-500 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                               placeholder="delete my account"
-                               required>
-                        <p class="text-xs text-gray-400 mt-2">
-                            Bu onay, işlemi isteyerek gerçekleştirdiğinizi doğrular.
-                        </p>
-                    </div>
-
-                    <!-- Data Export Recommendation -->
-                    <div class="bg-blue-900/20 border border-blue-700/30 rounded-lg p-6">
-                        <div class="flex items-start">
-                            <svg class="w-6 h-6 text-blue-400 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+                        <h3 class="text-lg font-semibold text-white mb-3">{% trans 'Verification' %}</h3>
+                        <p class="text-gray-300 text-sm mb-4">{% trans 'To protect your account, please confirm your identity before we proceed.' %}</p>
+                        <div class="space-y-4">
                             <div>
-                                <h4 class="font-semibold text-blue-300 mb-2">Veri Dışa Aktarma Önerisi</h4>
-                                <p class="text-blue-200 text-sm mb-3">
-                                    Hesabınızı silmeden önce verilerinizi dışa aktarmanızı öneririz.
-                                </p>
-                                <a href="{% url 'gdpr:data_export' %}"
-                                   class="inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg transition-colors">
-                                    Verilerimi Dışa Aktar
-                                </a>
+                                <label class="block text-sm text-gray-400 mb-2" for="password">{% trans 'Current password' %}</label>
+                                <input type="password" id="password" name="password" required class="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg text-white focus:outline-none focus:border-red-400" placeholder="{% trans 'Enter your password' %}">
+                            </div>
+                            <div class="flex items-center">
+                                <input id="understand" name="understand" type="checkbox" required class="w-4 h-4 text-red-500 focus:ring-red-400 border-gray-600 rounded">
+                                <label for="understand" class="ml-3 text-sm text-gray-300">
+                                    {% trans 'I understand this action permanently removes my account and data.' %}
+                                </label>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Submit Button -->
-                    <div class="flex justify-center pt-6">
-                        <button type="submit"
-                                class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold px-8 py-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center"
-                                onclick="return confirmDeletion()">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                            Hesabımı Sil
-                        </button>
+                    <div class="flex items-center justify-end space-x-3">
+                        <a href="{% url 'gdpr:privacy_dashboard' %}" class="btn btn--ghost">{% trans 'Cancel' %}</a>
+                        <button type="submit" class="btn btn--danger">{% trans 'Delete my account' %}</button>
                     </div>
                 </form>
             </section>
 
-            <!-- Legal Information -->
-            <section class="border-t border-gray-700/50 pt-8">
-                <h2 class="text-2xl font-semibold text-white mb-4 flex items-center">
-                    <svg class="w-6 h-6 text-primary-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    Yasal Bilgiler ve Haklarınız
-                </h2>
-
-                <div class="bg-gray-700/20 rounded-lg p-6">
-                    <div class="space-y-4 text-sm text-gray-300">
-                        <div>
-                            <h4 class="font-semibold text-white mb-2">KVKK Madde 7 - Silme Hakkı</h4>
-                            <p>Kişisel verilerinizin işlenmesi için gerekli sebeplerin ortadan kalkmış olması halinde, verilerinizin silinmesini talep edebilirsiniz.</p>
-                        </div>
-
-                        <div>
-                            <h4 class="font-semibold text-white mb-2">GDPR Madde 17 - Unutulma Hakkı</h4>
-                            <p>Belirli koşullar altında kişisel verilerinizin silinmesini ve işlemeye son verilmesini talep edebilirsiniz.</p>
-                        </div>
-
-                        <div>
-                            <h4 class="font-semibold text-white mb-2">İşlem Süreci</h4>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li>Silme işlemi hemen gerçekleşir</li>
-                                <li>Yasal yükümlülükler kapsamında bazı veriler saklanabilir</li>
-                                <li>İşlem geri alınamaz niteliktedir</li>
-                                <li>Silme talebiniz sistem tarafından kaydedilir</li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 class="font-semibold text-white mb-2">İletişim</h4>
-                            <p>
-                                Bu işlemle ilgili sorularınız için
-                                <a href="mailto:privacy@example.com" class="text-primary-400 hover:text-primary-300">
-                                    privacy@example.com
-                                </a>
-                                adresinden bizimle iletişime geçebilirsiniz.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            <section class="bg-gray-700/30 border border-gray-600 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-white mb-3">{% trans 'Need help?' %}</h3>
+                <p class="text-gray-300 text-sm mb-3">{% trans 'If you would prefer to discuss alternative options or require assistance, contact our privacy team and we will respond promptly.' %}</p>
+                <a href="mailto:privacy@bugraak.in" class="btn btn--secondary" data-cursor-interactive>privacy@bugraak.in</a>
+                <p class="text-xs text-gray-500 mt-3">{% trans 'Requests are typically handled within 3 business days.' %}</p>
             </section>
         </div>
     </div>
 </div>
-
-<script>
-function confirmDeletion() {
-    const confirmation = document.getElementById('confirmation').value;
-    const deletionType = document.querySelector('input[name="deletion_type"]:checked').value;
-
-    if (confirmation.toLowerCase().trim() !== 'delete my account') {
-        alert('Lütfen onay kutusu\'na "delete my account" yazın.');
-        return false;
-    }
-
-    const typeText = deletionType === 'hard' ? 'kalıcı olarak silinecek' : 'anonimleştirilecek';
-
-    return confirm(
-        `⚠️ SON UYARI!\n\n` +
-        `Hesabınız ${typeText} ve bu işlem geri alınamayacak.\n\n` +
-        `Devam etmek istediğinizden emin misiniz?`
-    );
-}
-
-// Real-time validation for confirmation input
-document.getElementById('confirmation').addEventListener('input', function(e) {
-    const value = e.target.value.toLowerCase().trim();
-    const button = document.querySelector('button[type="submit"]');
-    const input = e.target;
-
-    if (value === 'delete my account') {
-        input.classList.remove('border-gray-500', 'focus:ring-red-500');
-        input.classList.add('border-green-500', 'focus:ring-green-500');
-        button.disabled = false;
-        button.classList.remove('opacity-50', 'cursor-not-allowed');
-    } else {
-        input.classList.remove('border-green-500', 'focus:ring-green-500');
-        input.classList.add('border-gray-500', 'focus:ring-red-500');
-        button.disabled = true;
-        button.classList.add('opacity-50', 'cursor-not-allowed');
-    }
-});
-
-// Initialize button state
-document.addEventListener('DOMContentLoaded', function() {
-    const button = document.querySelector('button[type="submit"]');
-    button.disabled = true;
-    button.classList.add('opacity-50', 'cursor-not-allowed');
-});
-</script>
 {% endblock %}

@@ -1,26 +1,27 @@
-{% load static %}
+{% load static i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="{{ LANGUAGE_CODE|default:'tr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Portfolio{% endblock %}</title>
+    <title>{% block title %}{% trans 'Portfolio' %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 </head>
 <body>
     <div class="container">
         <nav>
-            <a href="/">Ana Sayfa</a>
-            <a href="/playground/">Playground</a>
-            <a href="/blog/">Blog</a>
-            <a href="/tools/">Araçlar</a>
-            <a href="/contact/">İletişim</a>
+            <a href="/">{% trans "Home" %}</a>
+            <a href="/playground/">{% trans "Playground" %}</a>
+            <a href="/blog/">{% trans "Blog" %}</a>
+            <a href="/tools/">{% trans "Tools" %}</a>
+            <a href="/contact/">{% trans "Contact" %}</a>
         </nav>
 
         <main>
             {% block content %}
-            <h1>Hoş Geldiniz!</h1>
-            <p>Bu site çalışıyor.</p>
+            <h1>{% trans "Welcome!" %}</h1>
+            <p>{% trans "This site is up and running." %}</p>
             {% endblock %}
         </main>
     </div>
