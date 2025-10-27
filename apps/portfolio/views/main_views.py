@@ -156,7 +156,7 @@ def home(request: HttpRequest) -> HttpResponse:
             'meta_description': 'Full Stack Developer & Cybersecurity Enthusiast Portfolio',
         }
         
-        return render(request, 'main/home.html', context)
+        return render(request, 'pages/portfolio/home.html', context)
         
     except Exception as e:
         logger.error(f"Error in home view: {str(e)}")
@@ -173,7 +173,7 @@ def home(request: HttpRequest) -> HttpResponse:
             'page_title': 'Home',
             'meta_description': 'Portfolio',
         }
-        return render(request, 'main/home.html', context)
+        return render(request, 'pages/portfolio/home.html', context)
 
 
 def personal_view(request: HttpRequest) -> HttpResponse:
@@ -225,7 +225,7 @@ def personal_view(request: HttpRequest) -> HttpResponse:
             'meta_description': 'Kişisel bilgiler, sertifikalar, yetenekler ve deneyimler',
         }
         
-        return render(request, 'main/personal.html', context)
+        return render(request, 'pages/portfolio/personal.html', context)
         
     except Exception as e:
         logger.error(f"Error in personal view: {str(e)}")
@@ -238,7 +238,7 @@ def personal_view(request: HttpRequest) -> HttpResponse:
             'page_title': 'Hakkımda',
             'meta_description': 'Kişisel bilgiler',
         }
-        return render(request, 'main/personal.html', context)
+        return render(request, 'pages/portfolio/personal.html', context)
 
 
 def music_view(request):
@@ -277,7 +277,7 @@ def music_view(request):
             'meta_description': 'Müzik playlistleri, şu an çaldığım şarkılar ve favori sanatçılar',
         }
         
-        return render(request, 'main/music.html', context)
+        return render(request, 'pages/portfolio/music.html', context)
         
     except Exception as e:
         logger.error(f"Error in music view: {str(e)}")
@@ -288,7 +288,7 @@ def music_view(request):
             'page_title': 'Müzik',
             'meta_description': 'Müzik',
         }
-        return render(request, 'main/music.html', context)
+        return render(request, 'pages/portfolio/music.html', context)
 
 
 def ai_tools_view(request: HttpRequest) -> HttpResponse:
@@ -318,7 +318,7 @@ def ai_tools_view(request: HttpRequest) -> HttpResponse:
             'meta_description': 'Yapay zeka araçları ve platformları - Sevdiğim AI yer imleri',
         }
         
-        return render(request, 'main/ai.html', context)
+        return render(request, 'pages/portfolio/ai.html', context)
         
     except Exception as e:
         logger.error(f"Error in ai_tools view: {str(e)}")
@@ -327,7 +327,7 @@ def ai_tools_view(request: HttpRequest) -> HttpResponse:
             'page_title': 'AI Araçları',
             'meta_description': 'Yapay zeka araçları',
         }
-        return render(request, 'main/ai.html', context)
+        return render(request, 'pages/portfolio/ai.html', context)
 
 
 def cybersecurity_view(request: HttpRequest) -> HttpResponse:
@@ -364,7 +364,7 @@ def cybersecurity_view(request: HttpRequest) -> HttpResponse:
             'meta_description': 'Siber güvenlik kaynakları, araçları ve güncel bilgiler',
         }
         
-        return render(request, 'main/cybersecurity.html', context)
+        return render(request, 'pages/portfolio/cybersecurity.html', context)
         
     except Exception as e:
         logger.error(f"Error in cybersecurity view: {str(e)}")
@@ -374,7 +374,7 @@ def cybersecurity_view(request: HttpRequest) -> HttpResponse:
             'page_title': 'Siber Güvenlik',
             'meta_description': 'Siber güvenlik',
         }
-        return render(request, 'main/cybersecurity.html', context)
+        return render(request, 'pages/portfolio/cybersecurity.html', context)
 
 
 def useful_view(request):
@@ -416,7 +416,7 @@ def useful_view(request):
             'meta_description': 'Faydalı araçlar, siteler ve uygulamalar koleksiyonu',
         }
         
-        return render(request, 'main/useful.html', context)
+        return render(request, 'pages/portfolio/useful.html', context)
         
     except Exception as e:
         logger.error(f"Error in useful view: {str(e)}")
@@ -426,7 +426,7 @@ def useful_view(request):
             'page_title': 'Useful Resources',
             'meta_description': 'Faydalı kaynaklar',
         }
-        return render(request, 'main/useful.html', context)
+        return render(request, 'pages/portfolio/useful.html', context)
 
 
 def projects_view(request):
@@ -469,7 +469,7 @@ def projects_view(request):
             'meta_description': 'Geliştirdiğim projeler ve portföy çalışmaları',
         }
         
-        return render(request, 'main/projects.html', context)
+        return render(request, 'pages/portfolio/projects.html', context)
         
     except Exception as e:
         logger.error(f"Error in projects view: {str(e)}")
@@ -480,7 +480,7 @@ def projects_view(request):
             'page_title': 'Projeler',
             'meta_description': 'Projeler',
         }
-        return render(request, 'main/projects.html', context)
+        return render(request, 'pages/portfolio/projects.html', context)
 
 
 def project_detail_view(request, slug):
@@ -522,7 +522,7 @@ def project_detail_view(request, slug):
             'meta_description': project.description[:160] if project.description else f'{project.title} proje detayları',
         }
         
-        return render(request, 'main/project_detail.html', context)
+        return render(request, 'pages/portfolio/project_detail.html', context)
         
     except Exception as e:
         logger.error(f"Error in project_detail view: {str(e)}")
@@ -710,7 +710,7 @@ def performance_dashboard_view(request):
             'dashboard_refresh_interval': 30000,  # 30 seconds
         }
 
-        return render(request, 'main/dashboard.html', context)
+        return render(request, 'pages/portfolio/dashboard.html', context)
 
     except Exception as e:
         logger.error(f"Error in performance dashboard view: {str(e)}")
@@ -723,7 +723,7 @@ def performance_dashboard_view(request):
             'meta_description': 'Performance monitoring dashboard',
             'dashboard_refresh_interval': 30000,
         }
-        return render(request, 'main/dashboard.html', context)
+        return render(request, 'pages/portfolio/dashboard.html', context)
 
 
 @require_http_methods(["GET"])
@@ -742,7 +742,7 @@ def ui_kit_view(request: HttpRequest) -> HttpResponse:
                 {'name': 'UI Kit', 'url': None}
             ]
         }
-        return render(request, 'main/ui-kit.html', context)
+        return render(request, 'pages/portfolio/ui-kit.html', context)
     except Exception as e:
         logger.error(f"UI Kit view error: {e}")
         return render(request, '500.html', status=500)
@@ -780,3 +780,4 @@ def offline_view(request: HttpRequest) -> HttpResponse:
         </html>
         """
         return HttpResponse(basic_offline_html, status=503)
+

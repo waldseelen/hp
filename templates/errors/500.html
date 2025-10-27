@@ -4,33 +4,195 @@
 {% block title %}{% trans "Server Error" %} | {{ block.super }}{% endblock %}
 {% block meta_description %}{% trans "We are experiencing technical issues. The team has been notified and is working on a fix." %}{% endblock %}
 
+{% block extra_css %}
+<style>
+  @keyframes heartbeat {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    25% {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.1);
+    }
+  }
+
+  @keyframes slide-down {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes bounce-in {
+    0% {
+      opacity: 0;
+      transform: translateY(20px) scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .heartbeat-animation {
+    animation: heartbeat 2s ease-in-out infinite;
+  }
+
+  .slide-down {
+    animation: slide-down 0.6s ease-out;
+  }
+
+  .fade-in {
+    animation: fade-in 0.6s ease-out;
+  }
+
+  .bounce-in {
+    animation: bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Stagger animations */
+  .animation-delay-100 { animation-delay: 0.1s; }
+  .animation-delay-200 { animation-delay: 0.2s; }
+  .animation-delay-300 { animation-delay: 0.3s; }
+  .animation-delay-400 { animation-delay: 0.4s; }
+  .animation-delay-500 { animation-delay: 0.5s; }
+
+  /* Error badge styling */
+  .error-badge {
+    animation: slide-down 0.6s ease-out;
+  }
+
+  /* Instruction list items */
+  .instruction-item {
+    animation: bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+  }
+
+  .instruction-item:nth-child(1) { animation-delay: 0.1s; }
+  .instruction-item:nth-child(2) { animation-delay: 0.2s; }
+  .instruction-item:nth-child(3) { animation-delay: 0.3s; }
+
+  /* Navigation cards */
+  .nav-card {
+    animation: fade-in 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .nav-card:nth-child(1) { animation-delay: 0.1s; }
+  .nav-card:nth-child(2) { animation-delay: 0.2s; }
+  .nav-card:nth-child(3) { animation-delay: 0.3s; }
+  .nav-card:nth-child(4) { animation-delay: 0.4s; }
+
+  .nav-card:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Support info section */
+  .support-section {
+    animation: slide-down 0.8s ease-out 0.3s backwards;
+  }
+
+  /* Minimal fallback for icon */
+  .error-icon {
+    animation: heartbeat 2s ease-in-out 1s infinite;
+  }
+
+  /* Ensure critical content loads without JS */
+  .error-banner {
+    background-color: #f87171;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+
+  .error-banner.show {
+    display: block;
+    animation: slide-down 0.6s ease-out;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
+<!-- Breadcrumb Navigation -->
+<nav class="bg-rose-50 dark:bg-slate-900/50 py-3 px-6 border-b border-rose-200 dark:border-slate-800">
+  <div class="container mx-auto max-w-5xl">
+    <div class="flex items-center gap-2 text-sm slide-down" role="navigation" aria-label="Breadcrumb">
+      <a href="/" class="text-rose-600 hover:text-rose-700 dark:text-rose-400 flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12a9 9 0 1118 0 9 9 0 01-18 0z"></path>
+        </svg>
+        {% trans "Home" %}
+      </a>
+      <span class="text-slate-400">/</span>
+      <span class="text-slate-600 dark:text-slate-400">{% trans "Error" %} 500</span>
+    </div>
+  </div>
+</nav>
+
 <section class="relative overflow-hidden py-20">
   <div class="absolute inset-0 bg-gradient-to-br from-rose-100 via-rose-200 to-white dark:from-rose-950 dark:via-slate-950 dark:to-black"></div>
   <div class="relative z-10 container mx-auto px-6 lg:px-12">
     <div class="max-w-3xl mx-auto text-center space-y-6">
-      <span class="inline-flex items-center gap-2 rounded-full border border-rose-200/70 bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-rose-700 dark:border-rose-500/40 dark:bg-slate-900/60 dark:text-rose-200">
+      <!-- Error Badge -->
+      <span class="inline-flex items-center gap-2 rounded-full border border-rose-200/70 bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-rose-700 dark:border-rose-500/40 dark:bg-slate-900/60 dark:text-rose-200 error-badge">
+        <svg class="w-4 h-4 error-icon" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+        </svg>
         {% trans "Error" %} {{ error_code|default:"500" }}
       </span>
-      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+
+      <!-- Large Error Code -->
+      <div class="inline-block">
+        <h1 class="text-8xl font-black tracking-tighter text-rose-600 dark:text-rose-400 slide-down">
+          500
+        </h1>
+      </div>
+
+      <!-- Main Heading -->
+      <h2 class="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl slide-down animation-delay-100">
         {{ error_message|default:_("Something went wrong on our side.") }}
-      </h1>
-      {% if retry_suggestion %}
-      <p class="text-base text-slate-600 dark:text-slate-300">{{ retry_suggestion }}</p>
-      {% else %}
-      <p class="text-base text-slate-600 dark:text-slate-300">{% trans "Please try again in a moment or head back to a safe page." %}</p>
-      {% endif %}
+      </h2>
+
+      <!-- Description -->
+      <p class="text-base text-slate-600 dark:text-slate-300 slide-down animation-delay-200">
+        {% if retry_suggestion %}
+          {{ retry_suggestion }}
+        {% else %}
+          {% trans "Our team has been notified and is working on a fix. Please try again in a moment or head back to a safe page." %}
+        {% endif %}
+      </p>
     </div>
 
+    <!-- Navigation Cards -->
     {% if navigation_links %}
     <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
       {% for link in navigation_links %}
-      <a href="{{ link.url|default:'#' }}" class="group flex h-full flex-col justify-between rounded-2xl border border-rose-200/70 bg-white/85 p-6 shadow-sm transition hover:-translate-y-1 hover:border-rose-300 hover:shadow-lg dark:border-rose-500/30 dark:bg-slate-900/70">
+      <a href="{{ link.url|default:'#' }}" class="group flex h-full flex-col justify-between rounded-2xl border border-rose-200/70 bg-white/85 p-6 shadow-sm transition hover:-translate-y-1 hover:border-rose-300 hover:shadow-lg dark:border-rose-500/30 dark:bg-slate-900/70 nav-card">
         <div class="space-y-3">
           <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 text-rose-600 transition group-hover:bg-rose-500 group-hover:text-white dark:bg-rose-500/10 dark:text-rose-200">
             {% if link.icon %}{{ link.icon }}{% else %}<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.75h3v3M6.75 17.25 17.25 6.75"/></svg>{% endif %}
           </span>
-          <h2 class="text-lg font-semibold text-slate-900 dark:text-white">{{ link.title }}</h2>
+          <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ link.title }}</h3>
           {% if link.description %}
           <p class="text-sm text-slate-600 dark:text-slate-400">{{ link.description }}</p>
           {% endif %}
@@ -46,25 +208,71 @@
     </div>
     {% endif %}
 
-    <div class="mt-16 mx-auto max-w-3xl rounded-3xl border border-rose-200/60 bg-white/85 p-8 shadow-md dark:border-rose-500/30 dark:bg-slate-900/70">
+    <!-- Support Info Section -->
+    <div class="mt-16 mx-auto max-w-3xl rounded-3xl border border-rose-200/60 bg-white/85 p-8 shadow-md dark:border-rose-500/30 dark:bg-slate-900/70 support-section">
       <h2 class="text-xl font-semibold text-slate-900 dark:text-white">{% trans "What you can do" %}</h2>
       <ul class="mt-6 space-y-4 text-left text-sm text-slate-600 dark:text-slate-300">
-        <li class="flex items-start gap-3">
-          <span class="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-500/10 dark:text-rose-200">1</span>
+        <li class="flex items-start gap-3 instruction-item">
+          <span class="mt-1 inline-flex h-6 w-6 items-center justify-center flex-shrink-0 rounded-full bg-rose-100 text-rose-600 font-semibold dark:bg-rose-500/10 dark:text-rose-200">1</span>
           <span>{% trans "Refresh the page in a few moments to see if the issue resolves itself." %}</span>
         </li>
-        <li class="flex items-start gap-3">
-          <span class="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-500/10 dark:text-rose-200">2</span>
-          <span>{% trans "Use the quick links above to continue browsing." %}</span>
+        <li class="flex items-start gap-3 instruction-item">
+          <span class="mt-1 inline-flex h-6 w-6 items-center justify-center flex-shrink-0 rounded-full bg-rose-100 text-rose-600 font-semibold dark:bg-rose-500/10 dark:text-rose-200">2</span>
+          <span>{% trans "Use the quick links above to continue browsing without interruption." %}</span>
         </li>
-        <li class="flex items-start gap-3">
-          <span class="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-500/10 dark:text-rose-200">3</span>
-          <span>{% trans "Contact us at" %} <a href="mailto:{{ support_email|default:'support@example.com' }}" class="font-medium text-rose-600 hover:underline dark:text-rose-200">{{ support_email|default:'support@example.com' }}</a> {% trans "if the problem persists." %}</span>
+        <li class="flex items-start gap-3 instruction-item">
+          <span class="mt-1 inline-flex h-6 w-6 items-center justify-center flex-shrink-0 rounded-full bg-rose-100 text-rose-600 font-semibold dark:bg-rose-500/10 dark:text-rose-200">3</span>
+          <span>{% trans "Contact our support team at" %} <a href="mailto:{{ support_email|default:'support@example.com' }}" class="font-medium text-rose-600 hover:underline dark:text-rose-200">{{ support_email|default:'support@example.com' }}</a> {% trans "if the problem persists." %}</span>
         </li>
       </ul>
+
+      <!-- Status Info -->
+      <div class="mt-8 p-4 rounded-lg bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30">
+        <p class="text-xs text-rose-700 dark:text-rose-200">
+          <strong>{% trans "Status:" %}</strong> {% trans "Our engineering team has been automatically notified about this issue. We're monitoring the situation closely and will update the status as soon as there's a resolution." %}
+        </p>
+      </div>
+
+      <!-- Retry Button -->
+      <div class="mt-8">
+        <button onclick="location.reload()" class="inline-flex items-center gap-2 rounded-lg bg-rose-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-300 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          {% trans "Try Again" %}
+        </button>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- Analytics Tracking -->
+{% if track_500 %}
+<script>
+  // Track 500 errors for alerting
+  if (window.gtag) {
+    gtag('event', 'server_error', {
+      'error_code': '500',
+      'page_path': '{{ request.path|escapejs }}',
+      'timestamp': new Date().toISOString(),
+      'session_id': '{{ session.session_key|escapejs }}'
+    });
+  }
+
+  // Send error report to monitoring service
+  if (window.fetch && navigator.sendBeacon) {
+    const errorData = {
+      type: 'server_error_500',
+      url: window.location.href,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent
+    };
+
+    // Attempt to send beacon
+    navigator.sendBeacon('/api/errors/report/', JSON.stringify(errorData));
+  }
+</script>
+{% endif %}
 {% endblock %}
 
 

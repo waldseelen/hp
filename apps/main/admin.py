@@ -2,10 +2,12 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.db import models
 from .models import (
     Admin, PersonalInfo, SocialLink, AITool, CybersecurityResource,
     BlogCategory, BlogPost, MusicPlaylist, SpotifyCurrentTrack, UsefulResource
 )
+from .admin_utils import TinyMCEAdminMixin, SanitizedContentAdminMixin
 
 
 @admin.register(Admin)
@@ -14,11 +16,11 @@ class AdminUserAdmin(UserAdmin):
     list_filter = ('is_staff', 'is_active', 'created_at')
     search_fields = ('email', 'name')
     ordering = ('-created_at',)
-    
+
     fieldsets = UserAdmin.fieldsets + (
         ('Additional Info', {'fields': ('name', 'created_at', 'updated_at')}),
     )
-    
+
     readonly_fields = ('created_at', 'updated_at')
 
 
@@ -47,7 +49,7 @@ class AIToolAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description', 'tags')
     list_editable = ('is_featured', 'is_visible', 'order')
     ordering = ('category', 'order', 'name')
-    
+
     fieldsets = (
         ('Temel Bilgiler', {
             'fields': ('name', 'description', 'url', 'category')
@@ -67,16 +69,16 @@ class AIToolAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
         }),
     )
-    
+
     readonly_fields = ('created_at', 'updated_at', 'image_preview')
-    
+
     def rating_display(self, obj):
         if obj.rating:
             stars = '⭐' * int(obj.rating)
             return format_html('<span title="{}/5">{}</span>', obj.rating, stars)
         return '-'
     rating_display.short_description = 'Rating'
-    
+
     def image_preview(self, obj):
         if obj.image:
             return format_html('<img src="{}" style="max-height: 100px; max-width: 200px;" />', obj.image.url)
@@ -91,7 +93,7 @@ class CybersecurityResourceAdmin(admin.ModelAdmin):
     search_fields = ('title', 'description', 'content', 'tags')
     list_editable = ('is_urgent', 'is_featured', 'is_visible')
     ordering = ('-is_urgent', '-severity_level', 'type', 'order', 'title')
-    
+
     fieldsets = (
         ('Temel Bilgiler', {
             'fields': ('title', 'description', 'type', 'difficulty', 'url')
@@ -115,9 +117,9 @@ class CybersecurityResourceAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
         }),
     )
-    
+
     readonly_fields = ('created_at', 'updated_at', 'image_preview')
-    
+
     def severity_display(self, obj):
         colors = {1: '#28a745', 2: '#ffc107', 3: '#fd7e14', 4: '#dc3545'}
         labels = {1: 'Düşük', 2: 'Orta', 3: 'Yüksek', 4: 'Kritik'}
@@ -127,7 +129,7 @@ class CybersecurityResourceAdmin(admin.ModelAdmin):
             labels.get(obj.severity_level, 'Bilinmiyor')
         )
     severity_display.short_description = 'Severity'
-    
+
     def image_preview(self, obj):
         if obj.image:
             return format_html('<img src="{}" style="max-height: 100px; max-width: 200px;" />', obj.image.url)
@@ -142,7 +144,7 @@ class BlogCategoryAdmin(admin.ModelAdmin):
     search_fields = ('display_name', 'name', 'description')
     list_editable = ('order', 'is_visible')
     ordering = ('order', 'display_name')
-    
+
     fieldsets = (
         ('Temel Bilgiler', {
             'fields': ('name', 'display_name', 'description')
@@ -158,9 +160,9 @@ class BlogCategoryAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
         }),
     )
-    
+
     readonly_fields = ('created_at', 'updated_at', 'color_preview')
-    
+
     def color_preview(self, obj):
         if obj.color:
             return format_html(
@@ -172,13 +174,17 @@ class BlogCategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(BlogPost)
-class BlogPostAdmin(admin.ModelAdmin):
+class BlogPostAdmin(SanitizedContentAdminMixin):
     list_display = ('title', 'category', 'status', 'author', 'is_featured', 'reading_time', 'view_count', 'published_at')
     list_filter = ('status', 'category', 'is_featured', 'author', 'published_at')
     search_fields = ('title', 'excerpt', 'content', 'tags')
     list_editable = ('status', 'is_featured')
     ordering = ('-published_at', '-created_at')
-    
+
+    # Fields to sanitize on save
+    sanitized_fields = ('content', 'excerpt')
+    sanitization_type = 'html'
+
     fieldsets = (
         ('Temel Bilgiler', {
             'fields': ('title', 'slug', 'category', 'author', 'status')
@@ -198,10 +204,10 @@ class BlogPostAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
         }),
     )
-    
+
     readonly_fields = ('created_at', 'updated_at', 'reading_time', 'view_count', 'blog_image_preview')
     prepopulated_fields = {'slug': ('title',)}
-    
+
     def blog_image_preview(self, obj):
         if obj.featured_image:
             return format_html('<img src="{}" style="max-height: 100px; max-width: 200px;" />', obj.featured_image.url)
@@ -216,7 +222,7 @@ class MusicPlaylistAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description')
     list_editable = ('is_featured', 'order', 'is_visible')
     ordering = ('order', 'name')
-    
+
     fieldsets = (
         ('Temel Bilgiler', {
             'fields': ('name', 'description', 'platform')
@@ -235,9 +241,9 @@ class MusicPlaylistAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
         }),
     )
-    
+
     readonly_fields = ('created_at', 'updated_at', 'embed_preview')
-    
+
     def embed_preview(self, obj):
         if obj.embed_url and obj.platform == 'spotify':
             return format_html(
@@ -256,7 +262,7 @@ class SpotifyCurrentTrackAdmin(admin.ModelAdmin):
     list_filter = ('is_playing', 'last_updated')
     search_fields = ('track_name', 'artist_name', 'album_name')
     ordering = ('-last_updated',)
-    
+
     fieldsets = (
         ('Şarkı Bilgileri', {
             'fields': ('track_name', 'artist_name', 'album_name', 'track_url')
@@ -272,9 +278,9 @@ class SpotifyCurrentTrackAdmin(admin.ModelAdmin):
             'fields': ('last_updated',),
         }),
     )
-    
+
     readonly_fields = ('last_updated', 'spotify_image_preview')
-    
+
     def spotify_image_preview(self, obj):
         if obj.image_url:
             return format_html('<img src="{}" style="max-height: 100px; max-width: 100px;" />', obj.image_url)
@@ -289,7 +295,7 @@ class UsefulResourceAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description', 'tags')
     list_editable = ('is_featured', 'is_visible', 'order')
     ordering = ('category', 'order', 'name')
-    
+
     fieldsets = (
         ('Temel Bilgiler', {
             'fields': ('name', 'description', 'url', 'category', 'type')
@@ -309,16 +315,16 @@ class UsefulResourceAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
         }),
     )
-    
+
     readonly_fields = ('created_at', 'updated_at', 'useful_image_preview')
-    
+
     def rating_display(self, obj):
         if obj.rating:
             stars = '⭐' * int(obj.rating)
             return format_html('<span title="{}/5">{}</span>', obj.rating, stars)
         return '-'
     rating_display.short_description = 'Rating'
-    
+
     def useful_image_preview(self, obj):
         if obj.image:
             return format_html('<img src="{}" style="max-height: 100px; max-width: 200px;" />', obj.image.url)

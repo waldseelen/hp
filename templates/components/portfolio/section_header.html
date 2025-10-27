@@ -1,0 +1,63 @@
+{% load i18n %}
+
+{#
+Section Header Component
+Usage:
+  include 'components/portfolio/section_header.html' with title="Featured Projects" subtitle="Best work" icon="star"
+
+Parameters:
+  - title (required): Section heading text
+  - subtitle (optional): Secondary text/description
+  - icon (optional): Icon type ('star', 'briefcase', 'tools', 'lightbulb', 'heart')
+  - size (optional): 'large' (default), 'medium', 'small'
+  - align (optional): 'center' (default), 'left', 'right'
+#}
+
+{% if title %}
+<div class="mb-{% if size == 'small' %}4{% elif size == 'medium' %}6{% else %}8{% endif %} text-{% if align == 'left' %}left{% elif align == 'right' %}right{% else %}center{% endif %}">
+    <div class="flex items-center {% if align == 'center' %}justify-center{% elif align == 'right' %}justify-end{% endif %}">
+        {% if icon %}
+        {# Icon #}
+        <div class="mr-3 text-primary-400">
+            {% if icon == 'star' %}
+            <svg class="w-{% if size == 'small' %}5{% elif size == 'medium' %}6{% else %}6{% endif %} h-{% if size == 'small' %}5{% elif size == 'medium' %}6{% else %}6{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+            </svg>
+            {% elif icon == 'briefcase' %}
+            <svg class="w-{% if size == 'small' %}5{% elif size == 'medium' %}6{% else %}6{% endif %} h-{% if size == 'small' %}5{% elif size == 'medium' %}6{% else %}6{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            {% elif icon == 'tools' %}
+            <svg class="w-{% if size == 'small' %}5{% elif size == 'medium' %}6{% else %}6{% endif %} h-{% if size == 'small' %}5{% elif size == 'medium' %}6{% else %}6{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+            </svg>
+            {% elif icon == 'lightbulb' %}
+            <svg class="w-{% if size == 'small' %}5{% elif size == 'medium' %}6{% else %}6{% endif %} h-{% if size == 'small' %}5{% elif size == 'medium' %}6{% else %}6{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5h.01"/>
+            </svg>
+            {% elif icon == 'heart' %}
+            <svg class="w-{% if size == 'small' %}5{% elif size == 'medium' %}6{% else %}6{% endif %} h-{% if size == 'small' %}5{% elif size == 'medium' %}6{% else %}6{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {# Title #}
+        <h2 class="text-{% if size == 'small' %}lg{% elif size == 'medium' %}2xl{% else %}2xl{% endif %} font-bold text-white">
+            {{ title }}
+        </h2>
+    </div>
+
+    {% if subtitle %}
+    <p class="text-gray-400 text-{% if size == 'small' %}sm{% elif size == 'medium' %}base{% else %}lg{% endif %} mt-2 max-w-2xl {% if align == 'center' %}mx-auto{% elif align == 'right' %}ml-auto{% endif %}">
+        {{ subtitle }}
+    </p>
+    {% endif %}
+</div>
+{% else %}
+{# Error/Empty State #}
+<div class="text-center py-4">
+    <p class="text-gray-500 text-sm">{% trans 'Section header not properly configured' %}</p>
+</div>
+{% endif %}

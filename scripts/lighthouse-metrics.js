@@ -1,0 +1,245 @@
+#!/usr/bin/env node
+
+/**
+ * Lighthouse Performance Metrics Reporter
+ * Measures FCP, TTI, and other performance metrics before/after optimization
+ */
+
+const fs = require('fs');
+const path = require('path');
+const lighthouse = require('lighthouse');
+const chromeLauncher = require('chrome-launcher');
+
+const CONFIG = {
+    port: 9222,
+    chromeFlags: ['--headless', '--no-sandbox', '--disable-gpu'],
+    logLevel: 'info',
+    output: 'json',
+    onlyCategories: ['performance'],
+};
+
+const METRICS_CONFIG = {
+    url: process.env.URL || 'http://localhost:8000',
+    reportPath: path.join(process.cwd(), 'lighthouse-report.json'),
+    metricsPath: path.join(process.cwd(), 'docs/LIGHTHOUSE_METRICS.md'),
+};
+
+async function launchChrome() {
+    const chrome = await chromeLauncher.launch({ chromeFlags: CONFIG.chromeFlags });
+    return chrome;
+}
+
+async function runLighthouse(url, port) {
+    try {
+        const options = {
+            ...CONFIG,
+            port: port,
+        };
+
+        const runnerResult = await lighthouse(url, options);
+        return runnerResult;
+    } catch (error) {
+        console.error('Lighthouse run failed:', error);
+        throw error;
+    }
+}
+
+async function extractMetrics(result) {
+    if (!result || !result.lhr) {
+        throw new Error('Invalid Lighthouse result');
+    }
+
+    const lhr = result.lhr;
+    const audits = lhr.audits;
+
+    return {
+        timestamp: new Date().toISOString(),
+        url: lhr.finalUrl,
+        scores: {
+            performance: Math.round(lhr.categories.performance.score * 100),
+        },
+        metrics: {
+            firstContentfulPaint: audits['first-contentful-paint']?.numericValue || 0,
+            largestContentfulPaint: audits['largest-contentful-paint']?.numericValue || 0,
+            timeToInteractive: audits['interactive']?.numericValue || 0,
+            speedIndex: audits['speed-index']?.numericValue || 0,
+            totalBlockingTime: audits['total-blocking-time']?.numericValue || 0,
+            cumulativeLayoutShift: audits['cumulative-layout-shift']?.numericValue || 0,
+        },
+        diagnostics: {
+            unusedCss: audits['unused-css-rules']?.numericValue || 0,
+            unusedJavaScript: audits['unused-javascript']?.numericValue || 0,
+            unminifiedCss: audits['unminified-css']?.numericValue || 0,
+            unminifiedJavaScript: audits['unminified-javascript']?.numericValue || 0,
+        },
+        opportunities: {
+            modernImageFormats: audits['modern-image-formats']?.numericValue || 0,
+            offscreenImages: audits['offscreen-images']?.numericValue || 0,
+            renderBlockingResources: audits['render-blocking-resources']?.numericValue || 0,
+        }
+    };
+}
+
+async function saveReport(metrics) {
+    // Save raw JSON report
+    fs.writeFileSync(METRICS_CONFIG.reportPath, JSON.stringify(metrics, null, 2));
+    console.log(`✓ Report saved: ${METRICS_CONFIG.reportPath}`);
+}
+
+function generateMarkdownReport(metrics) {
+    const { timestamp, url, scores, metrics: metricValues, diagnostics, opportunities } = metrics;
+
+    const report = `# Lighthouse Performance Metrics Report
+
+**Generated:** ${timestamp}
+**URL:** ${url}
+
+## Performance Score
+
+| Metric | Score |
+|--------|-------|
+| Performance | ${scores.performance}/100 |
+
+## Core Web Vitals
+
+| Metric | Value | Status |
+|--------|-------|--------|
+| First Contentful Paint (FCP) | ${(metricValues.firstContentfulPaint / 1000).toFixed(2)}s | ${getFCPStatus(metricValues.firstContentfulPaint)} |
+| Largest Contentful Paint (LCP) | ${(metricValues.largestContentfulPaint / 1000).toFixed(2)}s | ${getLCPStatus(metricValues.largestContentfulPaint)} |
+| Cumulative Layout Shift (CLS) | ${metricValues.cumulativeLayoutShift.toFixed(3)} | ${getCLSStatus(metricValues.cumulativeLayoutShift)} |
+
+## Performance Metrics
+
+| Metric | Value |
+|--------|-------|
+| Time to Interactive (TTI) | ${(metricValues.timeToInteractive / 1000).toFixed(2)}s |
+| Speed Index | ${(metricValues.speedIndex / 1000).toFixed(2)}s |
+| Total Blocking Time (TBT) | ${metricValues.totalBlockingTime.toFixed(0)}ms |
+
+## Diagnostics
+
+| Issue | Potential Savings |
+|-------|-------------------|
+| Unused CSS | ${(diagnostics.unusedCss / 1024).toFixed(2)}KB |
+| Unused JavaScript | ${(diagnostics.unusedJavaScript / 1024).toFixed(2)}KB |
+| Unminified CSS | ${(diagnostics.unminifiedCss / 1024).toFixed(2)}KB |
+| Unminified JavaScript | ${(diagnostics.unminifiedJavaScript / 1024).toFixed(2)}KB |
+
+## Opportunities
+
+| Opportunity | Potential Savings |
+|-------------|-------------------|
+| Modern Image Formats | ${(opportunities.modernImageFormats / 1024).toFixed(2)}KB |
+| Offscreen Images | ${(opportunities.offscreenImages / 1024).toFixed(2)}KB |
+| Render-Blocking Resources | ${(opportunities.renderBlockingResources / 1024).toFixed(2)}KB |
+
+## Recommendations
+
+${generateRecommendations(metrics)}
+
+---
+
+**Report generated by:** Lighthouse Performance Reporter
+`;
+
+    return report;
+}
+
+function getFCPStatus(fcp) {
+    if (fcp < 1800) return '✅ Good';
+    if (fcp < 3000) return '⚠️ Needs Improvement';
+    return '❌ Poor';
+}
+
+function getLCPStatus(lcp) {
+    if (lcp < 2500) return '✅ Good';
+    if (lcp < 4000) return '⚠️ Needs Improvement';
+    return '❌ Poor';
+}
+
+function getCLSStatus(cls) {
+    if (cls < 0.1) return '✅ Good';
+    if (cls < 0.25) return '⚠️ Needs Improvement';
+    return '❌ Poor';
+}
+
+function generateRecommendations(metrics) {
+    const recommendations = [];
+    const { diagnostics, opportunities, metrics: metricValues } = metrics;
+
+    if (metricValues.firstContentfulPaint > 3000) {
+        recommendations.push('- **FCP is slow:** Consider deferring non-critical CSS and inline critical CSS');
+    }
+
+    if (metricValues.totalBlockingTime > 200) {
+        recommendations.push('- **High JavaScript blocking:** Break up long tasks and defer non-critical scripts');
+    }
+
+    if (diagnostics.unusedCss > 0) {
+        recommendations.push(`- **Unused CSS found:** Remove or defer unused CSS rules (${(diagnostics.unusedCss / 1024).toFixed(2)}KB)`);
+    }
+
+    if (diagnostics.unusedJavaScript > 0) {
+        recommendations.push(`- **Unused JavaScript found:** Remove or code-split unused scripts (${(diagnostics.unusedJavaScript / 1024).toFixed(2)}KB)`);
+    }
+
+    if (opportunities.renderBlockingResources > 0) {
+        recommendations.push('- **Render-blocking resources:** Use async/defer for scripts or inline critical CSS');
+    }
+
+    if (recommendations.length === 0) {
+        recommendations.push('- Performance looks good! Continue monitoring for regressions.');
+    }
+
+    return recommendations.join('\n');
+}
+
+async function runMetrics() {
+    let chrome = null;
+
+    try {
+        console.log('🚀 Starting Lighthouse performance audit...');
+        console.log(`📍 URL: ${METRICS_CONFIG.url}`);
+
+        // Launch Chrome
+        chrome = await launchChrome();
+
+        // Run Lighthouse
+        const result = await runLighthouse(METRICS_CONFIG.url, chrome.port);
+
+        // Extract metrics
+        const metrics = await extractMetrics(result);
+
+        // Save report
+        await saveReport(metrics);
+
+        // Generate markdown report
+        const markdownReport = generateMarkdownReport(metrics);
+        fs.writeFileSync(METRICS_CONFIG.metricsPath, markdownReport);
+        console.log(`✓ Markdown report saved: ${METRICS_CONFIG.metricsPath}`);
+
+        // Print summary
+        console.log('\n📊 Performance Summary:');
+        console.log(`   Performance Score: ${metrics.scores.performance}/100`);
+        console.log(`   FCP: ${(metrics.metrics.firstContentfulPaint / 1000).toFixed(2)}s`);
+        console.log(`   LCP: ${(metrics.metrics.largestContentfulPaint / 1000).toFixed(2)}s`);
+        console.log(`   TTI: ${(metrics.metrics.timeToInteractive / 1000).toFixed(2)}s`);
+        console.log(`   CLS: ${metrics.metrics.cumulativeLayoutShift.toFixed(3)}`);
+
+        return metrics;
+    } catch (error) {
+        console.error('❌ Metrics collection failed:', error);
+        process.exit(1);
+    } finally {
+        if (chrome) {
+            await chrome.kill();
+        }
+    }
+}
+
+// Run if called directly
+if (require.main === module) {
+    runMetrics();
+}
+
+module.exports = { runMetrics, generateMarkdownReport };

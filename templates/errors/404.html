@@ -4,46 +4,208 @@
 {% block title %}{% trans "Page Not Found" %} | {{ block.super }}{% endblock %}
 {% block meta_description %}{% trans "The page you were looking for could not be located. Explore popular areas of the site or try searching again." %}{% endblock %}
 
+{% block extra_css %}
+<style>
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      filter: drop-shadow(0 0 0 rgba(59, 130, 246, 0))
+              drop-shadow(0 0 0 rgba(147, 51, 234, 0));
+      text-shadow: 0 0 0 rgba(59, 130, 246, 0);
+    }
+    50% {
+      filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.6))
+              drop-shadow(0 0 30px rgba(147, 51, 234, 0.4));
+      text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    }
+  }
+
+  @keyframes fade-in-up {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-in-right {
+    0% {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+  }
+
+  .slide-in-right {
+    animation: slide-in-right 0.6s ease-out forwards;
+  }
+
+  .shimmer {
+    animation: shimmer 2s infinite;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background-size: 1000px 100%;
+  }
+
+  /* Stagger animations */
+  .animation-delay-100 { animation-delay: 0.1s; }
+  .animation-delay-200 { animation-delay: 0.2s; }
+  .animation-delay-300 { animation-delay: 0.3s; }
+  .animation-delay-400 { animation-delay: 0.4s; }
+  .animation-delay-500 { animation-delay: 0.5s; }
+
+  /* Breadcrumb styling */
+  .breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: fade-in-up 0.6s ease-out;
+  }
+
+  /* Search section styling */
+  .search-section {
+    animation: fade-in-up 0.8s ease-out 0.3s backwards;
+  }
+
+  /* Popular pages grid */
+  .popular-page-card {
+    animation: fade-in-up 0.6s ease-out forwards;
+    transition: all 0.3s ease-out;
+  }
+
+  .popular-page-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2);
+  }
+
+  .popular-page-card:hover .icon-container {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  .icon-container {
+    transition: transform 0.3s ease-out;
+  }
+
+  /* Dark mode adjustments */
+  @media (prefers-color-scheme: dark) {
+    .pulse-glow {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
+<!-- Breadcrumb Navigation -->
+<nav class="bg-slate-50 dark:bg-slate-900/50 py-3 px-6 border-b border-slate-200 dark:border-slate-800">
+  <div class="container mx-auto max-w-5xl">
+    <div class="flex items-center gap-2 text-sm" role="navigation" aria-label="Breadcrumb">
+      <a href="/" class="text-primary-600 hover:text-primary-700 dark:text-primary-400 flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12a9 9 0 1118 0 9 9 0 01-18 0z"></path>
+        </svg>
+        {% trans "Home" %}
+      </a>
+      <span class="text-slate-400">/</span>
+      <span class="text-slate-600 dark:text-slate-400">{% trans "Error" %} 404</span>
+    </div>
+  </div>
+</nav>
+
 <section class="relative overflow-hidden py-20">
   <div class="absolute inset-0 bg-gradient-to-br from-primary-50 via-primary-100 to-white dark:from-slate-900 dark:via-slate-900 dark:to-slate-950"></div>
+
+  <!-- Animated Illustration -->
+  <div class="absolute right-0 top-1/2 -translate-y-1/2 w-1/3 opacity-10 pointer-events-none hidden lg:block">
+    <svg class="w-full h-full float-animation" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+    </svg>
+  </div>
+
   <div class="relative z-10 container mx-auto px-6 lg:px-12">
     <div class="max-w-3xl mx-auto text-center space-y-6">
       <span class="inline-flex items-center gap-2 rounded-full border border-primary-200/70 bg-white/70 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-primary-700 dark:border-primary-500/30 dark:bg-slate-900/50 dark:text-primary-200">
         {% trans "Error" %} {{ error_code|default:"404" }}
       </span>
-      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+
+      <!-- 404 Large Text with Animation -->
+      <div class="inline-block">
+        <h1 class="text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-blue-600 dark:from-primary-400 dark:to-blue-400 pulse-glow">
+          404
+        </h1>
+      </div>
+
+      <h2 class="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
         {{ error_message|default:_("The page you are looking for does not exist.") }}
-      </h1>
+      </h2>
       <p class="text-base text-slate-600 dark:text-slate-300">
         {% trans "We could not find" %} <span class="font-semibold text-slate-900 dark:text-white">{{ request_path }}</span>. {% trans "It may have been moved, renamed, or removed." %}
       </p>
     </div>
 
+    <!-- Popular Pages Navigation -->
     {% if navigation_links %}
-    <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-      {% for link in navigation_links %}
-      <a href="{{ link.url|default:'#' }}" class="group flex h-full flex-col justify-between rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-sm transition hover:-translate-y-1 hover:border-primary-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-900/70">
-        <div class="space-y-3">
-          <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary-50 text-primary-600 transition group-hover:bg-primary-500 group-hover:text-white dark:bg-primary-500/10 dark:text-primary-300">
-            {% if link.icon %}{{ link.icon }}{% else %}<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.75h3v3M6.75 17.25 17.25 6.75"/></svg>{% endif %}
+    <div class="mt-12">
+      <h3 class="text-center text-lg font-semibold text-slate-900 dark:text-white mb-6">{% trans "Popular Pages" %}</h3>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {% for link in navigation_links %}
+        <a href="{{ link.url|default:'#' }}" class="group flex h-full flex-col justify-between rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-sm transition hover:-translate-y-1 hover:border-primary-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-900/70">
+          <div class="space-y-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary-50 text-primary-600 transition group-hover:bg-primary-500 group-hover:text-white dark:bg-primary-500/10 dark:text-primary-300">
+              {% if link.icon %}{{ link.icon }}{% else %}<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.75h3v3M6.75 17.25 17.25 6.75"/></svg>{% endif %}
+            </span>
+            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ link.title }}</h3>
+            {% if link.description %}
+            <p class="text-sm text-slate-600 dark:text-slate-400">{{ link.description }}</p>
+            {% endif %}
+          </div>
+          <span class="mt-6 inline-flex items-center text-sm font-medium text-primary-600 transition group-hover:text-primary-500 dark:text-primary-300">
+            {% trans "Go to page" %}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L6.75 17.25M9 6.75h8.25V15" />
+            </svg>
           </span>
-          <h2 class="text-lg font-semibold text-slate-900 dark:text-white">{{ link.title }}</h2>
-          {% if link.description %}
-          <p class="text-sm text-slate-600 dark:text-slate-400">{{ link.description }}</p>
-          {% endif %}
-        </div>
-        <span class="mt-6 inline-flex items-center text-sm font-medium text-primary-600 transition group-hover:text-primary-500 dark:text-primary-300">
-          {% trans "Go to page" %}
-          <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L6.75 17.25M9 6.75h8.25V15" />
-          </svg>
-        </span>
-      </a>
-      {% endfor %}
+        </a>
+        {% endfor %}
+      </div>
     </div>
     {% endif %}
 
+    <!-- Search Functionality -->
     {% if show_search %}
     <div class="mt-16 mx-auto max-w-2xl rounded-3xl border border-slate-200/70 bg-white/80 p-8 shadow-md dark:border-slate-700 dark:bg-slate-900/70">
       <h2 class="text-xl font-semibold text-slate-900 dark:text-white">{% trans "Search the site" %}</h2>
@@ -73,8 +235,91 @@
     <div class="mt-12 text-center text-sm text-slate-500 dark:text-slate-400">
       {% trans "If you believe this is a mistake, please" %} <a href="mailto:{{ support_email|default:'support@example.com' }}" class="font-medium text-primary-600 hover:underline dark:text-primary-300">{% trans "let us know" %}</a>.
     </div>
+
+    <!-- Recent Posts / Projects Section -->
+    {% if recent_items %}
+    <div class="mt-16">
+      <h3 class="text-center text-lg font-semibold text-slate-900 dark:text-white mb-6">{% trans "Recent Updates" %}</h3>
+      <div class="grid gap-4 md:grid-cols-3">
+        {% for item in recent_items|slice:":3" %}
+        <article class="group rounded-xl border border-slate-200/60 bg-white/60 p-4 shadow-sm transition hover:border-primary-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-900/50 fade-in-up animation-delay-{{ forloop.counter }}00">
+          <a href="{{ item.url|default:'#' }}" class="space-y-3 block">
+            {% if item.image %}
+            <div class="relative overflow-hidden rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 h-32">
+              <img src="{{ item.image }}" alt="{{ item.title }}" class="w-full h-full object-cover transition group-hover:scale-105" loading="lazy">
+            </div>
+            {% else %}
+            <div class="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary-100 to-blue-100 dark:from-primary-900/30 dark:to-blue-900/30 h-32 flex items-center justify-center">
+              <svg class="w-12 h-12 text-primary-300 dark:text-primary-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2m2 2a2 2 0 002-2m-2 2v-6m0-6V5a2 2 0 10-4 0v6m0 0H7m2 0a2 2 0 100 4h4a2 2 0 100-4m-2 0h4"/></svg>
+            </div>
+            {% endif %}
+            <div>
+              <span class="text-xs font-semibold text-primary-600 dark:text-primary-400">{{ item.category|default:"Update" }}</span>
+              <h4 class="mt-1 text-sm font-semibold text-slate-900 dark:text-white line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400">{{ item.title }}</h4>
+              {% if item.date %}
+              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ item.date|date:"SHORT_DATE_FORMAT" }}</p>
+              {% endif %}
+            </div>
+          </a>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Auto-Redirect Countdown (Optional) -->
+    {% if redirect_url and auto_redirect_delay %}
+    <div class="mt-12 text-center text-xs text-slate-500 dark:text-slate-400">
+      <p id="redirect-message" style="display: none;">
+        {% trans "Redirecting to" %} <a href="{{ redirect_url }}" class="font-medium text-primary-600 hover:underline dark:text-primary-300">{% trans "homepage" %}</a> {% trans "in" %} <span id="countdown">10</span>s...
+        <button onclick="skipRedirect()" class="ml-2 underline hover:no-underline">{% trans "Skip" %}</button>
+      </p>
+    </div>
+    {% endif %}
   </div>
 </section>
+
+<!-- Analytics Tracking -->
+{% if track_404 %}
+<script>
+  // Track 404 errors for analytics
+  if (window.gtag) {
+    gtag('event', 'page_not_found', {
+      'page_path': '{{ request_path|escapejs }}',
+      'referrer': document.referrer,
+      'timestamp': new Date().toISOString()
+    });
+  }
+</script>
+{% endif %}
+
+<!-- Auto-Redirect Script (if configured) -->
+{% if redirect_url and auto_redirect_delay %}
+<script>
+  let redirectCount = {{ auto_redirect_delay|default:10 }};
+  const message = document.getElementById('redirect-message');
+  const countdownEl = document.getElementById('countdown');
+
+  // Show message after 2 seconds
+  setTimeout(() => {
+    message.style.display = 'block';
+
+    const timer = setInterval(() => {
+      redirectCount--;
+      countdownEl.textContent = redirectCount;
+
+      if (redirectCount <= 0) {
+        clearInterval(timer);
+        window.location.href = '{{ redirect_url|escapejs }}';
+      }
+    }, 1000);
+  }, 2000);
+
+  function skipRedirect() {
+    window.location.href = '{{ redirect_url|escapejs }}';
+  }
+</script>
+{% endif %}
 {% endblock %}
 
 

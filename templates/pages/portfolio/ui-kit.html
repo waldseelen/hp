@@ -30,6 +30,7 @@
                 <a href="#cards" class="btn-premium text-sm">{% trans "Cards" %}</a>
                 <a href="#navigation" class="btn-premium text-sm">{% trans "Navigation" %}</a>
                 <a href="#animations" class="btn-premium text-sm">{% trans "Animations" %}</a>
+                <a href="#portfolio-components" class="btn-primary text-sm">{% trans "Portfolio Components" %}</a>
             </div>
         </div>
     </nav>
@@ -1063,6 +1064,194 @@
                         <div class="w-16 h-16 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full mx-auto mb-4 transition-all duration-500 hover:from-primary-600 hover:to-primary-800 cursor-pointer"></div>
                         <h3 class="text-body-lg text-premium-accent mb-2">Gradient Transition</h3>
                         <p class="text-caption">transition-all duration-500</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Components Section (NEW) -->
+    <section id="portfolio-components" class="mb-16">
+        <div class="glass-card">
+            <div class="p-8">
+                <h2 class="text-display-xl heading-premium mb-8">{% trans "Portfolio Components" %}</h2>
+                <p class="text-body-lg text-premium mb-8">
+                    {% trans "Modular components designed specifically for portfolio content with realistic data examples from fixtures." %}
+                </p>
+
+                <!-- Project Cards -->
+                <div class="mb-12">
+                    <h3 class="text-display-lg text-premium-accent mb-6">{% trans "Project Cards" %}</h3>
+                    <p class="text-body text-premium mb-6">
+                        {% trans "Versatile project showcase cards with featured and compact modes. Supports multiple states, technologies display, and interactive hover effects." %}
+                    </p>
+
+                    <!-- Featured Project Card Example -->
+                    <div class="mb-8">
+                        <h4 class="text-body-lg font-semibold text-premium-accent mb-4">{% trans "Featured Mode" %}</h4>
+                        {% include 'components/portfolio/project_card.html' with project=sample_featured_project mode='featured' %}
+                    </div>
+
+                    <!-- Compact Project Card Example -->
+                    <div class="mb-8">
+                        <h4 class="text-body-lg font-semibold text-premium-accent mb-4">{% trans "Compact Mode" %}</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {% for project in sample_compact_projects %}
+                                {% include 'components/portfolio/project_card.html' with project=project mode='compact' %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Usage Code -->
+                    <div class="p-6 bg-gray-900 rounded-lg">
+                        <h4 class="text-body-lg text-premium-accent mb-4">{% trans "Usage" %}</h4>
+                        <pre class="text-sm text-gray-300 overflow-x-auto"><code>&lt;!-- Featured Project Card --&gt;
+{% templatetag openblock %} include 'components/portfolio/project_card.html' with project=project mode='featured' {% templatetag closeblock %}
+
+&lt;!-- Compact Project Card --&gt;
+{% templatetag openblock %} include 'components/portfolio/project_card.html' with project=project mode='compact' {% templatetag closeblock %}
+
+&lt;!-- Default (Featured) --&gt;
+{% templatetag openblock %} include 'components/portfolio/project_card.html' with project=project {% templatetag closeblock %}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Section Headers -->
+                <div class="mb-12">
+                    <h3 class="text-display-lg text-premium-accent mb-6">{% trans "Section Headers" %}</h3>
+                    <p class="text-body text-premium mb-6">
+                        {% trans "Consistent section headers with optional icons, descriptions, and action buttons. Supports 5 icon types: rocket, star, folder, code, shield." %}
+                    </p>
+
+                    <div class="space-y-6 mb-8">
+                        {% include 'components/portfolio/section_header.html' with title="Featured Projects" subtitle="Showcasing our best work" icon="star" %}
+                        {% include 'components/portfolio/section_header.html' with title="AI & Machine Learning" subtitle="Cutting-edge artificial intelligence solutions" icon="rocket" %}
+                        {% include 'components/portfolio/section_header.html' with title="Web Development" subtitle="Modern web applications and platforms" icon="code" %}
+                    </div>
+
+                    <div class="p-6 bg-gray-900 rounded-lg">
+                        <h4 class="text-body-lg text-premium-accent mb-4">{% trans "Usage" %}</h4>
+                        <pre class="text-sm text-gray-300 overflow-x-auto"><code>&lt;!-- Section Header with Icon --&gt;
+{% templatetag openblock %} include 'components/portfolio/section_header.html' with
+    title="Section Title"
+    subtitle="Optional description"
+    icon="star"  {# rocket|star|folder|code|shield #}
+{% templatetag closeblock %}
+
+&lt;!-- Minimal Section Header --&gt;
+{% templatetag openblock %} include 'components/portfolio/section_header.html' with title="Simple Title" {% templatetag closeblock %}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Stat Cards -->
+                <div class="mb-12">
+                    <h3 class="text-display-lg text-premium-accent mb-6">{% trans "Statistics Cards" %}</h3>
+                    <p class="text-body text-premium mb-6">
+                        {% trans "Display key metrics with trend indicators and color variants. Supports success, warning, error, and info color schemes." %}
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        {% include 'components/portfolio/stat_card.html' with label="Total Projects" value=sample_stats.total trend="up" trend_value="+12%" color="success" %}
+                        {% include 'components/portfolio/stat_card.html' with label="In Development" value=sample_stats.in_development trend="neutral" color="info" %}
+                        {% include 'components/portfolio/stat_card.html' with label="Success Rate" value=sample_stats.success_rate_display trend="up" trend_value="+5%" color="success" %}
+                        {% include 'components/portfolio/stat_card.html' with label="Total Views" value=sample_stats.total_views_display trend="up" trend_value="+23%" color="warning" %}
+                    </div>
+
+                    <div class="p-6 bg-gray-900 rounded-lg">
+                        <h4 class="text-body-lg text-premium-accent mb-4">{% trans "Usage" %}</h4>
+                        <pre class="text-sm text-gray-300 overflow-x-auto"><code>&lt;!-- Stat Card with Trend --&gt;
+{% templatetag openblock %} include 'components/portfolio/stat_card.html' with
+    label="Total Projects"
+    value="42"
+    trend="up"          {# up|down|neutral #}
+    trend_value="+12%"
+    color="success"     {# success|warning|error|info #}
+{% templatetag closeblock %}
+
+&lt;!-- Simple Stat Card --&gt;
+{% templatetag openblock %} include 'components/portfolio/stat_card.html' with label="Active" value="15" {% templatetag closeblock %}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="mb-12">
+                    <h3 class="text-display-lg text-premium-accent mb-6">{% trans "Empty State" %}</h3>
+                    <p class="text-body text-premium mb-6">
+                        {% trans "Friendly fallback UI when no content is available. Provides clear messaging and optional call-to-action." %}
+                    </p>
+
+                    <div class="mb-8">
+                        {% include 'components/portfolio/empty_state.html' with message="No projects found in this category" action_text="Browse All Projects" action_url="#" %}
+                    </div>
+
+                    <div class="p-6 bg-gray-900 rounded-lg">
+                        <h4 class="text-body-lg text-premium-accent mb-4">{% trans "Usage" %}</h4>
+                        <pre class="text-sm text-gray-300 overflow-x-auto"><code>&lt;!-- Empty State with Action --&gt;
+{% templatetag openblock %} include 'components/portfolio/empty_state.html' with
+    message="No projects found"
+    action_text="Create Project"
+    action_url="/projects/create/"
+{% templatetag closeblock %}
+
+&lt;!-- Simple Empty State --&gt;
+{% templatetag openblock %} include 'components/portfolio/empty_state.html' with message="No results" {% templatetag closeblock %}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Grid Container -->
+                <div class="mb-12">
+                    <h3 class="text-display-lg text-premium-accent mb-6">{% trans "Responsive Grid Container" %}</h3>
+                    <p class="text-body text-premium mb-6">
+                        {% trans "Responsive grid wrapper that automatically adapts from 1 column (mobile) to 3 columns (desktop). Perfect for project galleries." %}
+                    </p>
+
+                    <div class="mb-8">
+                        {% include 'components/portfolio/grid_container.html' with items=sample_grid_projects item_template='components/portfolio/project_card.html' item_mode='compact' %}
+                    </div>
+
+                    <div class="p-6 bg-gray-900 rounded-lg">
+                        <h4 class="text-body-lg text-premium-accent mb-4">{% trans "Usage" %}</h4>
+                        <pre class="text-sm text-gray-300 overflow-x-auto"><code>&lt;!-- Grid with Project Cards --&gt;
+{% templatetag openblock %} include 'components/portfolio/grid_container.html' with
+    items=projects
+    item_template='components/portfolio/project_card.html'
+    item_mode='compact'
+{% templatetag closeblock %}
+
+&lt;!-- Grid with Custom Template --&gt;
+{% templatetag openblock %} include 'components/portfolio/grid_container.html' with
+    items=custom_items
+    item_template='components/custom/item.html'
+{% templatetag closeblock %}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Design Tokens Reference -->
+                <div class="p-6 bg-gradient-to-r from-primary-900/20 to-primary-800/20 rounded-lg border-2 border-primary-400/30">
+                    <h3 class="text-display-lg text-premium-accent mb-4">{% trans "Design Tokens" %}</h3>
+                    <p class="text-body text-premium mb-4">
+                        {% trans "All portfolio components use design tokens from our consolidated CSS system. For complete token documentation, see:" %}
+                    </p>
+                    <a href="/docs/DESIGN_SYSTEM_TOKENS.md" class="btn-premium inline-flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z"></path>
+                            <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"></path>
+                        </svg>
+                        {% trans "View Design System Tokens" %}
+                    </a>
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div class="p-3 bg-secondary-900/40 rounded border border-primary-400/20">
+                            <div class="text-caption text-primary-400 mb-1">{% trans "Color Tokens" %}</div>
+                            <div class="text-premium">10-shade primary palette</div>
+                        </div>
+                        <div class="p-3 bg-secondary-900/40 rounded border border-primary-400/20">
+                            <div class="text-caption text-primary-400 mb-1">{% trans "Spacing Tokens" %}</div>
+                            <div class="text-premium">Base-8 spacing system</div>
+                        </div>
+                        <div class="p-3 bg-secondary-900/40 rounded border border-primary-400/20">
+                            <div class="text-caption text-primary-400 mb-1">{% trans "Typography Tokens" %}</div>
+                            <div class="text-premium">8-level type scale</div>
+                        </div>
                     </div>
                 </div>
             </div>

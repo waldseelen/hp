@@ -70,6 +70,22 @@
     <link rel="preconnect" href="https://{{ CDN_DOMAIN }}" crossorigin>
     {% endif %}
 
+    <!-- Critical Resource Preloading -->
+    <!-- Preload critical CSS for above-the-fold content -->
+    <link rel="preload" href="{% static 'css/base/design-tokens.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="{% static 'css/consolidated.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="{% static 'css/tailwind.min.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="{% static 'css/base/app-base.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+
+    <!-- Preload critical JavaScript -->
+    <link rel="preload" href="{% static 'js/dist/core.bundle.js' %}" as="script" crossorigin>
+    <link rel="preload" href="{% static 'js/performance.min.js' %}" as="script">
+    <link rel="preload" href="{% static 'js/image-optimization.js' %}" as="script">
+    <link rel="modulepreload" href="{% static 'js/cdn-performance.js' %}">
+
+    <!-- Preload critical images -->
+    <link rel="preload" href="{% static 'images/icon-base.svg' %}" as="image" type="image/svg+xml">
+
     <!-- Design system -->
     <link rel="stylesheet" href="{% static 'css/base/design-tokens.css' %}?v={% now 'U' %}">
 
@@ -86,7 +102,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" integrity="sha384-Rpe/8orFUm5Q1GplYBHxbuA8Az8O8C5sAoOsdbRWkqPjKFaxPgGZipj4zeHL7lxX" crossorigin="anonymous"></script>
     <script>
         window.CDN_MONITOR_CONFIG = Object.assign({
-            criticalAssets: ["{% static 'css/project-base.css' %}"],
+            criticalAssets: ["{% static 'css/consolidated.css' %}"],
             performanceEndpoint: null
         }, window.CDN_MONITOR_CONFIG || {});
     </script>
@@ -187,5 +203,29 @@
 
     {% block extra_scripts %}{% endblock %}
     <script src="{% static 'js/ui-shell.js' %}?v={% now 'U' %}" defer></script>
+    <script>
+      (function () {
+        if (!window.matchMedia || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+          return;
+        }
+
+        const loadCursor = function () {
+          if (window.customCursor || document.querySelector('[data-cursor-controller]')) {
+            return;
+          }
+          const script = document.createElement('script');
+          script.src = "{% static 'js/modules/cursor.js' %}?v={% now 'U' %}";
+          script.defer = true;
+          script.dataset.cursorController = 'true';
+          document.head.appendChild(script);
+        };
+
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadCursor, { timeout: 1500 });
+        } else {
+          window.setTimeout(loadCursor, 600);
+        }
+      }());
+    </script>
 </body>
 </html>

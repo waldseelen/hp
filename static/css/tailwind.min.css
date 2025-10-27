@@ -1,5 +1,6 @@
 /* Minimal Tailwind placeholder to satisfy legacy includes. */
-@import url("./project-base.css");
+@import url("./consolidated.css");
+
 :root {
-  --tw-placeholder: 1;
+    --tw-placeholder: 1;
 }

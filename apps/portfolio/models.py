@@ -27,7 +27,7 @@ class Admin(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'name']
-    
+
     groups = models.ManyToManyField(
         'auth.Group',
         verbose_name='groups',
@@ -48,6 +48,7 @@ class Admin(AbstractUser):
     class Meta:
         verbose_name = "Admin User"
         verbose_name_plural = "Admin Users"
+        app_label = 'portfolio'
 
     def __str__(self):
         return self.name
@@ -170,6 +171,7 @@ class UserSession(models.Model):
             models.Index(fields=['session_key']),
             models.Index(fields=['-last_activity']),
         ]
+        app_label = 'portfolio'
 
     def __str__(self):
         return f"{self.user.email} - {self.ip_address} ({self.created_at})"
@@ -241,6 +243,7 @@ class CookieConsent(models.Model):
             models.Index(fields=['-consent_given_at']),
             models.Index(fields=['expires_at']),
         ]
+        app_label = 'portfolio'
 
     def save(self, *args, **kwargs):
         # Set expiration to 1 year from consent date if not set
@@ -288,6 +291,7 @@ class DataExportRequest(models.Model):
             models.Index(fields=['user', 'status']),
             models.Index(fields=['-request_date']),
         ]
+        app_label = 'portfolio'
 
     def __str__(self):
         return f"Data Export for {self.user.email} - {self.status}"
@@ -323,6 +327,7 @@ class AccountDeletionRequest(models.Model):
             models.Index(fields=['confirmation_token']),
             models.Index(fields=['scheduled_deletion']),
         ]
+        app_label = 'portfolio'
 
     def save(self, *args, **kwargs):
         # Set scheduled deletion to 30 days from request if not set
@@ -373,8 +378,8 @@ class PersonalInfo(models.Model):
     )
     value = models.TextField(help_text="The content/value of this information")
     type = models.CharField(
-        max_length=10, 
-        choices=TYPE_CHOICES, 
+        max_length=10,
+        choices=TYPE_CHOICES,
         default='text',
         help_text="How this content should be rendered"
     )
@@ -403,6 +408,7 @@ class PersonalInfo(models.Model):
             models.Index(fields=['is_visible', 'type', 'order'], name='personal_vis_type_ord'),
             models.Index(fields=['-updated_at'], name='personal_updated_desc'),
         ]
+        app_label = 'portfolio'
 
     def clean(self):
         if self.type == 'json':
@@ -479,6 +485,7 @@ class SocialLink(models.Model):
             models.Index(fields=['platform'], name='social_platform'),
             models.Index(fields=['is_visible', 'platform', 'order'], name='social_vis_plat_ord'),
         ]
+        app_label = 'portfolio'
 
     def clean(self):
         # Handle email platform separately
@@ -496,7 +503,7 @@ class SocialLink(models.Model):
                 URLValidator(schemes=['http','https'])(self.url)
             except ValidationError:
                 raise ValidationError({'url': 'Please enter a valid URL'})
-            
+
             # Platform-specific URL validation
             url_lower = self.url.lower()
             if self.platform == 'github' and 'github.com' not in url_lower:
@@ -595,6 +602,7 @@ class AITool(models.Model):
             models.Index(fields=['is_visible', 'category']),
             models.Index(fields=['rating', 'is_visible']),
         ]
+        app_label = 'portfolio'
 
     def __str__(self):
         return f"{self.name} ({self.get_category_display()})"
@@ -692,6 +700,7 @@ class CybersecurityResource(models.Model):
             models.Index(fields=['is_featured', '-created_at']),
             models.Index(fields=['difficulty', 'type']),
         ]
+        app_label = 'portfolio'
 
     def __str__(self):
         return f"{self.title} ({self.get_type_display()})"
@@ -706,7 +715,7 @@ class BlogCategory(models.Model):
         ('personal', 'Kişisel'),
         ('other', 'Diğer'),
     ]
-    
+
     name = models.CharField(
         max_length=50,
         choices=CATEGORY_CHOICES,
@@ -750,6 +759,7 @@ class BlogCategory(models.Model):
             models.Index(fields=['is_visible', 'order']),
             models.Index(fields=['name']),
         ]
+        app_label = 'portfolio'
 
     def __str__(self):
         return self.display_name
@@ -843,23 +853,24 @@ class BlogPost(models.Model):
             models.Index(fields=['is_featured', 'status']),
             models.Index(fields=['slug']),
         ]
+        app_label = 'portfolio'
 
     def save(self, *args, **kwargs):
         if not self.slug:
             from django.utils.text import slugify
             self.slug = slugify(self.title)
-        
+
         # Otomatik okuma süresi hesaplama (ortalama 200 kelime/dakika)
         if self.content:
             word_count = len(self.content.split())
             self.reading_time = max(1, word_count // 200)
-        
+
         # Yayınlanma tarihi otomatik set etme
         if self.status == 'published' and not self.published_at:
             self.published_at = timezone.now()
         elif self.status != 'published':
             self.published_at = None
-        
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -928,6 +939,7 @@ class MusicPlaylist(models.Model):
             models.Index(fields=['platform', 'is_visible']),
             models.Index(fields=['is_featured', '-created_at']),
         ]
+        app_label = 'portfolio'
 
     def save(self, *args, **kwargs):
         # Spotify embed URL otomatik oluşturma
@@ -935,7 +947,7 @@ class MusicPlaylist(models.Model):
             if 'playlist/' in self.url:
                 playlist_id = self.url.split('playlist/')[-1].split('?')[0]
                 self.embed_url = f"https://open.spotify.com/embed/playlist/{playlist_id}?utm_source=generator"
-        
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -985,6 +997,7 @@ class SpotifyCurrentTrack(models.Model):
         verbose_name = "Spotify Current Track"
         verbose_name_plural = "Spotify Current Track"
         get_latest_by = 'last_updated'
+        app_label = 'portfolio'
 
     def __str__(self):
         return f"{self.track_name} - {self.artist_name}"
@@ -1082,6 +1095,7 @@ class UsefulResource(models.Model):
             models.Index(fields=['is_free', 'category']),
             models.Index(fields=['rating', 'is_visible']),
         ]
+        app_label = 'portfolio'
 
     def __str__(self):
         return f"{self.name} ({self.get_category_display()})"
@@ -1104,13 +1118,13 @@ class PerformanceMetric(models.Model):
         ('memory', 'Memory Usage'),
         ('custom', 'Custom Metric'),
     ]
-    
+
     SESSION_CHOICES = [
         ('mobile', 'Mobile'),
         ('desktop', 'Desktop'),
         ('tablet', 'Tablet'),
     ]
-    
+
     CONNECTION_CHOICES = [
         ('4g', '4G'),
         ('3g', '3G'),
@@ -1134,7 +1148,7 @@ class PerformanceMetric(models.Model):
         max_length=500,
         help_text="Page URL where metric was collected"
     )
-    
+
     # Context information
     user_agent = models.TextField(
         blank=True,
@@ -1162,14 +1176,14 @@ class PerformanceMetric(models.Model):
         blank=True,
         help_text="Viewport size (e.g., 1200x800)"
     )
-    
+
     # Additional data
     additional_data = models.JSONField(
         default=dict,
         blank=True,
         help_text="Additional metric data as JSON"
     )
-    
+
     # Metadata
     session_id = models.CharField(
         max_length=50,
@@ -1186,7 +1200,7 @@ class PerformanceMetric(models.Model):
         blank=True,
         help_text="Country code (ISO 3166-1 alpha-2)"
     )
-    
+
     # Timing
     timestamp = models.DateTimeField(
         default=timezone.now,
@@ -1205,6 +1219,7 @@ class PerformanceMetric(models.Model):
             models.Index(fields=['device_type', 'timestamp']),
             models.Index(fields=['session_id']),
         ]
+        app_label = 'portfolio'
 
     def __str__(self):
         return f"{self.get_metric_type_display()}: {self.value} ({self.device_type})"
@@ -1214,7 +1229,7 @@ class PerformanceMetric(models.Model):
         """Check if metric value is considered good based on Web Vitals thresholds"""
         from django.conf import settings
         thresholds = getattr(settings, 'CORE_WEB_VITALS', {})
-        
+
         if self.metric_type == 'lcp':
             return self.value <= thresholds.get('LCP_THRESHOLD', 2.5) * 1000  # Convert to ms
         elif self.metric_type == 'fid':
@@ -1244,7 +1259,7 @@ class WebPushSubscription(models.Model):
     auth = models.TextField(
         help_text="Authentication secret (base64 encoded)"
     )
-    
+
     # User context (optional)
     user_agent = models.TextField(
         blank=True,
@@ -1260,7 +1275,7 @@ class WebPushSubscription(models.Model):
         blank=True,
         help_text="Operating system/platform"
     )
-    
+
     # Notification preferences
     enabled = models.BooleanField(
         default=True,
@@ -1271,7 +1286,7 @@ class WebPushSubscription(models.Model):
         blank=True,
         help_text="List of subscribed notification topics"
     )
-    
+
     # Metadata
     ip_address = models.GenericIPAddressField(
         blank=True,
@@ -1283,7 +1298,7 @@ class WebPushSubscription(models.Model):
         blank=True,
         help_text="Country code (ISO 3166-1 alpha-2)"
     )
-    
+
     # Delivery tracking
     total_sent = models.IntegerField(
         default=0,
@@ -1312,7 +1327,7 @@ class WebPushSubscription(models.Model):
         blank=True,
         help_text="Reason for last failure"
     )
-    
+
     # Timing
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1326,6 +1341,7 @@ class WebPushSubscription(models.Model):
             models.Index(fields=['browser']),
             models.Index(fields=['last_success']),
         ]
+        app_label = 'portfolio'
 
     def __str__(self):
         browser_info = f" ({self.browser})" if self.browser else ""
@@ -1336,11 +1352,11 @@ class WebPushSubscription(models.Model):
         """Check if subscription is active based on recent delivery success"""
         if not self.enabled:
             return False
-        
+
         # If we've never tried to send, consider it active
         if self.total_sent == 0:
             return True
-        
+
         # If recent failures without success, consider inactive
         if self.last_failure and self.last_success:
             return self.last_success > self.last_failure
@@ -1348,7 +1364,7 @@ class WebPushSubscription(models.Model):
             # Check if failure is recent (within last 7 days)
             from datetime import timedelta
             return self.last_failure > timezone.now() - timedelta(days=7)
-        
+
         return True
 
     def record_delivery_success(self):
@@ -1382,7 +1398,7 @@ class NotificationLog(models.Model):
         ('alert', 'Alert'),
         ('custom', 'Custom'),
     ]
-    
+
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('sent', 'Sent'),
@@ -1411,7 +1427,7 @@ class NotificationLog(models.Model):
         blank=True,
         help_text="Notification badge URL"
     )
-    
+
     # Notification metadata
     notification_type = models.CharField(
         max_length=20,
@@ -1424,20 +1440,20 @@ class NotificationLog(models.Model):
         blank=True,
         help_text="Notification tag for grouping"
     )
-    
+
     # Action buttons
     actions = models.JSONField(
         default=list,
         blank=True,
         help_text="List of action buttons for the notification"
     )
-    
+
     # URL to open when clicked
     url = models.URLField(
         blank=True,
         help_text="URL to open when notification is clicked"
     )
-    
+
     # Targeting
     subscription = models.ForeignKey(
         WebPushSubscription,
@@ -1451,7 +1467,7 @@ class NotificationLog(models.Model):
         blank=True,
         help_text="Target topics for broadcast notifications"
     )
-    
+
     # Delivery tracking
     status = models.CharField(
         max_length=20,
@@ -1473,14 +1489,14 @@ class NotificationLog(models.Model):
         blank=True,
         help_text="Error message if delivery failed"
     )
-    
+
     # Additional data
     additional_data = models.JSONField(
         default=dict,
         blank=True,
         help_text="Additional notification data"
     )
-    
+
     # Timing
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1494,6 +1510,7 @@ class NotificationLog(models.Model):
             models.Index(fields=['notification_type', 'created_at']),
             models.Index(fields=['subscription', 'status']),
         ]
+        app_label = 'portfolio'
 
     def __str__(self):
         target = f"to {self.subscription.browser}" if self.subscription else "broadcast"
@@ -1512,7 +1529,7 @@ class ErrorLog(models.Model):
         ('error', 'Error'),
         ('critical', 'Critical'),
     ]
-    
+
     ERROR_TYPE_CHOICES = [
         ('javascript', 'JavaScript Error'),
         ('python', 'Python Exception'),
@@ -1546,7 +1563,7 @@ class ErrorLog(models.Model):
         blank=True,
         help_text="Full stack trace or error details"
     )
-    
+
     # Context information
     url = models.URLField(
         blank=True,
@@ -1562,7 +1579,7 @@ class ErrorLog(models.Model):
         null=True,
         help_text="Client IP address"
     )
-    
+
     # Technical details
     file_name = models.CharField(
         max_length=255,
@@ -1579,14 +1596,14 @@ class ErrorLog(models.Model):
         blank=True,
         help_text="Function/method where error occurred"
     )
-    
+
     # Additional context
     additional_data = models.JSONField(
         default=dict,
         blank=True,
         help_text="Additional error context as JSON"
     )
-    
+
     # Resolution tracking
     is_resolved = models.BooleanField(
         default=False,
@@ -1601,7 +1618,7 @@ class ErrorLog(models.Model):
         blank=True,
         help_text="Notes about error resolution"
     )
-    
+
     # Occurrence tracking
     occurrence_count = models.IntegerField(
         default=1,
@@ -1615,7 +1632,7 @@ class ErrorLog(models.Model):
         default=timezone.now,
         help_text="When this error last occurred"
     )
-    
+
     # Timing
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1629,6 +1646,7 @@ class ErrorLog(models.Model):
             models.Index(fields=['is_resolved', 'last_occurred']),
             models.Index(fields=['url', 'last_occurred']),
         ]
+        app_label = 'portfolio'
 
     def __str__(self):
         return f"{self.get_level_display()}: {self.message[:100]}..."
@@ -1762,6 +1780,7 @@ class AnalyticsEvent(models.Model):
             models.Index(fields=['page_path', 'timestamp']),
             models.Index(fields=['expires_at']),
         ]
+        app_label = 'portfolio'
 
     def save(self, *args, **kwargs):
         # Set automatic expiration (90 days default for GDPR compliance)
@@ -1852,6 +1871,7 @@ class UserJourney(models.Model):
             models.Index(fields=['current_step']),
             models.Index(fields=['expires_at']),
         ]
+        app_label = 'portfolio'
 
     def save(self, *args, **kwargs):
         if not self.expires_at:
@@ -1964,6 +1984,7 @@ class ConversionFunnel(models.Model):
             models.Index(fields=['is_completed', 'funnel_name']),
             models.Index(fields=['expires_at']),
         ]
+        app_label = 'portfolio'
 
     def save(self, *args, **kwargs):
         if not self.expires_at:
@@ -2072,6 +2093,7 @@ class ABTestAssignment(models.Model):
             models.Index(fields=['has_converted', 'test_name']),
             models.Index(fields=['expires_at']),
         ]
+        app_label = 'portfolio'
 
     def save(self, *args, **kwargs):
         if not self.expires_at:
@@ -2097,7 +2119,7 @@ class ABTestAssignment(models.Model):
 
 class ShortURL(models.Model):
     """Model for URL shortening service"""
-    
+
     short_code = models.CharField(
         max_length=10,
         unique=True,
@@ -2121,7 +2143,7 @@ class ShortURL(models.Model):
         blank=True,
         help_text="Optional password protection"
     )
-    
+
     # Tracking
     click_count = models.IntegerField(
         default=0,
@@ -2131,7 +2153,7 @@ class ShortURL(models.Model):
         default=True,
         help_text="Whether the short URL is active"
     )
-    
+
     # Metadata
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -2140,7 +2162,7 @@ class ShortURL(models.Model):
         null=True,
         help_text="Expiration date (optional)"
     )
-    
+
     class Meta:
         ordering = ['-created_at']
         verbose_name = "Short URL"
@@ -2149,34 +2171,35 @@ class ShortURL(models.Model):
             models.Index(fields=['short_code']),
             models.Index(fields=['is_active', 'expires_at']),
         ]
-    
+        app_label = 'portfolio'
+
     def __str__(self):
         return f"{self.short_code} -> {self.original_url[:50]}..."
-    
+
     def increment_click(self):
         """Increment click count"""
         self.click_count += 1
         self.save(update_fields=['click_count'])
-    
+
     @property
     def is_expired(self):
         """Check if the short URL has expired"""
         if self.expires_at:
             return timezone.now() > self.expires_at
         return False
-    
+
     def get_short_url(self):
         """Get the full short URL"""
         from django.conf import settings
         domain = getattr(settings, 'DOMAIN', 'localhost:8000')
         return f"https://{domain}/s/{self.short_code}"
-    
+
     def save(self, *args, **kwargs):
         """Generate short code if not exists"""
         if not self.short_code:
             import string
             import random
-            
+
             # Generate a random short code
             chars = string.ascii_letters + string.digits
             while True:
@@ -2184,5 +2207,5 @@ class ShortURL(models.Model):
                 if not ShortURL.objects.filter(short_code=code).exists():
                     self.short_code = code
                     break
-        
+
         super().save(*args, **kwargs)

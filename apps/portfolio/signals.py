@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.template.loader import get_template
 from django.template import TemplateDoesNotExist
 from .cache import cache_manager, CacheInvalidator, QueryCache, APIResponseCache
+from .cache_keys import CacheKeyManager, invalidate_model_cache
 from .models import PersonalInfo, SocialLink, AITool, CybersecurityResource, BlogCategory, MusicPlaylist, UsefulResource
 from apps.blog.models import Post
 from apps.contact.models import ContactMessage
@@ -21,30 +22,11 @@ logger = logging.getLogger(__name__)
 def invalidate_personal_info_cache(sender, instance, **kwargs):
     """Invalidate cache when PersonalInfo changes"""
     try:
-        # Clear specific cache keys
-        cache_keys_to_clear = [
-            'home_personal_info_visible',
-            'personal_personal_info_all', 
-            'home_page_data',
-            'personal_page_data'
-        ]
-        
-        for key in cache_keys_to_clear:
-            cache.delete(key)
-        
-        # Clear template fragments
-        try:
-            cache.delete('template.cache.personal_info_section')
-        except:
-            pass
-            
-        # Clear pattern-based cache with new cache manager
-        cache_manager.delete_pattern('personal_info*')
-        cache_manager.delete_pattern('queryset_*personalinfo*')
-        cache_manager.delete_pattern('api_*personal*')
-        
+        # Use centralized cache invalidation
+        invalidate_model_cache('portfolio.PersonalInfo', instance.id if hasattr(instance, 'id') else None)
+
         logger.info(f"Invalidated PersonalInfo cache after {kwargs.get('signal', 'unknown')} signal")
-        
+
     except Exception as e:
         logger.error(f"Error invalidating PersonalInfo cache: {e}")
 
@@ -52,59 +34,19 @@ def invalidate_personal_info_cache(sender, instance, **kwargs):
 def invalidate_social_links_cache(sender, instance, **kwargs):
     """Invalidate cache when SocialLink changes"""
     try:
-        cache_keys_to_clear = [
-            'home_social_links_visible',
-            'personal_social_links_all',
-            'home_page_data',
-            'personal_page_data'
-        ]
-        
-        for key in cache_keys_to_clear:
-            cache.delete(key)
-            
-        # Clear template fragments
-        try:
-            cache.delete('template.cache.social_links_section')
-        except:
-            pass
-            
-        CacheManager.delete_pattern('social_links*')
-        
-        logger.info(f"Invalidated SocialLink cache after {kwargs.get('signal', 'unknown')} signal")
-        
-    except Exception as e:
-        logger.error(f"Error invalidating SocialLink cache: {e}")
+        invalidate_model_cache('portfolio.SocialLink', instance.id if hasattr(instance, 'id') else None)
 
-@receiver([post_save, post_delete], sender=Post)
+        logger.info(f"Invalidated SocialLink cache after {kwargs.get('signal', 'unknown')} signal")
+
+    except Exception as e:
+        logger.error(f"Error invalidating SocialLink cache: {e}")@receiver([post_save, post_delete], sender=Post)
 def invalidate_blog_cache(sender, instance, **kwargs):
     """Invalidate cache when Post changes"""
     try:
-        cache_keys_to_clear = [
-            'home_recent_posts',
-            'blog_published_posts',
-            'blog_popular_posts',
-            'home_page_data',
-            f'blog_related_{instance.id}' if instance.id else None
-        ]
-        
-        # Remove None values
-        cache_keys_to_clear = [key for key in cache_keys_to_clear if key]
-        
-        for key in cache_keys_to_clear:
-            cache.delete(key)
-            
-        # Clear template fragments
-        try:
-            cache.delete('template.cache.recent_posts_section')
-        except:
-            pass
-            
-        # Clear blog-specific patterns
-        CacheManager.delete_pattern('blog*')
-        CacheManager.delete_pattern('recent_posts*')
-        
+        invalidate_model_cache('blog.Post', instance.id if hasattr(instance, 'id') else None)
+
         logger.info(f"Invalidated Post cache after {kwargs.get('signal', 'unknown')} signal")
-        
+
     except Exception as e:
         logger.error(f"Error invalidating Post cache: {e}")
 
@@ -113,20 +55,7 @@ if Tool:
     def invalidate_tools_cache(sender, instance, **kwargs):
         """Invalidate cache when Tool changes"""
         try:
-            cache_keys_to_clear = [
-                'home_featured_tools',
-                'tools_visible_tools',
-                'tools_featured_tools',
-                'tools_tools_by_category',
-                'projects_page_data',
-                'home_page_data'
-            ]
-
-            for key in cache_keys_to_clear:
-                cache.delete(key)
-
-            cache_manager.delete_pattern('tools*')
-            cache_manager.delete_pattern('projects*')
+            invalidate_model_cache('tools.Tool', instance.id if hasattr(instance, 'id') else None)
 
             logger.info(f"Invalidated Tool cache after {kwargs.get('signal', 'unknown')} signal")
 
@@ -137,24 +66,10 @@ if Tool:
 def invalidate_ai_tools_cache(sender, instance, **kwargs):
     """Invalidate cache when AITool changes"""
     try:
-        cache_keys_to_clear = [
-            'home_featured_ai_tools',
-            'home_page_data'
-        ]
-        
-        for key in cache_keys_to_clear:
-            cache.delete(key)
-            
-        # Clear template fragments
-        try:
-            cache.delete('template.cache.featured_ai_tools_section')
-        except:
-            pass
-            
-        CacheManager.delete_pattern('ai_tools*')
-        
+        invalidate_model_cache('portfolio.AITool', instance.id if hasattr(instance, 'id') else None)
+
         logger.info(f"Invalidated AITool cache after {kwargs.get('signal', 'unknown')} signal")
-        
+
     except Exception as e:
         logger.error(f"Error invalidating AITool cache: {e}")
 
@@ -162,24 +77,10 @@ def invalidate_ai_tools_cache(sender, instance, **kwargs):
 def invalidate_security_cache(sender, instance, **kwargs):
     """Invalidate cache when CybersecurityResource changes"""
     try:
-        cache_keys_to_clear = [
-            'home_urgent_security',
-            'home_page_data'
-        ]
-        
-        for key in cache_keys_to_clear:
-            cache.delete(key)
-            
-        # Clear template fragments
-        try:
-            cache.delete('template.cache.urgent_security_section')
-        except:
-            pass
-            
-        CacheManager.delete_pattern('security*')
-        
+        invalidate_model_cache('portfolio.CybersecurityResource', instance.id if hasattr(instance, 'id') else None)
+
         logger.info(f"Invalidated CybersecurityResource cache after {kwargs.get('signal', 'unknown')} signal")
-        
+
     except Exception as e:
         logger.error(f"Error invalidating CybersecurityResource cache: {e}")
 
@@ -187,19 +88,10 @@ def invalidate_security_cache(sender, instance, **kwargs):
 def invalidate_blog_category_cache(sender, instance, **kwargs):
     """Invalidate cache when BlogCategory changes"""
     try:
-        cache_keys_to_clear = [
-            'home_featured_blog_categories',
-            'blog_blog_categories',
-            'home_page_data'
-        ]
-        
-        for key in cache_keys_to_clear:
-            cache.delete(key)
-            
-        CacheManager.delete_pattern('blog_cat*')
-        
+        invalidate_model_cache('portfolio.BlogCategory', instance.id if hasattr(instance, 'id') else None)
+
         logger.info(f"Invalidated BlogCategory cache after {kwargs.get('signal', 'unknown')} signal")
-        
+
     except Exception as e:
         logger.error(f"Error invalidating BlogCategory cache: {e}")
 
@@ -207,11 +99,10 @@ def invalidate_blog_category_cache(sender, instance, **kwargs):
 def invalidate_music_cache(sender, instance, **kwargs):
     """Invalidate cache when MusicPlaylist changes"""
     try:
-        cache.delete('music_page_data')
-        CacheManager.delete_pattern('music*')
-        
+        invalidate_model_cache('portfolio.MusicPlaylist', instance.id if hasattr(instance, 'id') else None)
+
         logger.info(f"Invalidated MusicPlaylist cache after {kwargs.get('signal', 'unknown')} signal")
-        
+
     except Exception as e:
         logger.error(f"Error invalidating MusicPlaylist cache: {e}")
 
@@ -219,10 +110,9 @@ def invalidate_music_cache(sender, instance, **kwargs):
 def invalidate_useful_cache(sender, instance, **kwargs):
     """Invalidate cache when UsefulResource changes"""
     try:
-        cache.delete('useful_page_data')
-        CacheManager.delete_pattern('useful*')
-        
+        invalidate_model_cache('portfolio.UsefulResource', instance.id if hasattr(instance, 'id') else None)
+
         logger.info(f"Invalidated UsefulResource cache after {kwargs.get('signal', 'unknown')} signal")
-        
+
     except Exception as e:
         logger.error(f"Error invalidating UsefulResource cache: {e}")

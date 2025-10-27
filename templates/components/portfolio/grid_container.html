@@ -1,0 +1,47 @@
+{% load i18n %}
+
+{#
+Grid Container Component
+Usage:
+  include 'components/portfolio/grid_container.html' with title="Featured Projects" size="featured"
+
+Parameters:
+  - title (required): Grid section title
+  - size (optional): 'featured' (3-col), 'compact' (3-col), 'gallery' (4-col)
+  - items (optional): List of items to render
+  - empty_message (optional): Message when no items
+#}
+
+{% if title %}
+<div class="mb-16">
+    {# Title #}
+    <h2 class="text-2xl font-bold text-white mb-8 flex items-center">
+        <svg class="w-6 h-6 mr-3 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        {{ title }}
+    </h2>
+
+    {# Grid Structure #}
+    {% if items %}
+    <div class="grid grid-cols-1 {% if size == 'compact' %}md:grid-cols-2 lg:grid-cols-3{% elif size == 'gallery' %}md:grid-cols-2 lg:grid-cols-4{% else %}md:grid-cols-2 lg:grid-cols-3{% endif %} {% if size == 'featured' %}gap-8{% elif size == 'compact' %}gap-6{% else %}gap-4{% endif %}">
+        {% for item in items %}
+        <div class="grid-item">
+            {# Item slot - use project or stat context #}
+            {{ item }}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    {# Empty Grid #}
+    <div class="text-center py-12 text-gray-400">
+        <p>{{ empty_message|default:"No items available" }}</p>
+    </div>
+    {% endif %}
+</div>
+{% else %}
+{# Error State #}
+<div class="text-center py-8">
+    <p class="text-gray-500">{% trans 'Grid not properly configured' %}</p>
+</div>
+{% endif %}

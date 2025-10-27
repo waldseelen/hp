@@ -24,7 +24,7 @@ from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
 # Import models
 from apps.blog.models import Post
-from .models import Project, AITool, CybersecurityResource, UsefulResource
+from apps.portfolio.models import AITool, CybersecurityResource, UsefulResource
 from apps.tools.models import Tool
 
 # Setup logging
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 class SearchEngine:
     """Site-wide search engine with relevance scoring"""
-    
+
     def __init__(self):
         self.models = {
             'blog_posts': {
@@ -46,17 +46,6 @@ class SearchEngine:
                 'url_field': 'slug',
                 'category': 'Blog Posts',
                 'icon': '📝'
-            },
-            'projects': {
-                'model': Project,
-                'fields': ['title', 'description', 'detailed_description'],
-                'tag_field': 'tech_stack',
-                'weight': 9,
-                'filters': Q(is_visible=True),
-                'url_name': 'main:project_detail',
-                'url_field': 'slug',
-                'category': 'Projects',
-                'icon': '🚀'
             },
             'tools': {
                 'model': Tool,
@@ -103,16 +92,16 @@ class SearchEngine:
                 'icon': '🔗'
             }
         }
-    
+
     def search(self, query, categories=None, limit=50):
         """
         Perform site-wide search with relevance scoring
-        
+
         Args:
             query (str): Search query
             categories (list): List of categories to search in
             limit (int): Maximum number of results
-            
+
         Returns:
             dict: Search results with metadata
         """
@@ -124,42 +113,42 @@ class SearchEngine:
                 'categories': {},
                 'suggestions': []
             }
-        
+
         # Clean and prepare query
         clean_query = self._clean_query(query)
         keywords = self._extract_keywords(clean_query)
-        
+
         all_results = []
         category_counts = {}
-        
+
         # Search through each model
         models_to_search = self.models
         if categories:
             models_to_search = {k: v for k, v in self.models.items() if k in categories}
-        
+
         for model_key, config in models_to_search.items():
             results = self._search_model(config, keywords, clean_query)
-            
+
             # Add metadata to results
             for result in results:
                 result['search_category'] = model_key
                 result['category_name'] = config['category']
                 result['category_icon'] = config['icon']
                 result['model_weight'] = config['weight']
-                
+
             all_results.extend(results)
             category_counts[model_key] = len(results)
-        
+
         # Sort by relevance score
         all_results.sort(key=lambda x: x['relevance_score'], reverse=True)
-        
+
         # Limit results
         if limit:
             all_results = all_results[:limit]
-        
+
         # Generate search suggestions
         suggestions = self._generate_suggestions(clean_query, all_results)
-        
+
         return {
             'results': all_results,
             'total_count': len(all_results),
@@ -169,7 +158,7 @@ class SearchEngine:
             'categories': category_counts,
             'suggestions': suggestions
         }
-    
+
     def _search_model(self, config, keywords, query):
         """Search within a specific model"""
         model = config['model']
@@ -177,15 +166,15 @@ class SearchEngine:
         tag_field = config['tag_field']
         weight = config['weight']
         filters = config['filters']
-        
+
         # Build search query
         search_q = Q()
-        
+
         # Search in main fields
         for field in fields:
             for keyword in keywords:
                 search_q |= Q(**{f"{field}__icontains": keyword})
-        
+
         # Search in tags if tag field exists
         if tag_field:
             for keyword in keywords:
@@ -196,15 +185,15 @@ class SearchEngine:
                         search_q |= Q(**{f"{tag_field}__icontains": keyword})
                     else:  # CharField or TextField
                         search_q |= Q(**{f"{tag_field}__icontains": keyword})
-        
+
         # Apply filters
         if filters:
             search_q &= filters
-        
+
         # Execute search
         try:
             queryset = model.objects.filter(search_q).distinct()
-            
+
             # Calculate relevance scores
             results = []
             for obj in queryset:
@@ -213,17 +202,17 @@ class SearchEngine:
                     result = self._format_search_result(obj, config, score)
                     if result:
                         results.append(result)
-            
+
             return results
         except Exception as e:
             # Log error but don't break search
             print(f"Search error in {config['category']}: {e}")
             return []
-    
+
     def _calculate_relevance_score(self, obj, keywords, fields, tag_field, base_weight):
         """Calculate relevance score for a search result"""
         score = 0
-        
+
         # Score for matches in different fields
         field_weights = {
             'title': 10, 'name': 10,
@@ -231,20 +220,20 @@ class SearchEngine:
             'content': 3, 'detailed_description': 3,
             'meta_description': 2
         }
-        
+
         for field in fields:
             try:
                 value = getattr(obj, field, '') or ''
                 if isinstance(value, str):
                     value = value.lower()
-                    
+
                     for keyword in keywords:
                         keyword_lower = keyword.lower()
-                        
+
                         # Exact match bonus
                         if keyword_lower in value:
                             weight = field_weights.get(field.split('_')[-1], 1)
-                            
+
                             # Title/name exact match gets high score
                             if field in ['title', 'name'] and keyword_lower == value:
                                 score += weight * 20
@@ -259,7 +248,7 @@ class SearchEngine:
                                 score += weight * 2
             except (AttributeError, TypeError):
                 continue
-        
+
         # Bonus for tag matches
         if tag_field:
             try:
@@ -271,21 +260,21 @@ class SearchEngine:
                         pass  # Already a list
                     else:
                         tags = []
-                    
+
                     for keyword in keywords:
                         for tag in tags:
                             if isinstance(tag, str) and keyword.lower() in tag.lower():
                                 score += 8
             except (AttributeError, TypeError):
                 pass
-        
+
         # Apply base model weight
         score *= base_weight / 10
-        
+
         # Boost for featured items
         if hasattr(obj, 'is_featured') and obj.is_featured:
             score *= 1.5
-        
+
         # Boost for recent items
         if hasattr(obj, 'created_at'):
             from django.utils import timezone
@@ -294,26 +283,26 @@ class SearchEngine:
                 score *= 1.2
             elif days_old < 90:
                 score *= 1.1
-        
+
         return round(score, 2)
-    
+
     def _format_search_result(self, obj, config, score):
         """Format search result for display"""
         try:
             # Get title/name
             title = getattr(obj, 'title', None) or getattr(obj, 'name', 'Untitled')
-            
+
             # Get description
             description = (
-                getattr(obj, 'excerpt', None) or 
-                getattr(obj, 'description', None) or 
+                getattr(obj, 'excerpt', None) or
+                getattr(obj, 'description', None) or
                 getattr(obj, 'meta_description', '')
             )
-            
+
             # Clean and truncate description
             if description:
                 description = strip_tags(str(description))[:200] + '...' if len(str(description)) > 200 else description
-            
+
             # Get URL
             url = None
             if config['url_name'] and config['url_field']:
@@ -331,16 +320,16 @@ class SearchEngine:
                         url += f"#{obj.id}"
                 except Exception:
                     pass
-            
+
             # Get additional metadata
             metadata = {}
-            
+
             # Date information
             if hasattr(obj, 'published_at') and obj.published_at:
                 metadata['date'] = obj.published_at.strftime('%Y-%m-%d')
             elif hasattr(obj, 'created_at'):
                 metadata['date'] = obj.created_at.strftime('%Y-%m-%d')
-            
+
             # Category/type information
             if hasattr(obj, 'category') and hasattr(obj.category, 'display_name'):
                 metadata['category'] = obj.category.display_name
@@ -348,7 +337,7 @@ class SearchEngine:
                 metadata['category'] = obj.get_category_display()
             elif hasattr(obj, 'get_type_display'):
                 metadata['category'] = obj.get_type_display()
-            
+
             # Tags
             tags = []
             tag_field = config['tag_field']
@@ -358,7 +347,7 @@ class SearchEngine:
                     tags = [tag.strip() for tag in tag_data.split(',') if tag.strip()]
                 elif isinstance(tag_data, list):
                     tags = [str(tag) for tag in tag_data if tag]
-            
+
             return {
                 'id': getattr(obj, 'id', None),
                 'title': title,
@@ -372,34 +361,34 @@ class SearchEngine:
         except Exception as e:
             print(f"Error formatting search result: {e}")
             return None
-    
+
     def _clean_query(self, query):
         """Clean and normalize search query"""
         # Remove special characters and normalize whitespace
         query = re.sub(r'[^\w\s-]', ' ', query)
         query = ' '.join(query.split())
         return query.strip()
-    
+
     def _extract_keywords(self, query):
         """Extract keywords from search query"""
         # Split query into keywords
         keywords = []
         words = query.split()
-        
+
         for word in words:
             if len(word) >= 2:  # Ignore single characters
                 keywords.append(word)
-        
+
         # Add the full query as a phrase
         if len(keywords) > 1:
             keywords.append(query)
-        
+
         return keywords
-    
+
     def _generate_suggestions(self, query, results):
         """Generate search suggestions based on results"""
         suggestions = []
-        
+
         # Extract popular tags from results
         tag_counts = {}
         for result in results[:10]:  # Only consider top 10 results
@@ -407,7 +396,7 @@ class SearchEngine:
                 tag_lower = tag.lower()
                 if tag_lower not in query.lower():
                     tag_counts[tag] = tag_counts.get(tag, 0) + 1
-        
+
         # Sort tags by frequency and add as suggestions
         sorted_tags = sorted(tag_counts.items(), key=lambda x: x[1], reverse=True)
         for tag, count in sorted_tags[:5]:
@@ -416,14 +405,14 @@ class SearchEngine:
                 'type': 'tag',
                 'count': count
             })
-        
+
         # Add category suggestions if multiple categories have results
         category_counts = {}
         for result in results:
             cat = result.get('category_name', '')
             if cat:
                 category_counts[cat] = category_counts.get(cat, 0) + 1
-        
+
         if len(category_counts) > 1:
             for category, count in list(category_counts.items())[:3]:
                 suggestions.append({
@@ -431,9 +420,9 @@ class SearchEngine:
                     'type': 'category',
                     'count': count
                 })
-        
+
         return suggestions
-    
+
     def get_popular_searches(self, limit=10):
         """Get popular search terms (could be implemented with search logging)"""
         # This would typically come from search logs
@@ -442,11 +431,11 @@ class SearchEngine:
             'django', 'python', 'javascript', 'react', 'cybersecurity',
             'ai', 'machine learning', 'web development', 'api', 'database'
         ][:limit]
-    
+
     def get_recent_content(self, limit=5):
         """Get recently added content for search suggestions"""
         recent_items = []
-        
+
         # Recent blog posts
         try:
             recent_posts = Post.objects.filter(status='published').order_by('-published_at')[:limit//2]
@@ -459,20 +448,14 @@ class SearchEngine:
                 })
         except Exception:
             pass
-        
+
         # Recent projects
         try:
-            recent_projects = Project.objects.filter(is_visible=True).order_by('-created_at')[:limit//2]
-            for project in recent_projects:
-                recent_items.append({
-                    'title': project.title,
-                    'type': 'Project',
-                    'url': project.get_absolute_url(),
-                    'icon': '🚀'
-                })
+            # Projects are now in portfolio app - skip for now
+            pass
         except Exception:
             pass
-        
+
         return recent_items[:limit]
 
 

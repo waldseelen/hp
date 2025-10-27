@@ -2,7 +2,7 @@
 Enhanced Main Views Module
 Provides comprehensive views for the portfolio site with:
 - Performance optimizations and caching strategies
-- Analytics integration and user behavior tracking  
+- Analytics integration and user behavior tracking
 - SEO enhancements and metadata generation
 - Progressive web app features
 - Advanced error handling and logging
@@ -38,11 +38,12 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.views import View
+from .fixtures_provider import get_ui_kit_fixtures
 
 # Import models
 from .models import (
-    PersonalInfo, SocialLink, AITool, CybersecurityResource, 
-    MusicPlaylist, SpotifyCurrentTrack, UsefulResource, Project, 
+    PersonalInfo, SocialLink, AITool, CybersecurityResource,
+    MusicPlaylist, SpotifyCurrentTrack, UsefulResource, Project,
     Skill, Certificate, Hobby, CurrentActivity
 )
 from apps.blog.models import Post
@@ -57,7 +58,7 @@ logger = logging.getLogger(__name__)
 
 # Constants
 CACHE_TIMEOUT_SHORT = 300    # 5 minutes
-CACHE_TIMEOUT_MEDIUM = 900   # 15 minutes  
+CACHE_TIMEOUT_MEDIUM = 900   # 15 minutes
 CACHE_TIMEOUT_LONG = 3600    # 1 hour
 CACHE_TIMEOUT_DAILY = 86400  # 24 hours
 
@@ -73,21 +74,21 @@ def home(request: HttpRequest) -> HttpResponse:
         user_agent = request.META.get('HTTP_USER_AGENT', '')
         visitor_ip = get_client_ip(request)
         is_mobile = 'Mobile' in user_agent
-        
+
         # Dynamic cache key based on user type and time
         cache_key = f'home_page_data_{hash(user_agent[:50])}_{timezone.now().hour}'
         cached_data = cache.get(cache_key)
-        
+
         if cached_data is None:
             # Fetch data with optimized queries and annotations
             personal_info = PersonalInfo.objects.filter(
                 is_visible=True
             ).select_related().order_by('order', 'key')
-            
+
             social_links = SocialLink.objects.filter(
                 is_visible=True
             ).order_by('order', 'platform')
-            
+
             # Get recent published posts with enhanced metadata
             recent_posts = Post.objects.select_related('author').prefetch_related('tags').filter(
                 status='published',
@@ -99,38 +100,38 @@ def home(request: HttpRequest) -> HttpResponse:
                     output_field=IntegerField()
                 )
             ).order_by('-published_at')[:6]  # Get more posts for variety
-            
+
             # Get featured projects with stats
             featured_projects = Project.objects.filter(
                 is_visible=True,
                 is_featured=True
             ).order_by('-created_at')[:3]
-            
+
             # Get featured AI tools with enhanced data
             featured_ai_tools = AITool.objects.filter(
                 is_featured=True,
                 is_visible=True
             ).order_by('order', 'name')[:8]  # More tools for better variety
-            
+
             # Get urgent cybersecurity resources with severity analysis
             urgent_security = CybersecurityResource.objects.filter(
                 is_urgent=True,
                 is_visible=True
             ).order_by('-severity_level', '-created_at', 'title')[:6]
-            
+
             # Get portfolio statistics
             portfolio_stats = get_portfolio_statistics()
-            
+
             # Get current activity
             current_activity = CurrentActivity.objects.filter(
                 is_active=True
             ).order_by('-updated_at').first()
-            
+
             # Get latest skills
             latest_skills = Skill.objects.filter(
                 is_visible=True
             ).order_by('-proficiency_level', 'name')[:10]
-            
+
             cached_data = {
                 'personal_info': list(personal_info),
                 'social_links': list(social_links),
@@ -143,10 +144,10 @@ def home(request: HttpRequest) -> HttpResponse:
                 'latest_skills': list(latest_skills),
                 'last_updated': timezone.now().isoformat(),
             }
-            
+
             # Cache with shorter timeout for dynamic content
             cache.set(cache_key, cached_data, CACHE_TIMEOUT_MEDIUM)
-        
+
         # Enhanced context with SEO and PWA features
         context = {
             'personal_info': cached_data['personal_info'],
@@ -158,41 +159,41 @@ def home(request: HttpRequest) -> HttpResponse:
             'portfolio_stats': cached_data['portfolio_stats'],
             'current_activity': cached_data['current_activity'],
             'latest_skills': cached_data['latest_skills'],
-            
+
             # SEO and metadata
             'page_title': 'Professional Portfolio - Full Stack Developer & Cybersecurity Expert',
             'meta_description': 'Explore innovative projects, cutting-edge AI tools, cybersecurity insights, and technical expertise. Building secure, scalable solutions with modern technologies.',
             'canonical_url': request.build_absolute_uri('/'),
             'og_image': request.build_absolute_uri('/static/images/og-home.jpg'),
             'schema_type': 'Person',
-            
-            # PWA and UX enhancements  
+
+            # PWA and UX enhancements
             'is_mobile': is_mobile,
             'visitor_location': get_visitor_location(visitor_ip),
             'page_load_time': timezone.now().isoformat(),
             'cache_version': cached_data['last_updated'],
             'show_animations': not is_mobile,  # Disable complex animations on mobile
-            
+
             # Analytics data
             'page_id': 'home',
             'content_sections': ['hero', 'services', 'blog', 'projects', 'ai_tools', 'security'],
         }
-        
+
         # Log page view for analytics
         log_page_view(request, 'home', context.get('visitor_location'))
-        
-        return render(request, 'main/home.html', context)
-        
+
+        return render(request, 'pages/portfolio/home.html', context)
+
     except Exception as e:
         logger.error(f"Error in home view: {str(e)}", extra={
             'user_agent': request.META.get('HTTP_USER_AGENT', ''),
             'path': request.path,
             'method': request.method
         })
-        
+
         # Fallback context with error tracking
         context = create_fallback_context('home', 'Portfolio Home - Technical Error', e)
-        return render(request, 'main/home.html', context)
+        return render(request, 'pages/portfolio/home.html', context)
 
 
 def personal_view(request: HttpRequest) -> HttpResponse:
@@ -202,33 +203,33 @@ def personal_view(request: HttpRequest) -> HttpResponse:
     try:
         cache_key = 'personal_page_data'
         cached_data = cache.get(cache_key)
-        
+
         if cached_data is None:
             personal_info = PersonalInfo.objects.filter(
                 is_visible=True,
                 key__in=['about', 'skills', 'experience', 'education', 'bio']
             ).order_by('order', 'key')
-            
+
             social_links = SocialLink.objects.filter(
                 is_visible=True
             ).order_by('order', 'platform')
-            
+
             cached_data = {
                 'personal_info': list(personal_info),
                 'social_links': list(social_links),
             }
-            
+
             cache.set(cache_key, cached_data, 900)
-        
+
         context = {
             'personal_info': cached_data['personal_info'],
             'social_links': cached_data['social_links'],
             'page_title': 'Hakkımda',
             'meta_description': 'Kişisel bilgiler, yetenekler ve deneyimler',
         }
-        
-        return render(request, 'main/personal.html', context)
-        
+
+        return render(request, 'pages/portfolio/personal.html', context)
+
     except Exception as e:
         logger.error(f"Error in personal view: {str(e)}")
         context = {
@@ -237,7 +238,7 @@ def personal_view(request: HttpRequest) -> HttpResponse:
             'page_title': 'Hakkımda',
             'meta_description': 'Kişisel bilgiler',
         }
-        return render(request, 'main/personal.html', context)
+        return render(request, 'pages/portfolio/personal.html', context)
 
 
 def music_view(request: HttpRequest) -> HttpResponse:
@@ -247,27 +248,27 @@ def music_view(request: HttpRequest) -> HttpResponse:
     try:
         cache_key = 'music_page_data'
         cached_data = cache.get(cache_key)
-        
+
         if cached_data is None:
             # Get visible playlists
             playlists = MusicPlaylist.objects.filter(
                 is_visible=True
             ).order_by('order', 'name')
-            
+
             # Get featured playlists
             featured_playlists = playlists.filter(is_featured=True)[:3]
-            
+
             # Get current Spotify track if available
             current_track = SpotifyCurrentTrack.objects.first()
-            
+
             cached_data = {
                 'playlists': list(playlists),
                 'featured_playlists': list(featured_playlists),
                 'current_track': current_track,
             }
-            
+
             cache.set(cache_key, cached_data, 300)  # 5 minutes cache
-        
+
         context = {
             'playlists': cached_data['playlists'],
             'featured_playlists': cached_data['featured_playlists'],
@@ -275,9 +276,9 @@ def music_view(request: HttpRequest) -> HttpResponse:
             'page_title': 'Müzik',
             'meta_description': 'Müzik playlistleri, şu an çaldığım şarkılar ve favori sanatçılar',
         }
-        
-        return render(request, 'main/music.html', context)
-        
+
+        return render(request, 'pages/portfolio/music.html', context)
+
     except Exception as e:
         logger.error(f"Error in music view: {str(e)}")
         context = {
@@ -287,7 +288,7 @@ def music_view(request: HttpRequest) -> HttpResponse:
             'page_title': 'Müzik',
             'meta_description': 'Müzik',
         }
-        return render(request, 'main/music.html', context)
+        return render(request, 'pages/portfolio/music.html', context)
 
 
 def ai_tools_view(request: HttpRequest) -> HttpResponse:
@@ -304,15 +305,15 @@ def ai_tools_view(request: HttpRequest) -> HttpResponse:
             ).order_by('order', 'name')
             if tools.exists():
                 ai_tools_by_category[category_name] = tools
-        
+
         context = {
             'ai_tools_by_category': ai_tools_by_category,
             'page_title': 'AI Araçları',
             'meta_description': 'Yapay zeka araçları ve platformları - Sevdiğim AI yer imleri',
         }
-        
-        return render(request, 'main/ai.html', context)
-        
+
+        return render(request, 'pages/portfolio/ai.html', context)
+
     except Exception as e:
         logger.error(f"Error in ai_tools view: {str(e)}")
         context = {
@@ -320,7 +321,7 @@ def ai_tools_view(request: HttpRequest) -> HttpResponse:
             'page_title': 'AI Araçları',
             'meta_description': 'Yapay zeka araçları',
         }
-        return render(request, 'main/ai.html', context)
+        return render(request, 'pages/portfolio/ai.html', context)
 
 
 def cybersecurity_view(request: HttpRequest) -> HttpResponse:
@@ -337,22 +338,22 @@ def cybersecurity_view(request: HttpRequest) -> HttpResponse:
             ).order_by('-is_urgent', '-severity_level', 'order', 'title')
             if resources.exists():
                 resources_by_type[type_name] = resources
-        
+
         # Get urgent threats
         urgent_threats = CybersecurityResource.objects.filter(
             is_urgent=True,
             is_visible=True
         ).order_by('-severity_level', 'title')[:5]
-        
+
         context = {
             'resources_by_type': resources_by_type,
             'urgent_threats': urgent_threats,
             'page_title': 'Siber Güvenlik',
             'meta_description': 'Siber güvenlik kaynakları, araçları ve güncel bilgiler',
         }
-        
-        return render(request, 'main/cybersecurity.html', context)
-        
+
+        return render(request, 'pages/portfolio/cybersecurity.html', context)
+
     except Exception as e:
         logger.error(f"Error in cybersecurity view: {str(e)}")
         context = {
@@ -361,7 +362,7 @@ def cybersecurity_view(request: HttpRequest) -> HttpResponse:
             'page_title': 'Siber Güvenlik',
             'meta_description': 'Siber güvenlik',
         }
-        return render(request, 'main/cybersecurity.html', context)
+        return render(request, 'pages/portfolio/cybersecurity.html', context)
 
 
 def useful_view(request: HttpRequest) -> HttpResponse:
@@ -371,7 +372,7 @@ def useful_view(request: HttpRequest) -> HttpResponse:
     try:
         cache_key = 'useful_page_data'
         cached_data = cache.get(cache_key)
-        
+
         if cached_data is None:
             # Get resources by category
             resources_by_category = {}
@@ -382,29 +383,29 @@ def useful_view(request: HttpRequest) -> HttpResponse:
                 ).order_by('order', 'name')
                 if resources.exists():
                     resources_by_category[category_name] = resources
-            
+
             # Get featured resources
             featured_resources = UsefulResource.objects.filter(
                 is_featured=True,
                 is_visible=True
             ).order_by('order', 'name')[:6]
-            
+
             cached_data = {
                 'resources_by_category': resources_by_category,
                 'featured_resources': list(featured_resources),
             }
-            
+
             cache.set(cache_key, cached_data, 900)  # 15 minutes cache
-        
+
         context = {
             'resources_by_category': cached_data['resources_by_category'],
             'featured_resources': cached_data['featured_resources'],
             'page_title': 'Useful Resources',
             'meta_description': 'Faydalı araçlar, siteler ve uygulamalar koleksiyonu',
         }
-        
-        return render(request, 'main/useful.html', context)
-        
+
+        return render(request, 'pages/portfolio/useful.html', context)
+
     except Exception as e:
         logger.error(f"Error in useful view: {str(e)}")
         context = {
@@ -413,7 +414,7 @@ def useful_view(request: HttpRequest) -> HttpResponse:
             'page_title': 'Useful Resources',
             'meta_description': 'Faydalı kaynaklar',
         }
-        return render(request, 'main/useful.html', context)
+        return render(request, 'pages/portfolio/useful.html', context)
 
 
 # Enhanced API and utility views
@@ -427,7 +428,7 @@ def search_view(request: HttpRequest) -> HttpResponse:
         category = request.GET.get('category', 'all')
         sort_by = request.GET.get('sort', 'relevance')
         page = request.GET.get('page', 1)
-        
+
         context = {
             'query': query,
             'category': category,
@@ -439,7 +440,7 @@ def search_view(request: HttpRequest) -> HttpResponse:
             'categories': get_search_categories(),
             'sort_options': get_sort_options(),
         }
-        
+
         if query and len(query.strip()) >= 2:
             # Perform search
             search_results = search_engine.search(
@@ -447,7 +448,7 @@ def search_view(request: HttpRequest) -> HttpResponse:
                 categories=[category] if category != 'all' else None,
                 limit=100
             )
-            
+
             # Pagination
             paginator = Paginator(search_results['results'], 20)
             try:
@@ -456,7 +457,7 @@ def search_view(request: HttpRequest) -> HttpResponse:
                 page_results = paginator.page(1)
             except EmptyPage:
                 page_results = paginator.page(paginator.num_pages)
-            
+
             context.update({
                 'results': page_results,
                 'total_results': search_results['total_count'],
@@ -466,15 +467,15 @@ def search_view(request: HttpRequest) -> HttpResponse:
                 'is_paginated': paginator.num_pages > 1,
                 'search_time': 'instant',  # Could be actual search time
             })
-            
+
             # Log search for analytics
             log_search_query(request, query, category, search_results['total_count'])
-        
+
         # Add popular searches if no query
         if not query:
             context['popular_searches'] = search_engine.get_popular_searches()
             context['recent_content'] = search_engine.get_recent_content()
-        
+
         # SEO for search page
         context.update({
             'page_title': f'Search Results for "{query}"' if query else 'Search',
@@ -482,9 +483,9 @@ def search_view(request: HttpRequest) -> HttpResponse:
             'canonical_url': request.build_absolute_uri(),
             'noindex': True if query else False,  # Don't index search result pages
         })
-        
+
         return render(request, 'search/search.html', context)
-        
+
     except Exception as e:
         logger.error(f"Search view error: {str(e)}")
         context = create_fallback_context('search', 'Search - Technical Error', e)
@@ -499,7 +500,7 @@ def search_ajax(request: HttpRequest) -> JsonResponse:
         query = request.GET.get('q', '').strip()
         limit = min(int(request.GET.get('limit', 10)), 50)  # Max 50 results
         category = request.GET.get('category', 'all')
-        
+
         if not query or len(query) < 2:
             return JsonResponse({
                 'results': [],
@@ -507,14 +508,14 @@ def search_ajax(request: HttpRequest) -> JsonResponse:
                 'total': 0,
                 'status': 'success'
             })
-        
+
         # Perform search
         search_results = search_engine.search(
             query=query,
             categories=[category] if category != 'all' else None,
             limit=limit
         )
-        
+
         # Format results for JSON
         formatted_results = []
         for result in search_results['results']:
@@ -528,7 +529,7 @@ def search_ajax(request: HttpRequest) -> JsonResponse:
                 'metadata': result.get('metadata', {}),
                 'tags': result.get('tags', [])[:3],  # Limit tags for JSON
             })
-        
+
         return JsonResponse({
             'results': formatted_results,
             'suggestions': search_results['suggestions'],
@@ -537,7 +538,7 @@ def search_ajax(request: HttpRequest) -> JsonResponse:
             'categories': search_results['categories'],
             'status': 'success'
         })
-        
+
     except Exception as e:
         logger.error(f"AJAX search error: {str(e)}")
         return JsonResponse({
@@ -559,22 +560,22 @@ def projects_view(request: HttpRequest) -> HttpResponse:
         tech = request.GET.get('tech', '')
         featured = request.GET.get('featured', '')
         page = request.GET.get('page', 1)
-        
+
         # Build queryset with filters
         projects = Project.objects.filter(is_visible=True)
-        
+
         if category != 'all' and category:
             projects = projects.filter(category=category)
-        
+
         if tech:
             projects = projects.filter(tech_stack__icontains=tech)
-            
+
         if featured == 'true':
             projects = projects.filter(is_featured=True)
-        
+
         # Order by featured first, then by date
         projects = projects.order_by('-is_featured', '-created_at')
-        
+
         # Pagination
         paginator = Paginator(projects, 12)  # 12 projects per page
         try:
@@ -583,7 +584,7 @@ def projects_view(request: HttpRequest) -> HttpResponse:
             page_projects = paginator.page(1)
         except EmptyPage:
             page_projects = paginator.page(paginator.num_pages)
-        
+
         # Get categories and technologies for filters
         categories = Project.objects.filter(is_visible=True).values_list('category', flat=True).distinct()
         technologies = []
@@ -592,7 +593,7 @@ def projects_view(request: HttpRequest) -> HttpResponse:
                 techs = [t.strip() for t in project.tech_stack.split(',')]
                 technologies.extend(techs)
         technologies = sorted(list(set(technologies)))
-        
+
         context = {
             'projects': page_projects,
             'categories': categories,
@@ -606,13 +607,13 @@ def projects_view(request: HttpRequest) -> HttpResponse:
             'meta_description': 'Explore my latest projects, from web applications to cybersecurity tools. Built with modern technologies and best practices.',
             'canonical_url': request.build_absolute_uri(),
         }
-        
-        return render(request, 'main/projects.html', context)
-        
+
+        return render(request, 'pages/portfolio/projects.html', context)
+
     except Exception as e:
         logger.error(f"Projects view error: {str(e)}")
         context = create_fallback_context('projects', 'Projects - Technical Error', e)
-        return render(request, 'main/projects.html', context)
+        return render(request, 'pages/portfolio/projects.html', context)
 
 @require_http_methods(["GET"])
 def project_detail_view(request: HttpRequest, slug: str) -> HttpResponse:
@@ -621,18 +622,18 @@ def project_detail_view(request: HttpRequest, slug: str) -> HttpResponse:
     """
     try:
         project = get_object_or_404(Project, slug=slug, is_visible=True)
-        
+
         # Get related projects
         related_projects = Project.objects.filter(
             is_visible=True,
             category=project.category
         ).exclude(id=project.id).order_by('-created_at')[:4]
-        
+
         # Get project technologies
         technologies = []
         if project.tech_stack:
             technologies = [t.strip() for t in project.tech_stack.split(',')]
-        
+
         context = {
             'project': project,
             'related_projects': related_projects,
@@ -643,18 +644,18 @@ def project_detail_view(request: HttpRequest, slug: str) -> HttpResponse:
             'og_image': project.image.url if project.image else None,
             'schema_type': 'CreativeWork',
         }
-        
+
         # Log project view
         log_page_view(request, f'project_{project.slug}')
-        
-        return render(request, 'main/project_detail.html', context)
-        
+
+        return render(request, 'pages/portfolio/project_detail.html', context)
+
     except Http404:
         raise
     except Exception as e:
         logger.error(f"Project detail view error: {str(e)}")
         context = create_fallback_context('project_detail', 'Project Details - Technical Error', e)
-        return render(request, 'main/project_detail.html', context)
+        return render(request, 'pages/portfolio/project_detail.html', context)
 
 def logout_view(request: HttpRequest) -> HttpResponse:
     """
@@ -664,15 +665,15 @@ def logout_view(request: HttpRequest) -> HttpResponse:
         # Log logout for analytics
         if request.user.is_authenticated:
             log_user_action(request, 'logout', request.user.username)
-        
+
         logout(request)
-        
+
         # Clear user-specific cache
         if hasattr(request, 'session'):
             cache.delete(f"user_data_{request.session.session_key}")
-        
+
         return redirect('home')
-        
+
     except Exception as e:
         logger.error(f"Error in logout view: {str(e)}")
         return redirect('home')
@@ -703,7 +704,7 @@ def get_portfolio_statistics() -> Dict[str, Union[int, str]]:
     try:
         cache_key = 'portfolio_statistics'
         stats = cache.get(cache_key)
-        
+
         if stats is None:
             stats = {
                 'total_projects': Project.objects.filter(is_visible=True).count(),
@@ -715,12 +716,12 @@ def get_portfolio_statistics() -> Dict[str, Union[int, str]]:
                 'certifications': Certificate.objects.filter(is_visible=True).count(),
                 'last_updated': timezone.now().strftime('%Y-%m-%d'),
             }
-            
+
             # Cache for 1 hour
             cache.set(cache_key, stats, CACHE_TIMEOUT_LONG)
-        
+
         return stats
-        
+
     except Exception as e:
         logger.error(f"Error calculating portfolio statistics: {str(e)}")
         return {
@@ -820,32 +821,32 @@ def set_language(request: HttpRequest) -> HttpResponse:
     """
     next_url = request.POST.get('next', request.GET.get('next'))
     language = request.POST.get('language', request.GET.get('language'))
-    
+
     # Validate language
     if language and language in [lang[0] for lang in settings.LANGUAGES]:
         # Activate the language for this request
         translation.activate(language)
-        
+
         # Create the response
         if next_url:
             response = redirect(next_url)
         else:
             response = redirect('/')
-        
+
         # Set the language cookie
         response.set_cookie(
-            'django_language', 
+            'django_language',
             language,
             max_age=365 * 24 * 60 * 60,  # 1 year
             httponly=False,  # Allow JavaScript access for client-side management
             samesite='Lax'
         )
-        
+
         # Log the language change
         log_user_action(request, f'language_changed_to_{language}')
-        
+
         return response
-    
+
     # If language is invalid, redirect to previous page or home
     return redirect(next_url or '/')
 
@@ -865,7 +866,7 @@ def language_status(request: HttpRequest) -> JsonResponse:
         }
         for lang in settings.LANGUAGES
     ]
-    
+
     return JsonResponse({
         'current_language': current_language,
         'available_languages': available_languages,
@@ -879,7 +880,7 @@ def get_language_context(request: HttpRequest) -> Dict[str, Any]:
     This can be used in context processors or views.
     """
     current_language = translation.get_language()
-    
+
     return {
         'current_language': current_language,
         'available_languages': settings.LANGUAGES,
@@ -907,7 +908,7 @@ from django_ratelimit import ALL as ratelimit_ALL
 from django.utils.decorators import method_decorator
 
 from .serializers import (
-    PerformanceMetricSerializer, 
+    PerformanceMetricSerializer,
     PerformanceMetricSummarySerializer,
     WebPushSubscriptionSerializer,
     SendNotificationSerializer,
@@ -934,33 +935,33 @@ def collect_performance_metric(request: HttpRequest) -> Response:
     """
     try:
         serializer = PerformanceMetricSerializer(data=request.data, context={'request': request})
-        
+
         if serializer.is_valid():
             metric = serializer.save()
-            
+
             # Log performance metric for monitoring
             logger = logging.getLogger('main.performance')
             logger.info(
                 f"Performance metric collected: {metric.metric_type}={metric.value} "
                 f"from {metric.device_type} at {metric.url}"
             )
-            
+
             # Check for performance issues and alert if necessary
             if not metric.is_good_score:
                 alert_performance_issue(metric)
-            
+
             return Response({
                 'status': 'success',
                 'message': 'Performance metric recorded',
                 'id': metric.id
             }, status=status.HTTP_201_CREATED)
-        
+
         return Response({
             'status': 'error',
             'message': 'Invalid data',
             'errors': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
-    
+
     except Exception as e:
         logger.error(f"Error collecting performance metric: {str(e)}")
         return Response({
@@ -980,11 +981,11 @@ def performance_dashboard_data(request: HttpRequest) -> Response:
         from django.db.models import Avg, Count, Case, When, Value, IntegerField, FloatField
         from django.contrib.postgres.aggregates import Percentile
         from datetime import datetime, timedelta
-        
+
         # Get time period from query params
         period_days = int(request.GET.get('period', 7))
         start_date = timezone.now() - timedelta(days=period_days)
-        
+
         # Get metrics grouped by type with database aggregations
         metrics_summary = PerformanceMetric.objects.filter(
             timestamp__gte=start_date
@@ -1012,13 +1013,13 @@ def performance_dashboard_data(request: HttpRequest) -> Response:
                 output_field=IntegerField()
             ))
         ).order_by('metric_type')
-        
+
         # Add computed fields
         for summary in metrics_summary:
             summary['needs_improvement_count'] = summary['count'] - summary['good_count'] - summary['poor_count']
             summary['period_start'] = start_date
             summary['period_end'] = timezone.now()
-        
+
         # Get device type breakdown
         device_breakdown = PerformanceMetric.objects.filter(
             timestamp__gte=start_date
@@ -1028,14 +1029,14 @@ def performance_dashboard_data(request: HttpRequest) -> Response:
             avg_fid=Avg('value', filter=Q(metric_type='fid')),
             avg_cls=Avg('value', filter=Q(metric_type='cls'))
         ).order_by('-count')
-        
+
         # Get top URLs by metrics count
         top_urls = PerformanceMetric.objects.filter(
             timestamp__gte=start_date
         ).values('url').annotate(
             count=Count('id')
         ).order_by('-count')[:10]
-        
+
         return Response({
             'status': 'success',
             'data': {
@@ -1046,7 +1047,7 @@ def performance_dashboard_data(request: HttpRequest) -> Response:
                 'total_metrics': PerformanceMetric.objects.filter(timestamp__gte=start_date).count()
             }
         })
-    
+
     except Exception as e:
         logger.error(f"Error getting performance dashboard data: {str(e)}")
         return Response({
@@ -1066,7 +1067,7 @@ def subscribe_push_notifications(request: HttpRequest) -> Response:
     try:
         # Handle nested payload from frontend
         data = request.data.copy()
-        
+
         # Extract subscription data from nested structure if present
         if 'subscription' in data:
             subscription_data = data['subscription']
@@ -1076,15 +1077,15 @@ def subscribe_push_notifications(request: HttpRequest) -> Response:
                 keys = subscription_data['keys']
                 data['p256dh'] = keys.get('p256dh')
                 data['auth'] = keys.get('auth')
-        
+
         serializer = WebPushSubscriptionSerializer(data=data, context={'request': request})
-        
+
         if serializer.is_valid():
             # Check if subscription already exists
             existing = WebPushSubscription.objects.filter(
                 endpoint=serializer.validated_data['endpoint']
             ).first()
-            
+
             if existing:
                 # Update existing subscription
                 for attr, value in serializer.validated_data.items():
@@ -1096,21 +1097,21 @@ def subscribe_push_notifications(request: HttpRequest) -> Response:
             else:
                 subscription = serializer.save()
                 message = 'Push subscription created'
-            
+
             logger.info(f"Push subscription {message.lower()}: {subscription.browser} from {subscription.ip_address}")
-            
+
             return Response({
                 'status': 'success',
                 'message': message,
                 'subscription_id': subscription.id
             }, status=status.HTTP_201_CREATED)
-        
+
         return Response({
             'status': 'error',
             'message': 'Invalid subscription data',
             'errors': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
-    
+
     except Exception as e:
         logger.error(f"Error creating push subscription: {str(e)}")
         return Response({
@@ -1129,13 +1130,13 @@ def send_push_notification(request: HttpRequest) -> Response:
     """
     try:
         from .services.push_service import PushNotificationService
-        
+
         serializer = SendNotificationSerializer(data=request.data)
-        
+
         if serializer.is_valid():
             data = serializer.validated_data
             service = PushNotificationService()
-            
+
             # Get target subscriptions
             if data.get('target_subscription_ids'):
                 subscriptions = WebPushSubscription.objects.filter(
@@ -1144,13 +1145,13 @@ def send_push_notification(request: HttpRequest) -> Response:
                 )
             else:
                 subscriptions = WebPushSubscription.objects.filter(enabled=True)
-                
+
                 # Filter by topics if specified
                 if data.get('topics'):
                     subscriptions = subscriptions.filter(
                         topics__overlap=data['topics']
                     )
-            
+
             # Send notifications
             results = service.send_notification_to_subscriptions(
                 subscriptions=subscriptions,
@@ -1165,21 +1166,21 @@ def send_push_notification(request: HttpRequest) -> Response:
                 notification_type=data.get('notification_type', 'custom'),
                 additional_data=data
             )
-            
+
             logger.info(f"Push notifications sent: {results['success_count']} successful, {results['failure_count']} failed")
-            
+
             return Response({
                 'status': 'success',
                 'message': f'Notifications sent to {results["success_count"]} subscribers',
                 'results': results
             })
-        
+
         return Response({
             'status': 'error',
             'message': 'Invalid notification data',
             'errors': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
-    
+
     except Exception as e:
         logger.error(f"Error sending push notification: {str(e)}")
         return Response({
@@ -1199,33 +1200,33 @@ def log_error(request: HttpRequest) -> Response:
     """
     try:
         serializer = ErrorLogSerializer(data=request.data, context={'request': request})
-        
+
         if serializer.is_valid():
             error_log = serializer.save()
-            
+
             # Log to Django logger as well
             error_logger = logging.getLogger('main.security' if error_log.error_type == 'security' else 'django.request')
             error_logger.error(
                 f"Frontend error logged: {error_log.error_type} - {error_log.message} "
                 f"at {error_log.url} (line {error_log.line_number})"
             )
-            
+
             # Send critical errors to monitoring service
             if error_log.level == 'critical':
                 alert_critical_error(error_log)
-            
+
             return Response({
                 'status': 'success',
                 'message': 'Error logged successfully',
                 'error_id': error_log.id
             }, status=status.HTTP_201_CREATED)
-        
+
         return Response({
             'status': 'error',
             'message': 'Invalid error data',
             'errors': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
-    
+
     except Exception as e:
         logger.error(f"Error logging frontend error: {str(e)}")
         return Response({
@@ -1245,7 +1246,7 @@ def health_check(request: HttpRequest) -> Response:
         from django.db import connections
         from django.core.cache import cache
         import time
-        
+
         start_time = time.time()
         health_data = {
             'status': 'healthy',
@@ -1259,7 +1260,7 @@ def health_check(request: HttpRequest) -> Response:
                 'performance_monitoring': settings.FEATURES.get('PERFORMANCE_MONITORING', False),
             }
         }
-        
+
         # Check database connection
         try:
             db_conn = connections['default']
@@ -1268,7 +1269,7 @@ def health_check(request: HttpRequest) -> Response:
         except Exception as e:
             health_data['database'] = f'error: {str(e)}'
             health_data['status'] = 'degraded'
-        
+
         # Check cache
         try:
             cache_key = 'health_check_test'
@@ -1282,7 +1283,7 @@ def health_check(request: HttpRequest) -> Response:
         except Exception as e:
             health_data['cache'] = f'error: {str(e)}'
             health_data['status'] = 'degraded'
-        
+
         # Add performance data if enabled
         if settings.PERFORMANCE_MONITORING.get('ENABLED', False):
             response_time = time.time() - start_time
@@ -1294,10 +1295,10 @@ def health_check(request: HttpRequest) -> Response:
                 ).count(),
                 'active_subscriptions': WebPushSubscription.objects.filter(enabled=True).count(),
             }
-        
+
         serializer = HealthCheckSerializer(health_data)
         return Response(serializer.data)
-    
+
     except Exception as e:
         logger.error(f"Health check error: {str(e)}")
         return Response({
@@ -1317,26 +1318,26 @@ class PerformanceDashboardView(APIView):
     Provides comprehensive performance analytics and visualizations
     """
     permission_classes = [IsAuthenticated]
-    
+
     def get(self, request: HttpRequest) -> HttpResponse:
         """Render performance dashboard template"""
         if not request.user.is_staff:
             raise Http404("Dashboard not found")
-        
+
         # Get basic stats for template context
         total_metrics = PerformanceMetric.objects.count()
         active_subscriptions = WebPushSubscription.objects.filter(enabled=True).count()
         recent_errors = ErrorLog.objects.filter(
             created_at__gte=timezone.now() - timedelta(days=7)
         ).count()
-        
+
         context = {
             'total_metrics': total_metrics,
             'active_subscriptions': active_subscriptions,
             'recent_errors': recent_errors,
             'dashboard_title': 'Performance Monitoring Dashboard'
         }
-        
+
         return render(request, 'admin/performance_dashboard.html', context)
 
 
@@ -1350,14 +1351,14 @@ def alert_performance_issue(metric: 'PerformanceMetric') -> None:
     Can be extended to send notifications or create alerts
     """
     from django.conf import settings
-    
+
     # Log performance issue
     logger = logging.getLogger('main.performance')
     logger.warning(
         f"Performance issue detected: {metric.metric_type}={metric.value} "
         f"from {metric.device_type} at {metric.url}"
     )
-    
+
     # TODO: Implement alert system (email, Slack, etc.)
     # if settings.PERFORMANCE_ALERTS_ENABLED:
     #     send_performance_alert(metric)
@@ -1374,7 +1375,7 @@ def alert_critical_error(error_log: 'ErrorLog') -> None:
         f"Critical error logged: {error_log.message} "
         f"at {error_log.url} - {error_log.stack_trace[:200]}"
     )
-    
+
     # TODO: Implement critical error alert system
     # if settings.CRITICAL_ERROR_ALERTS_ENABLED:
 
@@ -1401,28 +1402,28 @@ def tag_search_view(request: HttpRequest) -> HttpResponse:
         # Get all tags from blog posts and other content
         from apps.blog.models import Post
         from django.db.models import Count
-        
+
         # Get tags from blog posts
         blog_tags = []
         posts = Post.objects.filter(status='published').prefetch_related('tags')
         for post in posts:
             blog_tags.extend(post.tags.all())
-        
+
         # Count and sort tags
         tag_counts = {}
         for tag in blog_tags:
             tag_counts[tag.name] = tag_counts.get(tag.name, 0) + 1
-        
+
         sorted_tags = sorted(tag_counts.items(), key=lambda x: x[1], reverse=True)
-        
+
         context = {
             'tags': sorted_tags,
             'page_title': 'Browse Tags',
             'meta_description': 'Browse all content tags'
         }
-        
+
         return render(request, 'search/tag_cloud.html', context)
-        
+
     except Exception as e:
         logger.error(f"Error in tag search view: {str(e)}")
         return render(request, 'search/tag_cloud.html', {'tags': []})
@@ -1435,13 +1436,13 @@ def tag_results_view(request: HttpRequest, tag_name: str) -> HttpResponse:
     """
     try:
         from apps.blog.models import Post
-        
+
         # Get posts with this tag
         posts = Post.objects.filter(
             status='published',
             tags__name__iexact=tag_name
         ).select_related('author').prefetch_related('tags').order_by('-published_at')
-        
+
         # Pagination
         paginator = Paginator(posts, 10)
         page = request.GET.get('page', 1)
@@ -1451,7 +1452,7 @@ def tag_results_view(request: HttpRequest, tag_name: str) -> HttpResponse:
             page_posts = paginator.page(1)
         except EmptyPage:
             page_posts = paginator.page(paginator.num_pages)
-        
+
         context = {
             'tag_name': tag_name,
             'posts': page_posts,
@@ -1460,9 +1461,9 @@ def tag_results_view(request: HttpRequest, tag_name: str) -> HttpResponse:
             'meta_description': f'Content tagged with {tag_name}',
             'canonical_url': request.build_absolute_uri(),
         }
-        
+
         return render(request, 'search/tag_results.html', context)
-        
+
     except Exception as e:
         logger.error(f"Error in tag results view: {str(e)}")
         return render(request, 'search/tag_results.html', {'posts': []})
@@ -1477,16 +1478,16 @@ def short_url_redirect(request: HttpRequest, short_code: str) -> HttpResponse:
         # Try to find the short URL
         from .models import ShortURL
         short_url = get_object_or_404(ShortURL, short_code=short_code, is_active=True)
-        
+
         # Track click
         short_url.click_count += 1
         short_url.save()
-        
+
         # Log redirect
         logger.info(f"Short URL redirect: {short_code} -> {short_url.target_url}")
-        
+
         return redirect(short_url.target_url)
-        
+
     except Exception as e:
         logger.error(f"Error in short URL redirect: {str(e)}")
         raise Http404("Short URL not found")
@@ -1499,11 +1500,11 @@ def error_summary(request: HttpRequest) -> JsonResponse:
     """
     try:
         from datetime import datetime, timedelta
-        
+
         # Get time period from query params
         period_days = int(request.GET.get('period', 7))
         start_date = timezone.now() - timedelta(days=period_days)
-        
+
         # Get error statistics
         error_stats = {
             'total_errors': ErrorLog.objects.filter(
@@ -1519,13 +1520,13 @@ def error_summary(request: HttpRequest) -> JsonResponse:
                 created_at__gte=start_date
             ).order_by('-created_at')[:10],
         }
-        
+
         return JsonResponse({
             'status': 'success',
             'data': error_stats,
             'period_days': period_days,
         })
-        
+
     except Exception as e:
         logger.error(f"Error getting error summary: {str(e)}")
         return JsonResponse({
@@ -1544,26 +1545,26 @@ def webpush_unsubscribe(request: HttpRequest) -> JsonResponse:
     try:
         data = json.loads(request.body)
         endpoint = data.get('endpoint')
-        
+
         # Support nested payload format like subscribe for resilience
         if not endpoint and 'subscription' in data:
             subscription_data = data['subscription']
             endpoint = subscription_data.get('endpoint')
-        
+
         if not endpoint:
             return JsonResponse({'error': 'Endpoint is required'}, status=400)
-        
+
         # Find and delete the subscription
         try:
             subscription = WebPushSubscription.objects.get(endpoint=endpoint)
             subscription.delete()
-            
+
             logger.info(f"Push subscription unsubscribed: {endpoint}")
             return JsonResponse({'success': True, 'message': 'Successfully unsubscribed'})
-            
+
         except WebPushSubscription.DoesNotExist:
             return JsonResponse({'error': 'Subscription not found'}, status=404)
-            
+
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
     except Exception as e:
@@ -1581,14 +1582,14 @@ def test_push_notification(request: HttpRequest) -> JsonResponse:
         data = json.loads(request.body)
         endpoint = data.get('endpoint')
         message = data.get('message', 'Test notification from your portfolio')
-        
+
         if not endpoint:
             return JsonResponse({'error': 'Endpoint is required'}, status=400)
-        
+
         # Find the subscription
         try:
             subscription = WebPushSubscription.objects.get(endpoint=endpoint)
-            
+
             # Send test notification
             notification_data = {
                 'title': 'Test Notification',
@@ -1597,18 +1598,18 @@ def test_push_notification(request: HttpRequest) -> JsonResponse:
                 'badge': '/static/icons/badge-72x72.png',
                 'url': '/'
             }
-            
+
             # Here you would use the push service to send
             # For now, just return success
             logger.info(f"Test notification sent to: {endpoint}")
             return JsonResponse({
-                'success': True, 
+                'success': True,
                 'message': 'Test notification sent successfully'
             })
-            
+
         except WebPushSubscription.DoesNotExist:
             return JsonResponse({'error': 'Subscription not found'}, status=404)
-            
+
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
     except Exception as e:
@@ -1807,23 +1808,23 @@ def webpush_log(request: HttpRequest) -> JsonResponse:
         event_type = data.get('event')
         timestamp = data.get('timestamp')
         event_data = data.get('data', {})
-        
+
         if not event_type:
             return JsonResponse({'error': 'Event type is required'}, status=400)
-        
+
         # Log to appropriate logger based on event type
         log_message = f"WebPush {event_type}: {event_data}"
-        
+
         if event_type in ['error', 'failed']:
             logger.error(log_message)
         else:
             logger.info(log_message)
-        
+
         # Optionally store in database if NotificationLog model exists
         # This could be extended to create NotificationLog entries
-        
+
         return JsonResponse({'success': True, 'message': 'Event logged successfully'})
-        
+
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
     except Exception as e:
@@ -1867,9 +1868,9 @@ def monitoring_dashboard(request: HttpRequest) -> HttpResponse:
                 'fid_values': [45, 52, 38]
             }
         }
-        
+
         return render(request, 'dashboard/monitoring_dashboard.html', context)
-        
+
     except Exception as e:
         logger.error(f"Monitoring dashboard error: {e}")
         return render(request, '500.html', status=500)
@@ -2005,8 +2006,19 @@ def ui_kit_view(request: HttpRequest) -> HttpResponse:
     """
     Design System UI Kit page for living documentation
     Displays all design system components, colors, typography, and patterns.
+    Includes fixture-based sample data for all portfolio components.
+
+    Context Variables:
+        - sample_featured_project: Featured project fixture for showcase
+        - sample_compact_projects: List of compact project fixtures
+        - sample_grid_projects: Projects for responsive grid display
+        - sample_stats: Statistics fixtures
+        - design_tokens_summary: Design tokens metadata reference
     """
     try:
+        # Get all fixtures from fixtures provider
+        fixtures = get_ui_kit_fixtures()
+
         context = {
             'title': _('Design System UI Kit'),
             'meta_description': _('Living documentation of our design system components, colors, typography, and patterns.'),
@@ -2014,9 +2026,12 @@ def ui_kit_view(request: HttpRequest) -> HttpResponse:
             'breadcrumbs': [
                 {'name': _('Home'), 'url': '/'},
                 {'name': _('UI Kit'), 'url': None}
-            ]
+            ],
         }
-        return render(request, 'main/ui-kit.html', context)
+        # Merge fixtures into context
+        context.update(fixtures)
+
+        return render(request, 'pages/portfolio/ui-kit.html', context)
     except Exception as e:
         logger.error(f"UI Kit view error: {e}")
         return render(request, '500.html', status=500)
@@ -2054,5 +2069,6 @@ def offline_view(request: HttpRequest) -> HttpResponse:
         </html>
         """
         return HttpResponse(basic_offline_html, content_type='text/html')
+
 
 

@@ -23,12 +23,25 @@ const STATIC_FILES = [
     '/offline.html'
 ];
 
+// Critical pages to warm cache on installation
+const CRITICAL_PAGES = [
+    '/',
+    '/personal/',
+    '/blog/',
+    '/tools/',
+    '/contact/',
+    '/sitemap.xml',
+    '/feed/rss/',
+    '/feed/atom/'
+];
+
 // Cache strategies for different types of requests
 const CACHE_STRATEGIES = {
     images: 'cache-first',
     static: 'cache-first',
     api: 'network-first',
-    pages: 'network-first'
+    pages: 'network-first',
+    documents: 'stale-while-revalidate',  // For feeds and sitemaps
 };
 
 // Install event - cache static files
@@ -36,13 +49,35 @@ self.addEventListener('install', event => {
     console.log('Service Worker: Installing...');
 
     event.waitUntil(
-        caches.open(STATIC_CACHE_NAME)
-            .then(cache => {
-                console.log('Service Worker: Caching static files');
-                return cache.addAll(STATIC_FILES);
-            })
+        Promise.all([
+            // Cache static files
+            caches.open(STATIC_CACHE_NAME)
+                .then(cache => {
+                    console.log('Service Worker: Caching static files');
+                    return cache.addAll(STATIC_FILES);
+                }),
+
+            // Warm cache for critical pages
+            caches.open(DYNAMIC_CACHE_NAME)
+                .then(cache => {
+                    console.log('Service Worker: Warming cache for critical pages');
+                    return Promise.all(
+                        CRITICAL_PAGES.map(url => {
+                            return fetch(url, { mode: 'no-cors' })
+                                .then(response => {
+                                    if (response.ok) {
+                                        return cache.put(url, response);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.log(`Failed to warm cache for ${url}:`, error);
+                                });
+                        })
+                    );
+                })
+        ])
             .then(() => {
-                console.log('Service Worker: Installation complete');
+                console.log('Service Worker: Installation and cache warming complete');
                 return self.skipWaiting();
             })
             .catch(error => {
@@ -112,6 +147,13 @@ function getCacheStrategy(request) {
     // API requests
     if (url.pathname.startsWith('/api/')) {
         return CACHE_STRATEGIES.api;
+    }
+
+    // Document routes (feeds, sitemaps)
+    if (url.pathname.startsWith('/feed/') ||
+        url.pathname.endsWith('.xml') ||
+        url.pathname.endsWith('.json')) {
+        return CACHE_STRATEGIES.documents;
     }
 
     // HTML pages

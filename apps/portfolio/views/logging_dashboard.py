@@ -61,7 +61,7 @@ def logging_dashboard_view(request):
             }
         )
 
-        return render(request, 'main/logging_dashboard.html', context)
+        return render(request, 'pages/portfolio/logging_dashboard.html', context)
 
     except Exception as e:
         logger.error(
@@ -85,7 +85,7 @@ def logging_dashboard_view(request):
             'page_title': 'Log Analysis Dashboard - Error',
         }
 
-        return render(request, 'main/logging_dashboard.html', context)
+        return render(request, 'pages/portfolio/logging_dashboard.html', context)
 
 
 @login_required

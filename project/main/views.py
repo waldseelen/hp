@@ -77,7 +77,7 @@ def home(request):
             'meta_description': 'Full Stack Developer & Cybersecurity Enthusiast Portfolio',
         }
         
-        return render(request, 'main/home.html', context)
+        return render(request, 'pages/portfolio/home.html', context)
         
     except Exception as e:
         logger.error(f"Error in home view: {str(e)}")
@@ -92,7 +92,7 @@ def home(request):
             'page_title': 'Home',
             'meta_description': 'Portfolio',
         }
-        return render(request, 'main/home.html', context)
+        return render(request, 'pages/portfolio/home.html', context)
 
 
 def personal_view(request):
@@ -127,7 +127,7 @@ def personal_view(request):
             'meta_description': 'Kişisel bilgiler, yetenekler ve deneyimler',
         }
         
-        return render(request, 'main/personal.html', context)
+        return render(request, 'pages/portfolio/personal.html', context)
         
     except Exception as e:
         logger.error(f"Error in personal view: {str(e)}")
@@ -137,7 +137,7 @@ def personal_view(request):
             'page_title': 'Hakkımda',
             'meta_description': 'Kişisel bilgiler',
         }
-        return render(request, 'main/personal.html', context)
+        return render(request, 'pages/portfolio/personal.html', context)
 
 
 def music_view(request):
@@ -176,7 +176,7 @@ def music_view(request):
             'meta_description': 'Müzik playlistleri, şu an çaldığım şarkılar ve favori sanatçılar',
         }
         
-        return render(request, 'main/music.html', context)
+        return render(request, 'pages/portfolio/music.html', context)
         
     except Exception as e:
         logger.error(f"Error in music view: {str(e)}")
@@ -187,7 +187,7 @@ def music_view(request):
             'page_title': 'Müzik',
             'meta_description': 'Müzik',
         }
-        return render(request, 'main/music.html', context)
+        return render(request, 'pages/portfolio/music.html', context)
 
 
 def ai_tools_view(request):
@@ -211,7 +211,7 @@ def ai_tools_view(request):
             'meta_description': 'Yapay zeka araçları ve platformları - Sevdiğim AI yer imleri',
         }
         
-        return render(request, 'main/ai.html', context)
+        return render(request, 'pages/portfolio/ai.html', context)
         
     except Exception as e:
         logger.error(f"Error in ai_tools view: {str(e)}")
@@ -220,7 +220,7 @@ def ai_tools_view(request):
             'page_title': 'AI Araçları',
             'meta_description': 'Yapay zeka araçları',
         }
-        return render(request, 'main/ai.html', context)
+        return render(request, 'pages/portfolio/ai.html', context)
 
 
 def cybersecurity_view(request):
@@ -251,7 +251,7 @@ def cybersecurity_view(request):
             'meta_description': 'Siber güvenlik kaynakları, araçları ve güncel bilgiler',
         }
         
-        return render(request, 'main/cybersecurity.html', context)
+        return render(request, 'pages/portfolio/cybersecurity.html', context)
         
     except Exception as e:
         logger.error(f"Error in cybersecurity view: {str(e)}")
@@ -261,7 +261,7 @@ def cybersecurity_view(request):
             'page_title': 'Siber Güvenlik',
             'meta_description': 'Siber güvenlik',
         }
-        return render(request, 'main/cybersecurity.html', context)
+        return render(request, 'pages/portfolio/cybersecurity.html', context)
 
 
 def useful_view(request):
@@ -303,7 +303,7 @@ def useful_view(request):
             'meta_description': 'Faydalı araçlar, siteler ve uygulamalar koleksiyonu',
         }
         
-        return render(request, 'main/useful.html', context)
+        return render(request, 'pages/portfolio/useful.html', context)
         
     except Exception as e:
         logger.error(f"Error in useful view: {str(e)}")
@@ -313,7 +313,7 @@ def useful_view(request):
             'page_title': 'Useful Resources',
             'meta_description': 'Faydalı kaynaklar',
         }
-        return render(request, 'main/useful.html', context)
+        return render(request, 'pages/portfolio/useful.html', context)
 
 
 def logout_view(request):
@@ -326,3 +326,4 @@ def logout_view(request):
     except Exception as e:
         logger.error(f"Error in logout view: {str(e)}")
         return redirect('home')
+

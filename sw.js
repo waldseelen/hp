@@ -11,16 +11,28 @@ const DYNAMIC_CACHE_NAME = 'dynamic-v1';
 const STATIC_FILES = [
     '/',
     '/static/css/output.css',
+    '/static/css/consolidated.css',
     '/static/css/custom.min.css',
     '/static/css/inline-styles.css',
     '/static/css/cookie-consent.css',
+    '/static/js/dist/core.bundle.js',
     '/static/js/main.min.js',
     '/static/js/animations.js',
     '/static/js/cursor.js',
     '/static/js/cookie-consent.js',
     '/static/js/pwa.min.js',
     '/static/images/icon-base.svg',
-    '/offline.html'
+    '/offline.html',
+    // Document routes for warm cache
+    '/blog/',
+    '/tools/',
+    '/main/music/',
+    '/main/useful/',
+    '/about/',
+    // RSS Feeds for warm cache
+    '/feeds/posts/',
+    '/feeds/projects/',
+    '/feeds/combined/',
 ];
 
 // Cache strategies for different types of requests

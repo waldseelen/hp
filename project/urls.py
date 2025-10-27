@@ -76,6 +76,9 @@ urlpatterns = [
     # Admin (language-independent)
     path('admin/', admin.site.urls),
 
+    # TinyMCE Rich Text Editor
+    path('tinymce/', include('tinymce.urls')),
+
     # Language selection URLs
     path('i18n/', include('django.conf.urls.i18n')),
 

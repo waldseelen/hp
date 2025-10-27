@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'rest_framework',
+    'tinymce',
+    'apps.portfolio.apps.PortfolioConfig',
     'main.apps.MainConfig',
     'blog',
     'tools',
@@ -185,3 +187,53 @@ STATICFILES_DIRS = [
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# TinyMCE Configuration for Rich Text Editing
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 500,
+    'width': '100%',
+    'plugins': [
+        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+        'insertdatetime', 'media', 'table', 'help', 'wordcount',
+        'codesample', 'emoticons', 'textcolor', 'paste', 'autosave'
+    ],
+    'toolbar': 'undo redo | formatselect | bold italic backcolor forecolor | ' +
+               'alignleft aligncenter alignright alignjustify | ' +
+               'bullist numlist outdent indent | removeformat | ' +
+               'link image media table codesample | ' +
+               'searchreplace | fullscreen | emoticons | help',
+    'menubar': 'file edit view insert format tools table help',
+    'toolbar_mode': 'sliding',
+    'statusbar': True,
+    'relative_urls': False,
+    'automatic_uploads': True,
+    'file_picker_types': 'file image media',
+    'images_upload_url': '/api/upload/images/',
+    'codesample_languages': [
+        {'text': 'Python', 'value': 'python'},
+        {'text': 'JavaScript', 'value': 'javascript'},
+        {'text': 'HTML', 'value': 'html'},
+        {'text': 'CSS', 'value': 'css'},
+        {'text': 'SQL', 'value': 'sql'},
+        {'text': 'Bash', 'value': 'bash'},
+    ],
+    'license_key': 'gpl',  # Use GPL for open source
+}
+
+# Content Management Settings
+CONTENT_SANITIZATION = {
+    'ENABLED': True,
+    'ALLOWED_TAGS': [
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'p', 'br', 'hr',
+        'strong', 'em', 'u', 's', 'code',
+        'a', 'img',
+        'ul', 'ol', 'li',
+        'blockquote', 'pre',
+        'table', 'thead', 'tbody', 'tr', 'th', 'td',
+        'div', 'span',
+    ],
+    'STRIP_JAVASCRIPT': True,
+    'VERIFY_LINKS': True,
+}

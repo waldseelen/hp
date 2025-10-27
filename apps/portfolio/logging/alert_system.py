@@ -96,7 +96,7 @@ class EmailNotificationChannel(NotificationChannel):
 
             # Render email template
             site_url = getattr(settings, 'SITE_URL', 'http://localhost:8000')
-            email_body = render_to_string('main/alerts/email_alert.html', {
+            email_body = render_to_string('pages/portfolio/alerts/email_alert.html', {
                 'alert': alert,
                 'alert_url': f"{site_url}/admin/logging/dashboard/"
             }) if hasattr(render_to_string, '__call__') else f"""

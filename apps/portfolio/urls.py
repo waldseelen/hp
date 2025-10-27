@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .feeds import LatestPostsFeed, LatestProjectsFeed, CombinedFeed
 
 app_name = 'main'
 
@@ -10,11 +11,11 @@ urlpatterns = [
     path('ai/', views.ai_tools_view, name='ai'),
     path('cybersecurity/', views.cybersecurity_view, name='cybersecurity'),
     path('useful/', views.useful_view, name='useful'),
-    
+
     # Project pages
     path('projects/', views.projects_view, name='projects'),
     path('projects/<slug:slug>/', views.project_detail_view, name='project_detail'),
-    
+
     # Search functionality
     path('search/', views.search_view, name='search'),
     path('search/tags/', views.tag_search_view, name='tag_search'),
@@ -28,19 +29,19 @@ urlpatterns = [
 
     # PWA Offline page
     path('offline/', views.offline_view, name='offline'),
-    
+
     # Short URL service
     path('s/<str:short_code>/', views.short_url_redirect, name='short_url_redirect'),
-    
+
     # Internationalization URLs
     path('set-language/', views.set_language, name='set_language'),
     path('language-status/', views.language_status, name='language_status'),
-    
+
     # Health and monitoring (moved to main urls.py)
-    
+
     # Authentication
     path('logout/', views.logout_view, name='logout'),
-    
+
     # PWA and JSON endpoints (using template views for simplicity)
     # path('manifest.json', views.manifest_json, name='manifest_json'),
     # path('analytics.json', views.analytics_json, name='analytics_json'),
@@ -48,4 +49,9 @@ urlpatterns = [
     # Security endpoints
     path('api/security/csp-report/', views.csp_violation_report, name='csp_violation_report'),
     path('api/security/network-error-report/', views.network_error_report, name='network_error_report'),
+
+    # RSS Feeds
+    path('feeds/posts/', LatestPostsFeed(), name='posts_feed'),
+    path('feeds/projects/', LatestProjectsFeed(), name='projects_feed'),
+    path('feeds/combined/', CombinedFeed(), name='combined_feed'),
 ]
