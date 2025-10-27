@@ -136,6 +136,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Custom User Model
 AUTH_USER_MODEL = 'main.Admin'
 
+# Authentication backend - restricted admin only via environment variables
+AUTHENTICATION_BACKENDS = [
+    'apps.main.auth_backends.RestrictedAdminBackend',
+]
+
 # REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

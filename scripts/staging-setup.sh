@@ -82,7 +82,7 @@ if not User.objects.filter(username='admin').exists():
     admin = User.objects.create_superuser(
         username='admin',
         email='admin@staging.local',
-        password='staging123'
+        password=os.environ.get('STAGING_PASSWORD', 'change-me')
     )
     print('✅ Staging admin user created: admin/staging123')
 else:
@@ -93,7 +93,7 @@ if not User.objects.filter(username='testuser').exists():
     user = User.objects.create_user(
         username='testuser',
         email='test@staging.local',
-        password='test123'
+        password=os.environ.get('TEST_PASSWORD', 'change-me')
     )
     print('✅ Test user created: testuser/test123')
 else:

@@ -18,14 +18,14 @@ from apps.contact.models import ContactMessage
 
 def create_sample_data():
     print("Creating sample data...")
-    
+
     # Create admin user
     admin_user, created = Admin.objects.get_or_create(
         email='admin@portfolio.com',
         defaults={
             'username': 'admin',
             'name': 'Portfolio Admin',
-            'password': make_password('admin123'),
+            'password': make_password(os.environ.get('ADMIN_PASSWORD', 'change-me')),
             'is_staff': True,
             'is_superuser': True,
         }
@@ -34,7 +34,7 @@ def create_sample_data():
         print(f"Created admin user: {admin_user.email}")
     else:
         print(f"Admin user already exists: {admin_user.email}")
-    
+
     # Create personal info
     personal_info_data = [
         {
@@ -56,7 +56,7 @@ def create_sample_data():
             'order': 3
         },
     ]
-    
+
     for data in personal_info_data:
         info, created = PersonalInfo.objects.get_or_create(
             key=data['key'],
@@ -64,7 +64,7 @@ def create_sample_data():
         )
         if created:
             print(f"Created personal info: {info.key}")
-    
+
     # Create social links
     social_links_data = [
         {
@@ -87,7 +87,7 @@ def create_sample_data():
             'order': 3
         },
     ]
-    
+
     for data in social_links_data:
         link, created = SocialLink.objects.get_or_create(
             platform=data['platform'],
@@ -95,7 +95,7 @@ def create_sample_data():
         )
         if created:
             print(f"Created social link: {link.platform}")
-    
+
     # Create sample blog posts
     blog_posts_data = [
         {
@@ -164,7 +164,7 @@ project_root/
 
 ## Performance Tips
 
-- Use `select_related()` and `prefetch_related()` 
+- Use `select_related()` and `prefetch_related()`
 - Implement caching strategically
 - Optimize database queries
 - Use async views for I/O-bound operations
@@ -175,7 +175,7 @@ Building scalable applications takes planning, but Django provides the tools to 
             'author': admin_user
         }
     ]
-    
+
     for data in blog_posts_data:
         post, created = Post.objects.get_or_create(
             title=data['title'],
@@ -183,7 +183,7 @@ Building scalable applications takes planning, but Django provides the tools to 
         )
         if created:
             print(f"Created blog post: {post.title}")
-    
+
     # Create sample tools
     tools_data = [
         {
@@ -235,7 +235,7 @@ Building scalable applications takes planning, but Django provides the tools to 
             'is_favorite': False
         }
     ]
-    
+
     for data in tools_data:
         tool, created = Tool.objects.get_or_create(
             title=data['title'],
@@ -243,7 +243,7 @@ Building scalable applications takes planning, but Django provides the tools to 
         )
         if created:
             print(f"Created tool: {tool.title}")
-    
+
     print("Sample data creation completed!")
 
 

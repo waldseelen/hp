@@ -17,12 +17,6 @@ class AdminUserAdmin(UserAdmin):
     search_fields = ('email', 'name')
     ordering = ('-created_at',)
 
-    fieldsets = UserAdmin.fieldsets + (
-        ('Additional Info', {'fields': ('name', 'created_at', 'updated_at')}),
-    )
-
-    readonly_fields = ('created_at', 'updated_at')
-
 
 @admin.register(PersonalInfo)
 class PersonalInfoAdmin(admin.ModelAdmin):

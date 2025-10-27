@@ -7,8 +7,9 @@ from django.urls import reverse
 
 
 class RestrictedAdminLoginTests(TestCase):
-    email = "bugraakin01@gmail.com"
-    password = "9CXb8|)\u00a3Y=o3@0AdV_M{P&="
+    # Use environment variables for test credentials
+    email = os.environ.get("TEST_ADMIN_EMAIL", "test@example.com")
+    password = os.environ.get("TEST_ADMIN_PASSWORD", "test-password-change-me")
 
     def setUp(self):
         self._previous_email = os.environ.get("ALLOWED_ADMIN_EMAIL")

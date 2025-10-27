@@ -10,11 +10,17 @@ from main.models import Admin
 
 try:
     admin_user = Admin.objects.get(email='admin@portfolio.com')
-    admin_user.set_password('admin123')  # Simple password for development
+    # Get password from environment variable
+    new_password = os.environ.get('ADMIN_PASSWORD')
+    if not new_password:
+        print("❌ Error: ADMIN_PASSWORD environment variable not set")
+        print("Set it using: export ADMIN_PASSWORD='your-password'")
+        exit(1)
+
+    admin_user.set_password(new_password)
     admin_user.save()
     print("Admin password successfully reset!")
     print("Email: admin@portfolio.com")
-    print("Password: admin123")
 except Admin.DoesNotExist:
     print("Admin user not found")
 except Exception as e:

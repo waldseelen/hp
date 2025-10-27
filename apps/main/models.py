@@ -29,8 +29,8 @@ class Admin(AbstractUser):
         related_query_name='admin_user',
     )
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'name']
+    # Use username as primary, not email
+    REQUIRED_FIELDS = ['email', 'name']
 
     class Meta:
         verbose_name = "Admin User"
