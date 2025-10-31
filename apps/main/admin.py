@@ -43,6 +43,7 @@ class AIToolAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description', 'tags')
     list_editable = ('is_featured', 'is_visible', 'order')
     ordering = ('category', 'order', 'name')
+    actions = ['reindex_selected_items']
 
     fieldsets = (
         ('Temel Bilgiler', {
@@ -174,6 +175,7 @@ class BlogPostAdmin(SanitizedContentAdminMixin):
     search_fields = ('title', 'excerpt', 'content', 'tags')
     list_editable = ('status', 'is_featured')
     ordering = ('-published_at', '-created_at')
+    actions = ['reindex_selected_posts']
 
     # Fields to sanitize on save
     sanitized_fields = ('content', 'excerpt')
@@ -207,6 +209,28 @@ class BlogPostAdmin(SanitizedContentAdminMixin):
             return format_html('<img src="{}" style="max-height: 100px; max-width: 200px;" />', obj.featured_image.url)
         return "No image"
     blog_image_preview.short_description = 'Featured Image Preview'
+
+    @admin.action(description="Reindex selected posts in search engine")
+    def reindex_selected_posts(self, request, queryset):
+        """Reindex selected blog posts to search engine"""
+        try:
+            from apps.main.search_index import search_index_manager
+
+            results = search_index_manager.bulk_index(list(queryset))
+
+            self.message_user(
+                request,
+                format_html(
+                    '✓ Reindexed {} posts. Indexed: {}, Skipped: {}, Failed: {}',
+                    queryset.count(),
+                    results['indexed'],
+                    results['skipped'],
+                    results['failed']
+                ),
+                level='SUCCESS' if results['failed'] == 0 else 'WARNING'
+            )
+        except Exception as e:
+            self.message_user(request, f'✗ Reindex failed: {e}', level='ERROR')
 
 
 @admin.register(MusicPlaylist)

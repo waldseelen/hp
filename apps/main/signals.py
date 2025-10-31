@@ -152,3 +152,202 @@ def clear_home_cache(**kwargs):
     Fallback cache clearing function (kept for backwards compatibility).
     """
     cache.delete('home_page_data')
+
+
+# ============================================================================
+# SEARCH INDEX SIGNALS
+# ============================================================================
+
+def sync_to_search_index(sender, instance, created, **kwargs):
+    """
+    Generic signal handler to sync model to search index.
+    Called after save for searchable models.
+    """
+    import time
+    start_time = time.time()
+    success = False
+    error_message = None
+
+    try:
+        from .search_index import search_index_manager
+        from .monitoring import search_monitor
+
+        # Index the document (will skip if not visible/published)
+        result = search_index_manager.index_document(instance)
+        success = result
+
+        duration_ms = (time.time() - start_time) * 1000
+
+        # Log to monitoring system
+        search_monitor.log_index_sync(
+            model_name=sender.__name__,
+            operation='index',
+            success=success,
+            duration_ms=duration_ms,
+            document_count=1,
+            error=None if success else 'Document not indexed (visibility check failed)'
+        )
+
+        logger.info(f"Search index updated: {sender.__name__} id={instance.id} ({duration_ms:.2f}ms)")
+
+    except Exception as e:
+        duration_ms = (time.time() - start_time) * 1000
+        error_message = str(e)
+
+        # Log error to monitoring
+        try:
+            from .monitoring import search_monitor
+            search_monitor.log_index_sync(
+                model_name=sender.__name__,
+                operation='index',
+                success=False,
+                duration_ms=duration_ms,
+                document_count=1,
+                error=error_message
+            )
+        except:
+            pass
+
+        logger.error(f"Failed to index {sender.__name__} id={instance.id}: {e}", exc_info=True)
+def remove_from_search_index(sender, instance, **kwargs):
+    """
+    Generic signal handler to remove document from search index.
+    Called before delete for searchable models.
+    """
+    import time
+    start_time = time.time()
+    success = False
+    error_message = None
+
+    try:
+        from .search_index import search_index_manager
+        from .monitoring import search_monitor
+
+        # Delete from index
+        result = search_index_manager.delete_document(sender.__name__, instance.id)
+        success = result
+
+        duration_ms = (time.time() - start_time) * 1000
+
+        # Log to monitoring system
+        search_monitor.log_index_sync(
+            model_name=sender.__name__,
+            operation='delete',
+            success=success,
+            duration_ms=duration_ms,
+            document_count=1,
+            error=None
+        )
+
+        logger.info(f"Search index removed: {sender.__name__} id={instance.id} ({duration_ms:.2f}ms)")
+
+    except Exception as e:
+        duration_ms = (time.time() - start_time) * 1000
+        error_message = str(e)
+
+        # Log error to monitoring
+        try:
+            from .monitoring import search_monitor
+            search_monitor.log_index_sync(
+                model_name=sender.__name__,
+                operation='delete',
+                success=False,
+                duration_ms=duration_ms,
+                document_count=1,
+                error=error_message
+            )
+        except:
+            pass
+
+        logger.error(f"Failed to remove {sender.__name__} id={instance.id} from index: {e}", exc_info=True)
+
+
+# Register search index signals for indexable models
+
+# BlogPost (from apps.main.models)
+from .models import BlogPost, AITool, UsefulResource, CybersecurityResource
+
+@receiver([post_save], sender=BlogPost)
+def index_blogpost_on_save(sender, instance, created=False, **kwargs):
+    """Index BlogPost to search engine on save"""
+    sync_to_search_index(sender, instance, created, **kwargs)
+
+
+@receiver([post_delete], sender=BlogPost)
+def remove_blogpost_on_delete(sender, instance, **kwargs):
+    """Remove BlogPost from search engine on delete"""
+    remove_from_search_index(sender, instance, **kwargs)
+
+
+@receiver([post_save], sender=AITool)
+def index_aitool_on_save(sender, instance, created=False, **kwargs):
+    """Index AITool to search engine on save"""
+    sync_to_search_index(sender, instance, created, **kwargs)
+
+
+@receiver([post_delete], sender=AITool)
+def remove_aitool_on_delete(sender, instance, **kwargs):
+    """Remove AITool from search engine on delete"""
+    remove_from_search_index(sender, instance, **kwargs)
+
+
+@receiver([post_save], sender=UsefulResource)
+def index_usefulresource_on_save(sender, instance, created=False, **kwargs):
+    """Index UsefulResource to search engine on save"""
+    sync_to_search_index(sender, instance, created, **kwargs)
+
+
+@receiver([post_delete], sender=UsefulResource)
+def remove_usefulresource_on_delete(sender, instance, **kwargs):
+    """Remove UsefulResource from search engine on delete"""
+    remove_from_search_index(sender, instance, **kwargs)
+
+
+@receiver([post_save], sender=CybersecurityResource)
+def index_cybersecurity_on_save(sender, instance, created=False, **kwargs):
+    """Index CybersecurityResource to search engine on save"""
+    sync_to_search_index(sender, instance, created, **kwargs)
+
+
+@receiver([post_delete], sender=CybersecurityResource)
+def remove_cybersecurity_on_delete(sender, instance, **kwargs):
+    """Remove CybersecurityResource from search engine on delete"""
+    remove_from_search_index(sender, instance, **kwargs)
+
+
+@receiver([post_save], sender=PersonalInfo)
+def index_personalinfo_on_save(sender, instance, created=False, **kwargs):
+    """Index PersonalInfo to search engine on save"""
+    sync_to_search_index(sender, instance, created, **kwargs)
+
+
+@receiver([post_delete], sender=PersonalInfo)
+def remove_personalinfo_on_delete(sender, instance, **kwargs):
+    """Remove PersonalInfo from search engine on delete"""
+    remove_from_search_index(sender, instance, **kwargs)
+
+
+@receiver([post_save], sender=SocialLink)
+def index_sociallink_on_save(sender, instance, created=False, **kwargs):
+    """Index SocialLink to search engine on save"""
+    sync_to_search_index(sender, instance, created, **kwargs)
+
+
+@receiver([post_delete], sender=SocialLink)
+def remove_sociallink_on_delete(sender, instance, **kwargs):
+    """Remove SocialLink from search engine on delete"""
+    remove_from_search_index(sender, instance, **kwargs)
+
+
+# Try to register Tool model signals if available
+if Tool:
+    @receiver([post_save], sender=Tool)
+    def index_tool_on_save(sender, instance, created=False, **kwargs):
+        """Index Tool to search engine on save"""
+        sync_to_search_index(sender, instance, created, **kwargs)
+
+
+    @receiver([post_delete], sender=Tool)
+    def remove_tool_on_delete(sender, instance, **kwargs):
+        """Remove Tool from search engine on delete"""
+        remove_from_search_index(sender, instance, **kwargs)

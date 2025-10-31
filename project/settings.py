@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -242,3 +246,10 @@ CONTENT_SANITIZATION = {
     'STRIP_JAVASCRIPT': True,
     'VERIFY_LINKS': True,
 }
+
+# MeiliSearch Configuration
+MEILISEARCH_HOST = os.environ.get('MEILI_HOST', 'http://localhost:7700')
+MEILISEARCH_MASTER_KEY = os.environ.get('MEILI_MASTER_KEY', 'masterKey123456789')
+MEILISEARCH_INDEX_NAME = os.environ.get('MEILI_INDEX_NAME', 'portfolio_search')
+MEILISEARCH_TIMEOUT = 5  # seconds
+MEILISEARCH_BATCH_SIZE = 100  # documents per batch

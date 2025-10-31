@@ -1,0 +1,117 @@
+name: Search Performance Monitoring
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  # ============================================================================
+  # Monitor Search Performance
+  # ============================================================================
+  performance-monitoring:
+    name: 📊 Search Performance Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check MeiliSearch health
+        run: |
+          echo "Checking MeiliSearch health..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" "${{ secrets.MEILI_HOST }}/health")
+
+          if [ "$response" = "200" ]; then
+            echo "✅ MeiliSearch is healthy"
+          else
+            echo "❌ MeiliSearch health check failed (HTTP $response)"
+            exit 1
+          fi
+
+      - name: Check index statistics
+        run: |
+          echo "Fetching index statistics..."
+          curl -H "Authorization: Bearer ${{ secrets.MEILI_MASTER_KEY }}" \
+               "${{ secrets.MEILI_HOST }}/indexes/portfolio_search/stats" \
+               | jq '.'
+
+      - name: Measure search latency
+        run: |
+          echo "Measuring search query latency..."
+
+          # Test 10 queries and calculate average
+          total_time=0
+          for i in {1..10}; do
+            start=$(date +%s%N)
+            curl -s "${{ secrets.MEILI_HOST }}/indexes/portfolio_search/search" \
+                 -H "Authorization: Bearer ${{ secrets.MEILI_MASTER_KEY }}" \
+                 -H "Content-Type: application/json" \
+                 --data '{"q":"test"}' > /dev/null
+            end=$(date +%s%N)
+            duration=$(( (end - start) / 1000000 ))
+            total_time=$(( total_time + duration ))
+            echo "Query $i: ${duration}ms"
+          done
+
+          avg_time=$(( total_time / 10 ))
+          echo "Average latency: ${avg_time}ms"
+
+          # Alert if average latency > 100ms
+          if [ $avg_time -gt 100 ]; then
+            echo "⚠️ WARNING: Average search latency (${avg_time}ms) exceeds 100ms threshold"
+          fi
+
+      - name: Check index sync status
+        run: |
+          echo "Checking recent indexing tasks..."
+          curl -H "Authorization: Bearer ${{ secrets.MEILI_MASTER_KEY }}" \
+               "${{ secrets.MEILI_HOST }}/tasks?limit=20" \
+               | jq '.results[] | select(.type == "documentAdditionOrUpdate") | {status, duration, indexedDocuments: .details.indexedDocuments}'
+
+      - name: Generate performance report
+        run: |
+          echo "Generating performance report..."
+          cat << EOF > performance-report.md
+          # Search Performance Report
+
+          **Date:** $(date)
+          **MeiliSearch Host:** ${{ secrets.MEILI_HOST }}
+
+          ## Health Status
+          - MeiliSearch: ✅ Healthy
+
+          ## Performance Metrics
+          - Average Query Latency: Measured above
+          - Index Status: Active
+
+          ## Recommendations
+          - Monitor query patterns
+          - Optimize slow queries
+          - Check index size growth
+          EOF
+
+          cat performance-report.md
+
+      - name: Upload performance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report-${{ github.run_number }}
+          path: performance-report.md
+
+  # ============================================================================
+  # Alert on Performance Issues
+  # ============================================================================
+  alert-on-issues:
+    name: 🚨 Performance Alert
+    runs-on: ubuntu-latest
+    needs: performance-monitoring
+    if: failure()
+
+    steps:
+      - name: Send alert notification
+        run: |
+          echo "🚨 ALERT: Search performance issues detected!"
+          echo "Check the performance monitoring job logs for details"
+          # Add Slack/Discord/Email notification here

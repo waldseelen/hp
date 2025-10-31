@@ -1,0 +1,289 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Search Index Status - {{ block.super }}{% endblock %}
+
+{% block extrastyle %}
+<style>
+  .search-dashboard {
+    padding: 20px;
+  }
+
+  .status-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  .status-healthy {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .status-warning {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .status-error {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .metric-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .metric-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .metric-label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    margin-top: 5px;
+  }
+
+  .query-log {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .query-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 12px;
+  }
+
+  .query-item:hover {
+    background: #f8f9fa;
+  }
+
+  .query-error {
+    background: #fff5f5;
+  }
+
+  .latency-good {
+    color: #28a745;
+  }
+
+  .latency-warning {
+    color: #ffc107;
+  }
+
+  .latency-error {
+    color: #dc3545;
+  }
+
+  .refresh-button {
+    background: #417690;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .refresh-button:hover {
+    background: #205067;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="search-dashboard">
+  <h1>🔍 Search Index Status Dashboard</h1>
+
+  <!-- Health Status Card -->
+  <div class="status-card">
+    <div class="status-header">
+      <h2>Health Status</h2>
+      <span class="status-badge status-{{ health.status }}">
+        {{ health.status|upper }}
+      </span>
+    </div>
+    <p><strong>{{ health.message }}</strong></p>
+    <p><small>Last checked: {{ health.checked_at }}</small></p>
+
+    {% if health.details %}
+    <div style="margin-top: 15px;">
+      <strong>Index Details:</strong>
+      <ul style="margin: 10px 0;">
+        <li>Document Count: {{ health.details.document_count }}</li>
+        <li>Indexing: {% if health.details.is_indexing %}🔄 In Progress{% else %}✓ Complete{% endif %}</li>
+      </ul>
+    </div>
+    {% endif %}
+
+    <button class="refresh-button" onclick="location.reload()">
+      🔄 Refresh Status
+    </button>
+  </div>
+
+  <!-- Performance Metrics -->
+  <div class="status-card">
+    <h2>Performance Metrics</h2>
+    <div class="metric-grid">
+      <div class="metric-item">
+        <div class="metric-value">{{ metrics.total_queries|default:"0" }}</div>
+        <div class="metric-label">Total Queries</div>
+      </div>
+
+      <div class="metric-item">
+        <div class="metric-value
+          {% if metrics.avg_duration_ms < 100 %}latency-good
+          {% elif metrics.avg_duration_ms < 500 %}latency-warning
+          {% else %}latency-error{% endif %}">
+          {{ metrics.avg_duration_ms|default:"0"|floatformat:1 }}ms
+        </div>
+        <div class="metric-label">Avg Latency</div>
+      </div>
+
+      <div class="metric-item">
+        <div class="metric-value
+          {% if metrics.error_rate|default:0 < 0.05 %}latency-good
+          {% elif metrics.error_rate < 0.10 %}latency-warning
+          {% else %}latency-error{% endif %}">
+          {{ metrics.error_rate|default:0|floatformat:2 }}%
+        </div>
+        <div class="metric-label">Error Rate</div>
+      </div>
+
+      <div class="metric-item">
+        <div class="metric-value">{{ metrics.max_duration_ms|default:"0"|floatformat:1 }}ms</div>
+        <div class="metric-label">Max Latency</div>
+      </div>
+    </div>
+
+    <p style="margin-top: 10px; font-size: 12px; color: #666;">
+      <strong>Thresholds:</strong>
+      Good: &lt;100ms | Warning: 100-500ms | Error: &gt;500ms
+    </p>
+  </div>
+
+  <!-- Recent Queries -->
+  <div class="status-card">
+    <h2>Recent Queries (Last 10)</h2>
+    <div class="query-log">
+      {% for query in recent_queries %}
+      <div class="query-item {% if query.error %}query-error{% endif %}">
+        <strong>{{ query.query|truncatechars:50 }}</strong>
+        <span class="
+          {% if query.duration_ms < 100 %}latency-good
+          {% elif query.duration_ms < 500 %}latency-warning
+          {% else %}latency-error{% endif %}">
+          {{ query.duration_ms }}ms
+        </span>
+        {% if query.error %}
+        <span style="color: #dc3545;">❌ {{ query.error_message }}</span>
+        {% endif %}
+        <div style="font-size: 11px; color: #999; margin-top: 3px;">
+          {{ query.timestamp }}
+        </div>
+      </div>
+      {% empty %}
+      <p style="text-align: center; color: #999; padding: 20px;">No recent queries</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Recent Errors -->
+  {% if recent_errors %}
+  <div class="status-card">
+    <h2>Recent Errors</h2>
+    <div class="query-log">
+      {% for error in recent_errors %}
+      <div class="query-item query-error">
+        <strong>{{ error.query|truncatechars:50 }}</strong>
+        <div style="color: #dc3545; margin-top: 5px;">
+          {{ error.error_message }}
+        </div>
+        <div style="font-size: 11px; color: #999; margin-top: 3px;">
+          {{ error.timestamp }}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Sync Events -->
+  {% if sync_events %}
+  <div class="status-card">
+    <h2>Recent Index Sync Events</h2>
+    <div class="query-log">
+      {% for event in sync_events %}
+      <div class="query-item {% if not event.success %}query-error{% endif %}">
+        <strong>{{ event.model }} - {{ event.operation }}</strong>
+        <span>{{ event.document_count }} documents</span>
+        <span class="
+          {% if event.duration_ms < 1000 %}latency-good
+          {% elif event.duration_ms < 5000 %}latency-warning
+          {% else %}latency-error{% endif %}">
+          {{ event.duration_ms }}ms
+        </span>
+        {% if not event.success %}
+        <div style="color: #dc3545; margin-top: 5px;">
+          ❌ {{ event.error }}
+        </div>
+        {% endif %}
+        <div style="font-size: 11px; color: #999; margin-top: 3px;">
+          {{ event.timestamp }}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Actions -->
+  <div class="status-card">
+    <h2>Management Actions</h2>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <a href="{% url 'admin:index' %}" class="button">← Back to Admin</a>
+      <button class="button" onclick="if(confirm('Reindex all models?')) alert('Run: python manage.py reindex_search --all')">
+        🔄 Reindex All
+      </button>
+      <button class="button" onclick="location.reload()">
+        🔄 Refresh Dashboard
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Auto-refresh every 30 seconds
+setTimeout(() => location.reload(), 30000);
+</script>
+{% endblock %}
