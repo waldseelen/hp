@@ -2,10 +2,10 @@
 Optimized QuerySet managers for improved database performance.
 """
 
-from django.db import models
-from django.db.models import Prefetch, Q, F, Count, Max
-from django.utils import timezone
 from django.core.cache import cache
+from django.db import models
+from django.db.models import Count, F, Max, Q
+from django.utils import timezone
 
 
 class OptimizedQuerySetMixin:
@@ -21,6 +21,7 @@ class OptimizedQuerySetMixin:
 
     def with_cache(self, cache_key, timeout=300):
         """Cache queryset results."""
+
         def get_cached_queryset():
             cached = cache.get(cache_key)
             if cached is not None:
@@ -38,50 +39,59 @@ class PostQuerySet(models.QuerySet, OptimizedQuerySetMixin):
 
     def published(self):
         """Get published posts with optimized query."""
-        return self.filter(
-            status='published',
-            published_at__lte=timezone.now()
-        ).select_related('author').order_by('-published_at')
+        return (
+            self.filter(status="published", published_at__lte=timezone.now())
+            .select_related("author")
+            .order_by("-published_at")
+        )
 
     def by_author(self, author):
         """Get posts by specific author with optimization."""
-        return self.filter(
-            author=author,
-            status='published'
-        ).select_related('author').order_by('-published_at')
+        return (
+            self.filter(author=author, status="published")
+            .select_related("author")
+            .order_by("-published_at")
+        )
 
     def popular(self, limit=10):
         """Get popular posts efficiently."""
-        return self.filter(
-            status='published'
-        ).select_related('author').order_by('-view_count')[:limit]
+        return (
+            self.filter(status="published")
+            .select_related("author")
+            .order_by("-view_count")[:limit]
+        )
 
     def recent(self, days=30, limit=10):
         """Get recent posts with single query."""
         cutoff_date = timezone.now() - timezone.timedelta(days=days)
-        return self.filter(
-            status='published',
-            published_at__gte=cutoff_date
-        ).select_related('author').order_by('-published_at')[:limit]
+        return (
+            self.filter(status="published", published_at__gte=cutoff_date)
+            .select_related("author")
+            .order_by("-published_at")[:limit]
+        )
 
     def with_view_stats(self):
         """Annotate with view statistics."""
         return self.annotate(
-            total_views=F('view_count'),
+            total_views=F("view_count"),
             is_popular=models.Case(
                 models.When(view_count__gte=1000, then=models.Value(True)),
                 default=models.Value(False),
-                output_field=models.BooleanField()
-            )
+                output_field=models.BooleanField(),
+            ),
         )
 
     def search(self, query):
         """Full-text search optimization."""
-        return self.filter(
-            Q(title__icontains=query) |
-            Q(content__icontains=query) |
-            Q(excerpt__icontains=query)
-        ).select_related('author').order_by('-published_at')
+        return (
+            self.filter(
+                Q(title__icontains=query)
+                | Q(content__icontains=query)
+                | Q(excerpt__icontains=query)
+            )
+            .select_related("author")
+            .order_by("-published_at")
+        )
 
 
 class PersonalInfoQuerySet(models.QuerySet, OptimizedQuerySetMixin):
@@ -89,21 +99,19 @@ class PersonalInfoQuerySet(models.QuerySet, OptimizedQuerySetMixin):
 
     def visible(self):
         """Get visible items efficiently."""
-        return self.filter(is_visible=True).order_by('order')
+        return self.filter(is_visible=True).order_by("order")
 
     def by_type(self, info_type):
         """Get items by type with caching."""
-        return self.filter(
-            type=info_type,
-            is_visible=True
-        ).order_by('order')
+        return self.filter(type=info_type, is_visible=True).order_by("order")
 
     def json_data(self):
         """Get JSON type data efficiently."""
-        return self.filter(
-            type='json',
-            is_visible=True
-        ).values('key', 'value').order_by('order')
+        return (
+            self.filter(type="json", is_visible=True)
+            .values("key", "value")
+            .order_by("order")
+        )
 
 
 class SocialLinkQuerySet(models.QuerySet, OptimizedQuerySetMixin):
@@ -111,7 +119,7 @@ class SocialLinkQuerySet(models.QuerySet, OptimizedQuerySetMixin):
 
     def visible(self):
         """Get visible social links."""
-        return self.filter(is_visible=True).order_by('order')
+        return self.filter(is_visible=True).order_by("order")
 
     def primary(self):
         """Get primary social link efficiently."""
@@ -119,17 +127,11 @@ class SocialLinkQuerySet(models.QuerySet, OptimizedQuerySetMixin):
 
     def by_platform(self, platform):
         """Get links by platform."""
-        return self.filter(
-            platform=platform,
-            is_visible=True
-        ).order_by('order')
+        return self.filter(platform=platform, is_visible=True).order_by("order")
 
     def with_stats(self):
         """Include stats data efficiently."""
-        return self.filter(
-            is_visible=True,
-            stats__isnull=False
-        ).order_by('order')
+        return self.filter(is_visible=True, stats__isnull=False).order_by("order")
 
 
 class AIToolQuerySet(models.QuerySet, OptimizedQuerySetMixin):
@@ -137,35 +139,27 @@ class AIToolQuerySet(models.QuerySet, OptimizedQuerySetMixin):
 
     def visible(self):
         """Get visible tools."""
-        return self.filter(is_visible=True).order_by('category', 'order')
+        return self.filter(is_visible=True).order_by("category", "order")
 
     def featured(self):
         """Get featured tools efficiently."""
-        return self.filter(
-            is_featured=True,
-            is_visible=True
-        ).order_by('-rating', 'name')
+        return self.filter(is_featured=True, is_visible=True).order_by(
+            "-rating", "name"
+        )
 
     def by_category(self, category):
         """Get tools by category with optimization."""
-        return self.filter(
-            category=category,
-            is_visible=True
-        ).order_by('order', 'name')
+        return self.filter(category=category, is_visible=True).order_by("order", "name")
 
     def free_tools(self):
         """Get free tools."""
-        return self.filter(
-            is_free=True,
-            is_visible=True
-        ).order_by('category', 'order')
+        return self.filter(is_free=True, is_visible=True).order_by("category", "order")
 
     def top_rated(self, limit=10):
         """Get top rated tools."""
-        return self.filter(
-            is_visible=True,
-            rating__gt=0
-        ).order_by('-rating', 'name')[:limit]
+        return self.filter(is_visible=True, rating__gt=0).order_by("-rating", "name")[
+            :limit
+        ]
 
 
 class ContactMessageQuerySet(models.QuerySet, OptimizedQuerySetMixin):
@@ -173,18 +167,16 @@ class ContactMessageQuerySet(models.QuerySet, OptimizedQuerySetMixin):
 
     def unread(self):
         """Get unread messages efficiently."""
-        return self.filter(is_read=False).order_by('-created_at')
+        return self.filter(is_read=False).order_by("-created_at")
 
     def recent(self, days=7):
         """Get recent messages."""
         cutoff_date = timezone.now() - timezone.timedelta(days=days)
-        return self.filter(
-            created_at__gte=cutoff_date
-        ).order_by('-created_at')
+        return self.filter(created_at__gte=cutoff_date).order_by("-created_at")
 
     def by_email(self, email):
         """Get messages by email efficiently."""
-        return self.filter(email=email).order_by('-created_at')
+        return self.filter(email=email).order_by("-created_at")
 
 
 class PerformanceMetricQuerySet(models.QuerySet, OptimizedQuerySetMixin):
@@ -192,33 +184,37 @@ class PerformanceMetricQuerySet(models.QuerySet, OptimizedQuerySetMixin):
 
     def by_type(self, metric_type):
         """Get metrics by type."""
-        return self.filter(metric_type=metric_type).order_by('-timestamp')
+        return self.filter(metric_type=metric_type).order_by("-timestamp")
 
     def recent(self, hours=24):
         """Get recent metrics."""
         cutoff_time = timezone.now() - timezone.timedelta(hours=hours)
-        return self.filter(timestamp__gte=cutoff_time).order_by('-timestamp')
+        return self.filter(timestamp__gte=cutoff_time).order_by("-timestamp")
 
     def good_scores(self):
         """Get metrics with good scores."""
         return self.filter(
-            Q(metric_type='lcp', value__lte=2500) |
-            Q(metric_type='fid', value__lte=100) |
-            Q(metric_type='cls', value__lte=0.1) |
-            Q(metric_type='ttfb', value__lte=800)
-        ).order_by('-timestamp')
+            Q(metric_type="lcp", value__lte=2500)
+            | Q(metric_type="fid", value__lte=100)
+            | Q(metric_type="cls", value__lte=0.1)
+            | Q(metric_type="ttfb", value__lte=800)
+        ).order_by("-timestamp")
 
     def device_stats(self):
         """Get device statistics."""
-        return self.values('device_type').annotate(
-            count=Count('id'),
-            avg_value=models.Avg('value'),
-            latest=Max('timestamp')
-        ).order_by('device_type')
+        return (
+            self.values("device_type")
+            .annotate(
+                count=Count("id"),
+                avg_value=models.Avg("value"),
+                latest=Max("timestamp"),
+            )
+            .order_by("device_type")
+        )
 
     def url_performance(self, url):
         """Get performance metrics for specific URL."""
-        return self.filter(url=url).order_by('-timestamp')
+        return self.filter(url=url).order_by("-timestamp")
 
 
 # Manager classes that use the optimized querysets
@@ -231,27 +227,22 @@ class PostManager(models.Manager.from_queryset(PostQuerySet)):
 
 class PersonalInfoManager(models.Manager.from_queryset(PersonalInfoQuerySet)):
     """Manager for PersonalInfo model."""
-    pass
 
 
 class SocialLinkManager(models.Manager.from_queryset(SocialLinkQuerySet)):
     """Manager for SocialLink model."""
-    pass
 
 
 class AIToolManager(models.Manager.from_queryset(AIToolQuerySet)):
     """Manager for AITool model."""
-    pass
 
 
 class ContactMessageManager(models.Manager.from_queryset(ContactMessageQuerySet)):
     """Manager for ContactMessage model."""
-    pass
 
 
 class PerformanceMetricManager(models.Manager.from_queryset(PerformanceMetricQuerySet)):
     """Manager for PerformanceMetric model."""
-    pass
 
 
 # Utility functions for query optimization
@@ -260,18 +251,20 @@ def bulk_update_optimized(model_class, objects, fields, batch_size=1000):
     return model_class.objects.bulk_update(objects, fields, batch_size=batch_size)
 
 
-def bulk_create_optimized(model_class, objects, batch_size=1000, ignore_conflicts=False):
+def bulk_create_optimized(
+    model_class, objects, batch_size=1000, ignore_conflicts=False
+):
     """Optimized bulk create function."""
     return model_class.objects.bulk_create(
-        objects,
-        batch_size=batch_size,
-        ignore_conflicts=ignore_conflicts
+        objects, batch_size=batch_size, ignore_conflicts=ignore_conflicts
     )
 
 
 def get_or_create_optimized(model_class, defaults=None, **lookup):
     """Optimized get_or_create with caching."""
-    cache_key = f"{model_class.__name__}:{'_'.join(f'{k}_{v}' for k, v in lookup.items())}"
+    cache_key = (
+        f"{model_class.__name__}:{'_'.join(f'{k}_{v}' for k, v in lookup.items())}"
+    )
 
     # Try cache first
     cached_result = cache.get(cache_key)
@@ -324,8 +317,8 @@ class QueryOptimizer:
         query_count = QueryOptimizer.analyze_query_count(queryset)
 
         return {
-            'name': name,
-            'execution_time_ms': execution_time,
-            'query_count': query_count,
-            'result_count': len(result)
+            "name": name,
+            "execution_time_ms": execution_time,
+            "query_count": query_count,
+            "result_count": len(result),
         }

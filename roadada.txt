@@ -1,490 +1,4 @@
 
-
-
-
-
-# 👨‍💻 DEVELOPER TRACK - CODE QUALITY & INFRASTRUCTURE
-
-## PHASE 16: CODE QUALITY FOUNDATION 🧹
-**Priority: CRITICAL | Estimated Time: 2-3 days (not 4-5 hours) | Phase: 1/3**
-
-### ⏱️ Realistic Time Breakdown
-- Task 16.1: Fix configs → **2-3 hours**
-- Task 16.2: Install tools → **1 day** (mypy Django compatibility issues expected)
-- Task 16.3: Baseline report → **4 hours** (analyze + document)
-- **Total: 2-3 days**
-
-### Objective
-Establish enterprise-grade code quality standards and fix infrastructure issues blocking automation.
-
-# ✅ ### Task 16.1: Fix Linting Configuration Issues
-**Actions:**
-- [ ] Fix flake8 config parse error in `.flake8` (remove comments with '#' from ignore list)
-- [ ] Validate pyproject.toml [tool.flake8] section
-- [ ] Validate .bandit configuration file
-- [ ] Test flake8 on single file: `flake8 manage.py`
-- [ ] Document all linting settings in `docs/development/linting.md`
-
-**Dependencies:** None
-**Time Estimate:** 2-3 hours
-**Deliverables:**
-- Fixed `.flake8` config
-- `flake8 manage.py` runs without config errors
-- Documentation created
-
-### Task 16.2: Install & Configure Missing Development Tools
-**Actions:**
-- [ ] Install core tools: `pip install flake8 mypy bandit black isort`
-- [ ] Install Django stubs: `pip install django-stubs types-requests`
-- [ ] Configure mypy.ini for Django compatibility
-- [ ] Test bandit: `bandit -r apps/`
-- [ ] Update requirements/development.txt with pinned versions
-- [ ] Verify all tools run: `make lint` should work
-
-**Dependencies:** Task 16.1
-**Time Estimate:** 1 day (expect mypy issues with Django)
-**Known Issues:**
-- mypy may report many Django-related false positives
-- Solution: Configure `django_settings_module` in mypy.ini
-
-**Deliverables:**
-- All linting tools installed and working
-- Updated requirements files
-- `make lint` command functional
-
-### Task 16.3: Code Analysis Baseline
-**Actions:**
-- [ ] Run `black --check .` → Document formatting violations
-- [ ] Run `isort --check-only .` → Document import issues
-- [ ] Run `flake8 .` → Document code quality issues
-- [ ] Run `mypy .` → Document type issues
-- [ ] Run `bandit -r .` → Document security issues
-- [ ] Create `docs/code-quality-baseline.md` with all findings
-- [ ] Prioritize issues: P0 (critical), P1 (high), P2 (medium), P3 (low)
-
-**Dependencies:** Task 16.2
-**Time Estimate:** 4 hours
-**Deliverables:**
-- Comprehensive baseline report in `docs/`
-- Prioritized issue list
-- Plan for Phase 17 (fixing issues)
-
----
-
-## PHASE 17: CODE FORMATTING & CLEANUP 🎨
-**Priority: HIGH | Estimated Time: 3-4 hours | Phase: 2/3**
-
-### Objective
-Apply consistent formatting and clean up the entire codebase.
-
-### Task 17.1: Apply Code Formatting
-**Actions:**
-- [ ] Run black formatter on entire codebase
-- [ ] Run isort to sort imports correctly
-- [ ] Remove unused imports using autoflake or isort
-- [ ] Verify no functional changes with git diff
-- [ ] Commit formatting changes separately from logic changes
-
-**Dependencies:** Phase 16
-**Deliverables:** Uniformly formatted codebase
-
-### Task 17.2: Fix Code Quality Issues
-**Actions:**
-- [ ] Address flake8 violations (line length, complexity, etc.)
-- [ ] Add missing docstrings to public functions
-- [ ] Fix all F401 (unused imports) warnings
-- [ ] Ensure max-complexity is ≤ 10 per function
-- [ ] Document all intentional ignores
-
-**Dependencies:** Task 17.1
-**Deliverables:** Clean flake8 output
-
-### Task 17.3: Type Checking Implementation
-**Actions:**
-- [ ] Add type hints to function signatures in core modules
-- [ ] Configure mypy strict mode gradually
-- [ ] Fix mypy issues in apps/main and apps/portfolio
-- [ ] Document type checking guidelines
-- [ ] Add mypy to CI/CD pipeline
-
-**Dependencies:** Task 17.1
-**Deliverables:** Typed core modules, mypy clean
-
----
-
-## PHASE 18: DEVELOPMENT INFRASTRUCTURE 🔧
-**Priority: HIGH | Estimated Time: 3-4 hours | Phase: 3/3**
-
-### Objective
-Automate code quality checks and streamline development workflow.
-
-### Task 18.1: Fix & Enhance Makefile
-**Actions:**
-- [ ] Verify `make format` command works (black + isort)
-- [ ] Verify `make lint` command works (flake8 + mypy)
-- [ ] Add `make security` command for bandit scanning
-- [ ] Add `make check-all` command (format + lint + test + security)
-- [ ] Add helpful error messages for each command
-- [ ] Update Makefile documentation
-
-**Dependencies:** Phases 16-17
-**Deliverables:** Working Makefile with all quality commands
-
-### Task 18.2: Fix Pre-commit Hooks
-**Actions:**
-- [ ] Fix failing pre-commit hook configurations
-- [ ] Test all pre-commit hooks locally
-- [ ] Add mypy to pre-commit checks
-- [ ] Add bandit to pre-commit checks
-- [ ] Optimize hook execution time (parallel execution)
-- [ ] Document hook setup for new developers
-
-**Dependencies:** Task 18.1
-**Deliverables:** Functional pre-commit hooks
-
-### Task 18.3: CI/CD Pipeline Setup
-**Actions:**
-- [ ] Create/update GitHub Actions workflow for Python linting
-- [ ] Add black, isort, flake8, mypy, bandit to CI
-- [ ] Configure test coverage reporting (≥85% required)
-- [ ] Set up automatic code quality reports
-- [ ] Configure webhook notifications for CI failures
-- [ ] Document CI/CD process for team
-
-**Dependencies:** Task 18.2
-**Deliverables:** Automated CI/CD pipeline
-
----
-
-## PHASE 19: CODE MODULARIZATION & REFACTORING 📦
-**Priority: MEDIUM | Estimated Time: 6-8 hours**
-
-### Objective
-Break down large modules and improve code maintainability.
-
-### Task 19.1: Refactor Large Views Module
-**Actions:**
-- [ ] Analyze apps/main/views.py (542 lines) structure
-- [ ] Extract utility functions to separate modules
-- [ ] Create view mixins for common functionality
-- [ ] Split into: main_views.py, portfolio_views.py, api_views.py
-- [ ] Verify all imports work after split
-- [ ] Run tests to ensure no functional changes
-
-**Dependencies:** Phase 18
-**Deliverables:** Modularized views with cleaner structure
-
-### Task 19.2: Optimize Models
-**Actions:**
-- [ ] Add missing __str__ methods to all models
-- [ ] Extract complex model methods to manager classes
-- [ ] Add model method documentation
-- [ ] Optimize heavy database queries in models
-- [ ] Add caching where appropriate
-- [ ] Review model relationships for N+1 queries
-
-**Dependencies:** Phase 18
-**Deliverables:** Optimized, well-documented models
-
-### Task 19.3: Consolidate Utilities
-**Actions:**
-- [ ] Create centralized utility module structure
-- [ ] Extract duplicated code across apps
-- [ ] Create helper modules for: formatting, validation, caching
-- [ ] Standardize error handling patterns
-- [ ] Improve function naming and documentation
-- [ ] Add utility module tests
-
-**Dependencies:** Task 19.1
-**Deliverables:** DRY, centralized utility functions
-
----
-
----
-
-# 🔒 PRODUCTION TRACK - SECURITY & DEPLOYMENT
-
-## PHASE 20: SECURITY HARDENING 🔐
-**Priority: CRITICAL | Estimated Time: 2-3 days (not 4-5 hours) | Phase: 1/2**
-
-### ⏱️ Realistic Time Breakdown
-- Task 20.1: Audit hardcoded values → **1 day** (codebase-wide search)
-- Task 20.2: Production settings → **4 hours**
-- Task 20.3: Security headers → **3-4 hours**
-- Task 20.4: Secret management → **2-3 hours**
-- **Total: 2-3 days**
-
-### Objective
-Secure all configuration and eliminate vulnerabilities before production.
-
-### Task 20.1: Audit & Fix Hardcoded Values
-**Actions:**
-- [ ] Search for hardcoded URLs: `grep -r "https://" apps/`
-- [ ] Search for hardcoded secrets: `grep -r "SECRET\|API_KEY\|PASSWORD" .`
-- [ ] Move CDN URLs to `settings.CDN_DOMAIN`
-- [ ] Move external URLs to `settings.EXTERNAL_SERVICES`
-- [ ] Run git-secrets: `git secrets --scan`
-- [ ] Create `.env.example` with all required variables
-- [ ] Document in `docs/deployment/environment-variables.md`
-
-**Dependencies:** None
-**Time Estimate:** 1 day
-**Deliverables:**
-- No hardcoded URLs/secrets in code
-- `.env.example` created
-- Environment variables documentation
-
-### Task 20.2: Production Settings Validation
-**Actions:**
-- [ ] Create `project/settings/production.py` (if missing)
-- [ ] Set `DEBUG = False`
-- [ ] Generate new `SECRET_KEY` (50+ chars, random)
-- [ ] Configure `ALLOWED_HOSTS = ['.yourdomain.com']`
-- [ ] Set `SECURE_SSL_REDIRECT = True`
-- [ ] Set `SESSION_COOKIE_SECURE = True`
-- [ ] Set `CSRF_COOKIE_SECURE = True`
-- [ ] Configure `SECURE_HSTS_SECONDS = 31536000`
-- [ ] Set up database connection pooling (CONN_MAX_AGE)
-- [ ] Configure Redis for production cache
-
-**Dependencies:** Task 20.1
-**Time Estimate:** 4 hours
-**Deliverables:**
-- Production-ready `settings/production.py`
-- Security settings documented
-
-### Task 20.3: Security Headers Enhancement
-**Actions:**
-- [ ] Review CSP headers in middleware
-- [ ] Add `SECURE_HSTS_SECONDS` to settings
-- [ ] Set `SECURE_HSTS_INCLUDE_SUBDOMAINS = True`
-- [ ] Configure `SESSION_COOKIE_SAMESITE = 'Strict'`
-- [ ] Add `X-Frame-Options: DENY`
-- [ ] Add `X-Content-Type-Options: nosniff`
-- [ ] Test with https://securityheaders.com
-- [ ] Fix any red/orange warnings
-
-**Dependencies:** Task 20.2
-**Time Estimate:** 3-4 hours
-**Deliverables:**
-- A+ rating on securityheaders.com
-- All critical headers configured
-
-### Task 20.4: Credential & Secret Management
-**Actions:**
-- [ ] Generate production `SECRET_KEY`: `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`
-- [ ] Generate VAPID keys for push: `python manage.py generate_vapid_keys`
-- [ ] Set up database credentials in environment
-- [ ] Configure email/SMTP credentials
-- [ ] Set up Redis connection string
-- [ ] Document secret rotation procedures in `docs/security/`
-- [ ] Add secrets to secure vault (not in .env file)
-
-**Dependencies:** Task 20.2
-**Time Estimate:** 2-3 hours
-**Deliverables:**
-- All secrets in secure storage
-- Secret rotation documentation
-- `.env.example` updated
-
----
-- [ ] Set up .env.example with all required variables
-- [ ] Generate production SECRET_KEY
-- [ ] Set up VAPID keys for push notifications
-- [ ] Configure database credentials securely
-- [ ] Set up email credentials (SMTP)
-- [ ] Document secret rotation procedures
-
-**Dependencies:** Task 20.2
-**Deliverables:** Secret management setup, .env.example
-
----
-
-## PHASE 21: PERFORMANCE OPTIMIZATION & MONITORING ⚡
-**Priority: HIGH | Estimated Time: 5-6 hours | Phase: 2/2**
-
-### Objective
-Optimize performance and set up comprehensive monitoring.
-
-### Task 21.1: Database Query Optimization
-**Actions:**
-- [ ] Run Django Debug Toolbar to identify N+1 queries
-- [ ] Add select_related() and prefetch_related() where needed
-- [ ] Create database indexes for frequently queried fields
-- [ ] Optimize model querysets in views
-- [ ] Run query performance baseline tests
-- [ ] Document query optimization patterns
-
-**Dependencies:** Phase 19
-**Deliverables:** Optimized queries, performance baseline
-
-### Task 21.2: Caching Strategy Implementation
-**Actions:**
-- [ ] Set up Redis for caching (development/staging/production)
-- [ ] Implement view-level caching for expensive queries
-- [ ] Add cache invalidation on model save/delete signals
-- [ ] Create cache warming strategy for critical pages
-- [ ] Set up cache monitoring and metrics
-- [ ] Test cache effectiveness
-
-**Dependencies:** Task 21.1
-**Deliverables:** Working cache layer, monitoring
-
-### Task 21.3: Static Assets Optimization
-**Actions:**
-- [ ] Run collectstatic and verify all assets are collected
-- [ ] Configure CDN for static file serving (if available)
-- [ ] Minify CSS and JavaScript files
-- [ ] Compress images to WebP/AVIF formats
-- [ ] Add cache-busting headers
-- [ ] Verify gzip compression is enabled
-
-**Dependencies:** Phase 20
-**Deliverables:** Optimized static assets, CDN configured
-
-### Task 21.4: Monitoring & Alerting Setup
-**Actions:**
-- [ ] Set up Sentry for error tracking and reporting
-- [ ] Configure uptime monitoring and health checks
-- [ ] Set up Core Web Vitals monitoring (Lighthouse CI)
-- [ ] Configure log aggregation (if needed)
-- [ ] Set up alerting for critical errors
-- [ ] Create monitoring dashboard
-
-**Dependencies:** Task 21.2
-**Deliverables:** Monitoring infrastructure, alerting rules
-
-### Task 21.5: Load Testing & Benchmarking
-**Actions:**
-- [ ] Create load testing scenarios for critical endpoints
-- [ ] Run load tests with expected production traffic
-- [ ] Identify performance bottlenecks
-- [ ] Create performance baseline report
-- [ ] Document scaling strategy
-- [ ] Test auto-scaling capabilities
-
-**Dependencies:** Task 21.4
-**Deliverables:** Performance baseline, scaling strategy
-
----
-
-## PHASE 22: TESTING & QA COMPLETENESS 🧪
-**Priority: HIGH | Estimated Time: 5-7 days | Phase: 3/3**
-
-### ⏱️ Realistic Time Breakdown
-- Task 22.1: Establish baseline + unit tests → **2 days**
-- Task 22.2: Integration tests → **1-2 days**
-- Task 22.3: E2E tests (Playwright) → **1-2 days**
-- Task 22.4: Performance testing → **1 day**
-- **Total: 5-7 days**
-
-### Objective
-Ensure comprehensive test coverage and QA readiness before production.
-
-### 📊 Test Coverage Strategy
-
-#### Current Baseline (Establish First - Day 1)
-**Actions:**
-- [ ] Run: `python manage.py test --with-coverage`
-- [ ] Generate HTML report: `coverage html`
-- [ ] Open `htmlcov/index.html` and document current coverage: _____%
-- [ ] Identify modules with <70% coverage
-- [ ] Create `docs/testing/coverage-baseline.md`
-
-#### Prioritized Coverage Plan
-**Priority 1: Critical Paths (Target 95%+)**
-- [ ] `apps/main/views.py` - Authentication, payments
-- [ ] `apps/portfolio/models.py` - Data integrity
-- [ ] `project/settings/` - Security configs
-- [ ] Payment processing functions
-- [ ] User authentication flows
-
-**Priority 2: Core Features (Target 85%+)**
-- [ ] `apps/blog/views.py` - Content display
-- [ ] `apps/contact/forms.py` - User input
-- [ ] `apps/tools/` - Tool functionality
-- [ ] Utility functions in `apps/*/utils.py`
-
-**Priority 3: Nice-to-Have (Target 70%+)**
-- [ ] Static pages and templates
-- [ ] UI component logic
-- [ ] Non-critical features
-
-### Task 22.1: Unit Test Coverage Expansion
-**Actions:**
-- [ ] Audit current test coverage (run baseline above)
-- [ ] Write tests for Priority 1 modules first
-- [ ] Test error handling paths (`try/except` blocks)
-- [ ] Test edge cases and boundary conditions
-- [ ] Test database model methods
-- [ ] Re-run coverage: should be ≥85%
-- [ ] Document testing standards in `docs/testing/standards.md`
-
-**Dependencies:** Phase 19
-**Time Estimate:** 2 days
-**Deliverables:**
-- ≥85% test coverage achieved
-- Coverage report in `htmlcov/`
-- Testing standards documented
-
-### Task 22.2: Integration Testing
-**Actions:**
-- [ ] Create integration tests for key workflows
-- [ ] Test API endpoints with various payloads (success + errors)
-- [ ] Test database transactions and rollbacks
-- [ ] Test cache invalidation flows (save model → cache clears)
-- [ ] Test error recovery scenarios (DB down, Redis down)
-- [ ] Test email sending integration
-- [ ] Document integration test patterns
-
-**Dependencies:** Task 22.1
-**Time Estimate:** 1-2 days
-**Deliverables:**
-- Integration test suite in `tests/integration/`
-- All critical workflows tested
-
-### Task 22.3: E2E Testing with Playwright
-**Actions:**
-- [ ] Install Playwright: `npm install -D @playwright/test`
-- [ ] Create `tests/e2e/` directory
-- [ ] Write E2E test for: Homepage loading
-- [ ] Write E2E test for: Contact form submission
-- [ ] Write E2E test for: Blog post viewing
-- [ ] Write E2E test for: Navigation and links
-- [ ] Run visual regression tests (screenshots)
-- [ ] Configure Playwright in CI/CD
-- [ ] Document E2E test patterns
-
-**Dependencies:** Task 22.2
-**Time Estimate:** 1-2 days
-**Deliverables:**
-- E2E test suite with screenshots
-- CI integration configured
-- Test reports generated
-
-### Task 22.4: Performance Testing & Budgets
-**Actions:**
-- [ ] Install Lighthouse CI: `npm install -g @lhci/cli`
-- [ ] Define performance budgets:
-  - LCP (Largest Contentful Paint): **<2.5s**
-  - FID (First Input Delay): **<100ms**
-  - CLS (Cumulative Layout Shift): **<0.1**
-  - Total Page Size: **<1MB**
-- [ ] Run Lighthouse for all main pages
-- [ ] Document results in `docs/performance/baseline.md`
-- [ ] Create performance improvement plan if targets not met
-- [ ] Set up continuous monitoring (Phase 21.4)
-- [ ] Create alert rules for performance degradation
-
-**Dependencies:** Phase 21
-**Time Estimate:** 1 day
-**Deliverables:**
-- Performance budgets defined
-- Lighthouse reports
-- Monitoring configured
-
----
-
 ---
 
 # 🚨 ROLLBACK & RECOVERY PLAN
@@ -1553,6 +1067,59 @@ markdownlint docs/**/*.md
 # Check for broken links
 markdown-link-check docs/**/*.md
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---
 

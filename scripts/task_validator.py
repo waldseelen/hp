@@ -5,11 +5,13 @@ Task Protocol Validator
 This script validates the task.txt YAML file structure and reports any issues.
 """
 
-import sys
 import os
+import sys
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from task_parser import TaskProtocolParser
+
 
 def validate_task_protocol(task_file_path: str = None) -> bool:
     """Validate the task protocol YAML file"""
@@ -30,6 +32,7 @@ def validate_task_protocol(task_file_path: str = None) -> bool:
         print(f"❌ Error validating task protocol: {e}")
         return False
 
+
 def main():
     """Main validation function"""
     task_file = None
@@ -38,6 +41,7 @@ def main():
 
     success = validate_task_protocol(task_file)
     sys.exit(0 if success else 1)
+
 
 if __name__ == "__main__":
     main()

@@ -14,20 +14,20 @@ Features:
 
 import json
 import logging
-from typing import Dict, List, Optional, Any, Union
-from datetime import datetime, timedelta
+from datetime import timedelta
+from typing import Any, Dict, List, Optional, Union
 
 from django.conf import settings
-from django.utils import timezone
 from django.db.models import Q, QuerySet
+from django.utils import timezone
 
 try:
-    from pywebpush import webpush, WebPushException
+    from pywebpush import WebPushException, webpush
 except ImportError:
     webpush = None
     WebPushException = Exception
 
-from ..models import WebPushSubscription, NotificationLog
+from ..models import NotificationLog, WebPushSubscription
 
 logger = logging.getLogger(__name__)
 
@@ -39,16 +39,24 @@ class PushNotificationService:
 
     def __init__(self):
         """Initialize the push notification service"""
-        self.vapid_private_key = getattr(settings, 'WEBPUSH_SETTINGS', {}).get('VAPID_PRIVATE_KEY')
-        self.vapid_public_key = getattr(settings, 'WEBPUSH_SETTINGS', {}).get('VAPID_PUBLIC_KEY')
-        self.vapid_subject = getattr(settings, 'WEBPUSH_SETTINGS', {}).get('VAPID_SUBJECT', 'mailto:admin@localhost')
+        self.vapid_private_key = getattr(settings, "WEBPUSH_SETTINGS", {}).get(
+            "VAPID_PRIVATE_KEY"
+        )
+        self.vapid_public_key = getattr(settings, "WEBPUSH_SETTINGS", {}).get(
+            "VAPID_PUBLIC_KEY"
+        )
+        self.vapid_subject = getattr(settings, "WEBPUSH_SETTINGS", {}).get(
+            "VAPID_SUBJECT", "mailto:admin@localhost"
+        )
 
         if not self.vapid_private_key:
-            logger.warning("VAPID private key not configured. Push notifications will not work.")
+            logger.warning(
+                "VAPID private key not configured. Push notifications will not work."
+            )
 
     def send_notification_to_subscription(
         self,
-        subscription: 'WebPushSubscription',
+        subscription: "WebPushSubscription",
         title: str,
         body: str,
         icon: Optional[str] = None,
@@ -57,9 +65,9 @@ class PushNotificationService:
         url: Optional[str] = None,
         tag: Optional[str] = None,
         actions: Optional[List[Dict[str, str]]] = None,
-        notification_type: str = 'custom',
+        notification_type: str = "custom",
         additional_data: Optional[Dict[str, Any]] = None,
-        ttl: int = 86400  # 24 hours
+        ttl: int = 86400,  # 24 hours
     ) -> Dict[str, Any]:
         """
         Send a push notification to a single subscription
@@ -83,52 +91,47 @@ class PushNotificationService:
         """
         if not webpush:
             return {
-                'success': False,
-                'error': 'pywebpush not installed',
-                'subscription_id': subscription.id
+                "success": False,
+                "error": "pywebpush not installed",
+                "subscription_id": subscription.id,
             }
 
         if not subscription.enabled:
             return {
-                'success': False,
-                'error': 'Subscription disabled',
-                'subscription_id': subscription.id
+                "success": False,
+                "error": "Subscription disabled",
+                "subscription_id": subscription.id,
             }
 
         # Prepare notification payload
         payload = {
-            'title': title,
-            'body': body,
-            'icon': icon or '/static/icons/icon-192x192.png',
-            'badge': badge or '/static/icons/badge-72x72.png',
-            'data': {
-                'url': url or '/',
-                'type': notification_type,
-                'timestamp': timezone.now().isoformat(),
-                **(additional_data or {})
-            }
+            "title": title,
+            "body": body,
+            "icon": icon or "/static/icons/icon-192x192.png",
+            "badge": badge or "/static/icons/badge-72x72.png",
+            "data": {
+                "url": url or "/",
+                "type": notification_type,
+                "timestamp": timezone.now().isoformat(),
+                **(additional_data or {}),
+            },
         }
 
         if image:
-            payload['image'] = image
+            payload["image"] = image
         if tag:
-            payload['tag'] = tag
+            payload["tag"] = tag
         if actions:
-            payload['actions'] = actions
+            payload["actions"] = actions
 
         # Prepare subscription data for pywebpush
         subscription_data = {
-            'endpoint': subscription.endpoint,
-            'keys': {
-                'p256dh': subscription.p256dh,
-                'auth': subscription.auth
-            }
+            "endpoint": subscription.endpoint,
+            "keys": {"p256dh": subscription.p256dh, "auth": subscription.auth},
         }
 
         # VAPID configuration
-        vapid_claims = {
-            'sub': self.vapid_subject
-        }
+        vapid_claims = {"sub": self.vapid_subject}
 
         try:
             # Send the notification
@@ -137,12 +140,12 @@ class PushNotificationService:
                 data=json.dumps(payload),
                 vapid_private_key=self.vapid_private_key,
                 vapid_claims=vapid_claims,
-                ttl=ttl
+                ttl=ttl,
             )
 
             # Update subscription last used timestamp
             subscription.last_used = timezone.now()
-            subscription.save(update_fields=['last_used'])
+            subscription.save(update_fields=["last_used"])
 
             # Log successful notification
             NotificationLog.objects.create(
@@ -150,15 +153,19 @@ class PushNotificationService:
                 title=title,
                 body=body,
                 notification_type=notification_type,
-                status='sent',
-                response_code=response.status_code if hasattr(response, 'status_code') else 200,
-                sent_at=timezone.now()
+                status="sent",
+                response_code=(
+                    response.status_code if hasattr(response, "status_code") else 200
+                ),
+                sent_at=timezone.now(),
             )
 
             return {
-                'success': True,
-                'subscription_id': subscription.id,
-                'response_code': response.status_code if hasattr(response, 'status_code') else 200
+                "success": True,
+                "subscription_id": subscription.id,
+                "response_code": (
+                    response.status_code if hasattr(response, "status_code") else 200
+                ),
             }
 
         except WebPushException as e:
@@ -170,22 +177,22 @@ class PushNotificationService:
                 title=title,
                 body=body,
                 notification_type=notification_type,
-                status='failed',
+                status="failed",
                 error_message=error_message,
-                sent_at=timezone.now()
+                sent_at=timezone.now(),
             )
 
             # Handle specific error cases
-            if '410' in error_message or 'Expired' in error_message:
+            if "410" in error_message or "Expired" in error_message:
                 # Subscription expired, disable it
                 subscription.enabled = False
-                subscription.save(update_fields=['enabled'])
+                subscription.save(update_fields=["enabled"])
                 logger.info(f"Disabled expired subscription: {subscription.id}")
 
             return {
-                'success': False,
-                'error': error_message,
-                'subscription_id': subscription.id
+                "success": False,
+                "error": error_message,
+                "subscription_id": subscription.id,
             }
 
         except Exception as e:
@@ -198,20 +205,20 @@ class PushNotificationService:
                 title=title,
                 body=body,
                 notification_type=notification_type,
-                status='error',
+                status="error",
                 error_message=error_message,
-                sent_at=timezone.now()
+                sent_at=timezone.now(),
             )
 
             return {
-                'success': False,
-                'error': error_message,
-                'subscription_id': subscription.id
+                "success": False,
+                "error": error_message,
+                "subscription_id": subscription.id,
             }
 
     def send_notification_to_subscriptions(
         self,
-        subscriptions: Union[List['WebPushSubscription'], 'QuerySet'],
+        subscriptions: Union[List["WebPushSubscription"], "QuerySet"],
         title: str,
         body: str,
         icon: Optional[str] = None,
@@ -220,10 +227,10 @@ class PushNotificationService:
         url: Optional[str] = None,
         tag: Optional[str] = None,
         actions: Optional[List[Dict[str, str]]] = None,
-        notification_type: str = 'custom',
+        notification_type: str = "custom",
         additional_data: Optional[Dict[str, Any]] = None,
         topics: Optional[List[str]] = None,
-        max_concurrent: int = 10
+        max_concurrent: int = 10,
     ) -> Dict[str, Any]:
         """
         Send a push notification to multiple subscriptions
@@ -255,7 +262,11 @@ class PushNotificationService:
         # Ensure we have enabled subscriptions only
         subscriptions = subscriptions.filter(enabled=True)
 
-        total_count = subscriptions.count() if hasattr(subscriptions, 'count') else len(subscriptions)
+        total_count = (
+            subscriptions.count()
+            if hasattr(subscriptions, "count")
+            else len(subscriptions)
+        )
         success_count = 0
         failure_count = 0
         results = []
@@ -275,22 +286,24 @@ class PushNotificationService:
                 tag=tag,
                 actions=actions,
                 notification_type=notification_type,
-                additional_data=additional_data
+                additional_data=additional_data,
             )
 
             results.append(result)
 
-            if result['success']:
+            if result["success"]:
                 success_count += 1
             else:
                 failure_count += 1
 
         return {
-            'total_count': total_count,
-            'success_count': success_count,
-            'failure_count': failure_count,
-            'success_rate': (success_count / total_count * 100) if total_count > 0 else 0,
-            'results': results
+            "total_count": total_count,
+            "success_count": success_count,
+            "failure_count": failure_count,
+            "success_rate": (
+                (success_count / total_count * 100) if total_count > 0 else 0
+            ),
+            "results": results,
         }
 
     def send_broadcast_notification(
@@ -303,9 +316,9 @@ class PushNotificationService:
         url: Optional[str] = None,
         tag: Optional[str] = None,
         actions: Optional[List[Dict[str, str]]] = None,
-        notification_type: str = 'broadcast',
+        notification_type: str = "broadcast",
         additional_data: Optional[Dict[str, Any]] = None,
-        topics: Optional[List[str]] = None
+        topics: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
         Send a broadcast notification to all active subscriptions
@@ -340,7 +353,7 @@ class PushNotificationService:
             actions=actions,
             notification_type=notification_type,
             additional_data=additional_data,
-            topics=topics
+            topics=topics,
         )
 
     def get_subscription_stats(self) -> Dict[str, Any]:
@@ -361,18 +374,22 @@ class PushNotificationService:
         ).count()
 
         # Browser breakdown
-        browser_stats = WebPushSubscription.objects.values('browser').annotate(
-            count=WebPushSubscription.objects.filter(
-                browser=WebPushSubscription.objects.values('browser')
-            ).count()
-        ).order_by('-count')
+        browser_stats = (
+            WebPushSubscription.objects.values("browser")
+            .annotate(
+                count=WebPushSubscription.objects.filter(
+                    browser=WebPushSubscription.objects.values("browser")
+                ).count()
+            )
+            .order_by("-count")
+        )
 
         return {
-            'total_subscriptions': total_subscriptions,
-            'active_subscriptions': active_subscriptions,
-            'disabled_subscriptions': disabled_subscriptions,
-            'recent_subscriptions': recent_subscriptions,
-            'browser_breakdown': list(browser_stats)
+            "total_subscriptions": total_subscriptions,
+            "active_subscriptions": active_subscriptions,
+            "disabled_subscriptions": disabled_subscriptions,
+            "recent_subscriptions": recent_subscriptions,
+            "browser_breakdown": list(browser_stats),
         }
 
     def get_notification_stats(self, days: int = 7) -> Dict[str, Any]:
@@ -387,39 +404,40 @@ class PushNotificationService:
         """
         since_date = timezone.now() - timedelta(days=days)
 
-        total_sent = NotificationLog.objects.filter(
-            sent_at__gte=since_date
-        ).count()
+        total_sent = NotificationLog.objects.filter(sent_at__gte=since_date).count()
 
         successful = NotificationLog.objects.filter(
-            sent_at__gte=since_date,
-            status='sent'
+            sent_at__gte=since_date, status="sent"
         ).count()
 
         failed = NotificationLog.objects.filter(
-            sent_at__gte=since_date,
-            status__in=['failed', 'error']
+            sent_at__gte=since_date, status__in=["failed", "error"]
         ).count()
 
         success_rate = (successful / total_sent * 100) if total_sent > 0 else 0
 
         # Type breakdown
-        type_stats = NotificationLog.objects.filter(
-            sent_at__gte=since_date
-        ).values('notification_type').annotate(
-            count=NotificationLog.objects.filter(
-                sent_at__gte=since_date,
-                notification_type=NotificationLog.objects.values('notification_type')
-            ).count()
-        ).order_by('-count')
+        type_stats = (
+            NotificationLog.objects.filter(sent_at__gte=since_date)
+            .values("notification_type")
+            .annotate(
+                count=NotificationLog.objects.filter(
+                    sent_at__gte=since_date,
+                    notification_type=NotificationLog.objects.values(
+                        "notification_type"
+                    ),
+                ).count()
+            )
+            .order_by("-count")
+        )
 
         return {
-            'period_days': days,
-            'total_sent': total_sent,
-            'successful': successful,
-            'failed': failed,
-            'success_rate': success_rate,
-            'type_breakdown': list(type_stats)
+            "period_days": days,
+            "total_sent": total_sent,
+            "successful": successful,
+            "failed": failed,
+            "success_rate": success_rate,
+            "type_breakdown": list(type_stats),
         }
 
     def cleanup_expired_subscriptions(self) -> int:
@@ -434,8 +452,7 @@ class PushNotificationService:
         cutoff_date = timezone.now() - timedelta(days=90)
 
         expired_subs = WebPushSubscription.objects.filter(
-            enabled=True,
-            last_used__lt=cutoff_date
+            enabled=True, last_used__lt=cutoff_date
         )
 
         count = expired_subs.update(enabled=False)
@@ -461,16 +478,10 @@ class PushNotificationService:
                 title="Test Notification",
                 body="This is a test push notification from your portfolio site.",
                 notification_type="test",
-                url="/"
+                url="/",
             )
 
         except WebPushSubscription.DoesNotExist:
-            return {
-                'success': False,
-                'error': 'Subscription not found'
-            }
+            return {"success": False, "error": "Subscription not found"}
         except Exception as e:
-            return {
-                'success': False,
-                'error': str(e)
-            }
+            return {"success": False, "error": str(e)}

@@ -3,36 +3,36 @@ Cache utility functions for intelligent cache invalidation.
 Manages cache keys, invalidation strategies, and fallback data.
 """
 
+import hashlib
+import logging
+from typing import Any, Dict, List, Optional
+
 from django.core.cache import cache
 from django.utils import timezone
-from typing import Dict, List, Any, Optional, Callable, Union
-import logging
-import hashlib
-import json
 
 logger = logging.getLogger(__name__)
 
 # Cache key patterns and prefixes
 CACHE_KEYS = {
-    'home_page': 'home_page_data_{hash}_{hour}',
-    'personal_page': 'personal_page_data',
-    'music_page': 'music_page_data',
-    'useful_page': 'useful_page_data',
-    'portfolio_stats': 'portfolio_statistics',
-    'ai_tools_cache': 'ai_tools_{category}',
-    'cybersecurity_cache': 'cybersecurity_{type}',
-    'blog_posts': 'blog_posts_{filter}',
-    'tools_cache': 'tools_{category}',
-    'model_data': '{app}_{model}_{id}',
+    "home_page": "home_page_data_{hash}_{hour}",
+    "personal_page": "personal_page_data",
+    "music_page": "music_page_data",
+    "useful_page": "useful_page_data",
+    "portfolio_stats": "portfolio_statistics",
+    "ai_tools_cache": "ai_tools_{category}",
+    "cybersecurity_cache": "cybersecurity_{type}",
+    "blog_posts": "blog_posts_{filter}",
+    "tools_cache": "tools_{category}",
+    "model_data": "{app}_{model}_{id}",
 }
 
 # Cache timeout constants (in seconds)
 CACHE_TIMEOUTS = {
-    'short': 300,      # 5 minutes
-    'medium': 900,     # 15 minutes
-    'long': 3600,      # 1 hour
-    'daily': 86400,    # 24 hours
-    'weekly': 604800,  # 7 days
+    "short": 300,  # 5 minutes
+    "medium": 900,  # 15 minutes
+    "long": 3600,  # 1 hour
+    "daily": 86400,  # 24 hours
+    "weekly": 604800,  # 7 days
 }
 
 
@@ -60,14 +60,14 @@ class CacheManager:
             key_template = CACHE_KEYS.get(pattern, pattern)
 
             # Handle hash-based keys
-            if '{hash}' in key_template:
-                hash_value = kwargs.pop('hash', '')
-                key_template = key_template.replace('{hash}', str(hash_value))
+            if "{hash}" in key_template:
+                hash_value = kwargs.pop("hash", "")
+                key_template = key_template.replace("{hash}", str(hash_value))
 
             # Handle hour-based keys
-            if '{hour}' in key_template:
-                hour = kwargs.pop('hour', timezone.now().hour)
-                key_template = key_template.replace('{hour}', str(hour))
+            if "{hour}" in key_template:
+                hour = kwargs.pop("hour", timezone.now().hour)
+                key_template = key_template.replace("{hour}", str(hour))
 
             # Replace remaining placeholders
             return key_template.format(**kwargs)
@@ -75,8 +75,13 @@ class CacheManager:
             logger.error(f"Error generating cache key: {e}")
             return pattern
 
-    def set_cache(self, key: str, value: Any, timeout: str = 'medium',
-                  related_keys: Optional[List[str]] = None) -> None:
+    def set_cache(
+        self,
+        key: str,
+        value: Any,
+        timeout: str = "medium",
+        related_keys: Optional[List[str]] = None,
+    ) -> None:
         """
         Set cache with optional related keys for batch invalidation.
 
@@ -87,7 +92,7 @@ class CacheManager:
             related_keys: List of related cache keys for invalidation tracking
         """
         try:
-            timeout_seconds = CACHE_TIMEOUTS.get(timeout, CACHE_TIMEOUTS['medium'])
+            timeout_seconds = CACHE_TIMEOUTS.get(timeout, CACHE_TIMEOUTS["medium"])
             cache.set(key, value, timeout_seconds)
 
             # Track related keys
@@ -156,17 +161,23 @@ class CacheManager:
             try:
                 keys = cache.keys(pattern)
                 cache.delete_many(keys)
-                logger.info(f"Cache invalidated: {len(keys)} keys matching pattern '{pattern}'")
+                logger.info(
+                    f"Cache invalidated: {len(keys)} keys matching pattern '{pattern}'"
+                )
                 return len(keys)
             except (AttributeError, TypeError):
                 # Fall back for cache backends that don't support keys() (e.g., LocMemCache)
-                logger.debug(f"Cache backend doesn't support pattern matching, skipping pattern '{pattern}'")
+                logger.debug(
+                    f"Cache backend doesn't support pattern matching, skipping pattern '{pattern}'"
+                )
                 return 0
         except Exception as e:
             logger.error(f"Error invalidating cache pattern: {e}")
             return 0
 
-    def invalidate_by_model(self, app: str, model: str, instance_id: Optional[int] = None) -> None:
+    def invalidate_by_model(
+        self, app: str, model: str, instance_id: Optional[int] = None
+    ) -> None:
         """
         Invalidate cache keys related to a specific model.
 
@@ -183,8 +194,10 @@ class CacheManager:
                 pattern = f"{app}_{model}_*"
                 self.invalidate_pattern(pattern)
 
-            logger.info(f"Cache invalidated by model: {app}.{model}" +
-                       (f" instance {instance_id}" if instance_id else ""))
+            logger.info(
+                f"Cache invalidated by model: {app}.{model}"
+                + (f" instance {instance_id}" if instance_id else "")
+            )
         except Exception as e:
             logger.error(f"Error invalidating cache by model: {e}")
 
@@ -193,7 +206,7 @@ class CacheManager:
 cache_manager = CacheManager()
 
 
-def cache_result(timeout: str = 'medium', key_prefix: Optional[str] = None):
+def cache_result(timeout: str = "medium", key_prefix: Optional[str] = None):
     """
     Decorator to cache function results automatically.
 
@@ -204,6 +217,7 @@ def cache_result(timeout: str = 'medium', key_prefix: Optional[str] = None):
     Returns:
         Decorated function with caching
     """
+
     def decorator(func):
         def wrapper(*args, **kwargs):
             # Generate cache key
@@ -233,6 +247,7 @@ def cache_result(timeout: str = 'medium', key_prefix: Optional[str] = None):
             return result
 
         return wrapper
+
     return decorator
 
 
@@ -240,17 +255,17 @@ def cache_queryset_medium(func):
     """
     Decorator for caching queryset results with medium timeout (15 minutes).
     """
-    return cache_result(timeout='medium')(func)
+    return cache_result(timeout="medium")(func)
 
 
 def cache_long(func):
     """
     Decorator for caching results with long timeout (1 hour).
     """
-    return cache_result(timeout='long')(func)
+    return cache_result(timeout="long")(func)
 
 
-def cache_page_data(timeout: str = 'medium'):
+def cache_page_data(timeout: str = "medium"):
     """
     Decorator specifically for caching page view data.
     """
@@ -294,7 +309,9 @@ class ModelCacheManager:
                 cache_manager.invalidate_cache(cache_key)
 
             action = "created" if created else "updated"
-            logger.info(f"Cache invalidated on {action}: {model_key} (id: {instance.id})")
+            logger.info(
+                f"Cache invalidated on {action}: {model_key} (id: {instance.id})"
+            )
         except Exception as e:
             logger.error(f"Error invalidating cache on save: {e}")
 
@@ -349,30 +366,24 @@ def get_fallback_data(key: str) -> Optional[Dict[str, Any]]:
         Fallback data dictionary
     """
     fallback_data = {
-        'home_page_data': {
-            'personal_info': [],
-            'social_links': [],
-            'recent_posts': [],
-            'featured_projects': [],
-            'featured_ai_tools': [],
-            'urgent_security': [],
-            'portfolio_stats': {},
-            'current_activity': None,
-            'latest_skills': []
+        "home_page_data": {
+            "personal_info": [],
+            "social_links": [],
+            "recent_posts": [],
+            "featured_projects": [],
+            "featured_ai_tools": [],
+            "urgent_security": [],
+            "portfolio_stats": {},
+            "current_activity": None,
+            "latest_skills": [],
         },
-        'personal_page_data': {
-            'personal_info': [],
-            'social_links': []
+        "personal_page_data": {"personal_info": [], "social_links": []},
+        "music_page_data": {
+            "playlists": [],
+            "featured_playlists": [],
+            "current_track": None,
         },
-        'music_page_data': {
-            'playlists': [],
-            'featured_playlists': [],
-            'current_track': None
-        },
-        'useful_page_data': {
-            'resources_by_category': {},
-            'featured_resources': []
-        }
+        "useful_page_data": {"resources_by_category": {}, "featured_resources": []},
     }
 
     # Match key pattern or return generic fallback

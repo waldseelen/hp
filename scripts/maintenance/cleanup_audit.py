@@ -6,6 +6,7 @@ Project Cleanup Audit for Phase 10
 import os
 from pathlib import Path
 
+
 def find_unused_files():
     print("Scanning for potentially unused files...")
 
@@ -13,9 +14,18 @@ def find_unused_files():
 
     # Check for common temp/backup patterns
     patterns = [
-        "*.tmp", "*.bak", "*.backup", "*.old", "*~",
-        "*.log", "*.cache", "*.pyc", "*.pyo",
-        ".DS_Store", "Thumbs.db", "desktop.ini"
+        "*.tmp",
+        "*.bak",
+        "*.backup",
+        "*.old",
+        "*~",
+        "*.log",
+        "*.cache",
+        "*.pyc",
+        "*.pyo",
+        ".DS_Store",
+        "Thumbs.db",
+        "desktop.ini",
     ]
 
     for pattern in patterns:
@@ -35,6 +45,7 @@ def find_unused_files():
 
     return unused_candidates, empty_dirs
 
+
 def check_duplicate_files():
     print("Checking for potential duplicate files...")
 
@@ -43,10 +54,14 @@ def check_duplicate_files():
     for item in Path(".").iterdir():
         if item.is_dir():
             name = item.name.lower()
-            if any(keyword in name for keyword in ["backup", "old", "unused", "temp", "archive"]):
+            if any(
+                keyword in name
+                for keyword in ["backup", "old", "unused", "temp", "archive"]
+            ):
                 backup_dirs.append(item)
 
     return backup_dirs
+
 
 def analyze_dependencies():
     print("Analyzing dependencies...")
@@ -57,20 +72,27 @@ def analyze_dependencies():
     req_file = Path("requirements.txt")
     if req_file.exists():
         content = req_file.read_text()
-        lines = [line.strip() for line in content.split('\n') if line.strip() and not line.startswith('#')]
+        lines = [
+            line.strip()
+            for line in content.split("\n")
+            if line.strip() and not line.startswith("#")
+        ]
 
         # Look for development-only packages in production requirements
-        dev_packages = ['pytest', 'coverage', 'flake8', 'black', 'isort', 'mypy']
+        dev_packages = ["pytest", "coverage", "flake8", "black", "isort", "mypy"]
         found_dev = [pkg for pkg in dev_packages if any(pkg in line for line in lines)]
 
         if found_dev:
-            issues.append(f"Development packages in requirements.txt: {', '.join(found_dev)}")
+            issues.append(
+                f"Development packages in requirements.txt: {', '.join(found_dev)}"
+            )
 
     # Check package.json
     pkg_file = Path("package.json")
     if pkg_file.exists():
         try:
             import json
+
             with open(pkg_file) as f:
                 data = json.load(f)
 
@@ -78,15 +100,18 @@ def analyze_dependencies():
             dev_deps = data.get("devDependencies", {})
 
             # Check for unused testing dependencies in dependencies
-            test_packages = ['jest', 'playwright', 'cypress']
+            test_packages = ["jest", "playwright", "cypress"]
             for pkg in test_packages:
                 if pkg in deps:
-                    issues.append(f"Testing package '{pkg}' should be in devDependencies")
+                    issues.append(
+                        f"Testing package '{pkg}' should be in devDependencies"
+                    )
 
         except:
             issues.append("Could not parse package.json")
 
     return issues
+
 
 def check_project_structure():
     print("Checking project structure...")
@@ -95,8 +120,11 @@ def check_project_structure():
 
     # Check for important files
     important_files = [
-        ".gitignore", "README.md", "requirements.txt",
-        "manage.py", "package.json"
+        ".gitignore",
+        "README.md",
+        "requirements.txt",
+        "manage.py",
+        "package.json",
     ]
 
     for file in important_files:
@@ -124,9 +152,10 @@ def check_project_structure():
 
     return structure_issues
 
+
 def main():
     print("Starting Project Cleanup Audit...")
-    print("="*50)
+    print("=" * 50)
 
     # Find unused files
     unused_files, empty_dirs = find_unused_files()
@@ -147,7 +176,9 @@ def main():
     print(f"Backup/old directories: {len(backup_dirs)}")
     if backup_dirs:
         for dir in backup_dirs:
-            size = sum(f.stat().st_size for f in dir.rglob('*') if f.is_file()) / (1024*1024)  # MB
+            size = sum(f.stat().st_size for f in dir.rglob("*") if f.is_file()) / (
+                1024 * 1024
+            )  # MB
             print(f"  {dir} ({size:.1f}MB)")
 
     # Check dependencies
@@ -174,9 +205,9 @@ def main():
 
     cleanup_score = max(0, cleanup_score)
 
-    print(f"\n" + "="*50)
+    print(f"\n" + "=" * 50)
     print("PROJECT CLEANUP AUDIT RESULTS")
-    print("="*50)
+    print("=" * 50)
     print(f"Cleanup Score: {cleanup_score}/100")
 
     if cleanup_score >= 90:
@@ -201,7 +232,9 @@ def main():
         print(f"  - Review and clean up {len(backup_dirs)} backup directories")
         total_backup_size = 0
         for dir in backup_dirs:
-            size = sum(f.stat().st_size for f in dir.rglob('*') if f.is_file()) / (1024*1024)  # MB
+            size = sum(f.stat().st_size for f in dir.rglob("*") if f.is_file()) / (
+                1024 * 1024
+            )  # MB
             total_backup_size += size
         print(f"  - Could free up {total_backup_size:.1f}MB of disk space")
 
@@ -219,6 +252,7 @@ def main():
     print("\nCleanup audit completed!")
 
     return cleanup_score >= 60
+
 
 if __name__ == "__main__":
     success = main()

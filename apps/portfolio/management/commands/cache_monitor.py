@@ -2,75 +2,66 @@
 Management command for cache monitoring and statistics.
 """
 
-import time
 import json
-from django.core.management.base import BaseCommand
-from django.core.cache import cache
+import time
+
 from django.conf import settings
+from django.core.management.base import BaseCommand
 from django.utils import timezone
+
 from apps.main.cache import cache_manager
 
 
 class Command(BaseCommand):
-    help = 'Monitor cache performance and display statistics'
+    help = "Monitor cache performance and display statistics"
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--action',
+            "--action",
             type=str,
-            choices=['stats', 'clear', 'test', 'monitor', 'keys', 'health'],
-            default='stats',
-            help='Action to perform'
+            choices=["stats", "clear", "test", "monitor", "keys", "health"],
+            default="stats",
+            help="Action to perform",
         )
         parser.add_argument(
-            '--watch',
-            action='store_true',
-            help='Watch cache statistics in real-time'
+            "--watch", action="store_true", help="Watch cache statistics in real-time"
         )
         parser.add_argument(
-            '--interval',
+            "--interval",
             type=int,
             default=5,
-            help='Refresh interval for watch mode (seconds)'
+            help="Refresh interval for watch mode (seconds)",
         )
         parser.add_argument(
-            '--pattern',
-            type=str,
-            help='Pattern to match cache keys (for keys action)'
+            "--pattern", type=str, help="Pattern to match cache keys (for keys action)"
         )
-        parser.add_argument(
-            '--export',
-            type=str,
-            help='Export statistics to JSON file'
-        )
+        parser.add_argument("--export", type=str, help="Export statistics to JSON file")
 
     def handle(self, *args, **options):
-        action = options['action']
-        watch_mode = options['watch']
-        interval = options['interval']
-        pattern = options['pattern']
-        export_file = options['export']
+        action = options["action"]
+        watch_mode = options["watch"]
+        interval = options["interval"]
+        pattern = options["pattern"]
+        export_file = options["export"]
 
-        if watch_mode and action == 'stats':
+        if watch_mode and action == "stats":
             self.watch_statistics(interval)
-        elif action == 'stats':
+        elif action == "stats":
             self.show_statistics(export_file)
-        elif action == 'clear':
+        elif action == "clear":
             self.clear_cache()
-        elif action == 'test':
+        elif action == "test":
             self.test_cache_performance()
-        elif action == 'monitor':
+        elif action == "monitor":
             self.monitor_cache_health()
-        elif action == 'keys':
+        elif action == "keys":
             self.list_cache_keys(pattern)
-        elif action == 'health':
+        elif action == "health":
             self.cache_health_check()
 
     def show_statistics(self, export_file=None):
         """Display comprehensive cache statistics."""
-        self.stdout.write(
-            self.style.SUCCESS('CACHE STATISTICS')
-        )
+        self.stdout.write(self.style.SUCCESS("CACHE STATISTICS"))
         self.stdout.write("=" * 60)
 
         stats = cache_manager.get_stats()
@@ -85,11 +76,11 @@ class Command(BaseCommand):
         self.stdout.write(f"Errors: {stats['errors']:,}")
 
         # Uptime and performance
-        uptime_hours = stats['uptime_seconds'] / 3600
+        uptime_hours = stats["uptime_seconds"] / 3600
         self.stdout.write(f"Uptime: {uptime_hours:.2f} hours")
 
-        if stats['total_operations'] > 0:
-            ops_per_hour = stats['total_operations'] / max(uptime_hours, 0.01)
+        if stats["total_operations"] > 0:
+            ops_per_hour = stats["total_operations"] / max(uptime_hours, 0.01)
             self.stdout.write(f"Operations/hour: {ops_per_hour:.0f}")
 
         # Cache backend information
@@ -97,12 +88,12 @@ class Command(BaseCommand):
         self.stdout.write("-" * 30)
 
         try:
-            cache_config = settings.CACHES['default']
+            cache_config = settings.CACHES["default"]
             self.stdout.write(f"Backend: {cache_config['BACKEND']}")
             self.stdout.write(f"Location: {cache_config.get('LOCATION', 'N/A')}")
 
-            if 'OPTIONS' in cache_config:
-                for key, value in cache_config['OPTIONS'].items():
+            if "OPTIONS" in cache_config:
+                for key, value in cache_config["OPTIONS"].items():
                     self.stdout.write(f"{key}: {value}")
 
         except Exception as e:
@@ -114,10 +105,10 @@ class Command(BaseCommand):
         self.assess_cache_performance(stats)
 
         # Recent errors
-        if stats['recent_errors']:
+        if stats["recent_errors"]:
             self.stdout.write(f"\n{self.style.ERROR('RECENT ERRORS')}")
             self.stdout.write("-" * 20)
-            for error in stats['recent_errors'][-5:]:  # Show last 5 errors
+            for error in stats["recent_errors"][-5:]:  # Show last 5 errors
                 self.stdout.write(f"Key: {error['key']}")
                 self.stdout.write(f"Error: {error['error']}")
                 self.stdout.write(f"Time: {error['timestamp']}")
@@ -129,7 +120,7 @@ class Command(BaseCommand):
 
     def assess_cache_performance(self, stats):
         """Assess cache performance and provide recommendations."""
-        hit_ratio = stats['hit_ratio']
+        hit_ratio = stats["hit_ratio"]
 
         if hit_ratio >= 90:
             grade = "A+ (Excellent)"
@@ -153,10 +144,12 @@ class Command(BaseCommand):
         recommendations = []
         if hit_ratio < 80:
             recommendations.append("Consider increasing cache timeouts")
-        if stats['errors'] > stats['total_operations'] * 0.01:  # > 1% error rate
+        if stats["errors"] > stats["total_operations"] * 0.01:  # > 1% error rate
             recommendations.append("High error rate detected - check cache backend")
-        if stats['total_operations'] < 100 and stats['uptime_seconds'] > 3600:
-            recommendations.append("Low cache usage - ensure caching is properly implemented")
+        if stats["total_operations"] < 100 and stats["uptime_seconds"] > 3600:
+            recommendations.append(
+                "Low cache usage - ensure caching is properly implemented"
+            )
 
         if recommendations:
             self.stdout.write("\nRecommendations:")
@@ -165,7 +158,7 @@ class Command(BaseCommand):
 
     def clear_cache(self):
         """Clear the cache and show confirmation."""
-        self.stdout.write("Clearing cache...", ending='')
+        self.stdout.write("Clearing cache...", ending="")
         result = cache_manager.clear()
 
         if result:
@@ -178,7 +171,7 @@ class Command(BaseCommand):
         self.stdout.write("Testing cache performance...")
 
         test_data = {
-            f'test_key_{i}': f'test_value_{i}' * 100  # ~1KB per value
+            f"test_key_{i}": f"test_value_{i}" * 100  # ~1KB per value
             for i in range(1000)
         }
 
@@ -201,9 +194,15 @@ class Command(BaseCommand):
         delete_time = time.time() - start_time
 
         # Results
-        self.stdout.write(f"SET 1000 keys: {set_time:.3f}s ({1000/set_time:.0f} ops/sec)")
-        self.stdout.write(f"GET 1000 keys: {get_time:.3f}s ({1000/get_time:.0f} ops/sec)")
-        self.stdout.write(f"DELETE 1000 keys: {delete_time:.3f}s ({1000/delete_time:.0f} ops/sec)")
+        self.stdout.write(
+            f"SET 1000 keys: {set_time:.3f}s ({1000 / set_time:.0f} ops/sec)"
+        )
+        self.stdout.write(
+            f"GET 1000 keys: {get_time:.3f}s ({1000 / get_time:.0f} ops/sec)"
+        )
+        self.stdout.write(
+            f"DELETE 1000 keys: {delete_time:.3f}s ({1000 / delete_time:.0f} ops/sec)"
+        )
 
         total_time = set_time + get_time + delete_time
         self.stdout.write(f"Total time: {total_time:.3f}s")
@@ -238,7 +237,7 @@ class Command(BaseCommand):
 
         results = []
         for test_name, test_func in tests:
-            self.stdout.write(f"Running {test_name}...", ending=' ')
+            self.stdout.write(f"Running {test_name}...", ending=" ")
             try:
                 result = test_func()
                 if result:
@@ -267,8 +266,8 @@ class Command(BaseCommand):
 
     def test_basic_connectivity(self):
         """Test basic cache connectivity."""
-        test_key = 'health_test_basic'
-        test_value = 'test_value_123'
+        test_key = "health_test_basic"
+        test_value = "test_value_123"
 
         cache_manager.set(test_key, test_value, 60)
         result = cache_manager.get(test_key)
@@ -279,14 +278,14 @@ class Command(BaseCommand):
     def test_read_write(self):
         """Test read/write operations."""
         test_data = {
-            'string': 'hello world',
-            'integer': 42,
-            'list': [1, 2, 3],
-            'dict': {'key': 'value'}
+            "string": "hello world",
+            "integer": 42,
+            "list": [1, 2, 3],
+            "dict": {"key": "value"},
         }
 
         for key, value in test_data.items():
-            cache_key = f'health_test_{key}'
+            cache_key = f"health_test_{key}"
             cache_manager.set(cache_key, value, 60)
             result = cache_manager.get(cache_key)
             cache_manager.delete(cache_key)
@@ -299,20 +298,20 @@ class Command(BaseCommand):
     def test_pattern_operations(self):
         """Test pattern-based operations."""
         # Set test keys
-        test_keys = [f'pattern_test_{i}' for i in range(5)]
+        test_keys = [f"pattern_test_{i}" for i in range(5)]
         for key in test_keys:
-            cache_manager.set(key, 'pattern_value', 60)
+            cache_manager.set(key, "pattern_value", 60)
 
         # Test pattern deletion
-        deleted_count = cache_manager.delete_pattern('pattern_test_*')
+        deleted_count = cache_manager.delete_pattern("pattern_test_*")
 
         # Should delete all 5 keys (or return 0 if not supported)
         return deleted_count >= 0
 
     def test_timeout_handling(self):
         """Test timeout handling."""
-        test_key = 'health_test_timeout'
-        cache_manager.set(test_key, 'timeout_value', 1)  # 1 second timeout
+        test_key = "health_test_timeout"
+        cache_manager.set(test_key, "timeout_value", 1)  # 1 second timeout
 
         # Should exist immediately
         if not cache_manager.get(test_key):
@@ -325,9 +324,9 @@ class Command(BaseCommand):
     def test_error_handling(self):
         """Test error handling."""
         # Test with very long key (should handle gracefully)
-        long_key = 'test_' + 'x' * 1000
+        long_key = "test_" + "x" * 1000
         try:
-            cache_manager.set(long_key, 'value', 60)
+            cache_manager.set(long_key, "value", 60)
             cache_manager.get(long_key)
             cache_manager.delete(long_key)
             return True
@@ -347,7 +346,7 @@ class Command(BaseCommand):
         """Quick health check for monitoring systems."""
         try:
             # Simple connectivity test
-            test_key = 'health_check_monitor'
+            test_key = "health_check_monitor"
             cache_manager.set(test_key, timezone.now().isoformat(), 10)
             result = cache_manager.get(test_key)
             cache_manager.delete(test_key)
@@ -364,14 +363,18 @@ class Command(BaseCommand):
 
     def watch_statistics(self, interval):
         """Watch cache statistics in real-time."""
-        self.stdout.write(f"Watching cache statistics (refresh every {interval}s, Ctrl+C to stop)...")
+        self.stdout.write(
+            f"Watching cache statistics (refresh every {interval}s, Ctrl+C to stop)..."
+        )
 
         try:
             while True:
                 # Clear screen (ANSI escape sequence)
-                self.stdout.write('\033[2J\033[H')
+                self.stdout.write("\033[2J\033[H")
 
-                self.stdout.write(f"Cache Statistics - {timezone.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                self.stdout.write(
+                    f"Cache Statistics - {timezone.now().strftime('%Y-%m-%d %H:%M:%S')}"
+                )
                 self.stdout.write("=" * 60)
 
                 stats = cache_manager.get_stats()
@@ -383,11 +386,11 @@ class Command(BaseCommand):
                 self.stdout.write(f"Deletes:   {stats['deletes']:8,}")
                 self.stdout.write(f"Errors:    {stats['errors']:8,}")
 
-                uptime_hours = stats['uptime_seconds'] / 3600
+                uptime_hours = stats["uptime_seconds"] / 3600
                 self.stdout.write(f"Uptime:    {uptime_hours:8.2f} hours")
 
-                if stats['total_operations'] > 0 and uptime_hours > 0:
-                    ops_per_hour = stats['total_operations'] / uptime_hours
+                if stats["total_operations"] > 0 and uptime_hours > 0:
+                    ops_per_hour = stats["total_operations"] / uptime_hours
                     self.stdout.write(f"Ops/Hour:  {ops_per_hour:8.0f}")
 
                 time.sleep(interval)
@@ -400,12 +403,12 @@ class Command(BaseCommand):
         try:
             # Add timestamp
             export_data = {
-                'timestamp': timezone.now().isoformat(),
-                'cache_stats': stats,
-                'cache_config': settings.CACHES['default']
+                "timestamp": timezone.now().isoformat(),
+                "cache_stats": stats,
+                "cache_config": settings.CACHES["default"],
             }
 
-            with open(filename, 'w') as f:
+            with open(filename, "w") as f:
                 json.dump(export_data, f, indent=2, default=str)
 
             self.stdout.write(f"Statistics exported to {filename}")

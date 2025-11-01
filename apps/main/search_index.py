@@ -22,14 +22,15 @@ Usage:
 """
 
 import logging
-import meilisearch
-from typing import Dict, List, Optional, Any, Union
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
+
 from django.conf import settings
-from django.db.models import Model
 from django.core.exceptions import ImproperlyConfigured
-from django.utils import timezone
-from django.urls import reverse, NoReverseMatch
+from django.db.models import Model
+from django.urls import NoReverseMatch, reverse
+
+import meilisearch
 
 # Import sanitizer
 from .sanitizer import ContentSanitizer
@@ -46,11 +47,13 @@ class SearchIndexManager:
 
     def __init__(self):
         """Initialize MeiliSearch client and configuration"""
-        self.host = getattr(settings, 'MEILISEARCH_HOST', 'http://localhost:7700')
-        self.master_key = getattr(settings, 'MEILISEARCH_MASTER_KEY', None)
-        self.index_name = getattr(settings, 'MEILISEARCH_INDEX_NAME', 'portfolio_search')
-        self.timeout = getattr(settings, 'MEILISEARCH_TIMEOUT', 5)
-        self.batch_size = getattr(settings, 'MEILISEARCH_BATCH_SIZE', 100)
+        self.host = getattr(settings, "MEILISEARCH_HOST", "http://localhost:7700")
+        self.master_key = getattr(settings, "MEILISEARCH_MASTER_KEY", None)
+        self.index_name = getattr(
+            settings, "MEILISEARCH_INDEX_NAME", "portfolio_search"
+        )
+        self.timeout = getattr(settings, "MEILISEARCH_TIMEOUT", 5)
+        self.batch_size = getattr(settings, "MEILISEARCH_BATCH_SIZE", 100)
 
         if not self.master_key:
             raise ImproperlyConfigured(
@@ -62,7 +65,9 @@ class SearchIndexManager:
         try:
             self.client = meilisearch.Client(self.host, self.master_key)
             self.index = self.client.index(self.index_name)
-            logger.info(f"MeiliSearch client initialized: {self.host} -> {self.index_name}")
+            logger.info(
+                f"MeiliSearch client initialized: {self.host} -> {self.index_name}"
+            )
         except Exception as e:
             logger.error(f"Failed to initialize MeiliSearch client: {e}")
             raise
@@ -76,145 +81,193 @@ class SearchIndexManager:
         Returns dict: {ModelClassName: {config}}
         """
         from apps.main.models import (
-            BlogPost, AITool, UsefulResource, CybersecurityResource,
-            PersonalInfo, SocialLink
+            AITool,
+            BlogPost,
+            CybersecurityResource,
+            PersonalInfo,
+            SocialLink,
+            UsefulResource,
         )
 
         registry = {
-            'BlogPost': {
-                'model': BlogPost,
-                'fields': {
-                    'title': {'weight': 10, 'sanitize': False},
-                    'slug': {'weight': 2, 'sanitize': False},
-                    'excerpt': {'weight': 7, 'sanitize': 'html'},
-                    'content': {'weight': 5, 'sanitize': 'html'},
-                    'meta_description': {'weight': 3, 'sanitize': False},
-                    'tags': {'weight': 8, 'parse_tags': True},
+            "BlogPost": {
+                "model": BlogPost,
+                "fields": {
+                    "title": {"weight": 10, "sanitize": False},
+                    "slug": {"weight": 2, "sanitize": False},
+                    "excerpt": {"weight": 7, "sanitize": "html"},
+                    "content": {"weight": 5, "sanitize": "html"},
+                    "meta_description": {"weight": 3, "sanitize": False},
+                    "tags": {"weight": 8, "parse_tags": True},
                 },
-                'metadata': [
-                    'id', 'status', 'is_featured', 'category', 'author',
-                    'published_at', 'updated_at', 'view_count', 'reading_time'
+                "metadata": [
+                    "id",
+                    "status",
+                    "is_featured",
+                    "category",
+                    "author",
+                    "published_at",
+                    "updated_at",
+                    "view_count",
+                    "reading_time",
                 ],
-                'url_pattern': 'blog:detail',
-                'url_field': 'slug',
-                'visibility_check': lambda obj: obj.status == 'published',
-                'category_display': lambda obj: obj.category.display_name if obj.category else None,
-                'search_category': 'Blog Posts',
-                'search_icon': '📝',
+                "url_pattern": "blog:detail",
+                "url_field": "slug",
+                "visibility_check": lambda obj: obj.status == "published",
+                "category_display": lambda obj: (
+                    obj.category.display_name if obj.category else None
+                ),
+                "search_category": "Blog Posts",
+                "search_icon": "📝",
             },
-            'AITool': {
-                'model': AITool,
-                'fields': {
-                    'name': {'weight': 10, 'sanitize': False},
-                    'description': {'weight': 8, 'sanitize': False},
-                    'tags': {'weight': 7, 'parse_tags': True},
+            "AITool": {
+                "model": AITool,
+                "fields": {
+                    "name": {"weight": 10, "sanitize": False},
+                    "description": {"weight": 8, "sanitize": False},
+                    "tags": {"weight": 7, "parse_tags": True},
                 },
-                'metadata': [
-                    'id', 'category', 'is_featured', 'is_free', 'rating',
-                    'is_visible', 'order', 'created_at', 'updated_at', 'url'
+                "metadata": [
+                    "id",
+                    "category",
+                    "is_featured",
+                    "is_free",
+                    "rating",
+                    "is_visible",
+                    "order",
+                    "created_at",
+                    "updated_at",
+                    "url",
                 ],
-                'url_pattern': 'main:ai',
-                'url_field': None,
-                'url_anchor': lambda obj: f'tool-{obj.id}',
-                'visibility_check': lambda obj: obj.is_visible,
-                'category_display': lambda obj: obj.get_category_display(),
-                'search_category': 'AI Tools',
-                'search_icon': '🤖',
+                "url_pattern": "main:ai",
+                "url_field": None,
+                "url_anchor": lambda obj: f"tool-{obj.id}",
+                "visibility_check": lambda obj: obj.is_visible,
+                "category_display": lambda obj: obj.get_category_display(),
+                "search_category": "AI Tools",
+                "search_icon": "🤖",
             },
-            'UsefulResource': {
-                'model': UsefulResource,
-                'fields': {
-                    'name': {'weight': 10, 'sanitize': False},
-                    'description': {'weight': 8, 'sanitize': False},
-                    'tags': {'weight': 7, 'parse_tags': True},
+            "UsefulResource": {
+                "model": UsefulResource,
+                "fields": {
+                    "name": {"weight": 10, "sanitize": False},
+                    "description": {"weight": 8, "sanitize": False},
+                    "tags": {"weight": 7, "parse_tags": True},
                 },
-                'metadata': [
-                    'id', 'type', 'category', 'is_featured', 'is_free', 'rating',
-                    'is_visible', 'order', 'created_at', 'updated_at', 'url'
+                "metadata": [
+                    "id",
+                    "type",
+                    "category",
+                    "is_featured",
+                    "is_free",
+                    "rating",
+                    "is_visible",
+                    "order",
+                    "created_at",
+                    "updated_at",
+                    "url",
                 ],
-                'url_pattern': 'main:useful',
-                'url_field': None,
-                'url_anchor': lambda obj: f'resource-{obj.id}',
-                'visibility_check': lambda obj: obj.is_visible,
-                'category_display': lambda obj: obj.get_category_display(),
-                'search_category': 'Useful Resources',
-                'search_icon': '🔗',
+                "url_pattern": "main:useful",
+                "url_field": None,
+                "url_anchor": lambda obj: f"resource-{obj.id}",
+                "visibility_check": lambda obj: obj.is_visible,
+                "category_display": lambda obj: obj.get_category_display(),
+                "search_category": "Useful Resources",
+                "search_icon": "🔗",
             },
-            'CybersecurityResource': {
-                'model': CybersecurityResource,
-                'fields': {
-                    'title': {'weight': 10, 'sanitize': False},
-                    'description': {'weight': 8, 'sanitize': False},
-                    'content': {'weight': 6, 'sanitize': 'markdown'},
-                    'tags': {'weight': 7, 'parse_tags': True},
+            "CybersecurityResource": {
+                "model": CybersecurityResource,
+                "fields": {
+                    "title": {"weight": 10, "sanitize": False},
+                    "description": {"weight": 8, "sanitize": False},
+                    "content": {"weight": 6, "sanitize": "markdown"},
+                    "tags": {"weight": 7, "parse_tags": True},
                 },
-                'metadata': [
-                    'id', 'type', 'difficulty', 'severity_level', 'is_urgent',
-                    'is_featured', 'is_visible', 'order', 'created_at', 'updated_at', 'url'
+                "metadata": [
+                    "id",
+                    "type",
+                    "difficulty",
+                    "severity_level",
+                    "is_urgent",
+                    "is_featured",
+                    "is_visible",
+                    "order",
+                    "created_at",
+                    "updated_at",
+                    "url",
                 ],
-                'url_pattern': 'main:cybersecurity',
-                'url_field': None,
-                'url_anchor': lambda obj: f'resource-{obj.id}',
-                'visibility_check': lambda obj: obj.is_visible,
-                'category_display': lambda obj: obj.get_type_display(),
-                'search_category': 'Cybersecurity',
-                'search_icon': '🔒',
+                "url_pattern": "main:cybersecurity",
+                "url_field": None,
+                "url_anchor": lambda obj: f"resource-{obj.id}",
+                "visibility_check": lambda obj: obj.is_visible,
+                "category_display": lambda obj: obj.get_type_display(),
+                "search_category": "Cybersecurity",
+                "search_icon": "🔒",
             },
-            'PersonalInfo': {
-                'model': PersonalInfo,
-                'fields': {
-                    'key': {'weight': 9, 'sanitize': False},
-                    'value': {'weight': 6, 'sanitize': 'auto'},  # Auto-detect type
+            "PersonalInfo": {
+                "model": PersonalInfo,
+                "fields": {
+                    "key": {"weight": 9, "sanitize": False},
+                    "value": {"weight": 6, "sanitize": "auto"},  # Auto-detect type
                 },
-                'metadata': [
-                    'id', 'type', 'is_visible', 'order', 'created_at', 'updated_at'
+                "metadata": [
+                    "id",
+                    "type",
+                    "is_visible",
+                    "order",
+                    "created_at",
+                    "updated_at",
                 ],
-                'url_pattern': 'main:personal',
-                'url_field': None,
-                'url_anchor': lambda obj: f'info-{obj.key}',
-                'visibility_check': lambda obj: obj.is_visible,
-                'category_display': lambda obj: obj.get_type_display(),
-                'search_category': 'Personal Info',
-                'search_icon': '👤',
+                "url_pattern": "main:personal",
+                "url_field": None,
+                "url_anchor": lambda obj: f"info-{obj.key}",
+                "visibility_check": lambda obj: obj.is_visible,
+                "category_display": lambda obj: obj.get_type_display(),
+                "search_category": "Personal Info",
+                "search_icon": "👤",
             },
-            'SocialLink': {
-                'model': SocialLink,
-                'fields': {
-                    'platform': {'weight': 8, 'sanitize': False},
-                    'description': {'weight': 5, 'sanitize': False},
+            "SocialLink": {
+                "model": SocialLink,
+                "fields": {
+                    "platform": {"weight": 8, "sanitize": False},
+                    "description": {"weight": 5, "sanitize": False},
                 },
-                'metadata': [
-                    'id', 'url', 'is_primary', 'is_visible', 'order',
-                    'created_at', 'updated_at'
+                "metadata": [
+                    "id",
+                    "url",
+                    "is_primary",
+                    "is_visible",
+                    "order",
+                    "created_at",
+                    "updated_at",
                 ],
-                'url_pattern': None,  # Use external URL
-                'url_field': 'url',
-                'visibility_check': lambda obj: obj.is_visible,
-                'category_display': lambda obj: obj.get_platform_display(),
-                'search_category': 'Social Links',
-                'search_icon': '🔗',
+                "url_pattern": None,  # Use external URL
+                "url_field": "url",
+                "visibility_check": lambda obj: obj.is_visible,
+                "category_display": lambda obj: obj.get_platform_display(),
+                "search_category": "Social Links",
+                "search_icon": "🔗",
             },
         }
 
         # Try to import Tool model (may not exist in all project versions)
         try:
             from apps.tools.models import Tool
-            registry['Tool'] = {
-                'model': Tool,
-                'fields': {
-                    'title': {'weight': 10, 'sanitize': False},
-                    'description': {'weight': 8, 'sanitize': False},
-                    'tags': {'weight': 7, 'parse_tags': True},
+
+            registry["Tool"] = {
+                "model": Tool,
+                "fields": {
+                    "title": {"weight": 10, "sanitize": False},
+                    "description": {"weight": 8, "sanitize": False},
+                    "tags": {"weight": 7, "parse_tags": True},
                 },
-                'metadata': [
-                    'id', 'is_visible', 'created_at', 'updated_at'
-                ],
-                'url_pattern': 'tools:tool_list',
-                'url_field': None,
-                'visibility_check': lambda obj: getattr(obj, 'is_visible', True),
-                'category_display': lambda obj: 'Tools',
-                'search_category': 'Tools',
-                'search_icon': '🔧',
+                "metadata": ["id", "is_visible", "created_at", "updated_at"],
+                "url_pattern": "tools:tool_list",
+                "url_field": None,
+                "visibility_check": lambda obj: getattr(obj, "is_visible", True),
+                "category_display": lambda obj: "Tools",
+                "search_category": "Tools",
+                "search_icon": "🔧",
             }
         except (ImportError, AttributeError):
             logger.info("Tool model not found, skipping from index registry")
@@ -242,18 +295,18 @@ class SearchIndexManager:
             Sanitized plain text string
         """
         if not content or not sanitize_type:
-            return content or ''
+            return content or ""
 
         try:
-            if sanitize_type == 'html':
+            if sanitize_type == "html":
                 return ContentSanitizer.sanitize_html(content, strip_tags=True)
-            elif sanitize_type == 'markdown':
+            elif sanitize_type == "markdown":
                 # Convert markdown to HTML, then strip tags
                 html_content = ContentSanitizer.sanitize_markdown(content)
                 return ContentSanitizer.sanitize_html(html_content, strip_tags=True)
-            elif sanitize_type == 'auto':
+            elif sanitize_type == "auto":
                 # Auto-detect content type (for PersonalInfo)
-                if '<' in content and '>' in content:
+                if "<" in content and ">" in content:
                     return ContentSanitizer.sanitize_html(content, strip_tags=True)
                 else:
                     return content
@@ -261,7 +314,7 @@ class SearchIndexManager:
                 return content
         except Exception as e:
             logger.error(f"Sanitization error: {e}")
-            return ''
+            return ""
 
     def parse_tags(self, tags: Union[str, list, None]) -> List[str]:
         """
@@ -277,7 +330,7 @@ class SearchIndexManager:
             return []
 
         if isinstance(tags, str):
-            tag_list = [tag.strip() for tag in tags.split(',') if tag.strip()]
+            tag_list = [tag.strip() for tag in tags.split(",") if tag.strip()]
         elif isinstance(tags, list):
             tag_list = [str(tag).strip() for tag in tags if tag]
         else:
@@ -286,9 +339,12 @@ class SearchIndexManager:
         # Limit to 20 tags, remove duplicates
         return list(dict.fromkeys(tag_list))[:20]
 
-    def build_document(self, obj: Model) -> Optional[Dict[str, Any]]:
+    def build_document(self, obj: Model) -> Optional[Dict[str, Any]]:  # noqa: C901
         """
         Build a search document from a Django model instance.
+
+        NOTE: High complexity (27) - scheduled for refactoring in Phase 19.
+        See docs/development/technical-debt-complexity.md
 
         Args:
             obj: Django model instance
@@ -304,38 +360,44 @@ class SearchIndexManager:
             return None
 
         # Check visibility
-        if config.get('visibility_check'):
-            if not config['visibility_check'](obj):
-                logger.debug(f"Object {model_name}:{obj.id} is not visible, skipping index")
+        if config.get("visibility_check"):
+            if not config["visibility_check"](obj):
+                logger.debug(
+                    f"Object {model_name}:{obj.id} is not visible, skipping index"
+                )
                 return None
 
         # Build document
         document = {
-            'id': f"{model_name}:{obj.id}",
-            'model_type': model_name,
-            'model_id': obj.id,
-            'search_category': config.get('search_category', model_name),
-            'search_icon': config.get('search_icon', '📄'),
+            "id": f"{model_name}:{obj.id}",
+            "model_type": model_name,
+            "model_id": obj.id,
+            "search_category": config.get("search_category", model_name),
+            "search_icon": config.get("search_icon", "📄"),
         }
 
         # Extract searchable fields
-        for field_name, field_config in config['fields'].items():
+        for field_name, field_config in config["fields"].items():
             try:
                 value = getattr(obj, field_name, None)
 
-                if field_config.get('parse_tags'):
+                if field_config.get("parse_tags"):
                     document[field_name] = self.parse_tags(value)
-                elif field_config.get('sanitize'):
-                    document[field_name] = self.sanitize_content(value, field_config['sanitize'])
+                elif field_config.get("sanitize"):
+                    document[field_name] = self.sanitize_content(
+                        value, field_config["sanitize"]
+                    )
                 else:
-                    document[field_name] = str(value) if value is not None else ''
+                    document[field_name] = str(value) if value is not None else ""
             except Exception as e:
-                logger.error(f"Error extracting field {field_name} from {model_name}:{obj.id}: {e}")
-                document[field_name] = ''
+                logger.error(
+                    f"Error extracting field {field_name} from {model_name}:{obj.id}: {e}"
+                )
+                document[field_name] = ""
 
         # Extract metadata fields
         metadata = {}
-        for meta_field in config['metadata']:
+        for meta_field in config["metadata"]:
             try:
                 value = getattr(obj, meta_field, None)
 
@@ -343,54 +405,54 @@ class SearchIndexManager:
                 if isinstance(value, datetime):
                     metadata[meta_field] = int(value.timestamp())
                 # Handle foreign keys
-                elif hasattr(value, 'id'):
+                elif hasattr(value, "id"):
                     metadata[meta_field] = value.id
                     # Also add display name if available
-                    if hasattr(value, 'display_name'):
-                        metadata[f'{meta_field}_display'] = value.display_name
-                    elif hasattr(value, 'name'):
-                        metadata[f'{meta_field}_display'] = value.name
+                    if hasattr(value, "display_name"):
+                        metadata[f"{meta_field}_display"] = value.display_name
+                    elif hasattr(value, "name"):
+                        metadata[f"{meta_field}_display"] = value.name
                 else:
                     metadata[meta_field] = value
             except Exception as e:
                 logger.error(f"Error extracting metadata {meta_field}: {e}")
 
-        document['metadata'] = metadata
+        document["metadata"] = metadata
 
         # Build URL
         try:
             url = None
-            if config.get('url_pattern'):
-                if config.get('url_field'):
-                    url_value = getattr(obj, config['url_field'])
-                    url = reverse(config['url_pattern'], args=[url_value])
+            if config.get("url_pattern"):
+                if config.get("url_field"):
+                    url_value = getattr(obj, config["url_field"])
+                    url = reverse(config["url_pattern"], args=[url_value])
                 else:
-                    url = reverse(config['url_pattern'])
+                    url = reverse(config["url_pattern"])
 
                 # Add anchor if specified
-                if config.get('url_anchor'):
+                if config.get("url_anchor"):
                     url += f"#{config['url_anchor'](obj)}"
-            elif config.get('url_field'):
+            elif config.get("url_field"):
                 # Direct external URL
-                url = getattr(obj, config['url_field'], None)
+                url = getattr(obj, config["url_field"], None)
 
-            document['url'] = url
+            document["url"] = url
         except (NoReverseMatch, AttributeError) as e:
             logger.warning(f"Could not generate URL for {model_name}:{obj.id}: {e}")
-            document['url'] = None
+            document["url"] = None
 
         # Add category display name
-        if config.get('category_display'):
+        if config.get("category_display"):
             try:
-                document['category_display'] = config['category_display'](obj)
+                document["category_display"] = config["category_display"](obj)
             except Exception as e:
                 logger.error(f"Error getting category display: {e}")
 
         # Add excerpt (truncated content if no dedicated excerpt field)
-        if 'excerpt' not in document and 'description' in document:
-            document['excerpt'] = document['description'][:200]
-        elif 'excerpt' not in document and 'content' in document:
-            document['excerpt'] = document['content'][:200]
+        if "excerpt" not in document and "description" in document:
+            document["excerpt"] = document["description"][:200]
+        elif "excerpt" not in document and "content" in document:
+            document["excerpt"] = document["content"][:200]
 
         return document
 
@@ -411,12 +473,16 @@ class SearchIndexManager:
                 return False
 
             # Add/update document in index
-            task = self.index.add_documents([document], primary_key='id')
-            logger.info(f"Indexed {document['model_type']}:{document['model_id']} (task: {task['taskUid']})")
+            task = self.index.add_documents([document], primary_key="id")
+            logger.info(
+                f"Indexed {document['model_type']}:{document['model_id']} (task: {task['taskUid']})"
+            )
             return True
 
         except Exception as e:
-            logger.error(f"Failed to index document {obj.__class__.__name__}:{obj.id}: {e}")
+            logger.error(
+                f"Failed to index document {obj.__class__.__name__}:{obj.id}: {e}"
+            )
             return False
 
     def delete_document(self, model_name: str, object_id: int) -> bool:
@@ -440,7 +506,9 @@ class SearchIndexManager:
             logger.error(f"Failed to delete document {model_name}:{object_id}: {e}")
             return False
 
-    def bulk_index(self, objects: List[Model], batch_size: Optional[int] = None) -> Dict[str, int]:
+    def bulk_index(
+        self, objects: List[Model], batch_size: Optional[int] = None
+    ) -> Dict[str, int]:
         """
         Bulk index multiple documents.
 
@@ -452,7 +520,7 @@ class SearchIndexManager:
             Dict with counts: {'indexed': N, 'skipped': M, 'failed': K}
         """
         batch_size = batch_size or self.batch_size
-        results = {'indexed': 0, 'skipped': 0, 'failed': 0}
+        results = {"indexed": 0, "skipped": 0, "failed": 0}
 
         # Build all documents
         documents = []
@@ -461,12 +529,14 @@ class SearchIndexManager:
                 document = self.build_document(obj)
                 if document:
                     documents.append(document)
-                    results['indexed'] += 1
+                    results["indexed"] += 1
                 else:
-                    results['skipped'] += 1
+                    results["skipped"] += 1
             except Exception as e:
-                logger.error(f"Error building document for {obj.__class__.__name__}:{obj.id}: {e}")
-                results['failed'] += 1
+                logger.error(
+                    f"Error building document for {obj.__class__.__name__}:{obj.id}: {e}"
+                )
+                results["failed"] += 1
 
         if not documents:
             logger.warning("No documents to index")
@@ -474,14 +544,16 @@ class SearchIndexManager:
 
         # Index in batches
         for i in range(0, len(documents), batch_size):
-            batch = documents[i:i + batch_size]
+            batch = documents[i : i + batch_size]
             try:
-                task = self.index.add_documents(batch, primary_key='id')
-                logger.info(f"Indexed batch {i//batch_size + 1}: {len(batch)} documents (task: {task['taskUid']})")
+                task = self.index.add_documents(batch, primary_key="id")
+                logger.info(
+                    f"Indexed batch {i // batch_size + 1}: {len(batch)} documents (task: {task['taskUid']})"
+                )
             except Exception as e:
-                logger.error(f"Failed to index batch {i//batch_size + 1}: {e}")
-                results['failed'] += len(batch)
-                results['indexed'] -= len(batch)
+                logger.error(f"Failed to index batch {i // batch_size + 1}: {e}")
+                results["failed"] += len(batch)
+                results["indexed"] -= len(batch)
 
         return results
 
@@ -498,9 +570,9 @@ class SearchIndexManager:
         config = self.get_model_config(model_name)
         if not config:
             logger.error(f"No configuration for model: {model_name}")
-            return {'indexed': 0, 'skipped': 0, 'failed': 0}
+            return {"indexed": 0, "skipped": 0, "failed": 0}
 
-        model_class = config['model']
+        model_class = config["model"]
         objects = model_class.objects.all()
 
         logger.info(f"Reindexing {model_name}: {objects.count()} objects")
@@ -531,42 +603,103 @@ class SearchIndexManager:
         """
         try:
             # Searchable attributes (priority order)
-            self.index.update_searchable_attributes([
-                'title', 'name', 'excerpt', 'description', 'tags',
-                'content', 'value', 'meta_description', 'platform'
-            ])
+            self.index.update_searchable_attributes(
+                [
+                    "title",
+                    "name",
+                    "excerpt",
+                    "description",
+                    "tags",
+                    "content",
+                    "value",
+                    "meta_description",
+                    "platform",
+                ]
+            )
 
             # Filterable attributes
-            self.index.update_filterable_attributes([
-                'model_type', 'category', 'type', 'is_visible', 'is_featured',
-                'is_free', 'difficulty', 'severity_level', 'status',
-                'published_at', 'updated_at', 'search_category'
-            ])
+            self.index.update_filterable_attributes(
+                [
+                    "model_type",
+                    "category",
+                    "type",
+                    "is_visible",
+                    "is_featured",
+                    "is_free",
+                    "difficulty",
+                    "severity_level",
+                    "status",
+                    "published_at",
+                    "updated_at",
+                    "search_category",
+                ]
+            )
 
             # Sortable attributes
-            self.index.update_sortable_attributes([
-                'published_at', 'updated_at', 'view_count', 'rating', 'order'
-            ])
+            self.index.update_sortable_attributes(
+                ["published_at", "updated_at", "view_count", "rating", "order"]
+            )
 
             # Displayed attributes (all fields returned in search results)
-            self.index.update_displayed_attributes([
-                'id', 'model_type', 'model_id', 'title', 'name', 'excerpt',
-                'description', 'url', 'category_display', 'tags', 'metadata',
-                'search_category', 'search_icon'
-            ])
+            self.index.update_displayed_attributes(
+                [
+                    "id",
+                    "model_type",
+                    "model_id",
+                    "title",
+                    "name",
+                    "excerpt",
+                    "description",
+                    "url",
+                    "category_display",
+                    "tags",
+                    "metadata",
+                    "search_category",
+                    "search_icon",
+                ]
+            )
 
             # Ranking rules (with custom boosts)
-            self.index.update_ranking_rules([
-                'words', 'typo', 'proximity', 'attribute', 'sort', 'exactness',
-                'desc(metadata.is_featured)', 'desc(metadata.view_count)',
-                'desc(metadata.rating)', 'desc(metadata.published_at)'
-            ])
+            self.index.update_ranking_rules(
+                [
+                    "words",
+                    "typo",
+                    "proximity",
+                    "attribute",
+                    "sort",
+                    "exactness",
+                    "desc(metadata.is_featured)",
+                    "desc(metadata.view_count)",
+                    "desc(metadata.rating)",
+                    "desc(metadata.published_at)",
+                ]
+            )
 
             # Stop words (common words to ignore)
-            self.index.update_stop_words([
-                'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
-                'bir', 've', 'veya', 'ile', 'bu', 'şu', 'için', 'gibi', 'kadar'
-            ])
+            self.index.update_stop_words(
+                [
+                    "the",
+                    "a",
+                    "an",
+                    "and",
+                    "or",
+                    "but",
+                    "in",
+                    "on",
+                    "at",
+                    "to",
+                    "for",
+                    "bir",
+                    "ve",
+                    "veya",
+                    "ile",
+                    "bu",
+                    "şu",
+                    "için",
+                    "gibi",
+                    "kadar",
+                ]
+            )
 
             logger.info("Index configuration updated successfully")
             return True
@@ -585,9 +718,9 @@ class SearchIndexManager:
         try:
             stats = self.index.get_stats()
             return {
-                'number_of_documents': stats.get('numberOfDocuments', 0),
-                'is_indexing': stats.get('isIndexing', False),
-                'field_distribution': stats.get('fieldDistribution', {}),
+                "number_of_documents": stats.get("numberOfDocuments", 0),
+                "is_indexing": stats.get("isIndexing", False),
+                "field_distribution": stats.get("fieldDistribution", {}),
             }
         except Exception as e:
             logger.error(f"Failed to get index stats: {e}")
@@ -597,12 +730,14 @@ class SearchIndexManager:
 # Global singleton instance
 _search_index_manager = None
 
+
 def get_search_index_manager():
     """Lazy-loaded singleton getter for SearchIndexManager."""
     global _search_index_manager
     if _search_index_manager is None:
         _search_index_manager = SearchIndexManager()
     return _search_index_manager
+
 
 # For backwards compatibility, use a property-like lazy loader
 class LazySearchIndexManager:
@@ -611,5 +746,6 @@ class LazySearchIndexManager:
 
     def __setattr__(self, name, value):
         return setattr(get_search_index_manager(), name, value)
+
 
 search_index_manager = LazySearchIndexManager()

@@ -3,15 +3,16 @@ WebSocket Authentication Middleware
 Custom middleware for handling WebSocket authentication and session management
 """
 
-import json
 import logging
 from urllib.parse import parse_qs
-from channels.auth import AuthMiddlewareStack
-from channels.db import database_sync_to_async
-from channels.middleware import BaseMiddleware
+
 from django.contrib.auth.models import AnonymousUser, User
 from django.contrib.sessions.models import Session
 from django.utils import timezone
+
+from channels.auth import AuthMiddlewareStack
+from channels.db import database_sync_to_async
+from channels.middleware import BaseMiddleware
 
 logger = logging.getLogger(__name__)
 
@@ -40,12 +41,14 @@ class WebSocketAuthMiddleware(BaseMiddleware):
         # Add connection tracking
         connection_id = f"{scope['client'][0]}:{scope['client'][1]}"
         self.connections[connection_id] = {
-            'user': scope["user"],
-            'connected_at': timezone.now(),
-            'path': scope.get('path', ''),
+            "user": scope["user"],
+            "connected_at": timezone.now(),
+            "path": scope.get("path", ""),
         }
 
-        logger.info(f"WebSocket connection established: {connection_id} for user {scope['user']}")
+        logger.info(
+            f"WebSocket connection established: {connection_id} for user {scope['user']}"
+        )
 
         # Wrap send to track disconnections
         original_send = send
@@ -53,8 +56,12 @@ class WebSocketAuthMiddleware(BaseMiddleware):
         async def wrapped_send(message):
             if message["type"] == "websocket.disconnect":
                 if connection_id in self.connections:
-                    duration = timezone.now() - self.connections[connection_id]['connected_at']
-                    logger.info(f"WebSocket connection closed: {connection_id}, duration: {duration}")
+                    duration = (
+                        timezone.now() - self.connections[connection_id]["connected_at"]
+                    )
+                    logger.info(
+                        f"WebSocket connection closed: {connection_id}, duration: {duration}"
+                    )
                     del self.connections[connection_id]
             return await original_send(message)
 
@@ -83,7 +90,7 @@ class WebSocketAuthMiddleware(BaseMiddleware):
             logger.error(f"Authentication error in WebSocket: {e}")
             return AnonymousUser()
 
-    def get_user_from_session(self, scope):
+    def get_user_from_session(self, scope):  # noqa: C901
         """
         Extract user from Django session
         """
@@ -170,16 +177,22 @@ class WebSocketAuthMiddleware(BaseMiddleware):
         Get statistics about active connections
         """
         return {
-            'total_connections': len(self.connections),
-            'authenticated_connections': len([
-                conn for conn in self.connections.values()
-                if conn['user'].is_authenticated
-            ]),
-            'anonymous_connections': len([
-                conn for conn in self.connections.values()
-                if not conn['user'].is_authenticated
-            ]),
-            'connections': list(self.connections.values())
+            "total_connections": len(self.connections),
+            "authenticated_connections": len(
+                [
+                    conn
+                    for conn in self.connections.values()
+                    if conn["user"].is_authenticated
+                ]
+            ),
+            "anonymous_connections": len(
+                [
+                    conn
+                    for conn in self.connections.values()
+                    if not conn["user"].is_authenticated
+                ]
+            ),
+            "connections": list(self.connections.values()),
         }
 
 

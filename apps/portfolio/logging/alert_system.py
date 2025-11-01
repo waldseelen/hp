@@ -6,27 +6,26 @@ Advanced alerting system for log analysis with multiple notification channels,
 alert rules, and escalation policies.
 """
 
-import json
 import logging
-import time
 import threading
+from collections import deque
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Callable
-from dataclasses import dataclass, asdict
-from collections import defaultdict, deque
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
-from django.core.mail import send_mail
-from django.core.cache import cache
 from django.conf import settings
-from django.utils import timezone
+from django.core.cache import cache
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
 
 class AlertSeverity(Enum):
     """Alert severity levels"""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -35,6 +34,7 @@ class AlertSeverity(Enum):
 
 class AlertStatus(Enum):
     """Alert status"""
+
     ACTIVE = "active"
     ACKNOWLEDGED = "acknowledged"
     RESOLVED = "resolved"
@@ -44,6 +44,7 @@ class AlertStatus(Enum):
 @dataclass
 class AlertRule:
     """Alert rule configuration"""
+
     name: str
     description: str
     condition: str  # Log pattern or condition
@@ -59,6 +60,7 @@ class AlertRule:
 @dataclass
 class Alert:
     """Alert instance"""
+
     id: str
     rule_name: str
     severity: AlertSeverity
@@ -95,11 +97,17 @@ class EmailNotificationChannel(NotificationChannel):
             subject = f"[{alert.severity.value.upper()}] {alert.message}"
 
             # Render email template
-            site_url = getattr(settings, 'SITE_URL', 'http://localhost:8000')
-            email_body = render_to_string('pages/portfolio/alerts/email_alert.html', {
-                'alert': alert,
-                'alert_url': f"{site_url}/admin/logging/dashboard/"
-            }) if hasattr(render_to_string, '__call__') else f"""
+            site_url = getattr(settings, "SITE_URL", "http://localhost:8000")
+            email_body = (
+                render_to_string(
+                    "pages/portfolio/alerts/email_alert.html",
+                    {
+                        "alert": alert,
+                        "alert_url": f"{site_url}/admin/logging/dashboard/",
+                    },
+                )
+                if hasattr(render_to_string, "__call__")
+                else f"""
 Alert: {alert.message}
 Severity: {alert.severity.value.upper()}
 Rule: {alert.rule_name}
@@ -109,21 +117,28 @@ Description: {alert.description}
 
 View Dashboard: {site_url}/admin/logging/dashboard/
 """
+            )
 
-            recipients = self.config.get('recipients', [])
+            recipients = self.config.get("recipients", [])
             if not recipients:
-                recipients = getattr(settings, 'ADMIN_EMAIL_LIST', ['admin@example.com'])
+                recipients = getattr(
+                    settings, "ADMIN_EMAIL_LIST", ["admin@example.com"]
+                )
 
             send_mail(
                 subject=subject,
                 message=email_body,
                 html_message=email_body,
-                from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@example.com'),
+                from_email=getattr(
+                    settings, "DEFAULT_FROM_EMAIL", "noreply@example.com"
+                ),
                 recipient_list=recipients,
                 fail_silently=False,
             )
 
-            logger.info(f"Alert email sent for {alert.rule_name} to {len(recipients)} recipients")
+            logger.info(
+                f"Alert email sent for {alert.rule_name} to {len(recipients)} recipients"
+            )
             return True
 
         except Exception as e:
@@ -138,7 +153,7 @@ class SlackNotificationChannel(NotificationChannel):
         try:
             import requests
 
-            webhook_url = self.config.get('webhook_url')
+            webhook_url = self.config.get("webhook_url")
             if not webhook_url:
                 logger.warning("Slack webhook URL not configured")
                 return False
@@ -160,28 +175,24 @@ class SlackNotificationChannel(NotificationChannel):
                             {
                                 "title": "Severity",
                                 "value": alert.severity.value.upper(),
-                                "short": True
+                                "short": True,
                             },
-                            {
-                                "title": "Rule",
-                                "value": alert.rule_name,
-                                "short": True
-                            },
+                            {"title": "Rule", "value": alert.rule_name, "short": True},
                             {
                                 "title": "Count",
                                 "value": str(alert.count),
-                                "short": True
+                                "short": True,
                             },
                             {
                                 "title": "First Seen",
                                 "value": alert.first_seen.strftime("%Y-%m-%d %H:%M:%S"),
-                                "short": True
-                            }
+                                "short": True,
+                            },
                         ],
                         "footer": "Log Alert System",
-                        "ts": int(alert.first_seen.timestamp())
+                        "ts": int(alert.first_seen.timestamp()),
                     }
-                ]
+                ],
             }
 
             response = requests.post(webhook_url, json=payload, timeout=10)
@@ -202,7 +213,7 @@ class WebhookNotificationChannel(NotificationChannel):
         try:
             import requests
 
-            webhook_url = self.config.get('url')
+            webhook_url = self.config.get("url")
             if not webhook_url:
                 logger.warning("Webhook URL not configured")
                 return False
@@ -223,14 +234,11 @@ class WebhookNotificationChannel(NotificationChannel):
                 }
             }
 
-            headers = self.config.get('headers', {})
-            headers.setdefault('Content-Type', 'application/json')
+            headers = self.config.get("headers", {})
+            headers.setdefault("Content-Type", "application/json")
 
             response = requests.post(
-                webhook_url,
-                json=payload,
-                headers=headers,
-                timeout=10
+                webhook_url, json=payload, headers=headers, timeout=10
             )
             response.raise_for_status()
 
@@ -268,8 +276,8 @@ class LogAlertSystem:
                 severity=AlertSeverity.HIGH,
                 threshold=10,
                 time_window=300,  # 5 minutes
-                cooldown=900,     # 15 minutes
-                notification_channels=["email", "slack"]
+                cooldown=900,  # 15 minutes
+                notification_channels=["email", "slack"],
             ),
             AlertRule(
                 name="critical_errors",
@@ -277,9 +285,9 @@ class LogAlertSystem:
                 condition="level:CRITICAL",
                 severity=AlertSeverity.CRITICAL,
                 threshold=1,
-                time_window=60,   # 1 minute
-                cooldown=300,     # 5 minutes
-                notification_channels=["email", "slack", "webhook"]
+                time_window=60,  # 1 minute
+                cooldown=300,  # 5 minutes
+                notification_channels=["email", "slack", "webhook"],
             ),
             AlertRule(
                 name="authentication_failures",
@@ -288,8 +296,8 @@ class LogAlertSystem:
                 severity=AlertSeverity.MEDIUM,
                 threshold=5,
                 time_window=300,  # 5 minutes
-                cooldown=600,     # 10 minutes
-                notification_channels=["email"]
+                cooldown=600,  # 10 minutes
+                notification_channels=["email"],
             ),
             AlertRule(
                 name="performance_degradation",
@@ -298,8 +306,8 @@ class LogAlertSystem:
                 severity=AlertSeverity.MEDIUM,
                 threshold=3,
                 time_window=180,  # 3 minutes
-                cooldown=600,     # 10 minutes
-                notification_channels=["email"]
+                cooldown=600,  # 10 minutes
+                notification_channels=["email"],
             ),
             AlertRule(
                 name="security_events",
@@ -308,8 +316,8 @@ class LogAlertSystem:
                 severity=AlertSeverity.HIGH,
                 threshold=3,
                 time_window=300,  # 5 minutes
-                cooldown=1800,    # 30 minutes
-                notification_channels=["email", "slack"]
+                cooldown=1800,  # 30 minutes
+                notification_channels=["email", "slack"],
             ),
             AlertRule(
                 name="database_errors",
@@ -318,8 +326,8 @@ class LogAlertSystem:
                 severity=AlertSeverity.HIGH,
                 threshold=5,
                 time_window=300,  # 5 minutes
-                cooldown=600,     # 10 minutes
-                notification_channels=["email", "slack"]
+                cooldown=600,  # 10 minutes
+                notification_channels=["email", "slack"],
             ),
         ]
 
@@ -329,18 +337,24 @@ class LogAlertSystem:
     def _initialize_notification_channels(self):
         """Initialize notification channels"""
         # Email channel
-        email_config = getattr(settings, 'ALERT_EMAIL_CONFIG', {})
-        self.notification_channels['email'] = EmailNotificationChannel('email', email_config)
+        email_config = getattr(settings, "ALERT_EMAIL_CONFIG", {})
+        self.notification_channels["email"] = EmailNotificationChannel(
+            "email", email_config
+        )
 
         # Slack channel
-        slack_config = getattr(settings, 'ALERT_SLACK_CONFIG', {})
-        if slack_config.get('webhook_url'):
-            self.notification_channels['slack'] = SlackNotificationChannel('slack', slack_config)
+        slack_config = getattr(settings, "ALERT_SLACK_CONFIG", {})
+        if slack_config.get("webhook_url"):
+            self.notification_channels["slack"] = SlackNotificationChannel(
+                "slack", slack_config
+            )
 
         # Webhook channel
-        webhook_config = getattr(settings, 'ALERT_WEBHOOK_CONFIG', {})
-        if webhook_config.get('url'):
-            self.notification_channels['webhook'] = WebhookNotificationChannel('webhook', webhook_config)
+        webhook_config = getattr(settings, "ALERT_WEBHOOK_CONFIG", {})
+        if webhook_config.get("url"):
+            self.notification_channels["webhook"] = WebhookNotificationChannel(
+                "webhook", webhook_config
+            )
 
     def add_alert_rule(self, rule: AlertRule):
         """Add or update an alert rule"""
@@ -366,29 +380,34 @@ class LogAlertSystem:
             if self._matches_condition(log_entry, rule.condition):
                 self._process_alert_match(rule, log_entry, current_time)
 
-    def _matches_condition(self, log_entry: Dict[str, Any], condition: str) -> bool:
+    def _matches_condition(
+        self, log_entry: Dict[str, Any], condition: str
+    ) -> bool:  # noqa: C901
         """Check if log entry matches alert condition"""
         try:
             # Simple condition matching - can be extended with more complex logic
-            conditions = condition.split(' OR ')
+            conditions = condition.split(" OR ")
 
             for cond in conditions:
                 cond = cond.strip()
 
-                if ':' in cond:
-                    field, value = cond.split(':', 1)
+                if ":" in cond:
+                    field, value = cond.split(":", 1)
                     field = field.strip()
                     value = value.strip()
 
                     # Handle wildcards
-                    if '*' in value:
-                        pattern = value.replace('*', '.*')
+                    if "*" in value:
+                        pattern = value.replace("*", ".*")
                         import re
-                        if re.search(pattern, str(log_entry.get(field, '')), re.IGNORECASE):
+
+                        if re.search(
+                            pattern, str(log_entry.get(field, "")), re.IGNORECASE
+                        ):
                             return True
                     else:
                         # Exact match or numeric comparison
-                        if value.startswith('>'):
+                        if value.startswith(">"):
                             try:
                                 threshold = float(value[1:])
                                 log_value = float(log_entry.get(field, 0))
@@ -396,7 +415,7 @@ class LogAlertSystem:
                                     return True
                             except ValueError:
                                 pass
-                        elif value.startswith('<'):
+                        elif value.startswith("<"):
                             try:
                                 threshold = float(value[1:])
                                 log_value = float(log_entry.get(field, 0))
@@ -405,11 +424,11 @@ class LogAlertSystem:
                             except ValueError:
                                 pass
                         else:
-                            if str(log_entry.get(field, '')).lower() == value.lower():
+                            if str(log_entry.get(field, "")).lower() == value.lower():
                                 return True
                 else:
                     # Simple text search in message
-                    message = log_entry.get('message', '').lower()
+                    message = log_entry.get("message", "").lower()
                     if cond.lower() in message:
                         return True
 
@@ -419,7 +438,9 @@ class LogAlertSystem:
             logger.error(f"Error matching condition '{condition}': {e}")
             return False
 
-    def _process_alert_match(self, rule: AlertRule, log_entry: Dict[str, Any], current_time: datetime):
+    def _process_alert_match(
+        self, rule: AlertRule, log_entry: Dict[str, Any], current_time: datetime
+    ):
         """Process an alert rule match"""
         alert_id = f"{rule.name}_{current_time.strftime('%Y%m%d_%H')}"  # Hourly buckets
 
@@ -429,13 +450,15 @@ class LogAlertSystem:
                 alert = self.active_alerts[alert_id]
                 alert.count += 1
                 alert.last_seen = current_time
-                alert.details.setdefault('recent_entries', []).append({
-                    'timestamp': current_time.isoformat(),
-                    'message': log_entry.get('message', ''),
-                    'logger': log_entry.get('logger', ''),
-                })
+                alert.details.setdefault("recent_entries", []).append(
+                    {
+                        "timestamp": current_time.isoformat(),
+                        "message": log_entry.get("message", ""),
+                        "logger": log_entry.get("logger", ""),
+                    }
+                )
                 # Keep only last 10 entries
-                alert.details['recent_entries'] = alert.details['recent_entries'][-10:]
+                alert.details["recent_entries"] = alert.details["recent_entries"][-10:]
             else:
                 # Create new alert
                 alert = Alert(
@@ -449,15 +472,17 @@ class LogAlertSystem:
                     last_seen=current_time,
                     count=1,
                     details={
-                        'rule': asdict(rule),
-                        'first_entry': log_entry,
-                        'recent_entries': [{
-                            'timestamp': current_time.isoformat(),
-                            'message': log_entry.get('message', ''),
-                            'logger': log_entry.get('logger', ''),
-                        }]
+                        "rule": asdict(rule),
+                        "first_entry": log_entry,
+                        "recent_entries": [
+                            {
+                                "timestamp": current_time.isoformat(),
+                                "message": log_entry.get("message", ""),
+                                "logger": log_entry.get("logger", ""),
+                            }
+                        ],
                     },
-                    tags=rule.tags or {}
+                    tags=rule.tags or {},
                 )
                 self.active_alerts[alert_id] = alert
 
@@ -481,7 +506,7 @@ class LogAlertSystem:
         cache.set(cooldown_key, current_time.isoformat(), rule.cooldown)
 
         # Send notifications
-        channels = rule.notification_channels or ['email']
+        channels = rule.notification_channels or ["email"]
         for channel_name in channels:
             if channel_name in self.notification_channels:
                 try:
@@ -490,7 +515,9 @@ class LogAlertSystem:
                     if success:
                         logger.info(f"Alert {alert.id} sent via {channel_name}")
                     else:
-                        logger.warning(f"Failed to send alert {alert.id} via {channel_name}")
+                        logger.warning(
+                            f"Failed to send alert {alert.id} via {channel_name}"
+                        )
                 except Exception as e:
                     logger.error(f"Error sending alert via {channel_name}: {e}")
 
@@ -500,11 +527,11 @@ class LogAlertSystem:
         logger.warning(
             f"Alert fired: {alert.rule_name} - {alert.message}",
             extra={
-                'alert_id': alert.id,
-                'severity': alert.severity.value,
-                'count': alert.count,
-                'rule_name': alert.rule_name,
-            }
+                "alert_id": alert.id,
+                "severity": alert.severity.value,
+                "count": alert.count,
+                "rule_name": alert.rule_name,
+            },
         )
 
     def acknowledge_alert(self, alert_id: str, acknowledged_by: str) -> bool:

@@ -1,85 +1,88 @@
-from django.utils.cache import patch_response_headers
-from django.utils.deprecation import MiddlewareMixin
+import base64
 import re
 import secrets
-import base64
+
+from django.utils.cache import patch_response_headers
+from django.utils.deprecation import MiddlewareMixin
 
 
 class CacheControlMiddleware(MiddlewareMixin):
     """Add appropriate cache control headers based on content type and URL patterns"""
-    
+
     def process_response(self, request, response):
         # Don't cache admin, auth, or API endpoints
         no_cache_patterns = [
-            r'^/admin/',
-            r'^/api/',
-            r'^/logout/',
-            r'^/s/',  # Short URLs shouldn't be cached
+            r"^/admin/",
+            r"^/api/",
+            r"^/logout/",
+            r"^/s/",  # Short URLs shouldn't be cached
         ]
-        
+
         path = request.path
         for pattern in no_cache_patterns:
             if re.match(pattern, path):
-                response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-                response['Pragma'] = 'no-cache'
-                response['Expires'] = '0'
+                response["Cache-Control"] = "no-cache, no-store, must-revalidate"
+                response["Pragma"] = "no-cache"
+                response["Expires"] = "0"
                 return response
-        
+
         # Cache static files for long time
-        if path.startswith('/static/') or path.startswith('/media/'):
+        if path.startswith("/static/") or path.startswith("/media/"):
             # 1 year cache for static files
             patch_response_headers(response, cache_timeout=31536000)
-            response['Cache-Control'] = 'public, max-age=31536000, immutable'
+            response["Cache-Control"] = "public, max-age=31536000, immutable"
             return response
-        
+
         # Cache feeds for shorter time
-        if '/feed/' in path or path.endswith('.xml'):
+        if "/feed/" in path or path.endswith(".xml"):
             # 1 hour cache for feeds and XML
             patch_response_headers(response, cache_timeout=3600)
-            response['Cache-Control'] = 'public, max-age=3600'
+            response["Cache-Control"] = "public, max-age=3600"
             return response
-        
+
         # Cache regular pages
-        content_type = response.get('Content-Type', '').lower()
-        if 'text/html' in content_type:
+        content_type = response.get("Content-Type", "").lower()
+        if "text/html" in content_type:
             # 5 minutes cache for HTML pages
             patch_response_headers(response, cache_timeout=300)
-            response['Cache-Control'] = 'public, max-age=300'
-        elif 'application/json' in content_type:
+            response["Cache-Control"] = "public, max-age=300"
+        elif "application/json" in content_type:
             # 1 minute cache for JSON
             patch_response_headers(response, cache_timeout=60)
-            response['Cache-Control'] = 'public, max-age=60'
-        
+            response["Cache-Control"] = "public, max-age=60"
+
         return response
 
 
 class SecurityHeadersMiddleware(MiddlewareMixin):
     """Add security and performance headers with nonce-based CSP"""
-    
+
     def process_request(self, request):
         # Generate a unique nonce for each request
         nonce_bytes = secrets.token_bytes(32)
-        nonce = base64.b64encode(nonce_bytes).decode('utf-8')
+        nonce = base64.b64encode(nonce_bytes).decode("utf-8")
         request.csp_nonce = nonce
         return None
-    
+
     def process_response(self, request, response):
         # Security headers
-        response['X-Content-Type-Options'] = 'nosniff'
-        response['X-Frame-Options'] = 'DENY'
-        response['X-XSS-Protection'] = '1; mode=block'
-        response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-        
+        response["X-Content-Type-Options"] = "nosniff"
+        response["X-Frame-Options"] = "DENY"
+        response["X-XSS-Protection"] = "1; mode=block"
+        response["Referrer-Policy"] = "strict-origin-when-cross-origin"
+
         # Performance headers
-        response['X-DNS-Prefetch-Control'] = 'on'
-        
+        response["X-DNS-Prefetch-Control"] = "on"
+
         # HSTS for HTTPS (only add in production)
         if request.is_secure():
-            response['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-        
+            response["Strict-Transport-Security"] = (
+                "max-age=31536000; includeSubDomains"
+            )
+
         # Get the nonce from request
-        nonce = getattr(request, 'csp_nonce', '')
-        
+        nonce = getattr(request, "csp_nonce", "")
+
         # Enhanced Content Security Policy with nonce-based inline allowlist
         # More restrictive and secure CSP directives
         csp_directives = [
@@ -114,117 +117,125 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
             # Upgrade insecure requests
             "upgrade-insecure-requests",
             # Block mixed content
-            "block-all-mixed-content"
+            "block-all-mixed-content",
         ]
-        
+
         # Add report-uri and report-to in production
-        if not getattr(request, 'DEBUG', True):
+        if not getattr(request, "DEBUG", True):
             csp_directives.append("report-uri /api/security/csp-report/")
             csp_directives.append("report-to default")
-        
-        response['Content-Security-Policy'] = '; '.join(csp_directives)
-        
+
+        response["Content-Security-Policy"] = "; ".join(csp_directives)
+
         # Add additional security headers
-        response['X-Permitted-Cross-Domain-Policies'] = 'none'
+        response["X-Permitted-Cross-Domain-Policies"] = "none"
 
         # Use less restrictive COEP in development to allow CDN resources
         from django.conf import settings
-        if getattr(settings, 'DEBUG', False):
-            response['Cross-Origin-Embedder-Policy'] = 'credentialless'
+
+        if getattr(settings, "DEBUG", False):
+            response["Cross-Origin-Embedder-Policy"] = "credentialless"
         else:
-            response['Cross-Origin-Embedder-Policy'] = 'require-corp'
-        response['Cross-Origin-Opener-Policy'] = 'same-origin'
-        response['Cross-Origin-Resource-Policy'] = 'same-origin'
-        
+            response["Cross-Origin-Embedder-Policy"] = "require-corp"
+        response["Cross-Origin-Opener-Policy"] = "same-origin"
+        response["Cross-Origin-Resource-Policy"] = "same-origin"
+
         # Additional security headers
-        response['Permissions-Policy'] = (
-            'accelerometer=(), '
-            'camera=(), '
-            'geolocation=(self), '
-            'gyroscope=(), '
-            'magnetometer=(), '
-            'microphone=(), '
-            'payment=(), '
-            'usb=(), '
-            'browsing-topics=()'
+        response["Permissions-Policy"] = (
+            "accelerometer=(), "
+            "camera=(), "
+            "geolocation=(self), "
+            "gyroscope=(), "
+            "magnetometer=(), "
+            "microphone=(), "
+            "payment=(), "
+            "usb=(), "
+            "browsing-topics=()"
         )
-        
+
         # Add Report-To header for multiple security violation reporting
-        if not getattr(request, 'DEBUG', True):
+        if not getattr(request, "DEBUG", True):
             import json
+
             report_endpoints = [
                 {
                     "group": "default",
                     "max_age": 10886400,
                     "endpoints": [{"url": "/api/security/csp-report/"}],
-                    "include_subdomains": True
+                    "include_subdomains": True,
                 },
                 {
                     "group": "network-errors",
                     "max_age": 10886400,
                     "endpoints": [{"url": "/api/security/network-error-report/"}],
-                    "include_subdomains": True
-                }
+                    "include_subdomains": True,
+                },
             ]
-            response['Report-To'] = json.dumps(report_endpoints)
-            response['NEL'] = json.dumps({
-                "report_to": "network-errors",
-                "max_age": 10886400,
-                "include_subdomains": True,
-                "failure_fraction": 0.1
-            })
-        
+            response["Report-To"] = json.dumps(report_endpoints)
+            response["NEL"] = json.dumps(
+                {
+                    "report_to": "network-errors",
+                    "max_age": 10886400,
+                    "include_subdomains": True,
+                    "failure_fraction": 0.1,
+                }
+            )
+
         # Preload hints for critical resources
-        if request.path == '/':
+        if request.path == "/":
             preload_links = [
-                '</static/css/output.css>; rel=preload; as=style',
-                '</static/css/custom.min.css>; rel=preload; as=style',
-                '</static/js/main.min.js>; rel=preload; as=script',
+                "</static/css/output.css>; rel=preload; as=style",
+                "</static/css/custom.min.css>; rel=preload; as=style",
+                "</static/js/main.min.js>; rel=preload; as=script",
             ]
             if preload_links:
-                response['Link'] = ', '.join(preload_links)
-        
+                response["Link"] = ", ".join(preload_links)
+
         return response
 
 
 class CompressionMiddleware(MiddlewareMixin):
     """Additional compression settings"""
-    
+
     def process_response(self, request, response):
         # Add Vary header for better caching
-        vary_headers = response.get('Vary', '').split(', ') if response.get('Vary') else []
-        
+        vary_headers = (
+            response.get("Vary", "").split(", ") if response.get("Vary") else []
+        )
+
         # Add encoding to vary for compressed responses
-        if 'Accept-Encoding' not in vary_headers:
-            vary_headers.append('Accept-Encoding')
-        
+        if "Accept-Encoding" not in vary_headers:
+            vary_headers.append("Accept-Encoding")
+
         # Add User-Agent for mobile optimization
-        if 'User-Agent' not in vary_headers:
-            vary_headers.append('User-Agent')
-        
-        response['Vary'] = ', '.join(filter(None, vary_headers))
-        
+        if "User-Agent" not in vary_headers:
+            vary_headers.append("User-Agent")
+
+        response["Vary"] = ", ".join(filter(None, vary_headers))
+
         return response
 
 
 class PerformanceMiddleware(MiddlewareMixin):
     """Performance monitoring and optimization middleware"""
-    
+
     def process_request(self, request):
         # Add request start time for performance monitoring
         import time
+
         request._performance_start = time.time()
         return None
-    
+
     def process_response(self, request, response):
         # Calculate request processing time
-        if hasattr(request, '_performance_start'):
+        if hasattr(request, "_performance_start"):
             import time
+
             processing_time = time.time() - request._performance_start
-            response['X-Response-Time'] = f'{processing_time:.3f}s'
-        
+            response["X-Response-Time"] = f"{processing_time:.3f}s"
+
         # Add performance hints
-        response['X-DNS-Prefetch-Control'] = 'on'
-        response['X-Preload'] = 'dns-prefetch'
-        
+        response["X-DNS-Prefetch-Control"] = "on"
+        response["X-Preload"] = "dns-prefetch"
+
         return response

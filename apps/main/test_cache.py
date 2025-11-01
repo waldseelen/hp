@@ -3,11 +3,10 @@ Tests for cache invalidation system.
 Verifies that cache is properly invalidated when models are saved/deleted.
 """
 
-from django.test import TestCase, TransactionTestCase
-from django.core.cache import cache
-from django.utils import timezone
-from unittest.mock import patch, MagicMock
 import logging
+
+from django.core.cache import cache
+from django.test import TestCase, TransactionTestCase
 
 logger = logging.getLogger(__name__)
 
@@ -25,20 +24,20 @@ class CacheUtilsTestCase(TestCase):
 
     def test_cache_manager_set_and_get(self):
         """Test basic cache set/get operations."""
-        from apps.main.cache_utils import cache_manager, CACHE_TIMEOUTS
+        from apps.main.cache_utils import cache_manager
 
         # Test basic set/get
-        cache_manager.set_cache('test_key', {'data': 'value'}, timeout='short')
-        result = cache_manager.get_cache('test_key')
+        cache_manager.set_cache("test_key", {"data": "value"}, timeout="short")
+        result = cache_manager.get_cache("test_key")
 
-        self.assertEqual(result, {'data': 'value'})
+        self.assertEqual(result, {"data": "value"})
 
     def test_cache_manager_fallback(self):
         """Test cache fallback when key not found."""
         from apps.main.cache_utils import cache_manager
 
-        fallback_data = {'fallback': True}
-        result = cache_manager.get_cache('nonexistent_key', fallback=fallback_data)
+        fallback_data = {"fallback": True}
+        result = cache_manager.get_cache("nonexistent_key", fallback=fallback_data)
 
         self.assertEqual(result, fallback_data)
 
@@ -47,38 +46,34 @@ class CacheUtilsTestCase(TestCase):
         from apps.main.cache_utils import cache_manager
 
         # Test pattern with hash and hour
-        key = cache_manager.get_cache_key(
-            'home_page',
-            hash=12345,
-            hour=10
-        )
+        key = cache_manager.get_cache_key("home_page", hash=12345, hour=10)
 
-        self.assertIn('12345', key)
-        self.assertIn('10', key)
+        self.assertIn("12345", key)
+        self.assertIn("10", key)
 
     def test_cache_invalidation(self):
         """Test cache invalidation."""
         from apps.main.cache_utils import cache_manager
 
         # Set cache
-        cache_manager.set_cache('test_key', {'data': 'value'})
-        self.assertIsNotNone(cache_manager.get_cache('test_key'))
+        cache_manager.set_cache("test_key", {"data": "value"})
+        self.assertIsNotNone(cache_manager.get_cache("test_key"))
 
         # Invalidate
-        cache_manager.invalidate_cache('test_key')
-        self.assertIsNone(cache_manager.get_cache('test_key'))
+        cache_manager.invalidate_cache("test_key")
+        self.assertIsNone(cache_manager.get_cache("test_key"))
 
     def test_cache_pattern_invalidation(self):
         """Test pattern-based cache invalidation."""
         from apps.main.cache_utils import cache_manager
 
         # Set multiple cache keys
-        cache.set('home_page_data_user1', {'data': 1}, 900)
-        cache.set('home_page_data_user2', {'data': 2}, 900)
-        cache.set('personal_page_data', {'data': 3}, 900)
+        cache.set("home_page_data_user1", {"data": 1}, 900)
+        cache.set("home_page_data_user2", {"data": 2}, 900)
+        cache.set("personal_page_data", {"data": 3}, 900)
 
         # Invalidate pattern
-        count = cache_manager.invalidate_pattern('home_page_data_*')
+        count = cache_manager.invalidate_pattern("home_page_data_*")
 
         # Note: In test environment with LocMemCache backend, pattern matching returns 0
         # because LocMemCache doesn't support keys() method.
@@ -92,7 +87,7 @@ class CacheUtilsTestCase(TestCase):
 
         call_count = 0
 
-        @cache_result(timeout='short', key_prefix='test_func')
+        @cache_result(timeout="short", key_prefix="test_func")
         def expensive_function(x, y):
             nonlocal call_count
             call_count += 1
@@ -128,18 +123,14 @@ class SignalCacheInvalidationTestCase(TransactionTestCase):
     def test_personalinfo_cache_invalidation_on_save(self):
         """Test that PersonalInfo cache is invalidated on save."""
         from apps.main.models import PersonalInfo
-        from apps.main.cache_utils import cache_manager
 
         # Set cache
-        cache.set('home_page_data_user1', {'data': 'old'}, 900)
-        cache.set('personal_page_data', {'data': 'old'}, 900)
+        cache.set("home_page_data_user1", {"data": "old"}, 900)
+        cache.set("personal_page_data", {"data": "old"}, 900)
 
         # Create PersonalInfo instance with correct fields
         personal_info = PersonalInfo(
-            key='test_info',
-            value='Test value',
-            type='text',
-            is_visible=True
+            key="test_info", value="Test value", type="text", is_visible=True
         )
         personal_info.save()
 
@@ -147,8 +138,8 @@ class SignalCacheInvalidationTestCase(TransactionTestCase):
         # Note: In test environment with in-memory cache, pattern matching might not work
         # So we check if at least one cache is cleared
         self.assertTrue(
-            cache.get('home_page_data_user1') is None or
-            cache.get('personal_page_data') is None
+            cache.get("home_page_data_user1") is None
+            or cache.get("personal_page_data") is None
         )
 
     def test_sociallink_cache_invalidation_on_save(self):
@@ -156,18 +147,18 @@ class SignalCacheInvalidationTestCase(TransactionTestCase):
         from apps.main.models import SocialLink
 
         # Set cache
-        cache.set('personal_page_data', {'data': 'old'}, 900)
+        cache.set("personal_page_data", {"data": "old"}, 900)
 
         # Create SocialLink
         social_link = SocialLink(
-            platform='twitter',
-            url='https://twitter.com/test',
-            is_visible=True
+            platform="twitter", url="https://twitter.com/test", is_visible=True
         )
         social_link.save()
 
         # Signal should have cleared cache
         logger.info(f"Cache after SocialLink save: {cache.get('personal_page_data')}")
+
+
 class CacheTimeoutTestCase(TestCase):
     """Test cache timeout constants."""
 
@@ -175,10 +166,10 @@ class CacheTimeoutTestCase(TestCase):
         """Test that timeout constants are correct."""
         from apps.main.cache_utils import CACHE_TIMEOUTS
 
-        self.assertEqual(CACHE_TIMEOUTS['short'], 300)
-        self.assertEqual(CACHE_TIMEOUTS['medium'], 900)
-        self.assertEqual(CACHE_TIMEOUTS['long'], 3600)
-        self.assertEqual(CACHE_TIMEOUTS['daily'], 86400)
+        self.assertEqual(CACHE_TIMEOUTS["short"], 300)
+        self.assertEqual(CACHE_TIMEOUTS["medium"], 900)
+        self.assertEqual(CACHE_TIMEOUTS["long"], 3600)
+        self.assertEqual(CACHE_TIMEOUTS["daily"], 86400)
 
 
 class FallbackDataTestCase(TestCase):
@@ -189,20 +180,20 @@ class FallbackDataTestCase(TestCase):
         from apps.main.cache_utils import get_fallback_data
 
         # Test home page fallback
-        fallback = get_fallback_data('home_page_data_test')
-        self.assertIn('personal_info', fallback)
-        self.assertIn('social_links', fallback)
-        self.assertIn('recent_posts', fallback)
-        self.assertIsInstance(fallback['personal_info'], list)
-        self.assertIsInstance(fallback['social_links'], list)
+        fallback = get_fallback_data("home_page_data_test")
+        self.assertIn("personal_info", fallback)
+        self.assertIn("social_links", fallback)
+        self.assertIn("recent_posts", fallback)
+        self.assertIsInstance(fallback["personal_info"], list)
+        self.assertIsInstance(fallback["social_links"], list)
 
     def test_fallback_data_for_personal_page(self):
         """Test fallback data for personal page."""
         from apps.main.cache_utils import get_fallback_data
 
-        fallback = get_fallback_data('personal_page_data')
-        self.assertIn('personal_info', fallback)
-        self.assertIn('social_links', fallback)
+        fallback = get_fallback_data("personal_page_data")
+        self.assertIn("personal_info", fallback)
+        self.assertIn("social_links", fallback)
 
 
 class RedisConnectionTestCase(TestCase):
@@ -211,27 +202,26 @@ class RedisConnectionTestCase(TestCase):
     def test_cache_is_operational(self):
         """Test that cache backend is operational."""
         try:
-            cache.set('health_check', 'ok', 60)
-            value = cache.get('health_check')
-            self.assertEqual(value, 'ok')
+            cache.set("health_check", "ok", 60)
+            value = cache.get("health_check")
+            self.assertEqual(value, "ok")
         except Exception as e:
             logger.error(f"Cache health check failed: {e}")
             # In test environment, local cache is ok
-            pass
 
     def test_cache_delete_works(self):
         """Test that cache deletion works."""
-        cache.set('test_key', 'value', 60)
-        cache.delete('test_key')
-        self.assertIsNone(cache.get('test_key'))
+        cache.set("test_key", "value", 60)
+        cache.delete("test_key")
+        self.assertIsNone(cache.get("test_key"))
 
     def test_cache_clear_works(self):
         """Test that cache clearing works."""
-        cache.set('key1', 'value1', 60)
-        cache.set('key2', 'value2', 60)
+        cache.set("key1", "value1", 60)
+        cache.set("key2", "value2", 60)
         cache.clear()
-        self.assertIsNone(cache.get('key1'))
-        self.assertIsNone(cache.get('key2'))
+        self.assertIsNone(cache.get("key1"))
+        self.assertIsNone(cache.get("key2"))
 
 
 class CacheInvalidationLoggingTestCase(TestCase):
@@ -242,15 +232,18 @@ class CacheInvalidationLoggingTestCase(TestCase):
         from apps.main.cache_utils import cache_manager
 
         # Test that operations work without errors
-        cache_manager.set_cache('test_key', 'value')
-        result = cache_manager.get_cache('test_key')
+        cache_manager.set_cache("test_key", "value")
+        result = cache_manager.get_cache("test_key")
 
-        self.assertEqual(result, 'value')
+        self.assertEqual(result, "value")
 
-        cache_manager.invalidate_cache('test_key')
-        result = cache_manager.get_cache('test_key')
+        cache_manager.invalidate_cache("test_key")
+        result = cache_manager.get_cache("test_key")
 
         self.assertIsNone(result)
-if __name__ == '__main__':
+
+
+if __name__ == "__main__":
     import unittest
+
     unittest.main()

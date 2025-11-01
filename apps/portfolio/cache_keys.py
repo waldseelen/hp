@@ -5,9 +5,9 @@ Manages all cache keys used across the application with automatic invalidation.
 
 import hashlib
 import json
-from typing import Dict, List, Set, Optional, Any
+from typing import Any, Dict, List, Optional
+
 from django.core.cache import cache
-from django.conf import settings
 
 
 class CacheKeyManager:
@@ -24,119 +24,117 @@ class CacheKeyManager:
     # Cache key definitions organized by feature
     CACHE_KEYS = {
         # Home page related
-        'home_page_data': 'home:page_data',
-        'home_personal_info_visible': 'home:personal_info:visible',
-        'home_social_links_visible': 'home:social_links:visible',
-        'home_recent_posts': 'home:recent_posts',
-        'home_featured_tools': 'home:featured_tools',
-        'home_featured_ai_tools': 'home:featured_ai_tools',
-        'home_urgent_security': 'home:urgent_security',
-        'home_featured_blog_categories': 'home:featured_blog_categories',
-
+        "home_page_data": "home:page_data",
+        "home_personal_info_visible": "home:personal_info:visible",
+        "home_social_links_visible": "home:social_links:visible",
+        "home_recent_posts": "home:recent_posts",
+        "home_featured_tools": "home:featured_tools",
+        "home_featured_ai_tools": "home:featured_ai_tools",
+        "home_urgent_security": "home:urgent_security",
+        "home_featured_blog_categories": "home:featured_blog_categories",
         # Personal page related
-        'personal_page_data': 'personal:page_data',
-        'personal_personal_info_all': 'personal:personal_info:all',
-        'personal_social_links_all': 'personal:social_links:all',
-
+        "personal_page_data": "personal:page_data",
+        "personal_personal_info_all": "personal:personal_info:all",
+        "personal_social_links_all": "personal:social_links:all",
         # Blog related
-        'blog_published_posts': 'blog:published_posts',
-        'blog_popular_posts': 'blog:popular_posts',
-        'blog_blog_categories': 'blog:categories',
-
+        "blog_published_posts": "blog:published_posts",
+        "blog_popular_posts": "blog:popular_posts",
+        "blog_blog_categories": "blog:categories",
         # Tools related
-        'tools_visible_tools': 'tools:visible_tools',
-        'tools_featured_tools': 'tools:featured_tools',
-        'tools_tools_by_category': 'tools:by_category',
-        'projects_page_data': 'projects:page_data',
-
+        "tools_visible_tools": "tools:visible_tools",
+        "tools_featured_tools": "tools:featured_tools",
+        "tools_tools_by_category": "tools:by_category",
+        "projects_page_data": "projects:page_data",
         # Music and other pages
-        'music_page_data': 'music:page_data',
-        'useful_page_data': 'useful:page_data',
-
+        "music_page_data": "music:page_data",
+        "useful_page_data": "useful:page_data",
         # Template fragments
-        'template.cache.personal_info_section': 'template:personal_info_section',
-        'template.cache.social_links_section': 'template:social_links_section',
-        'template.cache.recent_posts_section': 'template:recent_posts_section',
-        'template.cache.featured_ai_tools_section': 'template:featured_ai_tools_section',
-        'template.cache.urgent_security_section': 'template:urgent_security_section',
-
+        "template.cache.personal_info_section": "template:personal_info_section",
+        "template.cache.social_links_section": "template:social_links_section",
+        "template.cache.recent_posts_section": "template:recent_posts_section",
+        "template.cache.featured_ai_tools_section": "template:featured_ai_tools_section",
+        "template.cache.urgent_security_section": "template:urgent_security_section",
         # API responses
-        'api_response_personal': 'api:response:personal',
-        'api_response_social': 'api:response:social',
-        'api_response_blog': 'api:response:blog',
-        'api_response_tools': 'api:response:tools',
+        "api_response_personal": "api:response:personal",
+        "api_response_social": "api:response:social",
+        "api_response_blog": "api:response:blog",
+        "api_response_tools": "api:response:tools",
     }
 
     # Model-to-cache key mapping for automatic invalidation
     MODEL_CACHE_MAPPING = {
-        'main.PersonalInfo': [
-            'home_page_data',
-            'home_personal_info_visible',
-            'personal_page_data',
-            'personal_personal_info_all',
-            'template.cache.personal_info_section',
-            'api_response_personal',
+        "main.PersonalInfo": [
+            "home_page_data",
+            "home_personal_info_visible",
+            "personal_page_data",
+            "personal_personal_info_all",
+            "template.cache.personal_info_section",
+            "api_response_personal",
         ],
-        'main.SocialLink': [
-            'home_page_data',
-            'home_social_links_visible',
-            'personal_page_data',
-            'personal_social_links_all',
-            'template.cache.social_links_section',
-            'api_response_social',
+        "main.SocialLink": [
+            "home_page_data",
+            "home_social_links_visible",
+            "personal_page_data",
+            "personal_social_links_all",
+            "template.cache.social_links_section",
+            "api_response_social",
         ],
-        'blog.Post': [
-            'home_page_data',
-            'home_recent_posts',
-            'personal_page_data',
-            'blog_published_posts',
-            'blog_popular_posts',
-            'template.cache.recent_posts_section',
-            'api_response_blog',
+        "blog.Post": [
+            "home_page_data",
+            "home_recent_posts",
+            "personal_page_data",
+            "blog_published_posts",
+            "blog_popular_posts",
+            "template.cache.recent_posts_section",
+            "api_response_blog",
         ],
-        'tools.Tool': [
-            'home_page_data',
-            'home_featured_tools',
-            'tools_visible_tools',
-            'tools_featured_tools',
-            'tools_tools_by_category',
-            'projects_page_data',
-            'api_response_tools',
+        "tools.Tool": [
+            "home_page_data",
+            "home_featured_tools",
+            "tools_visible_tools",
+            "tools_featured_tools",
+            "tools_tools_by_category",
+            "projects_page_data",
+            "api_response_tools",
         ],
-        'portfolio.AITool': [
-            'home_page_data',
-            'home_featured_ai_tools',
-            'template.cache.featured_ai_tools_section',
+        "portfolio.AITool": [
+            "home_page_data",
+            "home_featured_ai_tools",
+            "template.cache.featured_ai_tools_section",
         ],
-        'portfolio.CybersecurityResource': [
-            'home_page_data',
-            'home_urgent_security',
-            'template.cache.urgent_security_section',
+        "portfolio.CybersecurityResource": [
+            "home_page_data",
+            "home_urgent_security",
+            "template.cache.urgent_security_section",
         ],
-        'portfolio.BlogCategory': [
-            'home_page_data',
-            'home_featured_blog_categories',
-            'blog_blog_categories',
+        "portfolio.BlogCategory": [
+            "home_page_data",
+            "home_featured_blog_categories",
+            "blog_blog_categories",
         ],
-        'portfolio.MusicPlaylist': [
-            'music_page_data',
+        "portfolio.MusicPlaylist": [
+            "music_page_data",
         ],
-        'portfolio.UsefulResource': [
-            'useful_page_data',
+        "portfolio.UsefulResource": [
+            "useful_page_data",
         ],
     }
 
     # Pattern mappings for broader invalidation
     PATTERN_MAPPING = {
-        'personal_info': ['personal_info*', 'queryset_*personalinfo*', 'api_*personal*'],
-        'social_links': ['social_links*'],
-        'blog': ['blog*', 'recent_posts*'],
-        'tools': ['tools*', 'projects*'],
-        'ai_tools': ['ai_tools*'],
-        'security': ['security*'],
-        'blog_cat': ['blog_cat*'],
-        'music': ['music*'],
-        'useful': ['useful*'],
+        "personal_info": [
+            "personal_info*",
+            "queryset_*personalinfo*",
+            "api_*personal*",
+        ],
+        "social_links": ["social_links*"],
+        "blog": ["blog*", "recent_posts*"],
+        "tools": ["tools*", "projects*"],
+        "ai_tools": ["ai_tools*"],
+        "security": ["security*"],
+        "blog_cat": ["blog_cat*"],
+        "music": ["music*"],
+        "useful": ["useful*"],
     }
 
     @classmethod
@@ -168,7 +166,7 @@ class CacheKeyManager:
             kwargs_hash = hashlib.md5(kwargs_str.encode()).hexdigest()[:8]
             key_parts.append(kwargs_hash)
 
-        return ':'.join(key_parts)[:250]  # Redis key limit
+        return ":".join(key_parts)[:250]  # Redis key limit
 
     @classmethod
     def get_keys_for_model(cls, model_label: str) -> List[str]:
@@ -195,11 +193,13 @@ class CacheKeyManager:
             List[str]: List of pattern names
         """
         # Extract model name from label (e.g., 'main.PersonalInfo' -> 'personal_info')
-        model_name = model_label.split('.')[-1].lower()
+        model_name = model_label.split(".")[-1].lower()
         return cls.PATTERN_MAPPING.get(model_name, [])
 
     @classmethod
-    def invalidate_model_cache(cls, model_label: str, instance_id: Optional[int] = None) -> None:
+    def invalidate_model_cache(
+        cls, model_label: str, instance_id: Optional[int] = None
+    ) -> None:
         """
         Invalidate all cache keys associated with a model.
 
@@ -237,6 +237,7 @@ class CacheKeyManager:
         """
         try:
             from django_redis import get_redis_connection
+
             redis_conn = get_redis_connection("default")
             keys = redis_conn.keys(f"portfolio:{pattern}")
             if keys:
@@ -271,17 +272,27 @@ class CacheKeyManager:
             Dict containing cache stats and key counts
         """
         return {
-            'total_keys': len(cls.CACHE_KEYS),
-            'total_models': len(cls.MODEL_CACHE_MAPPING),
-            'total_patterns': len(cls.PATTERN_MAPPING),
-            'keys_by_category': {
-                'home': len([k for k in cls.CACHE_KEYS.keys() if k.startswith('home_')]),
-                'personal': len([k for k in cls.CACHE_KEYS.keys() if k.startswith('personal_')]),
-                'blog': len([k for k in cls.CACHE_KEYS.keys() if k.startswith('blog_')]),
-                'tools': len([k for k in cls.CACHE_KEYS.keys() if k.startswith('tools_')]),
-                'template': len([k for k in cls.CACHE_KEYS.keys() if k.startswith('template')]),
-                'api': len([k for k in cls.CACHE_KEYS.keys() if k.startswith('api_')]),
-            }
+            "total_keys": len(cls.CACHE_KEYS),
+            "total_models": len(cls.MODEL_CACHE_MAPPING),
+            "total_patterns": len(cls.PATTERN_MAPPING),
+            "keys_by_category": {
+                "home": len(
+                    [k for k in cls.CACHE_KEYS.keys() if k.startswith("home_")]
+                ),
+                "personal": len(
+                    [k for k in cls.CACHE_KEYS.keys() if k.startswith("personal_")]
+                ),
+                "blog": len(
+                    [k for k in cls.CACHE_KEYS.keys() if k.startswith("blog_")]
+                ),
+                "tools": len(
+                    [k for k in cls.CACHE_KEYS.keys() if k.startswith("tools_")]
+                ),
+                "template": len(
+                    [k for k in cls.CACHE_KEYS.keys() if k.startswith("template")]
+                ),
+                "api": len([k for k in cls.CACHE_KEYS.keys() if k.startswith("api_")]),
+            },
         }
 
 
@@ -290,9 +301,11 @@ def get_cache_key(key_name: str, *args, **kwargs) -> str:
     """Convenience function to get cache key."""
     return CacheKeyManager.get_cache_key(key_name, *args, **kwargs)
 
+
 def invalidate_model_cache(model_label: str, instance_id: Optional[int] = None) -> None:
     """Convenience function to invalidate model cache."""
     CacheKeyManager.invalidate_model_cache(model_label, instance_id)
+
 
 def clear_all_cache() -> None:
     """Convenience function to clear all cache."""

@@ -5,12 +5,14 @@ This script creates placeholder icons in required sizes for PWA functionality
 """
 
 import os
+
 from PIL import Image, ImageDraw, ImageFont
+
 
 def create_icon(size, output_path, text="P"):
     """Create a simple PWA icon with given size"""
     # Create image with dark background
-    img = Image.new('RGBA', (size, size), color=(15, 23, 42, 255))  # #0f172a
+    img = Image.new("RGBA", (size, size), color=(15, 23, 42, 255))  # #0f172a
     draw = ImageDraw.Draw(img)
 
     # Try to load a font, fallback to default if not available
@@ -35,11 +37,14 @@ def create_icon(size, output_path, text="P"):
 
     # Add a subtle border
     border_width = max(1, size // 64)
-    draw.rectangle([0, 0, size-1, size-1], outline=(230, 197, 71, 128), width=border_width)
+    draw.rectangle(
+        [0, 0, size - 1, size - 1], outline=(230, 197, 71, 128), width=border_width
+    )
 
     # Save the image
-    img.save(output_path, 'PNG')
+    img.save(output_path, "PNG")
     print(f"Created {output_path} ({size}x{size})")
+
 
 def main():
     """Create all required PWA icons"""
@@ -54,8 +59,8 @@ def main():
         (16, "favicon-16x16.png"),
         (32, "favicon-32x32.png"),
         (72, "badge-72x72.png"),  # For notifications badge
-        (144, "icon-144x144.png"), # Additional PWA size
-        (180, "icon-180x180.png"), # Apple touch icon
+        (144, "icon-144x144.png"),  # Additional PWA size
+        (180, "icon-180x180.png"),  # Apple touch icon
     ]
 
     for size, filename in sizes:
@@ -66,6 +71,7 @@ def main():
     print("Icons created in static/images/:")
     for _, filename in sizes:
         print(f"  - {filename}")
+
 
 if __name__ == "__main__":
     main()

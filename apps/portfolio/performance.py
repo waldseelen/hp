@@ -15,18 +15,18 @@ Features:
 - Thread-safe operations for concurrent access
 """
 
+import logging
 import threading
 import time
-import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple, Any
-from dataclasses import dataclass, field
 from collections import defaultdict, deque
-from django.utils import timezone
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Tuple
+
 from django.conf import settings
-from django.core.mail import send_mail
 from django.core.cache import cache
-import json
+from django.core.mail import send_mail
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +34,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class MetricEntry:
     """Single performance metric entry"""
+
     metric_type: str
     value: float
     timestamp: datetime
@@ -47,6 +48,7 @@ class MetricEntry:
 @dataclass
 class AlertConfig:
     """Alert configuration for performance thresholds"""
+
     metric_type: str
     threshold: float
     enabled: bool = True
@@ -74,7 +76,9 @@ class PerformanceMetrics:
         self._lock = threading.RLock()
 
         # In-memory storage: metric_type -> deque of MetricEntry
-        self._metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=self.max_entries))
+        self._metrics: Dict[str, deque] = defaultdict(
+            lambda: deque(maxlen=self.max_entries)
+        )
 
         # Alert tracking: metric_type -> last_alert_time
         self._last_alerts: Dict[str, datetime] = {}
@@ -85,22 +89,22 @@ class PerformanceMetrics:
 
         # Core Web Vitals thresholds (in milliseconds or ratio)
         self.thresholds = {
-            'lcp': {'good': 2500, 'needs_improvement': 4000},  # ms
-            'fid': {'good': 100, 'needs_improvement': 300},    # ms
-            'cls': {'good': 0.1, 'needs_improvement': 0.25},   # ratio
-            'inp': {'good': 200, 'needs_improvement': 500},    # ms
-            'ttfb': {'good': 800, 'needs_improvement': 1800},  # ms
-            'fcp': {'good': 1800, 'needs_improvement': 3000},  # ms
+            "lcp": {"good": 2500, "needs_improvement": 4000},  # ms
+            "fid": {"good": 100, "needs_improvement": 300},  # ms
+            "cls": {"good": 0.1, "needs_improvement": 0.25},  # ratio
+            "inp": {"good": 200, "needs_improvement": 500},  # ms
+            "ttfb": {"good": 800, "needs_improvement": 1800},  # ms
+            "fcp": {"good": 1800, "needs_improvement": 3000},  # ms
         }
 
         # Alert configurations
         self.alerts = {
-            'lcp': AlertConfig('lcp', 4000, cooldown_minutes=15),
-            'fid': AlertConfig('fid', 300, cooldown_minutes=15),
-            'cls': AlertConfig('cls', 0.25, cooldown_minutes=15),
-            'inp': AlertConfig('inp', 500, cooldown_minutes=15),
-            'ttfb': AlertConfig('ttfb', 1800, cooldown_minutes=10),
-            'fcp': AlertConfig('fcp', 3000, cooldown_minutes=15),
+            "lcp": AlertConfig("lcp", 4000, cooldown_minutes=15),
+            "fid": AlertConfig("fid", 300, cooldown_minutes=15),
+            "cls": AlertConfig("cls", 0.25, cooldown_minutes=15),
+            "inp": AlertConfig("inp", 500, cooldown_minutes=15),
+            "ttfb": AlertConfig("ttfb", 1800, cooldown_minutes=10),
+            "fcp": AlertConfig("fcp", 3000, cooldown_minutes=15),
         }
 
         logger.info("PerformanceMetrics initialized with in-memory storage")
@@ -123,11 +127,11 @@ class PerformanceMetrics:
                     metric_type=metric_type,
                     value=value,
                     timestamp=timezone.now(),
-                    url=kwargs.get('url', ''),
-                    user_agent=kwargs.get('user_agent', ''),
-                    device_type=kwargs.get('device_type', 'desktop'),
-                    connection_type=kwargs.get('connection_type', 'unknown'),
-                    additional_data=kwargs.get('additional_data', {})
+                    url=kwargs.get("url", ""),
+                    user_agent=kwargs.get("user_agent", ""),
+                    device_type=kwargs.get("device_type", "desktop"),
+                    connection_type=kwargs.get("connection_type", "unknown"),
+                    additional_data=kwargs.get("additional_data", {}),
                 )
 
                 # Add to metrics storage
@@ -151,7 +155,7 @@ class PerformanceMetrics:
             logger.error(f"Error adding metric {metric_type}={value}: {e}")
             return False
 
-    def get_metrics_summary(self, hours: int = 1) -> Dict[str, Any]:
+    def get_metrics_summary(self, hours: int = 1) -> Dict[str, Any]:  # noqa: C901
         """
         Get aggregated metrics summary for the last N hours
 
@@ -173,11 +177,11 @@ class PerformanceMetrics:
             with self._lock:
                 cutoff_time = timezone.now() - timedelta(hours=hours)
                 summary = {
-                    'period_hours': hours,
-                    'generated_at': timezone.now().isoformat(),
-                    'metrics': {},
-                    'health_score': 'A',
-                    'total_entries': 0
+                    "period_hours": hours,
+                    "generated_at": timezone.now().isoformat(),
+                    "metrics": {},
+                    "health_score": "A",
+                    "total_entries": 0,
                 }
 
                 total_score_sum = 0
@@ -186,8 +190,7 @@ class PerformanceMetrics:
                 for metric_type, entries in self._metrics.items():
                     # Filter recent entries
                     recent_entries = [
-                        entry for entry in entries
-                        if entry.timestamp >= cutoff_time
+                        entry for entry in entries if entry.timestamp >= cutoff_time
                     ]
 
                     if not recent_entries:
@@ -197,43 +200,43 @@ class PerformanceMetrics:
 
                     # Calculate statistics
                     stats = {
-                        'count': len(values),
-                        'average': sum(values) / len(values),
-                        'min': min(values),
-                        'max': max(values),
-                        'latest': values[-1] if values else 0
+                        "count": len(values),
+                        "average": sum(values) / len(values),
+                        "min": min(values),
+                        "max": max(values),
+                        "latest": values[-1] if values else 0,
                     }
 
                     # Calculate percentiles
                     sorted_values = sorted(values)
-                    stats['p50'] = self._percentile(sorted_values, 50)
-                    stats['p75'] = self._percentile(sorted_values, 75)
-                    stats['p95'] = self._percentile(sorted_values, 95)
+                    stats["p50"] = self._percentile(sorted_values, 50)
+                    stats["p75"] = self._percentile(sorted_values, 75)
+                    stats["p95"] = self._percentile(sorted_values, 95)
 
                     # Calculate performance score for Core Web Vitals
                     if metric_type in self.thresholds:
-                        score = self._calculate_score(metric_type, stats['p75'])
-                        stats['score'] = score
-                        stats['status'] = self._get_status(metric_type, stats['p75'])
+                        score = self._calculate_score(metric_type, stats["p75"])
+                        stats["score"] = score
+                        stats["status"] = self._get_status(metric_type, stats["p75"])
                         total_score_sum += score
                         scored_metrics += 1
 
-                    summary['metrics'][metric_type] = stats
-                    summary['total_entries'] += len(values)
+                    summary["metrics"][metric_type] = stats
+                    summary["total_entries"] += len(values)
 
                 # Calculate overall health score
                 if scored_metrics > 0:
                     avg_score = total_score_sum / scored_metrics
                     if avg_score >= 90:
-                        summary['health_score'] = 'A'
+                        summary["health_score"] = "A"
                     elif avg_score >= 75:
-                        summary['health_score'] = 'B'
+                        summary["health_score"] = "B"
                     elif avg_score >= 60:
-                        summary['health_score'] = 'C'
+                        summary["health_score"] = "C"
                     elif avg_score >= 40:
-                        summary['health_score'] = 'D'
+                        summary["health_score"] = "D"
                     else:
-                        summary['health_score'] = 'F'
+                        summary["health_score"] = "F"
 
                 # Cache the result
                 self._stats_cache[cache_key] = (summary, timezone.now())
@@ -243,12 +246,12 @@ class PerformanceMetrics:
         except Exception as e:
             logger.error(f"Error generating metrics summary: {e}")
             return {
-                'period_hours': hours,
-                'generated_at': timezone.now().isoformat(),
-                'metrics': {},
-                'health_score': 'F',
-                'total_entries': 0,
-                'error': str(e)
+                "period_hours": hours,
+                "generated_at": timezone.now().isoformat(),
+                "metrics": {},
+                "health_score": "F",
+                "total_entries": 0,
+                "error": str(e),
             }
 
     def get_real_time_data(self) -> Dict[str, Any]:
@@ -266,11 +269,11 @@ class PerformanceMetrics:
                 cutoff_time = current_time - timedelta(minutes=5)
 
                 real_time_data = {
-                    'timestamp': current_time.isoformat(),
-                    'status': 'active',
-                    'current_metrics': {},
-                    'alerts': [],
-                    'system_health': 'healthy'
+                    "timestamp": current_time.isoformat(),
+                    "status": "active",
+                    "current_metrics": {},
+                    "alerts": [],
+                    "system_health": "healthy",
                 }
 
                 for metric_type, entries in self._metrics.items():
@@ -280,31 +283,39 @@ class PerformanceMetrics:
                         latest_value = recent[-1].value
                         avg_value = sum(e.value for e in recent) / len(recent)
 
-                        real_time_data['current_metrics'][metric_type] = {
-                            'latest': latest_value,
-                            'average_5min': avg_value,
-                            'count_5min': len(recent),
-                            'status': self._get_status(metric_type, latest_value) if metric_type in self.thresholds else 'unknown'
+                        real_time_data["current_metrics"][metric_type] = {
+                            "latest": latest_value,
+                            "average_5min": avg_value,
+                            "count_5min": len(recent),
+                            "status": (
+                                self._get_status(metric_type, latest_value)
+                                if metric_type in self.thresholds
+                                else "unknown"
+                            ),
                         }
 
                 # Check for recent alerts
                 alert_cutoff = current_time - timedelta(minutes=30)
                 for metric_type, last_alert in self._last_alerts.items():
                     if last_alert >= alert_cutoff:
-                        real_time_data['alerts'].append({
-                            'metric_type': metric_type,
-                            'triggered_at': last_alert.isoformat(),
-                            'minutes_ago': int((current_time - last_alert).total_seconds() / 60)
-                        })
+                        real_time_data["alerts"].append(
+                            {
+                                "metric_type": metric_type,
+                                "triggered_at": last_alert.isoformat(),
+                                "minutes_ago": int(
+                                    (current_time - last_alert).total_seconds() / 60
+                                ),
+                            }
+                        )
 
                 return real_time_data
 
         except Exception as e:
             logger.error(f"Error getting real-time data: {e}")
             return {
-                'timestamp': timezone.now().isoformat(),
-                'status': 'error',
-                'error': str(e)
+                "timestamp": timezone.now().isoformat(),
+                "status": "error",
+                "error": str(e),
             }
 
     def _check_alert(self, metric_type: str, value: float) -> None:
@@ -331,7 +342,9 @@ class PerformanceMetrics:
         self._trigger_alert(metric_type, value, alert_config)
         self._last_alerts[metric_type] = current_time
 
-    def _trigger_alert(self, metric_type: str, value: float, config: AlertConfig) -> None:
+    def _trigger_alert(
+        self, metric_type: str, value: float, config: AlertConfig
+    ) -> None:
         """Trigger performance alert"""
         alert_message = f"Performance Alert: {metric_type.upper()} = {value:.2f} (threshold: {config.threshold})"
 
@@ -343,23 +356,31 @@ class PerformanceMetrics:
             # Cache alert (for dashboard display)
             if config.cache_enabled:
                 cache_key = f"perf_alert_{metric_type}_{int(time.time())}"
-                cache.set(cache_key, {
-                    'metric_type': metric_type,
-                    'value': value,
-                    'threshold': config.threshold,
-                    'timestamp': timezone.now().isoformat()
-                }, timeout=3600)  # Keep for 1 hour
+                cache.set(
+                    cache_key,
+                    {
+                        "metric_type": metric_type,
+                        "value": value,
+                        "threshold": config.threshold,
+                        "timestamp": timezone.now().isoformat(),
+                    },
+                    timeout=3600,
+                )  # Keep for 1 hour
 
             # Email alert (if configured)
-            if config.email_enabled and hasattr(settings, 'PERFORMANCE_ALERT_EMAIL'):
+            if config.email_enabled and hasattr(settings, "PERFORMANCE_ALERT_EMAIL"):
                 self._send_email_alert(metric_type, value, config.threshold)
 
-            logger.info(f"Alert triggered for {metric_type}: {value} > {config.threshold}")
+            logger.info(
+                f"Alert triggered for {metric_type}: {value} > {config.threshold}"
+            )
 
         except Exception as e:
             logger.error(f"Error triggering alert for {metric_type}: {e}")
 
-    def _send_email_alert(self, metric_type: str, value: float, threshold: float) -> None:
+    def _send_email_alert(
+        self, metric_type: str, value: float, threshold: float
+    ) -> None:
         """Send email alert for performance issue"""
         try:
             subject = f"Performance Alert: {metric_type.upper()} Threshold Exceeded"
@@ -382,7 +403,7 @@ Dashboard: {getattr(settings, 'SITE_URL', 'http://localhost:8000')}/dashboard/
                 message=message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[settings.PERFORMANCE_ALERT_EMAIL],
-                fail_silently=True
+                fail_silently=True,
             )
 
         except Exception as e:
@@ -409,31 +430,44 @@ Dashboard: {getattr(settings, 'SITE_URL', 'http://localhost:8000')}/dashboard/
             return 50  # Neutral score for unknown metrics
 
         thresholds = self.thresholds[metric_type]
-        good_threshold = thresholds['good']
-        needs_improvement_threshold = thresholds['needs_improvement']
+        good_threshold = thresholds["good"]
+        needs_improvement_threshold = thresholds["needs_improvement"]
 
         if value <= good_threshold:
             return 100  # Perfect score
         elif value <= needs_improvement_threshold:
             # Linear scale between good and needs improvement
-            ratio = (value - good_threshold) / (needs_improvement_threshold - good_threshold)
+            ratio = (value - good_threshold) / (
+                needs_improvement_threshold - good_threshold
+            )
             return max(50, int(100 - (ratio * 50)))
         else:
             # Poor performance
-            return max(0, int(50 - min(50, (value - needs_improvement_threshold) / needs_improvement_threshold * 50)))
+            return max(
+                0,
+                int(
+                    50
+                    - min(
+                        50,
+                        (value - needs_improvement_threshold)
+                        / needs_improvement_threshold
+                        * 50,
+                    )
+                ),
+            )
 
     def _get_status(self, metric_type: str, value: float) -> str:
         """Get status string for a metric value"""
         if metric_type not in self.thresholds:
-            return 'unknown'
+            return "unknown"
 
         thresholds = self.thresholds[metric_type]
-        if value <= thresholds['good']:
-            return 'good'
-        elif value <= thresholds['needs_improvement']:
-            return 'needs_improvement'
+        if value <= thresholds["good"]:
+            return "good"
+        elif value <= thresholds["needs_improvement"]:
+            return "needs_improvement"
         else:
-            return 'poor'
+            return "poor"
 
     def _percentile(self, sorted_values: List[float], percentile: int) -> float:
         """Calculate percentile value from sorted list"""
@@ -448,21 +482,29 @@ Dashboard: {getattr(settings, 'SITE_URL', 'http://localhost:8000')}/dashboard/
             return sorted_values[lower_index]
 
         weight = index - lower_index
-        return sorted_values[lower_index] * (1 - weight) + sorted_values[upper_index] * weight
+        return (
+            sorted_values[lower_index] * (1 - weight)
+            + sorted_values[upper_index] * weight
+        )
 
     def get_health_status(self) -> Dict[str, Any]:
         """Get overall system health status"""
         summary = self.get_metrics_summary(hours=1)
 
         return {
-            'status': 'healthy' if summary['health_score'] in ['A', 'B'] else 'degraded',
-            'health_score': summary['health_score'],
-            'metrics_count': summary['total_entries'],
-            'active_alerts': len([
-                alert_time for alert_time in self._last_alerts.values()
-                if timezone.now() - alert_time < timedelta(minutes=30)
-            ]),
-            'timestamp': timezone.now().isoformat()
+            "status": (
+                "healthy" if summary["health_score"] in ["A", "B"] else "degraded"
+            ),
+            "health_score": summary["health_score"],
+            "metrics_count": summary["total_entries"],
+            "active_alerts": len(
+                [
+                    alert_time
+                    for alert_time in self._last_alerts.values()
+                    if timezone.now() - alert_time < timedelta(minutes=30)
+                ]
+            ),
+            "timestamp": timezone.now().isoformat(),
         }
 
 
@@ -495,13 +537,23 @@ class AlertManager:
 
             # Update optional parameters
             alert_config = self.metrics.alerts[metric_type]
-            alert_config.enabled = kwargs.get('enabled', alert_config.enabled)
-            alert_config.cooldown_minutes = kwargs.get('cooldown_minutes', alert_config.cooldown_minutes)
-            alert_config.email_enabled = kwargs.get('email_enabled', alert_config.email_enabled)
-            alert_config.console_enabled = kwargs.get('console_enabled', alert_config.console_enabled)
-            alert_config.cache_enabled = kwargs.get('cache_enabled', alert_config.cache_enabled)
+            alert_config.enabled = kwargs.get("enabled", alert_config.enabled)
+            alert_config.cooldown_minutes = kwargs.get(
+                "cooldown_minutes", alert_config.cooldown_minutes
+            )
+            alert_config.email_enabled = kwargs.get(
+                "email_enabled", alert_config.email_enabled
+            )
+            alert_config.console_enabled = kwargs.get(
+                "console_enabled", alert_config.console_enabled
+            )
+            alert_config.cache_enabled = kwargs.get(
+                "cache_enabled", alert_config.cache_enabled
+            )
 
-            self.logger.info(f"Alert configured for {metric_type}: threshold={threshold}")
+            self.logger.info(
+                f"Alert configured for {metric_type}: threshold={threshold}"
+            )
             return True
 
         except Exception as e:
@@ -515,53 +567,61 @@ class AlertManager:
 
         for metric_type, alert_time in self.metrics._last_alerts.items():
             if alert_time >= cutoff_time:
-                recent_alerts.append({
-                    'metric_type': metric_type,
-                    'triggered_at': alert_time.isoformat(),
-                    'minutes_ago': int((timezone.now() - alert_time).total_seconds() / 60),
-                    'threshold': self.metrics.alerts.get(metric_type, {}).threshold if metric_type in self.metrics.alerts else None
-                })
+                recent_alerts.append(
+                    {
+                        "metric_type": metric_type,
+                        "triggered_at": alert_time.isoformat(),
+                        "minutes_ago": int(
+                            (timezone.now() - alert_time).total_seconds() / 60
+                        ),
+                        "threshold": (
+                            self.metrics.alerts.get(metric_type, {}).threshold
+                            if metric_type in self.metrics.alerts
+                            else None
+                        ),
+                    }
+                )
 
-        return sorted(recent_alerts, key=lambda x: x['triggered_at'], reverse=True)
+        return sorted(recent_alerts, key=lambda x: x["triggered_at"], reverse=True)
 
     def test_alert_system(self) -> Dict[str, Any]:
         """Test the alert system functionality"""
         try:
             test_results = {
-                'console_alert': False,
-                'cache_alert': False,
-                'email_alert': False,
-                'timestamp': timezone.now().isoformat()
+                "console_alert": False,
+                "cache_alert": False,
+                "email_alert": False,
+                "timestamp": timezone.now().isoformat(),
             }
 
             # Test console alert
             try:
                 self.logger.warning("Alert system test: Console alert")
-                test_results['console_alert'] = True
+                test_results["console_alert"] = True
             except Exception as e:
                 self.logger.error(f"Console alert test failed: {e}")
 
             # Test cache alert
             try:
                 cache_key = f"test_alert_{int(time.time())}"
-                cache.set(cache_key, {'test': True}, timeout=60)
-                test_results['cache_alert'] = cache.get(cache_key) is not None
+                cache.set(cache_key, {"test": True}, timeout=60)
+                test_results["cache_alert"] = cache.get(cache_key) is not None
             except Exception as e:
                 self.logger.error(f"Cache alert test failed: {e}")
 
             # Test email alert (if configured)
-            if hasattr(settings, 'PERFORMANCE_ALERT_EMAIL'):
+            if hasattr(settings, "PERFORMANCE_ALERT_EMAIL"):
                 try:
                     # Don't actually send email in test, just check configuration
-                    test_results['email_alert'] = bool(settings.EMAIL_HOST)
-                except:
-                    test_results['email_alert'] = False
+                    test_results["email_alert"] = bool(settings.EMAIL_HOST)
+                except (AttributeError, Exception):
+                    test_results["email_alert"] = False
 
             return test_results
 
         except Exception as e:
             self.logger.error(f"Alert system test failed: {e}")
-            return {'error': str(e), 'timestamp': timezone.now().isoformat()}
+            return {"error": str(e), "timestamp": timezone.now().isoformat()}
 
 
 # Global alert manager instance
@@ -569,10 +629,10 @@ alert_manager = AlertManager(performance_metrics)
 
 # Export main classes and instances
 __all__ = [
-    'PerformanceMetrics',
-    'AlertManager',
-    'MetricEntry',
-    'AlertConfig',
-    'performance_metrics',
-    'alert_manager'
+    "PerformanceMetrics",
+    "AlertManager",
+    "MetricEntry",
+    "AlertConfig",
+    "performance_metrics",
+    "alert_manager",
 ]

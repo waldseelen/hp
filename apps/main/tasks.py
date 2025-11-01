@@ -9,13 +9,15 @@ Handles async operations like:
 - Health checks
 """
 
-from celery import shared_task
-from django.contrib.auth.models import User
-from django.core.mail import send_mail
-from django.conf import settings
-from django.utils import timezone
 import logging
 import traceback
+
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.utils import timezone
+
+from celery import shared_task
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +28,7 @@ logger = logging.getLogger(__name__)
     default_retry_delay=60,
     autoretry_for=(Exception,),
 )
-def send_notification(self, user_id, title, message, notification_type='info'):
+def send_notification(self, user_id, title, message, notification_type="info"):
     """
     Send a notification to a user.
 
@@ -41,7 +43,9 @@ def send_notification(self, user_id, title, message, notification_type='info'):
     """
     try:
         user = User.objects.get(id=user_id)
-        logger.info(f"Sending {notification_type} notification to {user.email}: {title}")
+        logger.info(
+            f"Sending {notification_type} notification to {user.email}: {title}"
+        )
 
         # Send email notification
         subject = f"Notification: {title}"
@@ -55,10 +59,10 @@ def send_notification(self, user_id, title, message, notification_type='info'):
 
         logger.info(f"Notification sent successfully to {user.email}")
         return {
-            'status': 'success',
-            'user_id': user_id,
-            'message': message,
-            'timestamp': timezone.now().isoformat(),
+            "status": "success",
+            "user_id": user_id,
+            "message": message,
+            "timestamp": timezone.now().isoformat(),
         }
 
     except User.DoesNotExist:
@@ -69,7 +73,7 @@ def send_notification(self, user_id, title, message, notification_type='info'):
         logger.error(f"Error sending notification: {exc}")
         logger.error(traceback.format_exc())
         # Retry with exponential backoff
-        raise self.retry(exc=exc, countdown=2 ** self.request.retries)
+        raise self.retry(exc=exc, countdown=2**self.request.retries)
 
 
 @shared_task(
@@ -97,18 +101,18 @@ def process_user_action(self, user_id, action, data=None):
             data = {}
 
         # Process action based on type
-        if action == 'view':
+        if action == "view":
             logger.debug(f"User viewed: {data.get('item', 'unknown')}")
-        elif action == 'click':
+        elif action == "click":
             logger.debug(f"User clicked: {data.get('element', 'unknown')}")
-        elif action == 'submit':
+        elif action == "submit":
             logger.debug(f"User submitted: {data.get('form', 'unknown')}")
 
         return {
-            'status': 'success',
-            'user_id': user_id,
-            'action': action,
-            'timestamp': timezone.now().isoformat(),
+            "status": "success",
+            "user_id": user_id,
+            "action": action,
+            "timestamp": timezone.now().isoformat(),
         }
 
     except User.DoesNotExist:
@@ -118,7 +122,7 @@ def process_user_action(self, user_id, action, data=None):
     except Exception as exc:
         logger.error(f"Error processing user action: {exc}")
         logger.error(traceback.format_exc())
-        raise self.retry(exc=exc, countdown=2 ** self.request.retries)
+        raise self.retry(exc=exc, countdown=2**self.request.retries)
 
 
 @shared_task(bind=True, max_retries=3)
@@ -140,15 +144,15 @@ def update_analytics(self):
         logger.info(f"Analytics updated successfully at {timestamp}")
 
         return {
-            'status': 'success',
-            'records_processed': 0,  # Would be actual count in production
-            'timestamp': timestamp.isoformat(),
+            "status": "success",
+            "records_processed": 0,  # Would be actual count in production
+            "timestamp": timestamp.isoformat(),
         }
 
     except Exception as exc:
         logger.error(f"Error updating analytics: {exc}")
         logger.error(traceback.format_exc())
-        raise self.retry(exc=exc, countdown=2 ** self.request.retries)
+        raise self.retry(exc=exc, countdown=2**self.request.retries)
 
 
 @shared_task(bind=True, max_retries=2)
@@ -171,13 +175,15 @@ def cleanup_temp_files(self):
         files_deleted = 0
         logs_deleted = 0
 
-        logger.info(f"Cleanup completed: {files_deleted} files, {logs_deleted} logs deleted")
+        logger.info(
+            f"Cleanup completed: {files_deleted} files, {logs_deleted} logs deleted"
+        )
 
         return {
-            'status': 'success',
-            'files_deleted': files_deleted,
-            'logs_deleted': logs_deleted,
-            'timestamp': timezone.now().isoformat(),
+            "status": "success",
+            "files_deleted": files_deleted,
+            "logs_deleted": logs_deleted,
+            "timestamp": timezone.now().isoformat(),
         }
 
     except Exception as exc:
@@ -213,9 +219,9 @@ def health_check(self):
         logger.info("Health check completed")
 
         return {
-            'status': 'healthy',
-            'database': 'connected' if db_ok else 'disconnected',
-            'timestamp': timezone.now().isoformat(),
+            "status": "healthy",
+            "database": "connected" if db_ok else "disconnected",
+            "timestamp": timezone.now().isoformat(),
         }
 
     except Exception as exc:
@@ -223,11 +229,11 @@ def health_check(self):
         logger.error(traceback.format_exc())
 
         # Try to retry if it's a connection issue
-        if 'connection' in str(exc).lower():
+        if "connection" in str(exc).lower():
             raise self.retry(exc=exc, countdown=30)
 
         return {
-            'status': 'unhealthy',
-            'error': str(exc),
-            'timestamp': timezone.now().isoformat(),
+            "status": "unhealthy",
+            "error": str(exc),
+            "timestamp": timezone.now().isoformat(),
         }

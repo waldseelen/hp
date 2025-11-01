@@ -11,13 +11,13 @@ class ContactMessage(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
         verbose_name = "Contact Message"
         verbose_name_plural = "Contact Messages"
         indexes = [
-            models.Index(fields=['is_read', '-created_at']),
-            models.Index(fields=['-created_at']),
-            models.Index(fields=['email', '-created_at']),
+            models.Index(fields=["is_read", "-created_at"]),
+            models.Index(fields=["-created_at"]),
+            models.Index(fields=["email", "-created_at"]),
         ]
 
     def __str__(self):

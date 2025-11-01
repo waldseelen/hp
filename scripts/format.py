@@ -19,11 +19,7 @@ def run_command(command: list, description: str) -> bool:
 
     try:
         result = subprocess.run(
-            command,
-            cwd=PROJECT_ROOT,
-            capture_output=True,
-            text=True,
-            check=True
+            command, cwd=PROJECT_ROOT, capture_output=True, text=True, check=True
         )
         print(f"✅ {description} completed")
         if result.stdout:
@@ -46,9 +42,17 @@ def main():
         # Python formatting
         (["black", "apps/", "tests/"], "Black code formatting"),
         (["isort", "apps/", "tests/"], "Import sorting"),
-
         # Remove unused imports
-        (["autoflake", "--remove-all-unused-imports", "--in-place", "--recursive", "apps/"], "Remove unused imports"),
+        (
+            [
+                "autoflake",
+                "--remove-all-unused-imports",
+                "--in-place",
+                "--recursive",
+                "apps/",
+            ],
+            "Remove unused imports",
+        ),
     ]
 
     failed_formatters = []
@@ -58,7 +62,7 @@ def main():
             failed_formatters.append(description)
 
     # Summary
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     if failed_formatters:
         print("❌ Some formatting failed:")
         for formatter in failed_formatters:

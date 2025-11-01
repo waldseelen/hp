@@ -12,11 +12,10 @@ Provides comprehensive health checks for Django application components:
 Used by Docker HEALTHCHECK directive and monitoring systems.
 """
 
-import json
 import logging
 import os
 import time
-from typing import Dict, Any, List
+from typing import Any, Dict
 
 from django.conf import settings
 from django.core.cache import cache
@@ -56,22 +55,18 @@ class HealthChecker:
                     "name": "database",
                     "status": status,
                     "response_time_ms": round(response_time, 2),
-                    "details": f"Database responding in {response_time:.2f}ms"
+                    "details": f"Database responding in {response_time:.2f}ms",
                 }
             else:
                 return {
                     "name": "database",
                     "status": "unhealthy",
-                    "error": "Invalid database response"
+                    "error": "Invalid database response",
                 }
 
         except Exception as e:
             logger.error(f"Database health check failed: {e}")
-            return {
-                "name": "database",
-                "status": "unhealthy",
-                "error": str(e)
-            }
+            return {"name": "database", "status": "unhealthy", "error": str(e)}
 
     def check_cache(self) -> Dict[str, Any]:
         """Check cache connectivity."""
@@ -92,63 +87,55 @@ class HealthChecker:
                     "name": "cache",
                     "status": "healthy",
                     "response_time_ms": round(response_time, 2),
-                    "details": f"Cache responding in {response_time:.2f}ms"
+                    "details": f"Cache responding in {response_time:.2f}ms",
                 }
             else:
                 return {
                     "name": "cache",
                     "status": "unhealthy",
-                    "error": "Cache write/read test failed"
+                    "error": "Cache write/read test failed",
                 }
 
         except Exception as e:
             logger.error(f"Cache health check failed: {e}")
-            return {
-                "name": "cache",
-                "status": "unhealthy",
-                "error": str(e)
-            }
+            return {"name": "cache", "status": "unhealthy", "error": str(e)}
 
     def check_filesystem(self) -> Dict[str, Any]:
         """Check filesystem access for media and logs."""
         try:
             # Check media directory
-            media_path = getattr(settings, 'MEDIA_ROOT', '/app/media')
+            media_path = getattr(settings, "MEDIA_ROOT", "/app/media")
             if not os.path.exists(media_path):
                 os.makedirs(media_path, exist_ok=True)
 
             # Test write access
-            test_file = os.path.join(media_path, '.health_check')
-            with open(test_file, 'w') as f:
-                f.write('health_check')
+            test_file = os.path.join(media_path, ".health_check")
+            with open(test_file, "w") as f:
+                f.write("health_check")
 
             # Test read access
-            with open(test_file, 'r') as f:
+            with open(test_file, "r") as f:
                 content = f.read()
 
             # Cleanup
             os.remove(test_file)
 
-            if content == 'health_check':
+            if content == "health_check":
                 return {
                     "name": "filesystem",
                     "status": "healthy",
-                    "details": "Media directory read/write access confirmed"
+                    "details": "Media directory read/write access confirmed",
                 }
             else:
                 return {
                     "name": "filesystem",
                     "status": "unhealthy",
-                    "error": "File content verification failed"
+                    "error": "File content verification failed",
                 }
 
         except Exception as e:
             logger.error(f"Filesystem health check failed: {e}")
-            return {
-                "name": "filesystem",
-                "status": "unhealthy",
-                "error": str(e)
-            }
+            return {"name": "filesystem", "status": "unhealthy", "error": str(e)}
 
     def check_external_services(self) -> Dict[str, Any]:
         """Check external service dependencies."""
@@ -161,20 +148,26 @@ class HealthChecker:
             # Example: Check Google Fonts (used in templates)
             try:
                 response = requests.get(
-                    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
-                    timeout=5
+                    "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
+                    timeout=5,
                 )
-                services.append({
-                    "name": "google_fonts",
-                    "status": "healthy" if response.status_code == 200 else "unhealthy",
-                    "status_code": response.status_code
-                })
+                services.append(
+                    {
+                        "name": "google_fonts",
+                        "status": (
+                            "healthy" if response.status_code == 200 else "unhealthy"
+                        ),
+                        "status_code": response.status_code,
+                    }
+                )
             except requests.RequestException:
-                services.append({
-                    "name": "google_fonts",
-                    "status": "unhealthy",
-                    "error": "Connection timeout or failed"
-                })
+                services.append(
+                    {
+                        "name": "google_fonts",
+                        "status": "unhealthy",
+                        "error": "Connection timeout or failed",
+                    }
+                )
 
             # Overall status
             all_healthy = all(service["status"] == "healthy" for service in services)
@@ -183,27 +176,22 @@ class HealthChecker:
                 "name": "external_services",
                 "status": "healthy" if all_healthy else "degraded",
                 "services": services,
-                "details": f"Checked {len(services)} external services"
+                "details": f"Checked {len(services)} external services",
             }
 
         except ImportError:
             return {
                 "name": "external_services",
                 "status": "skipped",
-                "details": "requests library not available"
+                "details": "requests library not available",
             }
         except Exception as e:
             logger.error(f"External services health check failed: {e}")
-            return {
-                "name": "external_services",
-                "status": "unhealthy",
-                "error": str(e)
-            }
+            return {"name": "external_services", "status": "unhealthy", "error": str(e)}
 
     def check_django_setup(self) -> Dict[str, Any]:
         """Check Django application setup and configuration."""
         try:
-            from django.core.management import execute_from_command_line
             import django
 
             # Check Django version
@@ -211,9 +199,9 @@ class HealthChecker:
 
             # Check critical settings
             critical_settings = [
-                'SECRET_KEY',
-                'ALLOWED_HOSTS',
-                'DATABASES',
+                "SECRET_KEY",
+                "ALLOWED_HOSTS",
+                "DATABASES",
             ]
 
             missing_settings = []
@@ -226,7 +214,7 @@ class HealthChecker:
                     "name": "django_setup",
                     "status": "unhealthy",
                     "error": f"Missing critical settings: {', '.join(missing_settings)}",
-                    "django_version": django_version
+                    "django_version": django_version,
                 }
 
             return {
@@ -234,16 +222,12 @@ class HealthChecker:
                 "status": "healthy",
                 "django_version": django_version,
                 "debug": settings.DEBUG,
-                "details": "Django application properly configured"
+                "details": "Django application properly configured",
             }
 
         except Exception as e:
             logger.error(f"Django setup health check failed: {e}")
-            return {
-                "name": "django_setup",
-                "status": "unhealthy",
-                "error": str(e)
-            }
+            return {"name": "django_setup", "status": "unhealthy", "error": str(e)}
 
     def run_all_checks(self) -> Dict[str, Any]:
         """Run all health checks and return comprehensive status."""
@@ -256,11 +240,9 @@ class HealthChecker:
                 results.append(result)
             except Exception as e:
                 logger.error(f"Health check failed: {e}")
-                results.append({
-                    "name": check.__name__,
-                    "status": "error",
-                    "error": str(e)
-                })
+                results.append(
+                    {"name": check.__name__, "status": "error", "error": str(e)}
+                )
 
         # Calculate overall status
         statuses = [result["status"] for result in results]
@@ -284,8 +266,8 @@ class HealthChecker:
                 "healthy": len([r for r in results if r["status"] == "healthy"]),
                 "unhealthy": len([r for r in results if r["status"] == "unhealthy"]),
                 "degraded": len([r for r in results if r["status"] == "degraded"]),
-                "errors": len([r for r in results if r["status"] == "error"])
-            }
+                "errors": len([r for r in results if r["status"] == "error"]),
+            },
         }
 
 
@@ -319,11 +301,9 @@ def health_check_view(request):
 
     except Exception as e:
         logger.error(f"Health check endpoint failed: {e}")
-        return JsonResponse({
-            "status": "error",
-            "error": str(e),
-            "timestamp": time.time()
-        }, status=500)
+        return JsonResponse(
+            {"status": "error", "error": str(e), "timestamp": time.time()}, status=500
+        )
 
 
 @csrf_exempt
@@ -335,10 +315,7 @@ def readiness_check_view(request):
     """
     try:
         # Quick checks only
-        checks = [
-            health_checker.check_database,
-            health_checker.check_django_setup
-        ]
+        checks = [health_checker.check_database, health_checker.check_django_setup]
 
         results = []
         for check in checks:
@@ -351,18 +328,16 @@ def readiness_check_view(request):
         status_data = {
             "ready": all_healthy,
             "timestamp": time.time(),
-            "checks": results
+            "checks": results,
         }
 
         return JsonResponse(status_data, status=200 if all_healthy else 503)
 
     except Exception as e:
         logger.error(f"Readiness check failed: {e}")
-        return JsonResponse({
-            "ready": False,
-            "error": str(e),
-            "timestamp": time.time()
-        }, status=503)
+        return JsonResponse(
+            {"ready": False, "error": str(e), "timestamp": time.time()}, status=503
+        )
 
 
 @csrf_exempt
@@ -372,7 +347,4 @@ def liveness_check_view(request):
     Liveness check - minimal check to verify the application is running.
     Used by Kubernetes liveness probes.
     """
-    return JsonResponse({
-        "alive": True,
-        "timestamp": time.time()
-    }, status=200)
+    return JsonResponse({"alive": True, "timestamp": time.time()}, status=200)

@@ -1,16 +1,16 @@
 # Middleware package
 
+from .apm_middleware import APMMiddleware, DatabaseQueryTrackingMiddleware
 from .cache_control import CacheControlMiddleware
-from .security_headers import SecurityHeadersMiddleware
 from .compression import CompressionMiddleware
 from .performance import PerformanceMiddleware
-from .apm_middleware import APMMiddleware, DatabaseQueryTrackingMiddleware
+from .security_headers import SecurityHeadersMiddleware
 
 __all__ = [
-    'CacheControlMiddleware',
-    'SecurityHeadersMiddleware',
-    'CompressionMiddleware',
-    'PerformanceMiddleware',
-    'APMMiddleware',
-    'DatabaseQueryTrackingMiddleware'
+    "CacheControlMiddleware",
+    "SecurityHeadersMiddleware",
+    "CompressionMiddleware",
+    "PerformanceMiddleware",
+    "APMMiddleware",
+    "DatabaseQueryTrackingMiddleware",
 ]

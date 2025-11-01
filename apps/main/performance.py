@@ -9,12 +9,13 @@ Tracks:
 - System resources
 """
 
-from typing import Dict, List, Optional
-from dataclasses import dataclass, asdict
-from datetime import datetime, timedelta
-from django.utils import timezone
-from django.core.cache import cache
 import logging
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional
+
+from django.core.cache import cache
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -28,17 +29,17 @@ class PerformanceMetric:
     unit: str
     timestamp: datetime
     threshold: Optional[float] = None
-    status: str = 'normal'  # normal, warning, critical
+    status: str = "normal"  # normal, warning, critical
 
     def to_dict(self) -> Dict:
         """Convert to dictionary."""
         return {
-            'name': self.name,
-            'value': self.value,
-            'unit': self.unit,
-            'timestamp': self.timestamp.isoformat(),
-            'threshold': self.threshold,
-            'status': self.status,
+            "name": self.name,
+            "value": self.value,
+            "unit": self.unit,
+            "timestamp": self.timestamp.isoformat(),
+            "threshold": self.threshold,
+            "status": self.status,
         }
 
 
@@ -60,16 +61,16 @@ class Alert:
     def to_dict(self) -> Dict:
         """Convert to dictionary."""
         return {
-            'id': self.id,
-            'title': self.title,
-            'message': self.message,
-            'severity': self.severity,
-            'metric_name': self.metric_name,
-            'metric_value': self.metric_value,
-            'threshold': self.threshold,
-            'timestamp': self.timestamp.isoformat(),
-            'resolved': self.resolved,
-            'resolved_at': self.resolved_at.isoformat() if self.resolved_at else None,
+            "id": self.id,
+            "title": self.title,
+            "message": self.message,
+            "severity": self.severity,
+            "metric_name": self.metric_name,
+            "metric_value": self.metric_value,
+            "threshold": self.threshold,
+            "timestamp": self.timestamp.isoformat(),
+            "resolved": self.resolved,
+            "resolved_at": self.resolved_at.isoformat() if self.resolved_at else None,
         }
 
 
@@ -78,27 +79,27 @@ class PerformanceMetrics:
 
     # Thresholds for different metrics
     THRESHOLDS = {
-        'response_time': 500,  # ms
-        'database_query': 100,  # ms
-        'cache_hit_rate': 70,  # percentage
-        'error_rate': 0.1,  # percentage
-        'memory_usage': 80,  # percentage
-        'cpu_usage': 80,  # percentage
+        "response_time": 500,  # ms
+        "database_query": 100,  # ms
+        "cache_hit_rate": 70,  # percentage
+        "error_rate": 0.1,  # percentage
+        "memory_usage": 80,  # percentage
+        "cpu_usage": 80,  # percentage
     }
 
     # Alerts thresholds
     ALERT_THRESHOLDS = {
-        'response_time': {
-            'warning': 500,  # ms (P1)
-            'critical': 1000,  # ms (P0)
+        "response_time": {
+            "warning": 500,  # ms (P1)
+            "critical": 1000,  # ms (P0)
         },
-        'error_rate': {
-            'warning': 0.5,  # % (P1)
-            'critical': 1.0,  # % (P0)
+        "error_rate": {
+            "warning": 0.5,  # % (P1)
+            "critical": 1.0,  # % (P0)
         },
-        'cache_hit_rate': {
-            'warning': 50,  # % (P2)
-            'critical': 30,  # % (P1)
+        "cache_hit_rate": {
+            "warning": 50,  # % (P2)
+            "critical": 30,  # % (P1)
         },
     }
 
@@ -106,7 +107,7 @@ class PerformanceMetrics:
         """Initialize performance metrics tracker."""
         self.metrics: List[PerformanceMetric] = []
         self.alerts: List[Alert] = []
-        self.cache_prefix = 'perf_metric_'
+        self.cache_prefix = "perf_metric_"
 
     def record_metric(
         self,
@@ -132,14 +133,14 @@ class PerformanceMetrics:
 
         # Determine status
         if threshold:
-            if name == 'cache_hit_rate' and value < threshold:
-                status = 'warning'
+            if name == "cache_hit_rate" and value < threshold:
+                status = "warning"
             elif value > threshold:
-                status = 'warning'
+                status = "warning"
             else:
-                status = 'normal'
+                status = "normal"
         else:
-            status = 'normal'
+            status = "normal"
 
         metric = PerformanceMetric(
             name=name,
@@ -153,7 +154,7 @@ class PerformanceMetrics:
         self.metrics.append(metric)
 
         # Cache the metric
-        cache_key = f'{self.cache_prefix}{name}:{now.timestamp()}'
+        cache_key = f"{self.cache_prefix}{name}:{now.timestamp()}"
         cache.set(cache_key, asdict(metric), timeout=3600)
 
         logger.info(f"Recorded metric: {name}={value}{unit} (status={status})")
@@ -178,10 +179,7 @@ class PerformanceMetrics:
         cutoff = timezone.now() - timedelta(minutes=minutes)
 
         if name:
-            return [
-                m for m in self.metrics
-                if m.name == name and m.timestamp >= cutoff
-            ]
+            return [m for m in self.metrics if m.name == name and m.timestamp >= cutoff]
 
         return [m for m in self.metrics if m.timestamp >= cutoff]
 
@@ -206,8 +204,8 @@ class PerformanceMetrics:
     def to_dict(self) -> Dict:
         """Convert metrics to dictionary."""
         return {
-            'metrics': [m.to_dict() for m in self.metrics[-100:]],  # Last 100
-            'count': len(self.metrics),
+            "metrics": [m.to_dict() for m in self.metrics[-100:]],  # Last 100
+            "count": len(self.metrics),
         }
 
 
@@ -217,7 +215,7 @@ class AlertManager:
     def __init__(self):
         """Initialize alert manager."""
         self.alerts: List[Alert] = []
-        self.cache_prefix = 'perf_alert_'
+        self.cache_prefix = "perf_alert_"
 
     def create_alert(
         self,
@@ -258,7 +256,7 @@ class AlertManager:
         self.alerts.append(alert)
 
         # Cache the alert
-        cache_key = f'{self.cache_prefix}{alert_id}'
+        cache_key = f"{self.cache_prefix}{alert_id}"
         cache.set(cache_key, asdict(alert), timeout=86400)  # 24 hours
 
         self._log_alert(alert)
@@ -320,7 +318,8 @@ class AlertManager:
 
         if metric_name:
             return [
-                a for a in self.alerts
+                a
+                for a in self.alerts
                 if a.metric_name == metric_name and a.timestamp >= cutoff
             ]
 
@@ -328,9 +327,9 @@ class AlertManager:
 
     def _log_alert(self, alert: Alert) -> None:
         """Log alert based on severity."""
-        if alert.severity == 'P0':
+        if alert.severity == "P0":
             logger.critical(f"[P0 CRITICAL] {alert.title}: {alert.message}")
-        elif alert.severity == 'P1':
+        elif alert.severity == "P1":
             logger.warning(f"[P1 WARNING] {alert.title}: {alert.message}")
         else:
             logger.info(f"[P2 INFO] {alert.title}: {alert.message}")
@@ -338,11 +337,11 @@ class AlertManager:
     def to_dict(self) -> Dict:
         """Convert alerts to dictionary."""
         return {
-            'alerts': [a.to_dict() for a in self.alerts[-100:]],  # Last 100
-            'active_count': len(self.get_active_alerts()),
-            'p0_count': len(self.get_active_alerts(severity='P0')),
-            'p1_count': len(self.get_active_alerts(severity='P1')),
-            'p2_count': len(self.get_active_alerts(severity='P2')),
+            "alerts": [a.to_dict() for a in self.alerts[-100:]],  # Last 100
+            "active_count": len(self.get_active_alerts()),
+            "p0_count": len(self.get_active_alerts(severity="P0")),
+            "p1_count": len(self.get_active_alerts(severity="P1")),
+            "p2_count": len(self.get_active_alerts(severity="P2")),
         }
 
 

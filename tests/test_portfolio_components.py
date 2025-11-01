@@ -4,16 +4,28 @@ UI Component Tests - Portfolio Components
 Tests for reusable portfolio template components
 """
 
-from django.test import TestCase, RequestFactory
-from django.template.loader import render_to_string
 from django.template import RequestContext
+from django.template.loader import render_to_string
+from django.test import RequestFactory, TestCase
 
 
 class MockProject:
     """Mock Project object for template testing"""
-    def __init__(self, title="Test Project", slug="test-project", description="Test",
-                 status="completed", tech_stack=None, progress_percentage=50,
-                 difficulty_level=3, github_url=None, live_url=None, view_count=0, image=None):
+
+    def __init__(
+        self,
+        title="Test Project",
+        slug="test-project",
+        description="Test",
+        status="completed",
+        tech_stack=None,
+        progress_percentage=50,
+        difficulty_level=3,
+        github_url=None,
+        live_url=None,
+        view_count=0,
+        image=None,
+    ):
         self.title = title
         self.slug = slug
         self.description = description
@@ -28,11 +40,11 @@ class MockProject:
 
     def get_status_display(self):
         status_map = {
-            'completed': 'Completed',
-            'development': 'In Development',
-            'testing': 'Testing',
+            "completed": "Completed",
+            "development": "In Development",
+            "testing": "Testing",
         }
-        return status_map.get(self.status, 'Unknown')
+        return status_map.get(self.status, "Unknown")
 
 
 class ProjectCardComponentTests(TestCase):
@@ -56,13 +68,10 @@ class ProjectCardComponentTests(TestCase):
 
     def test_empty_project_state(self):
         """Test empty state renders"""
-        context = {'project': None}
-        rendered = render_to_string(
-            'components/portfolio/project_card.html',
-            context
-        )
+        context = {"project": None}
+        rendered = render_to_string("components/portfolio/project_card.html", context)
 
-        self.assertIn('not available', rendered)
+        self.assertIn("not available", rendered)
 
 
 class SectionHeaderComponentTests(TestCase):
@@ -71,28 +80,22 @@ class SectionHeaderComponentTests(TestCase):
     def test_section_header_renders(self):
         """Test section header renders"""
         context = {
-            'title': 'Featured Projects',
-            'subtitle': 'Best work',
-            'icon': 'star',
-            'size': 'large'
+            "title": "Featured Projects",
+            "subtitle": "Best work",
+            "icon": "star",
+            "size": "large",
         }
-        rendered = render_to_string(
-            'components/portfolio/section_header.html',
-            context
-        )
+        rendered = render_to_string("components/portfolio/section_header.html", context)
 
-        self.assertIn('Featured Projects', rendered)
-        self.assertIn('Best work', rendered)
+        self.assertIn("Featured Projects", rendered)
+        self.assertIn("Best work", rendered)
 
     def test_missing_title_shows_error(self):
         """Test missing title shows error"""
-        context = {'title': None}
-        rendered = render_to_string(
-            'components/portfolio/section_header.html',
-            context
-        )
+        context = {"title": None}
+        rendered = render_to_string("components/portfolio/section_header.html", context)
 
-        self.assertIn('not properly configured', rendered)
+        self.assertIn("not properly configured", rendered)
 
 
 class StatCardComponentTests(TestCase):
@@ -101,35 +104,25 @@ class StatCardComponentTests(TestCase):
     def test_stat_card_renders(self):
         """Test stat card renders"""
         context = {
-            'label': 'Projects',
-            'value': '24',
-            'unit': 'projects',
-            'icon': 'briefcase',
-            'trend': 'up'
+            "label": "Projects",
+            "value": "24",
+            "unit": "projects",
+            "icon": "briefcase",
+            "trend": "up",
         }
-        rendered = render_to_string(
-            'components/portfolio/stat_card.html',
-            context
-        )
+        rendered = render_to_string("components/portfolio/stat_card.html", context)
 
-        self.assertIn('Projects', rendered)
-        self.assertIn('24', rendered)
-        self.assertIn('projects', rendered)
+        self.assertIn("Projects", rendered)
+        self.assertIn("24", rendered)
+        self.assertIn("projects", rendered)
 
     def test_stat_card_with_percentage(self):
         """Test stat card with percentage trend"""
-        context = {
-            'label': 'Growth',
-            'value': '42%',
-            'trend': '15'
-        }
-        rendered = render_to_string(
-            'components/portfolio/stat_card.html',
-            context
-        )
+        context = {"label": "Growth", "value": "42%", "trend": "15"}
+        rendered = render_to_string("components/portfolio/stat_card.html", context)
 
-        self.assertIn('Growth', rendered)
-        self.assertIn('+15%', rendered)
+        self.assertIn("Growth", rendered)
+        self.assertIn("+15%", rendered)
 
 
 class EmptyStateComponentTests(TestCase):
@@ -138,32 +131,26 @@ class EmptyStateComponentTests(TestCase):
     def test_empty_state_renders(self):
         """Test empty state renders"""
         context = {
-            'message': 'No projects found',
-            'description': 'Create one to get started',
-            'icon': 'briefcase'
+            "message": "No projects found",
+            "description": "Create one to get started",
+            "icon": "briefcase",
         }
-        rendered = render_to_string(
-            'components/portfolio/empty_state.html',
-            context
-        )
+        rendered = render_to_string("components/portfolio/empty_state.html", context)
 
-        self.assertIn('No projects found', rendered)
-        self.assertIn('Create one to get started', rendered)
+        self.assertIn("No projects found", rendered)
+        self.assertIn("Create one to get started", rendered)
 
     def test_empty_state_with_cta(self):
         """Test empty state with CTA button"""
         context = {
-            'message': 'No data',
-            'action_label': 'Create',
-            'action_url': '/admin/'
+            "message": "No data",
+            "action_label": "Create",
+            "action_url": "/admin/",
         }
-        rendered = render_to_string(
-            'components/portfolio/empty_state.html',
-            context
-        )
+        rendered = render_to_string("components/portfolio/empty_state.html", context)
 
-        self.assertIn('No data', rendered)
-        self.assertIn('Create', rendered)
+        self.assertIn("No data", rendered)
+        self.assertIn("Create", rendered)
 
 
 class GridContainerComponentTests(TestCase):
@@ -171,28 +158,18 @@ class GridContainerComponentTests(TestCase):
 
     def test_grid_renders(self):
         """Test grid renders structure"""
-        context = {
-            'title': 'Projects Grid',
-            'size': 'featured'
-        }
-        rendered = render_to_string(
-            'components/portfolio/grid_container.html',
-            context
-        )
+        context = {"title": "Projects Grid", "size": "featured"}
+        rendered = render_to_string("components/portfolio/grid_container.html", context)
 
         # Check for grid structure elements
-        self.assertIn('Projects Grid', rendered)
-        self.assertIn('grid', rendered.lower())
+        self.assertIn("Projects Grid", rendered)
+        self.assertIn("grid", rendered.lower())
 
     def test_grid_size_variants(self):
         """Test different grid size variants"""
-        for size in ['featured', 'compact', 'gallery']:
-            context = {
-                'title': f'Test {size}',
-                'size': size
-            }
+        for size in ["featured", "compact", "gallery"]:
+            context = {"title": f"Test {size}", "size": size}
             rendered = render_to_string(
-                'components/portfolio/grid_container.html',
-                context
+                "components/portfolio/grid_container.html", context
             )
-            self.assertIn(f'Test {size}', rendered)
+            self.assertIn(f"Test {size}", rendered)

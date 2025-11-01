@@ -1,8 +1,10 @@
 """
 Template tags for Schema.org structured data
 """
+
 from django import template
 from django.utils.safestring import mark_safe
+
 from apps.main.schema import StructuredData, render_structured_data
 
 register = template.Library()
@@ -11,9 +13,9 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def website_schema(context):
     """Render website schema markup"""
-    request = context.get('request')
+    request = context.get("request")
     if not request:
-        return ''
+        return ""
     schema = StructuredData.website_schema(request)
     return mark_safe(render_structured_data(schema))
 

@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class PortfolioConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.portfolio'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.portfolio"
 
     def ready(self):
         # Import signals if any
@@ -11,8 +11,8 @@ class PortfolioConfig(AppConfig):
 
 
 class MainConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.main'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.main"
 
     def ready(self):
-        import apps.main.signals
+        pass

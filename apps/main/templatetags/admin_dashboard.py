@@ -15,4 +15,3 @@ def model_count(app_label, model_name):
         return model.objects.all().count()
     except Exception:
         return 0
-

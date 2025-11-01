@@ -3,10 +3,11 @@ Custom template tags for advanced caching functionality.
 """
 
 import hashlib
+
 from django import template
-from django.core.cache import cache
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
+
 from apps.main.cache import cache_manager
 
 register = template.Library()
@@ -22,7 +23,7 @@ def cache_fragment(context, fragment_name, timeout=600, vary_on=None):
     key_parts = [fragment_name]
 
     if vary_on:
-        for var_name in vary_on.split(','):
+        for var_name in vary_on.split(","):
             var_name = var_name.strip()
             if var_name in context:
                 key_parts.append(f"{var_name}_{context[var_name]}")
@@ -40,45 +41,45 @@ def cache_fragment(context, fragment_name, timeout=600, vary_on=None):
         return mark_safe(cached_content)
 
     # Not in cache, will be populated by {% endcache_fragment %}
-    context['_cache_fragment_key'] = cache_key
-    context['_cache_fragment_timeout'] = timeout
-    return ''
+    context["_cache_fragment_key"] = cache_key
+    context["_cache_fragment_timeout"] = timeout
+    return ""
 
 
 @register.simple_tag(takes_context=True)
 def endcache_fragment(context):
     """End cache fragment block."""
-    return ''
+    return ""
 
 
-@register.inclusion_tag('components/cached_component.html', takes_context=True)
+@register.inclusion_tag("components/cached_component.html", takes_context=True)
 def cached_component(context, component_name, template_name, timeout=600, **kwargs):
     """
     Render and cache a component template.
     Usage: {% cached_component "header" "components/header.html" 300 user=user %}
     """
     # Build cache key from component name and context variables
-    context_hash = hashlib.md5(
-        str(sorted(kwargs.items())).encode()
-    ).hexdigest()[:8]
+    context_hash = hashlib.md5(str(sorted(kwargs.items())).encode()).hexdigest()[:8]
 
     cache_key = f"component_{component_name}_{context_hash}"
 
     # Try cache first
     cached_html = cache_manager.get(cache_key)
     if cached_html is not None:
-        return {'cached_html': mark_safe(cached_html)}
+        return {"cached_html": mark_safe(cached_html)}
 
     # Render component
     component_context = context.flatten()
     component_context.update(kwargs)
 
     try:
-        rendered_html = render_to_string(template_name, component_context, request=context.get('request'))
+        rendered_html = render_to_string(
+            template_name, component_context, request=context.get("request")
+        )
         cache_manager.set(cache_key, rendered_html, timeout)
-        return {'cached_html': mark_safe(rendered_html)}
+        return {"cached_html": mark_safe(rendered_html)}
     except Exception as e:
-        return {'cached_html': f'<!-- Component render error: {e} -->'}
+        return {"cached_html": f"<!-- Component render error: {e} -->"}
 
 
 @register.simple_tag(takes_context=True)
@@ -90,8 +91,8 @@ def cache_query(context, query_name, timeout=300):
     cache_key = f"query_{query_name}"
 
     # Check for user-specific caching
-    request = context.get('request')
-    if request and hasattr(request, 'user') and request.user.is_authenticated:
+    request = context.get("request")
+    if request and hasattr(request, "user") and request.user.is_authenticated:
         cache_key += f"_user_{request.user.pk}"
 
     return cache_key
@@ -103,8 +104,8 @@ def cache_value(value, key_timeout):
     Cache a template variable value.
     Usage: {{ expensive_calculation|cache_value:"calc_result,300" }}
     """
-    if ',' in key_timeout:
-        cache_key, timeout = key_timeout.split(',', 1)
+    if "," in key_timeout:
+        cache_key, timeout = key_timeout.split(",", 1)
         timeout = int(timeout)
     else:
         cache_key = key_timeout
@@ -141,7 +142,7 @@ def cache_stats():
     return cache_manager.get_stats()
 
 
-@register.inclusion_tag('components/cache_debug.html', takes_context=True)
+@register.inclusion_tag("components/cache_debug.html", takes_context=True)
 def cache_debug_info(context):
     """
     Display cache debug information (only in DEBUG mode).
@@ -150,14 +151,14 @@ def cache_debug_info(context):
     from django.conf import settings
 
     if not settings.DEBUG:
-        return {'debug': False}
+        return {"debug": False}
 
     stats = cache_manager.get_stats()
 
     return {
-        'debug': True,
-        'stats': stats,
-        'cache_backend': settings.CACHES['default']['BACKEND'],
+        "debug": True,
+        "stats": stats,
+        "cache_backend": settings.CACHES["default"]["BACKEND"],
     }
 
 
@@ -183,7 +184,7 @@ class CacheFragmentNode(template.Node):
                 value = var.resolve(context)
                 key_parts.append(str(value))
             except template.VariableDoesNotExist:
-                key_parts.append('none')
+                key_parts.append("none")
 
         cache_key = f"template_fragment_{'_'.join(key_parts)}"
 
@@ -219,7 +220,7 @@ def cache_block(parser, token):
     timeout = tokens[2] if len(tokens) > 2 else None
     vary_on = tokens[3:] if len(tokens) > 3 else []
 
-    nodelist = parser.parse(('endcache_block',))
+    nodelist = parser.parse(("endcache_block",))
     parser.delete_first_token()
 
     return CacheFragmentNode(nodelist, fragment_name, timeout, vary_on)
@@ -227,7 +228,7 @@ def cache_block(parser, token):
 
 # Smart caching tags based on model changes
 @register.simple_tag
-def smart_cache_key(model_name, action='list', **filters):
+def smart_cache_key(model_name, action="list", **filters):
     """
     Generate smart cache keys that include model version for auto-invalidation.
     Usage: {% smart_cache_key "Post" "list" status="published" as cache_key %}
@@ -241,25 +242,21 @@ def smart_cache_key(model_name, action='list', **filters):
 
         # Get latest update time for the model
         try:
-            latest_update = model_class.objects.latest('updated_at').updated_at
+            latest_update = model_class.objects.latest("updated_at").updated_at
             version = latest_update.timestamp()
         except (AttributeError, model_class.DoesNotExist):
             # Fallback to current time
             version = timezone.now().timestamp()
 
         # Build cache key
-        filter_hash = hashlib.md5(
-            str(sorted(filters.items())).encode()
-        ).hexdigest()[:8]
+        filter_hash = hashlib.md5(str(sorted(filters.items())).encode()).hexdigest()[:8]
 
         cache_key = f"smart_{model_name.lower()}_{action}_{version:.0f}_{filter_hash}"
         return cache_key
 
     except Exception:
         # Fallback to simple cache key
-        filter_hash = hashlib.md5(
-            str(sorted(filters.items())).encode()
-        ).hexdigest()[:8]
+        filter_hash = hashlib.md5(str(sorted(filters.items())).encode()).hexdigest()[:8]
         return f"fallback_{model_name.lower()}_{action}_{filter_hash}"
 
 
@@ -269,11 +266,11 @@ def cache_context_processor(request):
     from django.conf import settings
 
     context = {
-        'cache_enabled': 'redis' in settings.CACHES['default']['BACKEND'].lower(),
-        'cache_debug': settings.DEBUG,
+        "cache_enabled": "redis" in settings.CACHES["default"]["BACKEND"].lower(),
+        "cache_debug": settings.DEBUG,
     }
 
     if settings.DEBUG:
-        context['cache_stats'] = cache_manager.get_stats()
+        context["cache_stats"] = cache_manager.get_stats()
 
     return context

@@ -8,12 +8,12 @@ Restricted authentication backend for admin-only access.
 
 from typing import Optional
 
-from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.hashers import check_password
 from django.utils import timezone
-from decouple import config
 
+from decouple import config
 
 User = get_user_model()
 
@@ -26,7 +26,7 @@ class RestrictedAdminBackend(BaseBackend):
       - ALLOWED_ADMIN_PASSWORD_HASH (Django-compatible hash)
     """
 
-    def authenticate(
+    def authenticate(  # noqa: C901
         self,
         request,
         username: Optional[str] = None,

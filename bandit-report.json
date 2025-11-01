@@ -1,0 +1,2564 @@
+{
+  "errors": [
+    {
+      "filename": "apps/ai_optimizer\\admin.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/ai_optimizer\\apps.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/ai_optimizer\\migrations\\0001_initial.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/ai_optimizer\\models.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/ai_optimizer\\optimizer.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\admin.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\apps.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\management\\commands\\publish_scheduled_posts.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\migrations\\0001_initial.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\migrations\\0002_initial.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\migrations\\0003_alter_post_options_post_featured_image_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\migrations\\0004_post_featured_image_url_alter_post_featured_image.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\migrations\\0005_blogseries_post_series_order_post_series.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\migrations\\0006_post_featured_image_alt_post_post_type.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\migrations\\0007_alter_post_content.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\migrations\\0008_remove_post_series_remove_post_featured_image_alt_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\migrations\\0009_remove_post_blog_post_author__3a3e8e_idx_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\migrations\\0010_remove_post_blog_status_created_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\models.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\serializers.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\templatetags\\blog_extras.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\urls.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\utils\\sanitizer.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/blog\\views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/chat\\apps.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/chat\\connection_pool.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/chat\\consumers.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/chat\\middleware.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/chat\\routing.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/chat\\urls.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/chat\\views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/contact\\admin.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/contact\\apps.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/contact\\forms.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/contact\\migrations\\0001_initial.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/contact\\migrations\\0002_alter_contactmessage_options_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/contact\\models.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/contact\\urls.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/contact\\views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/core\\health.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\admin.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\admin_utils.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\admin_views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\analytics.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\apps.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\auth_backends.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\cache_utils.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\context_processors.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\feeds.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\file_validators.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\filters.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\fixtures\\portfolio_fixtures.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\logging\\json_formatter.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\management\\commands\\analyze_performance.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\management\\commands\\check_server_status.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\management\\commands\\clear_cache.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\management\\commands\\fix_template_errors.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\management\\commands\\manage_server.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\management\\commands\\monitor_errors.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\management\\commands\\reindex_search.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\management\\commands\\validate_templates.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\middleware.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\middleware\\static_optimization_middleware.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\migrations\\0001_initial.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\migrations\\0002_alter_admin_options_alter_personalinfo_options_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\migrations\\0003_alter_sociallink_url.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\migrations\\0004_aitool_cybersecurityresource.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\migrations\\0005_blogcategory_musicplaylist_spotifycurrenttrack_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\migrations\\0006_project.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\migrations\\0007_hobby.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\migrations\\0008_certificate_shorturl_skill.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\migrations\\0009_current_activity.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\migrations\\0010_blog_category_expansion.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\migrations\\0011_remove_skill_certificates_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\migrations\\0012_alter_admin_groups_alter_admin_user_permissions_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\models.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\monitoring.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\performance.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\sanitizer.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\schema.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\search.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\search_index.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\seo.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\signals.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\sitemaps.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\tasks.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\templatetags\\admin_dashboard.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\templatetags\\math_extras.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\templatetags\\math_filters.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\templatetags\\navigation_tags.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\templatetags\\schema_tags.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\templatetags\\seo_tags.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\test_cache.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\urls.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\views\\categories.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\views\\main_views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\views\\search.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\views\\search_views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\views\\shorturl.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/main\\views_ui_kit.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/playground\\apps.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/playground\\management\\commands\\setup_playground.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/playground\\management\\commands\\setup_playground_simple.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/playground\\migrations\\0001_initial.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/playground\\models.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/playground\\urls.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/playground\\views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\admin.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\alerting.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\analytics.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\api_views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\apps.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\auth_backends.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\cache.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\cache_fallback_validator.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\cache_keys.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\cache_utils.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\context_processors.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\error_handlers.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\feeds.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\file_validators.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\filters.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\fixtures_provider.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\fulltext_search.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\health_checks.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\logging\\alert_system.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\logging\\json_formatter.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\logging\\log_aggregator.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\management\\commands\\analyze_db_performance.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\management\\commands\\analyze_performance.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\management\\commands\\cache_monitor.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\management\\commands\\cache_warm.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\management\\commands\\health_check.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\management\\commands\\monitor_health.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\management\\commands\\optimize_static.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\management\\commands\\start_flower.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\management\\commands\\test_celery.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\management\\commands\\validate_templates.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\management\\commands\\warm_cache.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\middleware.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\middleware\\__init__.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\middleware\\apm_middleware.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\middleware\\cache_control.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\middleware\\cache_middleware.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\middleware\\compression.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\middleware\\performance.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\middleware\\security_headers.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\middleware\\static_optimization_middleware.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0001_initial.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0002_alter_admin_options_alter_personalinfo_options_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0003_alter_sociallink_url.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0004_aitool_cybersecurityresource.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0005_blogcategory_musicplaylist_spotifycurrenttrack_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0006_project.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0007_hobby.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0008_certificate_shorturl_skill.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0009_current_activity.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0010_blog_category_expansion.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0011_remove_skill_certificates_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0012_errorlog_performancemetric_webpushsubscription_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0013_shorturl_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0014_aitool_main_aitool_categor_035a57_idx_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0015_rename_main_person_is_visi_377110_idx_personal_vis_order_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0016_admin_account_locked_until_admin_backup_codes_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\migrations\\0017_abtestassignment_analyticsevent_conversionfunnel_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\models.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\performance.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\querysets.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\ratelimit.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\redis_config.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\schema.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\search.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\seo.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\serializers.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\services\\push_service.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\signals.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\sitemaps.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\tasks.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\templatetags\\cache_tags.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\templatetags\\image_tags.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\templatetags\\math_extras.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\templatetags\\math_filters.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\templatetags\\navigation_tags.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\templatetags\\seo_tags.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\tests.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\urls.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\urls_backup.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\urls_gdpr.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\urls_minimal.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\utils\\apm_decorators.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\validators.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\analytics_api.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\auth_views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\cache_views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\categories.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\gdpr_views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\health_api.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\logging_dashboard.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\main_views.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\monitoring.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\performance_api.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\search.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\search_api.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\security.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/portfolio\\views\\shorturl.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/tools\\admin.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/tools\\apps.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/tools\\migrations\\0001_initial.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/tools\\migrations\\0002_alter_tool_options_tool_icon_url_tool_is_visible_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/tools\\migrations\\0003_tool_image.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/tools\\migrations\\0004_remove_tool_pricing_tool_documentation_url_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/tools\\migrations\\0005_remove_tool_documentation_url_remove_tool_github_url_and_more.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/tools\\migrations\\0006_alter_tool_image.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/tools\\models.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/tools\\urls.py",
+      "reason": "exception while scanning file"
+    },
+    {
+      "filename": "apps/tools\\views.py",
+      "reason": "exception while scanning file"
+    }
+  ],
+  "generated_at": "2025-10-31T23:42:25Z",
+  "metrics": {
+    "_totals": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 39291,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/ai_optimizer\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/ai_optimizer\\admin.py": {
+      "loc": 262,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/ai_optimizer\\apps.py": {
+      "loc": 5,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/ai_optimizer\\migrations\\0001_initial.py": {
+      "loc": 299,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/ai_optimizer\\migrations\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/ai_optimizer\\models.py": {
+      "loc": 185,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/ai_optimizer\\optimizer.py": {
+      "loc": 283,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/ai_optimizer\\tests.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/ai_optimizer\\views.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\admin.py": {
+      "loc": 106,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\apps.py": {
+      "loc": 4,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\management\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\management\\commands\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\management\\commands\\publish_scheduled_posts.py": {
+      "loc": 66,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\migrations\\0001_initial.py": {
+      "loc": 25,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\migrations\\0002_initial.py": {
+      "loc": 16,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\migrations\\0003_alter_post_options_post_featured_image_and_more.py": {
+      "loc": 81,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\migrations\\0004_post_featured_image_url_alter_post_featured_image.py": {
+      "loc": 17,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\migrations\\0005_blogseries_post_series_order_post_series.py": {
+      "loc": 39,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\migrations\\0006_post_featured_image_alt_post_post_type.py": {
+      "loc": 17,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\migrations\\0007_alter_post_content.py": {
+      "loc": 12,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\migrations\\0008_remove_post_series_remove_post_featured_image_alt_and_more.py": {
+      "loc": 31,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\migrations\\0009_remove_post_blog_post_author__3a3e8e_idx_and_more.py": {
+      "loc": 59,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\migrations\\0010_remove_post_blog_status_created_and_more.py": {
+      "loc": 64,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\migrations\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\models.py": {
+      "loc": 164,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\serializers.py": {
+      "loc": 113,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\templatetags\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\templatetags\\blog_extras.py": {
+      "loc": 115,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\tests.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\urls.py": {
+      "loc": 7,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\utils\\sanitizer.py": {
+      "loc": 301,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/blog\\views.py": {
+      "loc": 34,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/chat\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/chat\\admin.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/chat\\apps.py": {
+      "loc": 4,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/chat\\connection_pool.py": {
+      "loc": 252,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/chat\\consumers.py": {
+      "loc": 290,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/chat\\middleware.py": {
+      "loc": 151,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/chat\\migrations\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/chat\\models.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/chat\\routing.py": {
+      "loc": 9,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/chat\\tests.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/chat\\urls.py": {
+      "loc": 6,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/chat\\views.py": {
+      "loc": 20,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/contact\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/contact\\admin.py": {
+      "loc": 24,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/contact\\apps.py": {
+      "loc": 4,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/contact\\forms.py": {
+      "loc": 146,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/contact\\migrations\\0001_initial.py": {
+      "loc": 23,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/contact\\migrations\\0002_alter_contactmessage_options_and_more.py": {
+      "loc": 23,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/contact\\migrations\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/contact\\models.py": {
+      "loc": 20,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/contact\\tests.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/contact\\urls.py": {
+      "loc": 7,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/contact\\views.py": {
+      "loc": 80,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/core\\health.py": {
+      "loc": 276,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\admin.py": {
+      "loc": 407,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\admin_utils.py": {
+      "loc": 94,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\admin_views.py": {
+      "loc": 74,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\analytics.py": {
+      "loc": 74,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\apps.py": {
+      "loc": 6,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\auth_backends.py": {
+      "loc": 106,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\cache_utils.py": {
+      "loc": 299,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\context_processors.py": {
+      "loc": 170,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\feeds.py": {
+      "loc": 130,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\file_validators.py": {
+      "loc": 45,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\filters.py": {
+      "loc": 340,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\fixtures\\portfolio_fixtures.py": {
+      "loc": 311,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\logging\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\logging\\json_formatter.py": {
+      "loc": 238,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\management\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\management\\commands\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\management\\commands\\analyze_performance.py": {
+      "loc": 161,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\management\\commands\\check_server_status.py": {
+      "loc": 11,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\management\\commands\\clear_cache.py": {
+      "loc": 14,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\management\\commands\\fix_template_errors.py": {
+      "loc": 22,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\management\\commands\\manage_server.py": {
+      "loc": 257,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\management\\commands\\monitor_errors.py": {
+      "loc": 316,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\management\\commands\\reindex_search.py": {
+      "loc": 181,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\management\\commands\\validate_templates.py": {
+      "loc": 265,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\middleware.py": {
+      "loc": 79,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\middleware\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\middleware\\static_optimization_middleware.py": {
+      "loc": 8,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\0001_initial.py": {
+      "loc": 74,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\0002_alter_admin_options_alter_personalinfo_options_and_more.py": {
+      "loc": 88,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\0003_alter_sociallink_url.py": {
+      "loc": 12,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\0004_aitool_cybersecurityresource.py": {
+      "loc": 59,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\0005_blogcategory_musicplaylist_spotifycurrenttrack_and_more.py": {
+      "loc": 126,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\0006_project.py": {
+      "loc": 40,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\0007_hobby.py": {
+      "loc": 39,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\0008_certificate_shorturl_skill.py": {
+      "loc": 87,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\0009_current_activity.py": {
+      "loc": 43,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\0010_blog_category_expansion.py": {
+      "loc": 142,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\0011_remove_skill_certificates_and_more.py": {
+      "loc": 170,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\0012_alter_admin_groups_alter_admin_user_permissions_and_more.py": {
+      "loc": 24,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\migrations\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\models.py": {
+      "loc": 478,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\monitoring.py": {
+      "loc": 261,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\performance.py": {
+      "loc": 278,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\sanitizer.py": {
+      "loc": 204,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\schema.py": {
+      "loc": 227,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\search.py": {
+      "loc": 369,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\search_index.py": {
+      "loc": 621,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\seo.py": {
+      "loc": 207,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\signals.py": {
+      "loc": 275,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\sitemaps.py": {
+      "loc": 123,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\tasks.py": {
+      "loc": 183,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\templatetags\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\templatetags\\admin_dashboard.py": {
+      "loc": 13,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\templatetags\\math_extras.py": {
+      "loc": 8,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\templatetags\\math_filters.py": {
+      "loc": 32,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\templatetags\\navigation_tags.py": {
+      "loc": 67,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\templatetags\\schema_tags.py": {
+      "loc": 45,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\templatetags\\seo_tags.py": {
+      "loc": 27,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\test_cache.py": {
+      "loc": 160,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\tests.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\urls.py": {
+      "loc": 31,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\views.py": {
+      "loc": 531,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\views\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\views\\categories.py": {
+      "loc": 333,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\views\\main_views.py": {
+      "loc": 377,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\views\\search.py": {
+      "loc": 259,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\views\\search_views.py": {
+      "loc": 380,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\views\\shorturl.py": {
+      "loc": 119,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/main\\views_ui_kit.py": {
+      "loc": 53,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\admin.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\apps.py": {
+      "loc": 4,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\management\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\management\\commands\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\management\\commands\\setup_playground.py": {
+      "loc": 249,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\management\\commands\\setup_playground_simple.py": {
+      "loc": 76,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\migrations\\0001_initial.py": {
+      "loc": 90,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\migrations\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\models.py": {
+      "loc": 71,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\tests.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\urls.py": {
+      "loc": 14,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/playground\\views.py": {
+      "loc": 198,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\admin.py": {
+      "loc": 483,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\alerting.py": {
+      "loc": 252,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\analytics.py": {
+      "loc": 762,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\api_views.py": {
+      "loc": 320,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\apps.py": {
+      "loc": 11,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\auth_backends.py": {
+      "loc": 162,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\cache.py": {
+      "loc": 385,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\cache_fallback_validator.py": {
+      "loc": 130,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\cache_keys.py": {
+      "loc": 254,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\cache_utils.py": {
+      "loc": 234,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\context_processors.py": {
+      "loc": 97,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\error_handlers.py": {
+      "loc": 345,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\feeds.py": {
+      "loc": 130,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\file_validators.py": {
+      "loc": 222,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\filters.py": {
+      "loc": 340,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\fixtures_provider.py": {
+      "loc": 157,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\fulltext_search.py": {
+      "loc": 436,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\health_checks.py": {
+      "loc": 586,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\logging\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\logging\\alert_system.py": {
+      "loc": 489,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\logging\\json_formatter.py": {
+      "loc": 245,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\logging\\log_aggregator.py": {
+      "loc": 369,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\commands\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\commands\\analyze_db_performance.py": {
+      "loc": 342,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\commands\\analyze_performance.py": {
+      "loc": 161,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\commands\\cache_monitor.py": {
+      "loc": 320,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\commands\\cache_warm.py": {
+      "loc": 292,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\commands\\health_check.py": {
+      "loc": 197,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\commands\\monitor_health.py": {
+      "loc": 202,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\commands\\optimize_static.py": {
+      "loc": 399,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\commands\\start_flower.py": {
+      "loc": 71,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\commands\\test_celery.py": {
+      "loc": 158,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\commands\\validate_templates.py": {
+      "loc": 97,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\management\\commands\\warm_cache.py": {
+      "loc": 318,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\middleware.py": {
+      "loc": 157,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\middleware\\__init__.py": {
+      "loc": 13,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\middleware\\apm_middleware.py": {
+      "loc": 228,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\middleware\\cache_control.py": {
+      "loc": 35,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\middleware\\cache_middleware.py": {
+      "loc": 269,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\middleware\\compression.py": {
+      "loc": 13,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\middleware\\performance.py": {
+      "loc": 15,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\middleware\\security_headers.py": {
+      "loc": 97,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\middleware\\static_optimization_middleware.py": {
+      "loc": 295,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0001_initial.py": {
+      "loc": 74,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0002_alter_admin_options_alter_personalinfo_options_and_more.py": {
+      "loc": 88,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0003_alter_sociallink_url.py": {
+      "loc": 12,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0004_aitool_cybersecurityresource.py": {
+      "loc": 59,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0005_blogcategory_musicplaylist_spotifycurrenttrack_and_more.py": {
+      "loc": 126,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0006_project.py": {
+      "loc": 40,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0007_hobby.py": {
+      "loc": 39,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0008_certificate_shorturl_skill.py": {
+      "loc": 87,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0009_current_activity.py": {
+      "loc": 43,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0010_blog_category_expansion.py": {
+      "loc": 142,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0011_remove_skill_certificates_and_more.py": {
+      "loc": 170,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0012_errorlog_performancemetric_webpushsubscription_and_more.py": {
+      "loc": 126,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0013_shorturl_and_more.py": {
+      "loc": 95,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0014_aitool_main_aitool_categor_035a57_idx_and_more.py": {
+      "loc": 123,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0015_rename_main_person_is_visi_377110_idx_personal_vis_order_and_more.py": {
+      "loc": 53,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0016_admin_account_locked_until_admin_backup_codes_and_more.py": {
+      "loc": 114,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\0017_abtestassignment_analyticsevent_conversionfunnel_and_more.py": {
+      "loc": 110,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\migrations\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\models.py": {
+      "loc": 1568,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\performance.py": {
+      "loc": 490,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\querysets.py": {
+      "loc": 239,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\ratelimit.py": {
+      "loc": 218,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\redis_config.py": {
+      "loc": 182,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\schema.py": {
+      "loc": 227,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\search.py": {
+      "loc": 365,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\seo.py": {
+      "loc": 207,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\serializers.py": {
+      "loc": 451,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\services\\push_service.py": {
+      "loc": 401,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\signals.py": {
+      "loc": 130,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\sitemaps.py": {
+      "loc": 120,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\tasks.py": {
+      "loc": 366,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\templatetags\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\templatetags\\cache_tags.py": {
+      "loc": 191,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\templatetags\\image_tags.py": {
+      "loc": 253,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\templatetags\\math_extras.py": {
+      "loc": 8,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\templatetags\\math_filters.py": {
+      "loc": 32,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\templatetags\\navigation_tags.py": {
+      "loc": 118,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\templatetags\\schema_tags.py": {
+      "loc": 45,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\templatetags\\seo_tags.py": {
+      "loc": 27,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\tests.py": {
+      "loc": 212,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\urls.py": {
+      "loc": 36,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\urls_backup.py": {
+      "loc": 85,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\urls_gdpr.py": {
+      "loc": 30,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\urls_minimal.py": {
+      "loc": 6,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\utils\\apm_decorators.py": {
+      "loc": 363,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\validators.py": {
+      "loc": 331,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views.py": {
+      "loc": 1793,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 8,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\analytics_api.py": {
+      "loc": 260,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\auth_views.py": {
+      "loc": 271,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\cache_views.py": {
+      "loc": 308,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\categories.py": {
+      "loc": 333,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\gdpr_views.py": {
+      "loc": 435,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\health_api.py": {
+      "loc": 196,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\logging_dashboard.py": {
+      "loc": 371,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\main_views.py": {
+      "loc": 627,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\monitoring.py": {
+      "loc": 268,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\performance_api.py": {
+      "loc": 271,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\search.py": {
+      "loc": 250,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\search_api.py": {
+      "loc": 439,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\security.py": {
+      "loc": 74,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\views\\shorturl.py": {
+      "loc": 116,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\admin.py": {
+      "loc": 61,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\apps.py": {
+      "loc": 4,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\migrations\\0001_initial.py": {
+      "loc": 25,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\migrations\\0002_alter_tool_options_tool_icon_url_tool_is_visible_and_more.py": {
+      "loc": 78,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\migrations\\0003_tool_image.py": {
+      "loc": 12,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\migrations\\0004_remove_tool_pricing_tool_documentation_url_and_more.py": {
+      "loc": 41,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\migrations\\0005_remove_tool_documentation_url_remove_tool_github_url_and_more.py": {
+      "loc": 36,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\migrations\\0006_alter_tool_image.py": {
+      "loc": 13,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\migrations\\__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\models.py": {
+      "loc": 146,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\tests.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\urls.py": {
+      "loc": 7,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/tools\\views.py": {
+      "loc": 43,
+      "nosec": 0,
+      "skipped_tests": 0
+    }
+  },
+  "results": []
+}

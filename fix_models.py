@@ -3,8 +3,9 @@
 
 import re
 
-with open('apps/portfolio/models.py', 'r', encoding='utf-8') as f:
+with open("apps/portfolio/models.py", "r", encoding="utf-8") as f:
     content = f.read()
+
 
 # Pattern to find class Meta blocks and add app_label if missing
 def add_app_label_to_meta(match):
@@ -16,7 +17,7 @@ def add_app_label_to_meta(match):
 
     # Find the end of Meta class (next non-indented line or end of block)
     # Insert app_label before the dedent
-    lines = meta_block.split('\n')
+    lines = meta_block.split("\n")
     result_lines = []
 
     for i, line in enumerate(lines):
@@ -29,10 +30,11 @@ def add_app_label_to_meta(match):
                 result_lines.insert(-1, "        app_label = 'portfolio'")
                 break
 
-    return '\n'.join(result_lines)
+    return "\n".join(result_lines)
+
 
 # Find all class definitions and check their Meta classes
-pattern = r'class \w+\(models\.Model\):.*?(?=^class |\Z)'
+pattern = r"class \w+\(models\.Model\):.*?(?=^class |\Z)"
 matches = list(re.finditer(pattern, content, re.MULTILINE | re.DOTALL))
 
 print(f"Found {len(matches)} model classes")
@@ -40,13 +42,15 @@ print(f"Found {len(matches)} model classes")
 # Process each match
 for match in matches:
     class_content = match.group(0)
-    class_match = re.search(r'class (\w+)', class_content)
+    class_match = re.search(r"class (\w+)", class_content)
     if not class_match:
         continue
     class_name = class_match.group(1)
 
     # Find Meta class in this class
-    meta_match = re.search(r'    class Meta:.*?(?=\n    def |\n\nclass |\Z)', class_content, re.DOTALL)
+    meta_match = re.search(
+        r"    class Meta:.*?(?=\n    def |\n\nclass |\Z)", class_content, re.DOTALL
+    )
 
     if meta_match:
         meta_content = meta_match.group(0)
@@ -54,7 +58,7 @@ for match in matches:
         # Check if app_label exists
         if "app_label" not in meta_content:
             # Add app_label before the end of the Meta class
-            lines = meta_content.split('\n')
+            lines = meta_content.split("\n")
 
             # Find last indented line
             last_indented_idx = -1
@@ -66,11 +70,11 @@ for match in matches:
             if last_indented_idx >= 0:
                 # Insert app_label after last indented line
                 lines.insert(last_indented_idx + 1, "        app_label = 'portfolio'")
-                new_meta = '\n'.join(lines)
+                new_meta = "\n".join(lines)
                 content = content.replace(meta_content, new_meta)
                 print(f"Added app_label to {class_name}")
 
-with open('apps/portfolio/models.py', 'w', encoding='utf-8') as f:
+with open("apps/portfolio/models.py", "w", encoding="utf-8") as f:
     f.write(content)
 
 print("Done!")

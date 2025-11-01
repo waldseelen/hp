@@ -3,10 +3,11 @@ Django signals for intelligent cache invalidation.
 Automatically clears cache when models are saved or deleted.
 """
 
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
-from django.core.cache import cache
 import logging
+
+from django.core.cache import cache
+from django.db.models.signals import post_delete, post_save
+from django.dispatch import receiver
 
 logger = logging.getLogger(__name__)
 
@@ -17,8 +18,15 @@ except ImportError:
     cache_manager = None
     logger.warning("cache_utils not available, using basic cache invalidation")
 
-# Import models
-from .models import PersonalInfo, SocialLink
+# Import models (conditional imports above are intentional)
+from .models import (  # noqa: E402
+    AITool,
+    BlogPost,
+    CybersecurityResource,
+    PersonalInfo,
+    SocialLink,
+    UsefulResource,
+)
 
 try:
     from apps.blog.models import Post
@@ -30,13 +38,9 @@ try:
 except ImportError:
     Tool = None
 
-try:
-    from apps.ai_optimizer.models import AITool
-except (ImportError, RuntimeError):
-    AITool = None
-
 
 # Enhanced cache invalidation handlers with smart pattern matching
+
 
 @receiver([post_save, post_delete], sender=PersonalInfo)
 def invalidate_personalinfo_cache(sender, instance, created=False, **kwargs):
@@ -47,18 +51,22 @@ def invalidate_personalinfo_cache(sender, instance, created=False, **kwargs):
     try:
         if cache_manager:
             # Invalidate all home page data variations (handles time-based key patterns)
-            cache_manager.invalidate_pattern('home_page_data_*')
+            cache_manager.invalidate_pattern("home_page_data_*")
             # Invalidate personal page
-            cache_manager.invalidate_cache('personal_page_data')
+            cache_manager.invalidate_cache("personal_page_data")
             # Invalidate portfolio statistics
-            cache_manager.invalidate_cache('portfolio_statistics')
+            cache_manager.invalidate_cache("portfolio_statistics")
         else:
             # Fallback to basic invalidation
-            cache.delete('home_page_data')
-            cache.delete('personal_page_data')
-            cache.delete('portfolio_statistics')
+            cache.delete("home_page_data")
+            cache.delete("personal_page_data")
+            cache.delete("portfolio_statistics")
 
-        action = "created" if created else ("updated" if kwargs.get('update_fields') is None else "updated")
+        action = (
+            "created"
+            if created
+            else ("updated" if kwargs.get("update_fields") is None else "updated")
+        )
         logger.info(f"Cache invalidated on PersonalInfo {action}: {instance.id}")
     except Exception as e:
         logger.error(f"Error invalidating PersonalInfo cache: {e}")
@@ -72,11 +80,11 @@ def invalidate_sociallink_cache(sender, instance, created=False, **kwargs):
     """
     try:
         if cache_manager:
-            cache_manager.invalidate_pattern('home_page_data_*')
-            cache_manager.invalidate_cache('personal_page_data')
+            cache_manager.invalidate_pattern("home_page_data_*")
+            cache_manager.invalidate_cache("personal_page_data")
         else:
-            cache.delete('home_page_data')
-            cache.delete('personal_page_data')
+            cache.delete("home_page_data")
+            cache.delete("personal_page_data")
 
         action = "created" if created else "updated"
         logger.info(f"Cache invalidated on SocialLink {action}: {instance.id}")
@@ -85,6 +93,7 @@ def invalidate_sociallink_cache(sender, instance, created=False, **kwargs):
 
 
 if Post:
+
     @receiver([post_save, post_delete], sender=Post)
     def invalidate_post_cache(sender, instance, created=False, **kwargs):
         """
@@ -93,11 +102,11 @@ if Post:
         """
         try:
             if cache_manager:
-                cache_manager.invalidate_pattern('home_page_data_*')
-                cache_manager.invalidate_pattern('blog_posts_*')
+                cache_manager.invalidate_pattern("home_page_data_*")
+                cache_manager.invalidate_pattern("blog_posts_*")
             else:
-                cache.delete('home_page_data')
-                cache.delete('blog_posts')
+                cache.delete("home_page_data")
+                cache.delete("blog_posts")
 
             action = "created" if created else "updated"
             logger.info(f"Cache invalidated on Post {action}: {instance.id}")
@@ -106,6 +115,7 @@ if Post:
 
 
 if Tool:
+
     @receiver([post_save, post_delete], sender=Tool)
     def invalidate_tool_cache(sender, instance, created=False, **kwargs):
         """
@@ -114,11 +124,11 @@ if Tool:
         """
         try:
             if cache_manager:
-                cache_manager.invalidate_pattern('home_page_data_*')
-                cache_manager.invalidate_pattern('tools_*')
+                cache_manager.invalidate_pattern("home_page_data_*")
+                cache_manager.invalidate_pattern("tools_*")
             else:
-                cache.delete('home_page_data')
-                cache.delete('tools')
+                cache.delete("home_page_data")
+                cache.delete("tools")
 
             action = "created" if created else "updated"
             logger.info(f"Cache invalidated on Tool {action}: {instance.id}")
@@ -127,6 +137,7 @@ if Tool:
 
 
 if AITool:
+
     @receiver([post_save, post_delete], sender=AITool)
     def invalidate_aitool_cache(sender, instance, created=False, **kwargs):
         """
@@ -135,11 +146,11 @@ if AITool:
         """
         try:
             if cache_manager:
-                cache_manager.invalidate_pattern('home_page_data_*')
-                cache_manager.invalidate_pattern('ai_tools_*')
+                cache_manager.invalidate_pattern("home_page_data_*")
+                cache_manager.invalidate_pattern("ai_tools_*")
             else:
-                cache.delete('home_page_data')
-                cache.delete('ai_tools')
+                cache.delete("home_page_data")
+                cache.delete("ai_tools")
 
             action = "created" if created else "updated"
             logger.info(f"Cache invalidated on AITool {action}: {instance.id}")
@@ -151,12 +162,13 @@ def clear_home_cache(**kwargs):
     """
     Fallback cache clearing function (kept for backwards compatibility).
     """
-    cache.delete('home_page_data')
+    cache.delete("home_page_data")
 
 
 # ============================================================================
 # SEARCH INDEX SIGNALS
 # ============================================================================
+
 
 def sync_to_search_index(sender, instance, created, **kwargs):
     """
@@ -164,13 +176,14 @@ def sync_to_search_index(sender, instance, created, **kwargs):
     Called after save for searchable models.
     """
     import time
+
     start_time = time.time()
     success = False
     error_message = None
 
     try:
-        from .search_index import search_index_manager
         from .monitoring import search_monitor
+        from .search_index import search_index_manager
 
         # Index the document (will skip if not visible/published)
         result = search_index_manager.index_document(instance)
@@ -181,14 +194,16 @@ def sync_to_search_index(sender, instance, created, **kwargs):
         # Log to monitoring system
         search_monitor.log_index_sync(
             model_name=sender.__name__,
-            operation='index',
+            operation="index",
             success=success,
             duration_ms=duration_ms,
             document_count=1,
-            error=None if success else 'Document not indexed (visibility check failed)'
+            error=None if success else "Document not indexed (visibility check failed)",
         )
 
-        logger.info(f"Search index updated: {sender.__name__} id={instance.id} ({duration_ms:.2f}ms)")
+        logger.info(
+            f"Search index updated: {sender.__name__} id={instance.id} ({duration_ms:.2f}ms)"
+        )
 
     except Exception as e:
         duration_ms = (time.time() - start_time) * 1000
@@ -197,31 +212,38 @@ def sync_to_search_index(sender, instance, created, **kwargs):
         # Log error to monitoring
         try:
             from .monitoring import search_monitor
+
             search_monitor.log_index_sync(
                 model_name=sender.__name__,
-                operation='index',
+                operation="index",
                 success=False,
                 duration_ms=duration_ms,
                 document_count=1,
-                error=error_message
+                error=error_message,
             )
-        except:
+        except Exception:
+            # Monitoring may not be available
             pass
 
-        logger.error(f"Failed to index {sender.__name__} id={instance.id}: {e}", exc_info=True)
+        logger.error(
+            f"Failed to index {sender.__name__} id={instance.id}: {e}", exc_info=True
+        )
+
+
 def remove_from_search_index(sender, instance, **kwargs):
     """
     Generic signal handler to remove document from search index.
     Called before delete for searchable models.
     """
     import time
+
     start_time = time.time()
     success = False
     error_message = None
 
     try:
-        from .search_index import search_index_manager
         from .monitoring import search_monitor
+        from .search_index import search_index_manager
 
         # Delete from index
         result = search_index_manager.delete_document(sender.__name__, instance.id)
@@ -232,14 +254,16 @@ def remove_from_search_index(sender, instance, **kwargs):
         # Log to monitoring system
         search_monitor.log_index_sync(
             model_name=sender.__name__,
-            operation='delete',
+            operation="delete",
             success=success,
             duration_ms=duration_ms,
             document_count=1,
-            error=None
+            error=None,
         )
 
-        logger.info(f"Search index removed: {sender.__name__} id={instance.id} ({duration_ms:.2f}ms)")
+        logger.info(
+            f"Search index removed: {sender.__name__} id={instance.id} ({duration_ms:.2f}ms)"
+        )
 
     except Exception as e:
         duration_ms = (time.time() - start_time) * 1000
@@ -248,24 +272,29 @@ def remove_from_search_index(sender, instance, **kwargs):
         # Log error to monitoring
         try:
             from .monitoring import search_monitor
+
             search_monitor.log_index_sync(
                 model_name=sender.__name__,
-                operation='delete',
+                operation="delete",
                 success=False,
                 duration_ms=duration_ms,
                 document_count=1,
-                error=error_message
+                error=error_message,
             )
-        except:
+        except Exception:
+            # Monitoring may not be available
             pass
 
-        logger.error(f"Failed to remove {sender.__name__} id={instance.id} from index: {e}", exc_info=True)
+        logger.error(
+            f"Failed to remove {sender.__name__} id={instance.id} from index: {e}",
+            exc_info=True,
+        )
 
 
 # Register search index signals for indexable models
 
 # BlogPost (from apps.main.models)
-from .models import BlogPost, AITool, UsefulResource, CybersecurityResource
+
 
 @receiver([post_save], sender=BlogPost)
 def index_blogpost_on_save(sender, instance, created=False, **kwargs):
@@ -341,11 +370,11 @@ def remove_sociallink_on_delete(sender, instance, **kwargs):
 
 # Try to register Tool model signals if available
 if Tool:
+
     @receiver([post_save], sender=Tool)
     def index_tool_on_save(sender, instance, created=False, **kwargs):
         """Index Tool to search engine on save"""
         sync_to_search_index(sender, instance, created, **kwargs)
-
 
     @receiver([post_delete], sender=Tool)
     def remove_tool_on_delete(sender, instance, **kwargs):

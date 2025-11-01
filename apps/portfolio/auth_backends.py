@@ -5,10 +5,11 @@ Custom Authentication Backends
 Enhanced authentication with 2FA support and security features.
 """
 
-from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth import get_user_model
-from django.utils import timezone
 import logging
+
+from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import ModelBackend
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -19,7 +20,15 @@ class TwoFactorAuthBackend(ModelBackend):
     Custom authentication backend with 2FA support and security features
     """
 
-    def authenticate(self, request, username=None, password=None, totp_token=None, backup_code=None, **kwargs):
+    def authenticate(  # noqa: C901
+        self,
+        request,
+        username=None,
+        password=None,
+        totp_token=None,
+        backup_code=None,
+        **kwargs,
+    ):
         """
         Authenticate user with optional 2FA verification
 
@@ -113,30 +122,30 @@ class SessionTrackingMixin:
             session_key = request.session.session_key
 
         # Get client IP
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
         if x_forwarded_for:
-            ip_address = x_forwarded_for.split(',')[0].strip()
+            ip_address = x_forwarded_for.split(",")[0].strip()
         else:
-            ip_address = request.META.get('REMOTE_ADDR', '127.0.0.1')
+            ip_address = request.META.get("REMOTE_ADDR", "127.0.0.1")
 
-        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        user_agent = request.META.get("HTTP_USER_AGENT", "")
 
         # Create or update session
         session, created = UserSession.objects.get_or_create(
             session_key=session_key,
             defaults={
-                'user': user,
-                'ip_address': ip_address,
-                'user_agent': user_agent,
-                'last_activity': timezone.now(),
-            }
+                "user": user,
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+                "last_activity": timezone.now(),
+            },
         )
 
         if not created:
             # Update existing session
             session.last_activity = timezone.now()
             session.is_active = True
-            session.save(update_fields=['last_activity', 'is_active'])
+            session.save(update_fields=["last_activity", "is_active"])
 
         return session
 
@@ -165,47 +174,45 @@ class SecureAuthBackend(TwoFactorAuthBackend, SessionTrackingMixin):
             self.create_session(request, user)
 
             # Log successful authentication
-            logger.info(f"Successful authentication: {user.email} from {request.META.get('REMOTE_ADDR', 'unknown')}")
+            logger.info(
+                f"Successful authentication: {user.email} from {request.META.get('REMOTE_ADDR', 'unknown')}"
+            )
 
         return user
 
 
 def get_client_ip(request):
     """Get client IP address from request"""
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0].strip()
+        ip = x_forwarded_for.split(",")[0].strip()
     else:
-        ip = request.META.get('REMOTE_ADDR', '127.0.0.1')
+        ip = request.META.get("REMOTE_ADDR", "127.0.0.1")
     return ip
 
 
 def get_device_info(request):
     """Extract device information from request"""
-    user_agent = request.META.get('HTTP_USER_AGENT', '')
+    user_agent = request.META.get("HTTP_USER_AGENT", "")
 
     # Simple device detection
-    if 'Mobile' in user_agent or 'Android' in user_agent:
-        device_type = 'Mobile'
-    elif 'Tablet' in user_agent or 'iPad' in user_agent:
-        device_type = 'Tablet'
+    if "Mobile" in user_agent or "Android" in user_agent:
+        device_type = "Mobile"
+    elif "Tablet" in user_agent or "iPad" in user_agent:
+        device_type = "Tablet"
     else:
-        device_type = 'Desktop'
+        device_type = "Desktop"
 
     # Browser detection
-    if 'Chrome' in user_agent:
-        browser = 'Chrome'
-    elif 'Firefox' in user_agent:
-        browser = 'Firefox'
-    elif 'Safari' in user_agent:
-        browser = 'Safari'
-    elif 'Edge' in user_agent:
-        browser = 'Edge'
+    if "Chrome" in user_agent:
+        browser = "Chrome"
+    elif "Firefox" in user_agent:
+        browser = "Firefox"
+    elif "Safari" in user_agent:
+        browser = "Safari"
+    elif "Edge" in user_agent:
+        browser = "Edge"
     else:
-        browser = 'Unknown'
+        browser = "Unknown"
 
-    return {
-        'device_type': device_type,
-        'browser': browser,
-        'user_agent': user_agent
-    }
+    return {"device_type": device_type, "browser": browser, "user_agent": user_agent}

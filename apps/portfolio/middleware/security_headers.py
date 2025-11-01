@@ -1,6 +1,7 @@
-from django.utils.deprecation import MiddlewareMixin
-import secrets
 import base64
+import secrets
+
+from django.utils.deprecation import MiddlewareMixin
 
 
 class SecurityHeadersMiddleware(MiddlewareMixin):
@@ -9,26 +10,28 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
     def process_request(self, request):
         # Generate a unique nonce for each request
         nonce_bytes = secrets.token_bytes(32)
-        nonce = base64.b64encode(nonce_bytes).decode('utf-8')
+        nonce = base64.b64encode(nonce_bytes).decode("utf-8")
         request.csp_nonce = nonce
         return None
 
     def process_response(self, request, response):
         # Security headers
-        response['X-Content-Type-Options'] = 'nosniff'
-        response['X-Frame-Options'] = 'DENY'
-        response['X-XSS-Protection'] = '1; mode=block'
-        response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        response["X-Content-Type-Options"] = "nosniff"
+        response["X-Frame-Options"] = "DENY"
+        response["X-XSS-Protection"] = "1; mode=block"
+        response["Referrer-Policy"] = "strict-origin-when-cross-origin"
 
         # Performance headers
-        response['X-DNS-Prefetch-Control'] = 'on'
+        response["X-DNS-Prefetch-Control"] = "on"
 
         # HSTS for HTTPS (only add in production)
         if request.is_secure():
-            response['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+            response["Strict-Transport-Security"] = (
+                "max-age=31536000; includeSubDomains"
+            )
 
         # Get the nonce from request
-        nonce = getattr(request, 'csp_nonce', '')
+        nonce = getattr(request, "csp_nonce", "")
 
         # Enhanced Content Security Policy with nonce-based inline allowlist
         # More restrictive and secure CSP directives
@@ -64,74 +67,78 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
             # Upgrade insecure requests
             "upgrade-insecure-requests",
             # Block mixed content
-            "block-all-mixed-content"
+            "block-all-mixed-content",
         ]
 
         # Add report-uri and report-to in production
-        if not getattr(request, 'DEBUG', True):
+        if not getattr(request, "DEBUG", True):
             csp_directives.append("report-uri /api/security/csp-report/")
             csp_directives.append("report-to default")
 
-        response['Content-Security-Policy'] = '; '.join(csp_directives)
+        response["Content-Security-Policy"] = "; ".join(csp_directives)
 
         # Add additional security headers
-        response['X-Permitted-Cross-Domain-Policies'] = 'none'
+        response["X-Permitted-Cross-Domain-Policies"] = "none"
 
         # Use less restrictive COEP in development to allow CDN resources
         from django.conf import settings
-        if getattr(settings, 'DEBUG', False):
-            response['Cross-Origin-Embedder-Policy'] = 'credentialless'
+
+        if getattr(settings, "DEBUG", False):
+            response["Cross-Origin-Embedder-Policy"] = "credentialless"
         else:
-            response['Cross-Origin-Embedder-Policy'] = 'require-corp'
-        response['Cross-Origin-Opener-Policy'] = 'same-origin'
-        response['Cross-Origin-Resource-Policy'] = 'same-origin'
+            response["Cross-Origin-Embedder-Policy"] = "require-corp"
+        response["Cross-Origin-Opener-Policy"] = "same-origin"
+        response["Cross-Origin-Resource-Policy"] = "same-origin"
 
         # Additional security headers
-        response['Permissions-Policy'] = (
-            'accelerometer=(), '
-            'camera=(), '
-            'geolocation=(self), '
-            'gyroscope=(), '
-            'magnetometer=(), '
-            'microphone=(), '
-            'payment=(), '
-            'usb=(), '
-            'interest-cohort=()'
+        response["Permissions-Policy"] = (
+            "accelerometer=(), "
+            "camera=(), "
+            "geolocation=(self), "
+            "gyroscope=(), "
+            "magnetometer=(), "
+            "microphone=(), "
+            "payment=(), "
+            "usb=(), "
+            "interest-cohort=()"
         )
 
         # Add Report-To header for multiple security violation reporting
-        if not getattr(request, 'DEBUG', True):
+        if not getattr(request, "DEBUG", True):
             import json
+
             report_endpoints = [
                 {
                     "group": "default",
                     "max_age": 10886400,
                     "endpoints": [{"url": "/api/security/csp-report/"}],
-                    "include_subdomains": True
+                    "include_subdomains": True,
                 },
                 {
                     "group": "network-errors",
                     "max_age": 10886400,
                     "endpoints": [{"url": "/api/security/network-error-report/"}],
-                    "include_subdomains": True
-                }
+                    "include_subdomains": True,
+                },
             ]
-            response['Report-To'] = json.dumps(report_endpoints)
-            response['NEL'] = json.dumps({
-                "report_to": "network-errors",
-                "max_age": 10886400,
-                "include_subdomains": True,
-                "failure_fraction": 0.1
-            })
+            response["Report-To"] = json.dumps(report_endpoints)
+            response["NEL"] = json.dumps(
+                {
+                    "report_to": "network-errors",
+                    "max_age": 10886400,
+                    "include_subdomains": True,
+                    "failure_fraction": 0.1,
+                }
+            )
 
         # Preload hints for critical resources
-        if request.path == '/':
+        if request.path == "/":
             preload_links = [
-                '</static/css/output.css>; rel=preload; as=style',
-                '</static/css/custom.min.css>; rel=preload; as=style',
-                '</static/js/main.min.js>; rel=preload; as=script',
+                "</static/css/output.css>; rel=preload; as=style",
+                "</static/css/custom.min.css>; rel=preload; as=style",
+                "</static/js/main.min.js>; rel=preload; as=script",
             ]
             if preload_links:
-                response['Link'] = ', '.join(preload_links)
+                response["Link"] = ", ".join(preload_links)
 
         return response

@@ -4,9 +4,9 @@ Code quality and linting script for UI/UX components
 Runs all code quality checks in sequence
 """
 
+import os
 import subprocess
 import sys
-import os
 from pathlib import Path
 
 # Get project root
@@ -20,11 +20,7 @@ def run_command(command: list, description: str) -> bool:
 
     try:
         result = subprocess.run(
-            command,
-            cwd=PROJECT_ROOT,
-            capture_output=True,
-            text=True,
-            check=True
+            command, cwd=PROJECT_ROOT, capture_output=True, text=True, check=True
         )
         print(f"✅ {description} passed")
         if result.stdout:
@@ -48,16 +44,12 @@ def main():
         (["black", "--check", "apps/", "tests/"], "Black formatting check"),
         (["isort", "--check-only", "apps/", "tests/"], "Import sorting check"),
         (["flake8", "apps/", "tests/"], "Flake8 linting"),
-
         # Type checking
         (["mypy", "apps/main/views/"], "Type checking"),
-
         # Security
         (["bandit", "-r", "apps/", "-x", "*/tests/*"], "Security check"),
-
         # Documentation
         (["pydocstyle", "apps/main/views/"], "Documentation style check"),
-
         # Django checks
         (["python", "manage.py", "check"], "Django system check"),
         (["python", "manage.py", "check", "--deploy"], "Django deployment check"),
@@ -70,7 +62,7 @@ def main():
             failed_checks.append(description)
 
     # Summary
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     if failed_checks:
         print("❌ Some checks failed:")
         for check in failed_checks:

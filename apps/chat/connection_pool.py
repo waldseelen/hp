@@ -7,10 +7,10 @@ import asyncio
 import logging
 import time
 from collections import defaultdict, deque
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, List, Optional, Set
+
 from channels.layers import get_channel_layer
-from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ConnectionInfo:
     """Information about a WebSocket connection"""
+
     channel_name: str
     user_id: Optional[int]
     room_name: Optional[str]
@@ -63,9 +64,14 @@ class ConnectionPool:
         self._cleanup_task = None
         self._start_cleanup_task()
 
-    def add_connection(self, channel_name: str, user_id: Optional[int] = None,
-                      room_name: Optional[str] = None, ip_address: str = "",
-                      user_agent: str = "") -> bool:
+    def add_connection(
+        self,
+        channel_name: str,
+        user_id: Optional[int] = None,
+        room_name: Optional[str] = None,
+        ip_address: str = "",
+        user_agent: str = "",
+    ) -> bool:
         """
         Add a new connection to the pool
         Returns False if connection limit is reached
@@ -92,7 +98,7 @@ class ConnectionPool:
             connected_at=current_time,
             last_activity=current_time,
             ip_address=ip_address,
-            user_agent=user_agent
+            user_agent=user_agent,
         )
 
         # Store connection
@@ -107,7 +113,9 @@ class ConnectionPool:
 
         self.total_connections_made += 1
 
-        logger.info(f"Connection added: {channel_name} (User: {user_id}, Room: {room_name})")
+        logger.info(
+            f"Connection added: {channel_name} (User: {user_id}, Room: {room_name})"
+        )
         return True
 
     def remove_connection(self, channel_name: str) -> bool:
@@ -140,8 +148,9 @@ class ConnectionPool:
         logger.info(f"Connection removed: {channel_name}")
         return True
 
-    def update_activity(self, channel_name: str, bytes_sent: int = 0,
-                       bytes_received: int = 0) -> bool:
+    def update_activity(
+        self, channel_name: str, bytes_sent: int = 0, bytes_received: int = 0
+    ) -> bool:
         """
         Update connection activity
         """
@@ -227,19 +236,19 @@ class ConnectionPool:
                 active_15min += 1
 
         return {
-            'total_connections': len(self.connections),
-            'authenticated_connections': len([
-                conn for conn in self.connections.values() if conn.user_id
-            ]),
-            'active_connections_1min': active_1min,
-            'active_connections_5min': active_5min,
-            'active_connections_15min': active_15min,
-            'unique_users': len(self.user_connections),
-            'active_rooms': len(self.room_connections),
-            'total_connections_made': self.total_connections_made,
-            'total_messages_sent': self.total_messages_sent,
-            'total_bytes_transferred': self.total_bytes_transferred,
-            'average_messages_per_connection': (
+            "total_connections": len(self.connections),
+            "authenticated_connections": len(
+                [conn for conn in self.connections.values() if conn.user_id]
+            ),
+            "active_connections_1min": active_1min,
+            "active_connections_5min": active_5min,
+            "active_connections_15min": active_15min,
+            "unique_users": len(self.user_connections),
+            "active_rooms": len(self.room_connections),
+            "total_connections_made": self.total_connections_made,
+            "total_messages_sent": self.total_messages_sent,
+            "total_bytes_transferred": self.total_bytes_transferred,
+            "average_messages_per_connection": (
                 self.total_messages_sent / max(self.total_connections_made, 1)
             ),
         }
@@ -267,6 +276,7 @@ class ConnectionPool:
         """
         Start the cleanup task
         """
+
         async def cleanup_loop():
             while True:
                 try:

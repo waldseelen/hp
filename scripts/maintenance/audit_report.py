@@ -7,6 +7,7 @@ import os
 import re
 from pathlib import Path
 
+
 def main():
     print("Starting UI/UX Audit...")
 
@@ -28,18 +29,18 @@ def main():
     # Check HTML files for design system classes
     for html_file in html_files:
         try:
-            content = html_file.read_text(encoding='utf-8', errors='ignore')
+            content = html_file.read_text(encoding="utf-8", errors="ignore")
 
             # Check for Phase 7 components
-            if 'btn-primary' in content or 'btn-secondary' in content:
+            if "btn-primary" in content or "btn-secondary" in content:
                 design_system_usage += 1
             total_checks += 1
 
-            if 'card-' in content:
+            if "card-" in content:
                 design_system_usage += 1
             total_checks += 1
 
-            if 'dark:' in content:
+            if "dark:" in content:
                 design_system_usage += 1
             total_checks += 1
 
@@ -52,20 +53,20 @@ def main():
 
     for css_file in css_files:
         try:
-            content = css_file.read_text(encoding='utf-8', errors='ignore')
+            content = css_file.read_text(encoding="utf-8", errors="ignore")
 
             # Check for glassmorphism
-            if 'backdrop-blur' in content:
+            if "backdrop-blur" in content:
                 phase7_features += 1
             css_checks += 1
 
             # Check for brand colors
-            if '#e6c547' in content or '#0f172a' in content:
+            if "#e6c547" in content or "#0f172a" in content:
                 phase7_features += 1
             css_checks += 1
 
             # Check for custom properties
-            if '--space-' in content:
+            if "--space-" in content:
                 phase7_features += 1
             css_checks += 1
 
@@ -76,9 +77,9 @@ def main():
     design_system_score = (design_system_usage / max(total_checks, 1)) * 100
     phase7_score = (phase7_features / max(css_checks, 1)) * 100
 
-    print("\n" + "="*50)
+    print("\n" + "=" * 50)
     print("UI/UX AUDIT RESULTS")
-    print("="*50)
+    print("=" * 50)
     print(f"Design System Usage: {design_system_score:.1f}%")
     print(f"Phase 7 Features: {phase7_score:.1f}%")
 
@@ -97,16 +98,16 @@ def main():
     base_template = templates_dir / "base.html"
     if base_template.exists():
         try:
-            content = base_template.read_text(encoding='utf-8', errors='ignore')
+            content = base_template.read_text(encoding="utf-8", errors="ignore")
             pwa_score = 0
 
-            if 'manifest.json' in content:
+            if "manifest.json" in content:
                 pwa_score += 25
-            if 'theme-color' in content:
+            if "theme-color" in content:
                 pwa_score += 25
-            if 'pwa.min.js' in content:
+            if "pwa.min.js" in content:
                 pwa_score += 25
-            if 'apple-mobile-web-app' in content:
+            if "apple-mobile-web-app" in content:
                 pwa_score += 25
 
             print(f"PWA Integration Score: {pwa_score}%")
@@ -116,6 +117,7 @@ def main():
 
     print("\nAudit completed successfully!")
     return overall_score >= 60
+
 
 if __name__ == "__main__":
     success = main()

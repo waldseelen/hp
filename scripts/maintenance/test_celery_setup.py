@@ -12,20 +12,22 @@ BASE_DIR = Path(__file__).resolve().parent
 sys.path.append(str(BASE_DIR))
 
 # Set Django settings
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio_site.settings.development')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "portfolio_site.settings.development")
 
 # Import Django and configure
 import django
+
 django.setup()
 
 from django.conf import settings
 from django.test import override_settings
+
 from apps.main.tasks import (
-    send_notification,
-    process_user_action,
-    update_analytics,
     cleanup_temp_files,
-    health_check
+    health_check,
+    process_user_action,
+    send_notification,
+    update_analytics,
 )
 
 
@@ -39,25 +41,25 @@ def test_celery_configuration():
     print("[OK] Checking Celery settings...")
 
     config_tests = [
-        ('CELERY_BROKER_URL', hasattr(settings, 'CELERY_BROKER_URL')),
-        ('CELERY_RESULT_BACKEND', hasattr(settings, 'CELERY_RESULT_BACKEND')),
-        ('CELERY_TASK_SERIALIZER', hasattr(settings, 'CELERY_TASK_SERIALIZER')),
-        ('CELERY_ACCEPT_CONTENT', hasattr(settings, 'CELERY_ACCEPT_CONTENT')),
-        ('CELERY_BEAT_SCHEDULER', hasattr(settings, 'CELERY_BEAT_SCHEDULER')),
+        ("CELERY_BROKER_URL", hasattr(settings, "CELERY_BROKER_URL")),
+        ("CELERY_RESULT_BACKEND", hasattr(settings, "CELERY_RESULT_BACKEND")),
+        ("CELERY_TASK_SERIALIZER", hasattr(settings, "CELERY_TASK_SERIALIZER")),
+        ("CELERY_ACCEPT_CONTENT", hasattr(settings, "CELERY_ACCEPT_CONTENT")),
+        ("CELERY_BEAT_SCHEDULER", hasattr(settings, "CELERY_BEAT_SCHEDULER")),
     ]
 
     for setting, exists in config_tests:
         status = "[OK]" if exists else "[FAIL]"
-        value = getattr(settings, setting, 'NOT SET')
+        value = getattr(settings, setting, "NOT SET")
         print(f"  {status} {setting}: {value}")
 
     print("\n[OK] Testing task imports...")
     task_imports = [
-        ('send_notification', send_notification),
-        ('process_user_action', process_user_action),
-        ('update_analytics', update_analytics),
-        ('cleanup_temp_files', cleanup_temp_files),
-        ('health_check', health_check),
+        ("send_notification", send_notification),
+        ("process_user_action", process_user_action),
+        ("update_analytics", update_analytics),
+        ("cleanup_temp_files", cleanup_temp_files),
+        ("health_check", health_check),
     ]
 
     for name, task in task_imports:
@@ -85,59 +87,57 @@ def test_task_execution_eager():
         try:
             result = send_notification.delay(
                 user_id=1,
-                title='Test Notification',
-                message='This is a test notification',
-                notification_type='info'
+                title="Test Notification",
+                message="This is a test notification",
+                notification_type="info",
             )
             print(f"   [PASS] Task completed: {result.result}")
-            test_results['notification'] = True
+            test_results["notification"] = True
         except Exception as e:
             print(f"   [FAIL] Task failed: {e}")
-            test_results['notification'] = False
+            test_results["notification"] = False
 
         # Test user action task
         print("\n2. Testing user action task...")
         try:
             result = process_user_action.delay(
-                user_id=1,
-                action='test_action',
-                data={'test': 'data'}
+                user_id=1, action="test_action", data={"test": "data"}
             )
             print(f"   [PASS] Task completed: {result.result}")
-            test_results['user_action'] = True
+            test_results["user_action"] = True
         except Exception as e:
             print(f"   [FAIL] Task failed: {e}")
-            test_results['user_action'] = False
+            test_results["user_action"] = False
 
         # Test analytics task
         print("\n3. Testing analytics task...")
         try:
             result = update_analytics.delay()
             print(f"   [PASS] Task completed: {result.result}")
-            test_results['analytics'] = True
+            test_results["analytics"] = True
         except Exception as e:
             print(f"   [FAIL] Task failed: {e}")
-            test_results['analytics'] = False
+            test_results["analytics"] = False
 
         # Test cleanup task
         print("\n4. Testing cleanup task...")
         try:
             result = cleanup_temp_files.delay()
             print(f"   [PASS] Task completed: {result.result}")
-            test_results['cleanup'] = True
+            test_results["cleanup"] = True
         except Exception as e:
             print(f"   [FAIL] Task failed: {e}")
-            test_results['cleanup'] = False
+            test_results["cleanup"] = False
 
         # Test health check task
         print("\n5. Testing health check task...")
         try:
             result = health_check.delay()
             print(f"   [PASS] Task completed: {result.result}")
-            test_results['health_check'] = True
+            test_results["health_check"] = True
         except Exception as e:
             print(f"   [FAIL] Task failed: {e}")
-            test_results['health_check'] = False
+            test_results["health_check"] = False
 
     return test_results
 
@@ -156,13 +156,13 @@ def test_retry_logic():
 
         # Check retry settings in tasks
         retry_tests = [
-            ('send_notification', send_notification),
-            ('process_user_action', process_user_action),
+            ("send_notification", send_notification),
+            ("process_user_action", process_user_action),
         ]
 
         for name, task in retry_tests:
-            max_retries = getattr(task, 'max_retries', 'NOT SET')
-            default_retry_delay = getattr(task, 'default_retry_delay', 'NOT SET')
+            max_retries = getattr(task, "max_retries", "NOT SET")
+            default_retry_delay = getattr(task, "default_retry_delay", "NOT SET")
 
             print(f"  [OK] {name}:")
             print(f"    - Max retries: {max_retries}")
@@ -205,7 +205,9 @@ def main():
 
             print("\nNext steps:")
             print("1. Start Redis server: redis-server")
-            print("2. Start Celery worker: celery -A portfolio_site worker --loglevel=info")
+            print(
+                "2. Start Celery worker: celery -A portfolio_site worker --loglevel=info"
+            )
             print("3. Start Celery Beat: celery -A portfolio_site beat --loglevel=info")
             print("4. Start Flower: celery -A portfolio_site flower")
             print("5. Or use the service manager: python start_celery_services.py")
@@ -218,10 +220,11 @@ def main():
     except Exception as e:
         print(f"\n[ERROR] ERROR during testing: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     success = main()
     sys.exit(0 if success else 1)

@@ -5,10 +5,12 @@ This module provides sanitization utilities for user-generated content
 to prevent XSS attacks while preserving safe HTML formatting.
 """
 
+from typing import Dict, List, Optional, Tuple
+
+from django.utils.safestring import mark_safe
+
 import bleach
 import markdown
-from django.utils.safestring import mark_safe
-from typing import Dict, List, Tuple, Optional
 
 
 class ContentSanitizer:
@@ -19,31 +21,52 @@ class ContentSanitizer:
 
     # Allowed HTML tags for rich content
     ALLOWED_TAGS = [
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'p', 'br', 'hr',
-        'strong', 'em', 'u', 's', 'code',
-        'a', 'img',
-        'ul', 'ol', 'li',
-        'blockquote', 'pre',
-        'table', 'thead', 'tbody', 'tr', 'th', 'td',
-        'div', 'span',
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "p",
+        "br",
+        "hr",
+        "strong",
+        "em",
+        "u",
+        "s",
+        "code",
+        "a",
+        "img",
+        "ul",
+        "ol",
+        "li",
+        "blockquote",
+        "pre",
+        "table",
+        "thead",
+        "tbody",
+        "tr",
+        "th",
+        "td",
+        "div",
+        "span",
     ]
 
     # Allowed HTML attributes
     ALLOWED_ATTRIBUTES: Dict[str, List[str]] = {
-        'a': ['href', 'title', 'target', 'rel'],
-        'img': ['src', 'alt', 'title', 'width', 'height'],
-        'table': ['border', 'cellpadding', 'cellspacing'],
-        'th': ['align', 'valign'],
-        'td': ['align', 'valign', 'colspan', 'rowspan'],
-        'div': ['class', 'id'],
-        'span': ['class', 'id'],
-        'code': ['class'],
-        'pre': ['class'],
+        "a": ["href", "title", "target", "rel"],
+        "img": ["src", "alt", "title", "width", "height"],
+        "table": ["border", "cellpadding", "cellspacing"],
+        "th": ["align", "valign"],
+        "td": ["align", "valign", "colspan", "rowspan"],
+        "div": ["class", "id"],
+        "span": ["class", "id"],
+        "code": ["class"],
+        "pre": ["class"],
     }
 
     # Protocol whitelist for URLs
-    ALLOWED_PROTOCOLS = ['http', 'https', 'mailto', 'ftp']
+    ALLOWED_PROTOCOLS = ["http", "https", "mailto", "ftp"]
 
     @classmethod
     def sanitize_html(cls, html_content: str, strip_tags: bool = False) -> str:
@@ -58,29 +81,23 @@ class ContentSanitizer:
             Sanitized HTML string
         """
         if not html_content:
-            return ''
+            return ""
 
         if strip_tags:
             # Remove all HTML tags
-            cleaned = bleach.clean(
-                html_content,
-                tags=[],
-                strip=True
-            )
+            cleaned = bleach.clean(html_content, tags=[], strip=True)
         else:
             # Filter to allowed tags and attributes
             cleaned = bleach.clean(
                 html_content,
                 tags=cls.ALLOWED_TAGS,
                 attributes=cls.ALLOWED_ATTRIBUTES,
-                strip=False
+                strip=False,
             )
 
         # Linkify URLs and sanitize links
         cleaned = bleach.linkify(
-            cleaned,
-            skip_tags=['code', 'pre'],
-            callbacks=[cls._safe_link_callback]
+            cleaned, skip_tags=["code", "pre"], callbacks=[cls._safe_link_callback]
         )
 
         return cleaned
@@ -97,25 +114,24 @@ class ContentSanitizer:
             Sanitized HTML from Markdown
         """
         if not markdown_content:
-            return ''
+            return ""
 
         # Convert Markdown to HTML
         html_content = markdown.markdown(
             markdown_content,
-            extensions=['tables', 'fenced_code', 'codehilite', 'toc'],
+            extensions=["tables", "fenced_code", "codehilite", "toc"],
             extension_configs={
-                'codehilite': {
-                    'use_pygments': False,
-                    'linenums': False
-                }
-            }
+                "codehilite": {"use_pygments": False, "linenums": False}
+            },
         )
 
         # Sanitize the resulting HTML
         return cls.sanitize_html(html_content)
 
     @classmethod
-    def sanitize_plain_text(cls, text_content: str, preserve_breaks: bool = True) -> str:
+    def sanitize_plain_text(
+        cls, text_content: str, preserve_breaks: bool = True
+    ) -> str:
         """
         Sanitize plain text content.
 
@@ -127,20 +143,16 @@ class ContentSanitizer:
             Sanitized text (optionally with HTML line breaks)
         """
         if not text_content:
-            return ''
+            return ""
 
         # Remove all HTML tags first
-        cleaned = bleach.clean(
-            text_content,
-            tags=[],
-            strip=True
-        )
+        cleaned = bleach.clean(text_content, tags=[], strip=True)
 
         if preserve_breaks:
             # Preserve line breaks as HTML
-            cleaned = cleaned.replace('\n\n', '</p><p>')
-            cleaned = cleaned.replace('\n', '<br>')
-            cleaned = f'<p>{cleaned}</p>'
+            cleaned = cleaned.replace("\n\n", "</p><p>")
+            cleaned = cleaned.replace("\n", "<br>")
+            cleaned = f"<p>{cleaned}</p>"
 
         return cleaned
 
@@ -158,11 +170,11 @@ class ContentSanitizer:
         """
         content_type = content_type.lower()
 
-        if content_type == 'html':
+        if content_type == "html":
             return cls.sanitize_html(content)
-        elif content_type == 'markdown':
+        elif content_type == "markdown":
             return cls.sanitize_markdown(content)
-        elif content_type == 'text':
+        elif content_type == "text":
             return cls.sanitize_plain_text(content)
         else:
             # Default to HTML sanitization
@@ -181,24 +193,25 @@ class ContentSanitizer:
             Filtered attributes or None to remove link
         """
         # Get the href
-        href_key = (None, 'href')
+        href_key = (None, "href")
         href = attrs.get(href_key)
 
         if not href:
             return attrs
 
         # Ensure external links open in new tab
-        if href.startswith('http'):
-            attrs[(None, 'target')] = '_blank'
-            attrs[(None, 'rel')] = 'noopener noreferrer'
+        if href.startswith("http"):
+            attrs[(None, "target")] = "_blank"
+            attrs[(None, "rel")] = "noopener noreferrer"
 
         # Remove dangerous protocols
-        for protocol in ['javascript', 'data', 'vbscript']:
-            if href.lower().startswith(f'{protocol}:'):
+        for protocol in ["javascript", "data", "vbscript"]:
+            if href.lower().startswith(f"{protocol}:"):
                 # Return empty dict to strip dangerous link
                 return {}
 
-        return attrs    @classmethod
+        return attrs @ classmethod
+
     def extract_text(cls, html_content: str, length: Optional[int] = None) -> str:
         """
         Extract plain text from HTML content.
@@ -211,19 +224,15 @@ class ContentSanitizer:
             Plain text extracted from HTML
         """
         # Remove all HTML tags
-        text = bleach.clean(
-            html_content,
-            tags=[],
-            strip=True
-        )
+        text = bleach.clean(html_content, tags=[], strip=True)
 
         # Strip whitespace
-        text = ' '.join(text.split())
+        text = " ".join(text.split())
 
         if length:
             text = text[:length]
-            if len(text) == length and not text.endswith(' '):
-                text = text.rsplit(' ', 1)[0] + '...'
+            if len(text) == length and not text.endswith(" "):
+                text = text.rsplit(" ", 1)[0] + "..."
 
         return text
 
@@ -265,6 +274,6 @@ def sanitize_markdown(content: str) -> str:
     return mark_safe(ContentSanitizer.sanitize_markdown(content))
 
 
-def sanitize_content(content: str, content_type: str = 'html') -> str:
+def sanitize_content(content: str, content_type: str = "html") -> str:
     """Convenience function for content sanitization by type."""
     return mark_safe(ContentSanitizer.sanitize_by_type(content, content_type))

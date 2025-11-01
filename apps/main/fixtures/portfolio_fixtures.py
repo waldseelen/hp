@@ -11,6 +11,7 @@ from typing import List, Optional
 @dataclass
 class MockProject:
     """Mock project data for UI Kit demonstrations"""
+
     id: int
     title: str
     description: str
@@ -31,11 +32,11 @@ class MockProject:
 
     @property
     def is_active(self):
-        return self.status in ['planning', 'development']
+        return self.status in ["planning", "development"]
 
     @property
     def is_completed(self):
-        return self.status == 'completed'
+        return self.status == "completed"
 
 
 class PortfolioFixtures:
@@ -64,7 +65,7 @@ class PortfolioFixtures:
                 end_date=datetime(2024, 6, 30),
                 team_size=3,
                 views=1247,
-                likes=89
+                likes=89,
             ),
             MockProject(
                 id=2,
@@ -83,7 +84,7 @@ class PortfolioFixtures:
                 team_size=5,
                 client="SecureTech Corp",
                 views=2156,
-                likes=134
+                likes=134,
             ),
             MockProject(
                 id=3,
@@ -100,7 +101,7 @@ class PortfolioFixtures:
                 team_size=4,
                 client="LogiChain Solutions",
                 views=856,
-                likes=67
+                likes=67,
             ),
         ]
 
@@ -122,7 +123,7 @@ class PortfolioFixtures:
                 start_date=datetime(2024, 9, 1),
                 team_size=2,
                 views=423,
-                likes=34
+                likes=34,
             ),
             MockProject(
                 id=5,
@@ -138,7 +139,7 @@ class PortfolioFixtures:
                 start_date=datetime(2024, 10, 1),
                 team_size=3,
                 views=567,
-                likes=45
+                likes=45,
             ),
             MockProject(
                 id=6,
@@ -155,7 +156,7 @@ class PortfolioFixtures:
                 team_size=4,
                 client="CloudTech Inc",
                 views=289,
-                likes=22
+                likes=22,
             ),
         ]
 
@@ -180,7 +181,7 @@ class PortfolioFixtures:
                 team_size=6,
                 client="ShopMaster Ltd",
                 views=3421,
-                likes=256
+                likes=256,
             ),
             MockProject(
                 id=8,
@@ -199,7 +200,7 @@ class PortfolioFixtures:
                 team_size=3,
                 client="DataInsights Corp",
                 views=1876,
-                likes=142
+                likes=142,
             ),
         ]
 
@@ -220,7 +221,7 @@ class PortfolioFixtures:
                 start_date=datetime(2025, 1, 1),
                 team_size=4,
                 views=124,
-                likes=18
+                likes=18,
             ),
             MockProject(
                 id=10,
@@ -235,7 +236,7 @@ class PortfolioFixtures:
                 start_date=datetime(2025, 2, 1),
                 team_size=2,
                 views=89,
-                likes=12
+                likes=12,
             ),
         ]
 
@@ -243,10 +244,10 @@ class PortfolioFixtures:
     def get_all_projects() -> List[MockProject]:
         """Returns all projects across all statuses"""
         return (
-            PortfolioFixtures.get_featured_projects() +
-            PortfolioFixtures.get_development_projects() +
-            PortfolioFixtures.get_completed_projects() +
-            PortfolioFixtures.get_planning_projects()
+            PortfolioFixtures.get_featured_projects()
+            + PortfolioFixtures.get_development_projects()
+            + PortfolioFixtures.get_completed_projects()
+            + PortfolioFixtures.get_planning_projects()
         )
 
     @staticmethod
@@ -266,14 +267,18 @@ class PortfolioFixtures:
         """Returns project statistics for stat cards"""
         all_projects = PortfolioFixtures.get_all_projects()
         return {
-            'total': len(all_projects),
-            'completed': len([p for p in all_projects if p.status == 'completed']),
-            'in_development': len([p for p in all_projects if p.status == 'development']),
-            'planning': len([p for p in all_projects if p.status == 'planning']),
-            'total_views': sum(p.views for p in all_projects),
-            'total_likes': sum(p.likes for p in all_projects),
-            'success_rate': round(
-                len([p for p in all_projects if p.status == 'completed']) / len(all_projects) * 100
+            "total": len(all_projects),
+            "completed": len([p for p in all_projects if p.status == "completed"]),
+            "in_development": len(
+                [p for p in all_projects if p.status == "development"]
+            ),
+            "planning": len([p for p in all_projects if p.status == "planning"]),
+            "total_views": sum(p.views for p in all_projects),
+            "total_likes": sum(p.likes for p in all_projects),
+            "success_rate": round(
+                len([p for p in all_projects if p.status == "completed"])
+                / len(all_projects)
+                * 100
             ),
         }
 
@@ -286,38 +291,40 @@ class CategoryFixtures:
         """Returns all available project categories with metadata"""
         return [
             {
-                'id': 'web',
-                'name': 'Web Development',
-                'icon': 'globe',
-                'color': 'blue',
-                'count': len(PortfolioFixtures.get_projects_by_category('web'))
+                "id": "web",
+                "name": "Web Development",
+                "icon": "globe",
+                "color": "blue",
+                "count": len(PortfolioFixtures.get_projects_by_category("web")),
             },
             {
-                'id': 'mobile',
-                'name': 'Mobile Apps',
-                'icon': 'smartphone',
-                'color': 'purple',
-                'count': len(PortfolioFixtures.get_projects_by_category('mobile'))
+                "id": "mobile",
+                "name": "Mobile Apps",
+                "icon": "smartphone",
+                "color": "purple",
+                "count": len(PortfolioFixtures.get_projects_by_category("mobile")),
             },
             {
-                'id': 'ai',
-                'name': 'Artificial Intelligence',
-                'icon': 'brain',
-                'color': 'green',
-                'count': len(PortfolioFixtures.get_projects_by_category('ai'))
+                "id": "ai",
+                "name": "Artificial Intelligence",
+                "icon": "brain",
+                "color": "green",
+                "count": len(PortfolioFixtures.get_projects_by_category("ai")),
             },
             {
-                'id': 'cybersecurity',
-                'name': 'Cybersecurity',
-                'icon': 'shield',
-                'color': 'red',
-                'count': len(PortfolioFixtures.get_projects_by_category('cybersecurity'))
+                "id": "cybersecurity",
+                "name": "Cybersecurity",
+                "icon": "shield",
+                "color": "red",
+                "count": len(
+                    PortfolioFixtures.get_projects_by_category("cybersecurity")
+                ),
             },
             {
-                'id': 'blockchain',
-                'name': 'Blockchain',
-                'icon': 'link',
-                'color': 'yellow',
-                'count': len(PortfolioFixtures.get_projects_by_category('blockchain'))
+                "id": "blockchain",
+                "name": "Blockchain",
+                "icon": "link",
+                "color": "yellow",
+                "count": len(PortfolioFixtures.get_projects_by_category("blockchain")),
             },
         ]

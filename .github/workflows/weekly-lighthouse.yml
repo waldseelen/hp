@@ -1,0 +1,404 @@
+name: Weekly Lighthouse Audit
+
+on:
+  schedule:
+    # Run every Monday at 3 AM UTC
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      target_environment:
+        description: 'Environment to audit'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  NODE_VERSION: '20'
+  PYTHON_VERSION: '3.14'
+
+jobs:
+  # ============================================================================
+  # Weekly Lighthouse Performance Audit
+  # ============================================================================
+  lighthouse-audit:
+    name: 💡 Weekly Lighthouse Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install -g @lhci/cli@0.12.x
+
+      - name: Determine target URL
+        id: target
+        run: |
+          if [ "${{ github.event.inputs.target_environment }}" == "staging" ]; then
+            echo "url=https://staging.yoursite.com" >> $GITHUB_OUTPUT
+          else
+            echo "url=https://yoursite.com" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Lighthouse audit
+        run: |
+          # Create audit directory
+          mkdir -p lighthouse-reports/$(date +%Y-%m-%d)
+
+          # Define URLs to audit
+          URLS=(
+            "${{ steps.target.outputs.url }}/"
+            "${{ steps.target.outputs.url }}/blog/"
+            "${{ steps.target.outputs.url }}/portfolio/"
+            "${{ steps.target.outputs.url }}/contact/"
+            "${{ steps.target.outputs.url }}/tools/"
+          )
+
+          # Run Lighthouse for each URL
+          for url in "${URLS[@]}"; do
+            echo "🔍 Auditing: $url"
+
+            # Extract path for filename
+            path=$(echo "$url" | sed 's|https\?://[^/]*/||' | tr '/' '-')
+            [ -z "$path" ] && path="homepage"
+
+            # Run Lighthouse
+            lhci collect \
+              --url="$url" \
+              --settings.chromeFlags="--no-sandbox --disable-dev-shm-usage" \
+              --settings.preset=desktop \
+              --numberOfRuns=3 \
+              --output-dir=lighthouse-reports/$(date +%Y-%m-%d) \
+              || echo "⚠️ Warning: Lighthouse audit failed for $url"
+          done
+
+      - name: Generate performance report
+        run: |
+          REPORT_DATE=$(date +%Y-%m-%d)
+          REPORT_FILE="lighthouse-reports/${REPORT_DATE}/performance-summary.md"
+
+          cat > "$REPORT_FILE" << EOF
+          # 🚀 Weekly Lighthouse Performance Report
+
+          **Date:** $(date '+%Y-%m-%d %H:%M:%S UTC')
+          **Environment:** ${{ github.event.inputs.target_environment || 'production' }}
+          **Target:** ${{ steps.target.outputs.url }}
+
+          ---
+
+          ## 📊 Performance Metrics Summary
+
+          This report contains Lighthouse audit results for key pages of the portfolio site.
+
+          ### Audited Pages
+          - Homepage (/)
+          - Blog (/blog/)
+          - Portfolio (/portfolio/)
+          - Contact (/contact/)
+          - Tools (/tools/)
+
+          ### Metrics Categories
+          - ⚡ Performance
+          - ♿ Accessibility
+          - 🔍 SEO
+          - ✅ Best Practices
+          - 📱 PWA
+
+          ---
+
+          ## 🎯 Core Web Vitals
+
+          ### First Contentful Paint (FCP)
+          - **Target:** < 1.8s
+          - **Current:** See detailed reports below
+
+          ### Largest Contentful Paint (LCP)
+          - **Target:** < 2.5s
+          - **Current:** See detailed reports below
+
+          ### Cumulative Layout Shift (CLS)
+          - **Target:** < 0.1
+          - **Current:** See detailed reports below
+
+          ### First Input Delay (FID)
+          - **Target:** < 100ms
+          - **Current:** See detailed reports below
+
+          ### Time to Interactive (TTI)
+          - **Target:** < 3.8s
+          - **Current:** See detailed reports below
+
+          ---
+
+          ## 📈 Performance Trends
+
+          Compare this week's results with previous audits to track improvements or regressions.
+
+          ### Actions Taken Since Last Audit
+          - List any optimizations or changes made
+          - Note any infrastructure updates
+          - Document configuration changes
+
+          ### Recommendations
+
+          Based on the audit results, consider the following optimizations:
+
+          1. **Critical CSS Optimization**
+             - Inline critical CSS for above-the-fold content
+             - Defer non-critical CSS
+
+          2. **JavaScript Optimization**
+             - Review and optimize third-party scripts
+             - Implement code splitting
+             - Use dynamic imports where appropriate
+
+          3. **Image Optimization**
+             - Ensure all images are properly optimized
+             - Use WebP format with fallbacks
+             - Implement lazy loading for below-fold images
+
+          4. **Caching Strategy**
+             - Review cache headers
+             - Optimize service worker cache strategy
+             - Use CDN for static assets
+
+          5. **Font Loading**
+             - Use font-display: swap
+             - Preload critical fonts
+             - Subset fonts to reduce size
+
+          ---
+
+          ## 🔗 Detailed Reports
+
+          Full Lighthouse reports are available in the artifacts for this workflow run.
+
+          - View on GitHub Actions: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          ---
+
+          ## 📊 Historical Data
+
+          | Date | Performance | Accessibility | SEO | Best Practices |
+          |------|-------------|---------------|-----|----------------|
+          | ${REPORT_DATE} | - | - | - | - |
+          | Previous | - | - | - | - |
+
+          *Note: Populate with actual scores from Lighthouse JSON reports*
+
+          ---
+
+          ## 🎯 Next Steps
+
+          1. Review detailed Lighthouse reports
+          2. Prioritize optimization opportunities
+          3. Implement recommended changes
+          4. Track improvements in next week's audit
+
+          ---
+
+          **Generated by:** GitHub Actions Lighthouse CI
+          **Workflow Run:** #${{ github.run_number }}
+          EOF
+
+          echo "✅ Performance summary generated"
+          cat "$REPORT_FILE"
+
+      - name: Parse Lighthouse scores
+        run: |
+          # Parse JSON reports and extract scores
+          REPORT_DATE=$(date +%Y-%m-%d)
+          REPORT_DIR="lighthouse-reports/${REPORT_DATE}"
+
+          if [ -d "$REPORT_DIR" ]; then
+            echo "## 📊 Lighthouse Scores" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Page | Performance | Accessibility | Best Practices | SEO |" >> $GITHUB_STEP_SUMMARY
+            echo "|------|-------------|---------------|----------------|-----|" >> $GITHUB_STEP_SUMMARY
+
+            # Find all JSON reports
+            for json_file in "$REPORT_DIR"/*.json; do
+              if [ -f "$json_file" ]; then
+                PAGE=$(basename "$json_file" .json)
+
+                # Extract scores using jq if available
+                if command -v jq &> /dev/null; then
+                  PERF=$(jq -r '.categories.performance.score * 100 | round' "$json_file" 2>/dev/null || echo "N/A")
+                  ACC=$(jq -r '.categories.accessibility.score * 100 | round' "$json_file" 2>/dev/null || echo "N/A")
+                  BP=$(jq -r '.categories["best-practices"].score * 100 | round' "$json_file" 2>/dev/null || echo "N/A")
+                  SEO=$(jq -r '.categories.seo.score * 100 | round' "$json_file" 2>/dev/null || echo "N/A")
+
+                  echo "| $PAGE | $PERF | $ACC | $BP | $SEO |" >> $GITHUB_STEP_SUMMARY
+                fi
+              fi
+            done
+          fi
+
+      - name: Upload Lighthouse reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-weekly-audit-$(date +%Y-%m-%d)
+          path: lighthouse-reports/
+          retention-days: 90
+
+      - name: Check performance thresholds
+        run: |
+          REPORT_DATE=$(date +%Y-%m-%d)
+          REPORT_DIR="lighthouse-reports/${REPORT_DATE}"
+
+          THRESHOLD_PERFORMANCE=90
+          THRESHOLD_ACCESSIBILITY=95
+          THRESHOLD_SEO=90
+          THRESHOLD_BEST_PRACTICES=90
+
+          FAILED=false
+
+          for json_file in "$REPORT_DIR"/*.json; do
+            if [ -f "$json_file" ] && command -v jq &> /dev/null; then
+              PAGE=$(basename "$json_file" .json)
+
+              PERF=$(jq -r '.categories.performance.score * 100 | round' "$json_file" 2>/dev/null || echo "0")
+              ACC=$(jq -r '.categories.accessibility.score * 100 | round' "$json_file" 2>/dev/null || echo "0")
+              SEO=$(jq -r '.categories.seo.score * 100 | round' "$json_file" 2>/dev/null || echo "0")
+              BP=$(jq -r '.categories["best-practices"].score * 100 | round' "$json_file" 2>/dev/null || echo "0")
+
+              echo "📄 $PAGE:"
+
+              if [ "$PERF" -lt "$THRESHOLD_PERFORMANCE" ]; then
+                echo "  ⚠️ Performance: $PERF < $THRESHOLD_PERFORMANCE (THRESHOLD)"
+                FAILED=true
+              else
+                echo "  ✅ Performance: $PERF"
+              fi
+
+              if [ "$ACC" -lt "$THRESHOLD_ACCESSIBILITY" ]; then
+                echo "  ⚠️ Accessibility: $ACC < $THRESHOLD_ACCESSIBILITY (THRESHOLD)"
+                FAILED=true
+              else
+                echo "  ✅ Accessibility: $ACC"
+              fi
+
+              if [ "$SEO" -lt "$THRESHOLD_SEO" ]; then
+                echo "  ⚠️ SEO: $SEO < $THRESHOLD_SEO (THRESHOLD)"
+                FAILED=true
+              else
+                echo "  ✅ SEO: $SEO"
+              fi
+
+              if [ "$BP" -lt "$THRESHOLD_BEST_PRACTICES" ]; then
+                echo "  ⚠️ Best Practices: $BP < $THRESHOLD_BEST_PRACTICES (THRESHOLD)"
+                FAILED=true
+              else
+                echo "  ✅ Best Practices: $BP"
+              fi
+            fi
+          done
+
+          if [ "$FAILED" = true ]; then
+            echo ""
+            echo "⚠️ Some pages failed to meet performance thresholds!"
+            echo "Review the detailed reports and implement optimizations."
+            exit 1
+          else
+            echo ""
+            echo "✅ All pages meet performance thresholds!"
+          fi
+        continue-on-error: true
+
+  # ============================================================================
+  # CrUX Data Integration (Chrome User Experience Report)
+  # ============================================================================
+  crux-data:
+    name: 📊 CrUX Data Analysis
+    runs-on: ubuntu-latest
+    needs: lighthouse-audit
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Fetch CrUX data
+        run: |
+          # Check if CrUX API key is available
+          if [ -z "${{ secrets.CRUX_API_KEY }}" ]; then
+            echo "⚠️ CrUX API key not configured. Skipping CrUX data fetch."
+            exit 0
+          fi
+
+          TARGET_URL="${{ needs.lighthouse-audit.outputs.url || 'https://yoursite.com' }}"
+
+          echo "📊 Fetching CrUX data for: $TARGET_URL"
+
+          # Fetch CrUX data via API
+          curl -s "https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${{ secrets.CRUX_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"url\": \"${TARGET_URL}\"}" \
+            > crux-data.json
+
+          # Parse and display CrUX data
+          if command -v jq &> /dev/null; then
+            echo "## 📊 Real User Experience Data (CrUX)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            LCP=$(jq -r '.record.metrics.largest_contentful_paint.percentiles.p75' crux-data.json 2>/dev/null || echo "N/A")
+            FID=$(jq -r '.record.metrics.first_input_delay.percentiles.p75' crux-data.json 2>/dev/null || echo "N/A")
+            CLS=$(jq -r '.record.metrics.cumulative_layout_shift.percentiles.p75' crux-data.json 2>/dev/null || echo "N/A")
+
+            echo "- **LCP (75th percentile):** ${LCP}ms" >> $GITHUB_STEP_SUMMARY
+            echo "- **FID (75th percentile):** ${FID}ms" >> $GITHUB_STEP_SUMMARY
+            echo "- **CLS (75th percentile):** ${CLS}" >> $GITHUB_STEP_SUMMARY
+          fi
+        continue-on-error: true
+
+      - name: Upload CrUX data
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crux-data
+          path: crux-data.json
+          retention-days: 90
+
+  # ============================================================================
+  # Notification on Performance Issues
+  # ============================================================================
+  notify-on-issues:
+    name: 🚨 Performance Alert
+    runs-on: ubuntu-latest
+    needs: [lighthouse-audit, crux-data]
+    if: failure()
+
+    steps:
+      - name: Send performance alert
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          # 🚨 Performance Alert
+
+          The weekly Lighthouse audit has detected performance issues that require attention.
+
+          ## Action Required
+
+          1. Review the Lighthouse reports in the artifacts
+          2. Identify the failing metrics
+          3. Implement recommended optimizations
+          4. Re-run the audit to verify improvements
+
+          ## Resources
+
+          - [Lighthouse Documentation](https://developers.google.com/web/tools/lighthouse)
+          - [Web.dev Performance Guide](https://web.dev/performance/)
+          - [Core Web Vitals](https://web.dev/vitals/)
+
+          EOF
+
+          echo "⚠️ Performance issues detected. Check the summary for details."

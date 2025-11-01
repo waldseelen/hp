@@ -6,16 +6,18 @@ class CompressionMiddleware(MiddlewareMixin):
 
     def process_response(self, request, response):
         # Add Vary header for better caching
-        vary_headers = response.get('Vary', '').split(', ') if response.get('Vary') else []
+        vary_headers = (
+            response.get("Vary", "").split(", ") if response.get("Vary") else []
+        )
 
         # Add encoding to vary for compressed responses
-        if 'Accept-Encoding' not in vary_headers:
-            vary_headers.append('Accept-Encoding')
+        if "Accept-Encoding" not in vary_headers:
+            vary_headers.append("Accept-Encoding")
 
         # Add User-Agent for mobile optimization
-        if 'User-Agent' not in vary_headers:
-            vary_headers.append('User-Agent')
+        if "User-Agent" not in vary_headers:
+            vary_headers.append("User-Agent")
 
-        response['Vary'] = ', '.join(filter(None, vary_headers))
+        response["Vary"] = ", ".join(filter(None, vary_headers))
 
         return response

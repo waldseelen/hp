@@ -64,3 +64,7 @@ interaction_rules:
   - "**Protokol Güncellemeleri:** Bu protokolü istediğiniz zaman güncellememi isteyebilirsiniz. Bunun için \"@task.txt'yi geliştir\" diyerek talimatlarınızı belirtmeniz yeterlidir."
 
 protocol_initiation: "Bu protokol şu andan itibaren aktiftir. **Adım 1: Sıradaki Görevi Belirle** adımını uygulayarak başlıyorum."
+
+
+her zaman basla dediğimde kaldığın phase hangisi ise tamamını to do olarak planla ve adım adım
+tamamla.

@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 import os
+
 import django
 
 # Django setup
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio_site.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "portfolio_site.settings")
 django.setup()
 
 from main.models import Admin
 
 try:
-    admin_user = Admin.objects.get(email='admin@portfolio.com')
+    admin_user = Admin.objects.get(email="admin@portfolio.com")
     # Get password from environment variable
-    new_password = os.environ.get('ADMIN_PASSWORD')
+    new_password = os.environ.get("ADMIN_PASSWORD")
     if not new_password:
         print("❌ Error: ADMIN_PASSWORD environment variable not set")
         print("Set it using: export ADMIN_PASSWORD='your-password'")

@@ -3,11 +3,11 @@ HTML/Markdown Sanitization Layer
 Prevents XSS attacks and ensures clean content
 """
 
-import bleach
-from bleach.css_sanitizer import CSSSanitizer
-import markdown
-from markdown.extensions import fenced_code, tables, nl2br, sane_lists
 import logging
+
+import bleach
+import markdown
+from bleach.css_sanitizer import CSSSanitizer
 
 logger = logging.getLogger(__name__)
 
@@ -15,70 +15,105 @@ logger = logging.getLogger(__name__)
 # HTML Sanitization Configuration
 ALLOWED_TAGS = [
     # Text formatting
-    'p', 'br', 'strong', 'em', 'u', 's', 'del', 'ins', 'mark', 'small',
-    'sub', 'sup', 'abbr', 'cite', 'q', 'time',
-
+    "p",
+    "br",
+    "strong",
+    "em",
+    "u",
+    "s",
+    "del",
+    "ins",
+    "mark",
+    "small",
+    "sub",
+    "sup",
+    "abbr",
+    "cite",
+    "q",
+    "time",
     # Headings
-    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
     # Lists
-    'ul', 'ol', 'li', 'dl', 'dt', 'dd',
-
+    "ul",
+    "ol",
+    "li",
+    "dl",
+    "dt",
+    "dd",
     # Links and media
-    'a', 'img',
-
+    "a",
+    "img",
     # Code
-    'code', 'pre', 'kbd', 'samp', 'var',
-
+    "code",
+    "pre",
+    "kbd",
+    "samp",
+    "var",
     # Blocks
-    'blockquote', 'hr', 'div', 'span', 'section', 'article',
-
+    "blockquote",
+    "hr",
+    "div",
+    "span",
+    "section",
+    "article",
     # Tables
-    'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'caption', 'colgroup', 'col',
+    "table",
+    "thead",
+    "tbody",
+    "tfoot",
+    "tr",
+    "th",
+    "td",
+    "caption",
+    "colgroup",
+    "col",
 ]
 
 ALLOWED_ATTRIBUTES = {
-    '*': ['class', 'id', 'title', 'lang', 'dir'],
-    'a': ['href', 'title', 'target', 'rel', 'download'],
-    'img': ['src', 'alt', 'title', 'width', 'height', 'loading'],
-    'abbr': ['title'],
-    'time': ['datetime'],
-    'q': ['cite'],
-    'blockquote': ['cite'],
-    'td': ['colspan', 'rowspan', 'headers'],
-    'th': ['colspan', 'rowspan', 'scope', 'headers'],
-    'col': ['span'],
-    'colgroup': ['span'],
+    "*": ["class", "id", "title", "lang", "dir"],
+    "a": ["href", "title", "target", "rel", "download"],
+    "img": ["src", "alt", "title", "width", "height", "loading"],
+    "abbr": ["title"],
+    "time": ["datetime"],
+    "q": ["cite"],
+    "blockquote": ["cite"],
+    "td": ["colspan", "rowspan", "headers", "style"],
+    "th": ["colspan", "rowspan", "scope", "headers", "style"],
+    "col": ["span"],
+    "colgroup": ["span"],
     # Allow inline styles only for specific elements
-    'span': ['style'],
-    'div': ['style'],
-    'p': ['style'],
-    'td': ['style'],
-    'th': ['style'],
+    "span": ["style"],
+    "div": ["style"],
+    "p": ["style"],
 }
 
 # Allowed CSS properties for inline styles
 ALLOWED_STYLES = [
-    'color',
-    'background-color',
-    'font-weight',
-    'font-style',
-    'text-align',
-    'text-decoration',
-    'margin',
-    'margin-top',
-    'margin-bottom',
-    'margin-left',
-    'margin-right',
-    'padding',
-    'padding-top',
-    'padding-bottom',
-    'padding-left',
-    'padding-right',
+    "color",
+    "background-color",
+    "font-weight",
+    "font-style",
+    "text-align",
+    "text-decoration",
+    "margin",
+    "margin-top",
+    "margin-bottom",
+    "margin-left",
+    "margin-right",
+    "padding",
+    "padding-top",
+    "padding-bottom",
+    "padding-left",
+    "padding-right",
 ]
 
 # Allowed protocols for links
-ALLOWED_PROTOCOLS = ['http', 'https', 'mailto', 'tel']
+ALLOWED_PROTOCOLS = ["http", "https", "mailto", "tel"]
 
 # CSS Sanitizer instance
 css_sanitizer = CSSSanitizer(allowed_css_properties=ALLOWED_STYLES)
@@ -102,7 +137,7 @@ def sanitize_html(content: str, strip_comments: bool = True) -> str:
         >>> # Result: '<p>Safe content</p>'
     """
     if not content:
-        return ''
+        return ""
 
     try:
         cleaned = bleach.clean(
@@ -116,14 +151,14 @@ def sanitize_html(content: str, strip_comments: bool = True) -> str:
         )
 
         # Additional cleanup: remove empty paragraphs and divs
-        cleaned = cleaned.replace('<p></p>', '').replace('<div></div>', '')
+        cleaned = cleaned.replace("<p></p>", "").replace("<div></div>", "")
 
         return cleaned
 
     except Exception as e:
         logger.error(f"HTML sanitization error: {str(e)}")
         # Return empty string on error to be safe
-        return ''
+        return ""
 
 
 def linkify_content(content: str) -> str:
@@ -142,13 +177,13 @@ def linkify_content(content: str) -> str:
         '<p>Visit <a href="https://example.com">https://example.com</a> for more info</p>'
     """
     if not content:
-        return ''
+        return ""
 
     try:
         return bleach.linkify(
             content,
             callbacks=[bleach.callbacks.nofollow, bleach.callbacks.target_blank],
-            skip_tags=['pre', 'code'],
+            skip_tags=["pre", "code"],
             parse_email=True,
         )
     except Exception as e:
@@ -173,23 +208,23 @@ def markdown_to_html(markdown_content: str, safe: bool = True) -> str:
         '<h1>Hello</h1>\\n<p>This is <strong>bold</strong> text.</p>'
     """
     if not markdown_content:
-        return ''
+        return ""
 
     try:
         # Configure markdown extensions
         extensions = [
-            'fenced_code',      # ```code blocks```
-            'tables',           # GitHub-style tables
-            'nl2br',            # Newlines to <br>
-            'sane_lists',       # Better list handling
-            'codehilite',       # Syntax highlighting
-            'toc',              # Table of contents
+            "fenced_code",  # ```code blocks```
+            "tables",  # GitHub-style tables
+            "nl2br",  # Newlines to <br>
+            "sane_lists",  # Better list handling
+            "codehilite",  # Syntax highlighting
+            "toc",  # Table of contents
         ]
 
         extension_configs = {
-            'codehilite': {
-                'css_class': 'highlight',
-                'linenums': False,
+            "codehilite": {
+                "css_class": "highlight",
+                "linenums": False,
             }
         }
 
@@ -208,7 +243,7 @@ def markdown_to_html(markdown_content: str, safe: bool = True) -> str:
 
     except Exception as e:
         logger.error(f"Markdown conversion error: {str(e)}")
-        return ''
+        return ""
 
 
 def extract_plain_text(html_content: str, max_length: int = None) -> str:
@@ -229,27 +264,29 @@ def extract_plain_text(html_content: str, max_length: int = None) -> str:
         'Hello world!'
     """
     if not html_content:
-        return ''
+        return ""
 
     try:
         # Use bleach to strip all tags
         text = bleach.clean(html_content, tags=[], strip=True)
 
         # Clean up whitespace
-        text = ' '.join(text.split())
+        text = " ".join(text.split())
 
         # Truncate if needed
         if max_length and len(text) > max_length:
-            text = text[:max_length].rsplit(' ', 1)[0] + '...'
+            text = text[:max_length].rsplit(" ", 1)[0] + "..."
 
         return text
 
     except Exception as e:
         logger.error(f"Plain text extraction error: {str(e)}")
-        return ''
+        return ""
 
 
-def validate_content_length(content: str, min_words: int = 50, max_words: int = 10000) -> tuple:
+def validate_content_length(
+    content: str, min_words: int = 50, max_words: int = 10000
+) -> tuple:
     """
     Validate content length based on word count.
 
@@ -276,10 +313,18 @@ def validate_content_length(content: str, min_words: int = 50, max_words: int = 
         word_count = len(words)
 
         if word_count < min_words:
-            return False, f"Content too short. Minimum {min_words} words required (found {word_count}).", word_count
+            return (
+                False,
+                f"Content too short. Minimum {min_words} words required (found {word_count}).",
+                word_count,
+            )
 
         if word_count > max_words:
-            return False, f"Content too long. Maximum {max_words} words allowed (found {word_count}).", word_count
+            return (
+                False,
+                f"Content too long. Maximum {max_words} words allowed (found {word_count}).",
+                word_count,
+            )
 
         return True, "Content length is valid", word_count
 
@@ -311,7 +356,7 @@ class ContentSanitizer:
     def clean(self, content: str) -> str:
         """Clean content with custom configuration"""
         if not content:
-            return ''
+            return ""
 
         try:
             return bleach.clean(
@@ -324,7 +369,7 @@ class ContentSanitizer:
             )
         except Exception as e:
             logger.error(f"Custom sanitization error: {str(e)}")
-            return ''
+            return ""
 
 
 # Example usage in models:

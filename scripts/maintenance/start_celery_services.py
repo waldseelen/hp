@@ -4,22 +4,23 @@ Comprehensive script to start all Celery services with proper configuration.
 """
 
 import os
-import sys
-import subprocess
-import time
 import signal
-from pathlib import Path
+import subprocess
+import sys
+import time
 from multiprocessing import Process
+from pathlib import Path
 
 # Add project root to Python path
 BASE_DIR = Path(__file__).resolve().parent
 sys.path.append(str(BASE_DIR))
 
 # Set Django settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio_site.settings.development')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "portfolio_site.settings.development")
 
 # Import Django after setting environment
 import django
+
 django.setup()
 
 from django.conf import settings
@@ -28,58 +29,72 @@ from django.conf import settings
 class CeleryServiceManager:
     def __init__(self):
         self.processes = []
-        self.broker_url = getattr(settings, 'CELERY_BROKER_URL', 'redis://localhost:6379/0')
+        self.broker_url = getattr(
+            settings, "CELERY_BROKER_URL", "redis://localhost:6379/0"
+        )
 
-    def start_worker(self, queue_name='default', concurrency=4):
+    def start_worker(self, queue_name="default", concurrency=4):
         """Start a Celery worker for specific queue."""
         cmd = [
-            sys.executable, '-m', 'celery',
-            '-A', 'portfolio_site',
-            'worker',
-            '--loglevel=info',
-            f'--concurrency={concurrency}',
-            f'--queues={queue_name}',
-            f'--hostname=worker-{queue_name}@%h'
+            sys.executable,
+            "-m",
+            "celery",
+            "-A",
+            "portfolio_site",
+            "worker",
+            "--loglevel=info",
+            f"--concurrency={concurrency}",
+            f"--queues={queue_name}",
+            f"--hostname=worker-{queue_name}@%h",
         ]
 
         print(f"Starting Celery worker for queue '{queue_name}'...")
         print(f"Command: {' '.join(cmd)}")
 
         env = os.environ.copy()
-        env['DJANGO_SETTINGS_MODULE'] = 'portfolio_site.settings.development'
+        env["DJANGO_SETTINGS_MODULE"] = "portfolio_site.settings.development"
 
         process = subprocess.Popen(cmd, env=env)
-        self.processes.append(('worker', queue_name, process))
+        self.processes.append(("worker", queue_name, process))
         return process
 
     def start_beat(self):
         """Start Celery Beat scheduler."""
         cmd = [
-            sys.executable, '-m', 'celery',
-            '-A', 'portfolio_site',
-            'beat',
-            '--loglevel=info',
-            '--scheduler=django_celery_beat.schedulers:DatabaseScheduler'
+            sys.executable,
+            "-m",
+            "celery",
+            "-A",
+            "portfolio_site",
+            "beat",
+            "--loglevel=info",
+            "--scheduler=django_celery_beat.schedulers:DatabaseScheduler",
         ]
 
         print("Starting Celery Beat scheduler...")
         print(f"Command: {' '.join(cmd)}")
 
         env = os.environ.copy()
-        env['DJANGO_SETTINGS_MODULE'] = 'portfolio_site.settings.development'
+        env["DJANGO_SETTINGS_MODULE"] = "portfolio_site.settings.development"
 
         process = subprocess.Popen(cmd, env=env)
-        self.processes.append(('beat', 'scheduler', process))
+        self.processes.append(("beat", "scheduler", process))
         return process
 
     def start_flower(self, port=5555):
         """Start Flower monitoring."""
         cmd = [
-            sys.executable, '-m', 'flower',
-            '--broker', self.broker_url,
-            '--port', str(port),
-            '--persistent', 'True',
-            '--db', 'flower.db'
+            sys.executable,
+            "-m",
+            "flower",
+            "--broker",
+            self.broker_url,
+            "--port",
+            str(port),
+            "--persistent",
+            "True",
+            "--db",
+            "flower.db",
         ]
 
         print(f"Starting Flower monitoring on port {port}...")
@@ -87,10 +102,10 @@ class CeleryServiceManager:
         print(f"Dashboard will be available at: http://localhost:{port}")
 
         env = os.environ.copy()
-        env['DJANGO_SETTINGS_MODULE'] = 'portfolio_site.settings.development'
+        env["DJANGO_SETTINGS_MODULE"] = "portfolio_site.settings.development"
 
         process = subprocess.Popen(cmd, env=env)
-        self.processes.append(('flower', 'monitoring', process))
+        self.processes.append(("flower", "monitoring", process))
         return process
 
     def start_all_services(self):
@@ -100,13 +115,13 @@ class CeleryServiceManager:
         print("=" * 60)
 
         # Start workers for different priority queues
-        self.start_worker('high_priority', concurrency=2)
+        self.start_worker("high_priority", concurrency=2)
         time.sleep(2)  # Stagger startup
 
-        self.start_worker('default', concurrency=4)
+        self.start_worker("default", concurrency=4)
         time.sleep(2)
 
-        self.start_worker('low_priority', concurrency=2)
+        self.start_worker("low_priority", concurrency=2)
         time.sleep(2)
 
         # Start beat scheduler
@@ -185,7 +200,8 @@ def test_redis_connection():
     """Test Redis connection before starting services."""
     try:
         import redis
-        redis_url = getattr(settings, 'CELERY_BROKER_URL', 'redis://localhost:6379/0')
+
+        redis_url = getattr(settings, "CELERY_BROKER_URL", "redis://localhost:6379/0")
 
         print(f"Testing Redis connection: {redis_url}")
         r = redis.from_url(redis_url)
@@ -233,5 +249,5 @@ def main():
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

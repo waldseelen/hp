@@ -1,0 +1,507 @@
+name: Code Quality Checks
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.14'
+
+jobs:
+  # ============================================================================
+  # Code Formatting Check
+  # ============================================================================
+  formatting:
+    name: 🎨 Code Formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install formatting tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install black==25.9.0 isort==7.0.0
+
+      - name: Check Black formatting
+        run: |
+          echo "🎨 Checking Black formatting..."
+          black . --check --exclude="\.venv-1|\.venv|node_modules|staticfiles|migrations|__pycache__" --diff
+        continue-on-error: false
+
+      - name: Check isort formatting
+        run: |
+          echo "📦 Checking isort formatting..."
+          isort . --check-only --skip .venv-1 --skip .venv --skip node_modules --skip staticfiles --skip migrations --skip __pycache__ --diff
+        continue-on-error: false
+
+      - name: Auto-fix formatting (on PR)
+        if: github.event_name == 'pull_request' && failure()
+        run: |
+          black . --exclude="\.venv-1|\.venv|node_modules|staticfiles|migrations|__pycache__"
+          isort . --skip .venv-1 --skip .venv --skip node_modules --skip staticfiles --skip migrations --skip __pycache__
+
+          # Create commit if changes exist
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --staged --quiet || git commit -m "style: auto-fix formatting with Black and isort"
+
+  # ============================================================================
+  # Linting with Flake8
+  # ============================================================================
+  flake8:
+    name: 🔍 Flake8 Linting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install flake8
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8==6.1.0
+          pip install flake8-docstrings flake8-bugbear flake8-comprehensions
+
+      - name: Run flake8
+        run: |
+          echo "🔍 Running flake8..."
+          python -m flake8 apps/ \
+            --exclude=migrations,__pycache__ \
+            --max-line-length=88 \
+            --select=E,F \
+            --extend-ignore=E203 \
+            --format='::error file=%(path)s,line=%(row)d,col=%(col)d::%(code)s: %(text)s' \
+            --statistics \
+            --count
+        continue-on-error: false
+
+      - name: Generate flake8 report
+        if: always()
+        run: |
+          mkdir -p reports
+          python -m flake8 apps/ \
+            --exclude=migrations,__pycache__ \
+            --max-line-length=88 \
+            --format=html \
+            --htmldir=reports/flake8 \
+            --statistics || true
+
+      - name: Upload flake8 report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flake8-report
+          path: reports/flake8/
+          retention-days: 30
+
+  # ============================================================================
+  # Type Checking with Mypy
+  # ============================================================================
+  mypy:
+    name: 🔍 Mypy Type Checking
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install mypy==1.18.2 django-stubs==5.2.7
+
+      - name: Run mypy
+        run: |
+          echo "🔍 Running mypy type checking..."
+          python -m mypy apps/main apps/portfolio apps/blog apps/tools \
+            --config-file mypy.ini \
+            --no-error-summary \
+            --show-column-numbers \
+            --show-error-codes || echo "⚠️ Mypy found type issues (non-blocking)"
+        continue-on-error: true
+
+      - name: Generate mypy report
+        if: always()
+        run: |
+          mkdir -p reports
+          python -m mypy apps/main apps/portfolio apps/blog apps/tools \
+            --config-file mypy.ini \
+            --html-report reports/mypy \
+            --no-error-summary || true
+
+      - name: Upload mypy report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mypy-report
+          path: reports/mypy/
+          retention-days: 30
+
+  # ============================================================================
+  # Security Scanning with Bandit
+  # ============================================================================
+  bandit:
+    name: 🔒 Security Scanning
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install bandit
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit==1.8.6
+
+      - name: Run bandit security scan
+        run: |
+          echo "🔒 Running bandit security scan..."
+          python -m bandit -r apps/ -ll -f json -o reports/bandit-report.json || true
+          python -m bandit -r apps/ -ll || echo "⚠️ Security issues detected"
+        continue-on-error: true
+
+      - name: Generate bandit HTML report
+        if: always()
+        run: |
+          mkdir -p reports
+          python -m bandit -r apps/ -ll -f html -o reports/bandit-report.html || true
+
+      - name: Upload bandit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bandit-report
+          path: reports/
+          retention-days: 30
+
+      - name: Check for high severity issues
+        if: always()
+        run: |
+          if [ -f reports/bandit-report.json ]; then
+            HIGH_SEVERITY=$(cat reports/bandit-report.json | jq '[.results[] | select(.issue_severity == "HIGH")] | length')
+            if [ "$HIGH_SEVERITY" -gt 0 ]; then
+              echo "::error::Found $HIGH_SEVERITY high severity security issues!"
+              exit 1
+            fi
+          fi
+
+  # ============================================================================
+  # Test Coverage
+  # ============================================================================
+  coverage:
+    name: 📊 Test Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-html coverage[toml]
+
+      - name: Run tests with coverage
+        run: |
+          echo "🧪 Running tests with coverage..."
+          pytest tests/ \
+            --cov=apps \
+            --cov-report=html:reports/coverage \
+            --cov-report=xml:reports/coverage.xml \
+            --cov-report=term-missing \
+            --cov-fail-under=85 \
+            --html=reports/pytest-report.html \
+            --self-contained-html \
+            -v
+        env:
+          DJANGO_SETTINGS_MODULE: project.settings
+          SECRET_KEY: test-secret-key-for-ci
+        continue-on-error: false
+
+      - name: Generate coverage badge
+        if: always()
+        run: |
+          COVERAGE=$(python -c "import xml.etree.ElementTree as ET; tree = ET.parse('reports/coverage.xml'); root = tree.getroot(); print(root.attrib['line-rate'])")
+          COVERAGE_PERCENT=$(python -c "print(int(float($COVERAGE) * 100))")
+
+          echo "Coverage: $COVERAGE_PERCENT%"
+
+          # Determine badge color
+          if [ $COVERAGE_PERCENT -ge 85 ]; then
+            COLOR="brightgreen"
+          elif [ $COVERAGE_PERCENT -ge 70 ]; then
+            COLOR="yellow"
+          else
+            COLOR="red"
+          fi
+
+          # Create badge JSON
+          mkdir -p reports/badges
+          cat > reports/badges/coverage.json << EOF
+          {
+            "schemaVersion": 1,
+            "label": "coverage",
+            "message": "${COVERAGE_PERCENT}%",
+            "color": "${COLOR}"
+          }
+          EOF
+
+          echo "COVERAGE_PERCENT=$COVERAGE_PERCENT" >> $GITHUB_ENV
+          echo "COVERAGE_COLOR=$COLOR" >> $GITHUB_ENV
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: reports/
+          retention-days: 30
+
+      - name: Comment coverage on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const coverage = process.env.COVERAGE_PERCENT;
+            const color = process.env.COVERAGE_COLOR;
+
+            const comment = `## 📊 Test Coverage Report
+
+            ![Coverage](https://img.shields.io/badge/coverage-${coverage}%25-${color})
+
+            **Coverage:** ${coverage}%
+            **Required:** ≥85%
+            **Status:** ${coverage >= 85 ? '✅ Passed' : '❌ Failed'}
+
+            📁 [View detailed report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Check coverage threshold
+        if: always()
+        run: |
+          if [ $COVERAGE_PERCENT -lt 85 ]; then
+            echo "::error::Coverage $COVERAGE_PERCENT% is below required threshold of 85%"
+            exit 1
+          fi
+
+  # ============================================================================
+  # Quality Gate Summary
+  # ============================================================================
+  quality-gate:
+    name: 🚦 Quality Gate
+    runs-on: ubuntu-latest
+    needs: [formatting, flake8, mypy, bandit, coverage]
+    if: always()
+
+    steps:
+      - name: Check quality gate status
+        run: |
+          echo "## 🚦 Code Quality Gate Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🎨 Formatting | ${{ needs.formatting.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔍 Flake8 | ${{ needs.flake8.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔍 Mypy | ${{ needs.mypy.result == 'success' && '✅ Passed' || '⚠️ Warning' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔒 Bandit | ${{ needs.bandit.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📊 Coverage | ${{ needs.coverage.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check if all critical checks passed
+          if [ "${{ needs.formatting.result }}" != "success" ] || \
+             [ "${{ needs.flake8.result }}" != "success" ] || \
+             [ "${{ needs.bandit.result }}" != "success" ] || \
+             [ "${{ needs.coverage.result }}" != "success" ]; then
+            echo "::error::Quality gate failed! Please fix the issues above."
+            echo "## ❌ Quality Gate: FAILED" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "## ✅ Quality Gate: PASSED" >> $GITHUB_STEP_SUMMARY
+            echo "All code quality checks passed! 🎉" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Download all reports
+        uses: actions/download-artifact@v4
+        with:
+          path: all-reports
+
+      - name: Generate consolidated report
+        run: |
+          mkdir -p consolidated-report
+
+          cat > consolidated-report/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Code Quality Report</title>
+            <style>
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 20px;
+                min-height: 100vh;
+              }
+              .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                overflow: hidden;
+              }
+              .header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 40px;
+                text-align: center;
+              }
+              .header h1 {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+              }
+              .content {
+                padding: 40px;
+              }
+              .check-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin-bottom: 40px;
+              }
+              .check-card {
+                background: #f8f9fa;
+                border-radius: 12px;
+                padding: 24px;
+                border-left: 4px solid #10b981;
+              }
+              .check-card.warning { border-left-color: #f59e0b; }
+              .check-card.failed { border-left-color: #ef4444; }
+              .check-card h3 {
+                font-size: 1.2rem;
+                margin-bottom: 12px;
+                color: #111827;
+              }
+              .check-card .status {
+                font-size: 2rem;
+              }
+              .links {
+                margin-top: 32px;
+              }
+              .links h2 {
+                font-size: 1.5rem;
+                margin-bottom: 16px;
+                color: #111827;
+              }
+              .links a {
+                display: block;
+                background: #667eea;
+                color: white;
+                padding: 16px;
+                margin-bottom: 12px;
+                border-radius: 8px;
+                text-decoration: none;
+                transition: background 0.3s;
+              }
+              .links a:hover {
+                background: #764ba2;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>🚦 Code Quality Report</h1>
+                <p>Build #${{ github.run_number }} | ${{ github.ref_name }}</p>
+              </div>
+              <div class="content">
+                <div class="check-grid">
+                  <div class="check-card ${{ needs.formatting.result == 'success' && '' || 'failed' }}">
+                    <h3>🎨 Formatting</h3>
+                    <div class="status">${{ needs.formatting.result == 'success' && '✅' || '❌' }}</div>
+                  </div>
+                  <div class="check-card ${{ needs.flake8.result == 'success' && '' || 'failed' }}">
+                    <h3>🔍 Flake8</h3>
+                    <div class="status">${{ needs.flake8.result == 'success' && '✅' || '❌' }}</div>
+                  </div>
+                  <div class="check-card warning">
+                    <h3>🔍 Mypy</h3>
+                    <div class="status">⚠️</div>
+                  </div>
+                  <div class="check-card ${{ needs.bandit.result == 'success' && '' || 'failed' }}">
+                    <h3>🔒 Bandit</h3>
+                    <div class="status">${{ needs.bandit.result == 'success' && '✅' || '❌' }}</div>
+                  </div>
+                  <div class="check-card ${{ needs.coverage.result == 'success' && '' || 'failed' }}">
+                    <h3>📊 Coverage</h3>
+                    <div class="status">${{ needs.coverage.result == 'success' && '✅' || '❌' }}</div>
+                  </div>
+                </div>
+
+                <div class="links">
+                  <h2>📁 Detailed Reports</h2>
+                  <a href="../flake8-report/index.html">View Flake8 Report</a>
+                  <a href="../mypy-report/index.html">View Mypy Report</a>
+                  <a href="../bandit-report.html">View Bandit Report</a>
+                  <a href="../coverage-report/index.html">View Coverage Report</a>
+                </div>
+              </div>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Upload consolidated report
+        uses: actions/upload-artifact@v4
+        with:
+          name: consolidated-quality-report
+          path: consolidated-report/
+          retention-days: 30

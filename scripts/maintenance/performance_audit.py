@@ -7,6 +7,7 @@ import os
 import subprocess
 from pathlib import Path
 
+
 def check_file_sizes():
     print("Checking file sizes...")
 
@@ -38,6 +39,7 @@ def check_file_sizes():
 
     return large_files, len(css_files), len(js_files)
 
+
 def check_dependencies():
     print("Checking dependencies...")
 
@@ -46,12 +48,15 @@ def check_dependencies():
     if Path("requirements.txt").exists():
         with open("requirements.txt", "r") as f:
             lines = f.readlines()
-            python_deps = len([line for line in lines if line.strip() and not line.startswith("#")])
+            python_deps = len(
+                [line for line in lines if line.strip() and not line.startswith("#")]
+            )
 
     # Check Node dependencies
     node_deps = 0
     if Path("package.json").exists():
         import json
+
         try:
             with open("package.json", "r") as f:
                 data = json.load(f)
@@ -62,6 +67,7 @@ def check_dependencies():
             pass
 
     return python_deps, node_deps
+
 
 def check_security_settings():
     print("Checking security settings...")
@@ -74,7 +80,7 @@ def check_security_settings():
         base_settings = settings_dir / "base.py"
         if base_settings.exists():
             try:
-                content = base_settings.read_text(encoding='utf-8', errors='ignore')
+                content = base_settings.read_text(encoding="utf-8", errors="ignore")
 
                 # Check for security settings
                 if "SECURE_SSL_REDIRECT" not in content:
@@ -99,9 +105,10 @@ def check_security_settings():
 
     return security_issues
 
+
 def main():
     print("Starting Performance & Security Audit...")
-    print("="*50)
+    print("=" * 50)
 
     # File size analysis
     large_files, css_count, js_count = check_file_sizes()
@@ -150,9 +157,9 @@ def main():
     # Deduct points for security issues
     performance_score -= len(security_issues) * 5
 
-    print(f"\n" + "="*50)
+    print(f"\n" + "=" * 50)
     print("PERFORMANCE & SECURITY AUDIT RESULTS")
-    print("="*50)
+    print("=" * 50)
     print(f"Performance Score: {max(0, performance_score)}/100")
 
     if performance_score >= 90:
@@ -186,6 +193,7 @@ def main():
     print("\nAudit completed successfully!")
 
     return performance_score >= 70
+
 
 if __name__ == "__main__":
     success = main()

@@ -1,90 +1,90 @@
 from django.core.management.base import BaseCommand
-from apps.playground.models import ProgrammingLanguage, CodeTemplate
+
+from apps.playground.models import CodeTemplate, ProgrammingLanguage
 
 
 class Command(BaseCommand):
-    help = 'Setup initial playground data with languages and templates'
+    help = "Setup initial playground data with languages and templates"
 
     def handle(self, *args, **options):
-        self.stdout.write('Setting up CodePlay playground...')
+        self.stdout.write("Setting up CodePlay playground...")
 
         # Create programming languages
         languages_data = [
             {
-                'name': 'Python',
-                'icon': 'PY',
-                'tagline': "AI'nin dili",
-                'extension': 'py',
-                'order': 1
+                "name": "Python",
+                "icon": "PY",
+                "tagline": "AI'nin dili",
+                "extension": "py",
+                "order": 1,
             },
             {
-                'name': 'JavaScript',
-                'icon': 'JS',
-                'tagline': "Web'in krali",
-                'extension': 'js',
-                'order': 2
+                "name": "JavaScript",
+                "icon": "JS",
+                "tagline": "Web'in krali",
+                "extension": "js",
+                "order": 2,
             },
             {
-                'name': 'C',
-                'icon': 'C',
-                'tagline': 'Hizli ve guclu',
-                'extension': 'c',
-                'order': 3
+                "name": "C",
+                "icon": "C",
+                "tagline": "Hizli ve guclu",
+                "extension": "c",
+                "order": 3,
             },
             {
-                'name': 'C++',
-                'icon': 'C++',
-                'tagline': 'Oyunlar ve AI icin',
-                'extension': 'cpp',
-                'order': 4
+                "name": "C++",
+                "icon": "C++",
+                "tagline": "Oyunlar ve AI icin",
+                "extension": "cpp",
+                "order": 4,
             },
             {
-                'name': 'C#',
-                'icon': 'C#',
-                'tagline': "Microsoft'un gucu",
-                'extension': 'cs',
-                'order': 5
-            }
+                "name": "C#",
+                "icon": "C#",
+                "tagline": "Microsoft'un gucu",
+                "extension": "cs",
+                "order": 5,
+            },
         ]
 
         for lang_data in languages_data:
             language, created = ProgrammingLanguage.objects.get_or_create(
-                name=lang_data['name'],
-                defaults=lang_data
+                name=lang_data["name"], defaults=lang_data
             )
             if created:
-                self.stdout.write(f'[+] Created language: {language}')
+                self.stdout.write(f"[+] Created language: {language}")
             else:
-                self.stdout.write(f'[!] Language already exists: {language}')
+                self.stdout.write(f"[!] Language already exists: {language}")
 
         # Create code templates
-        python_lang = ProgrammingLanguage.objects.get(name='Python')
-        javascript_lang = ProgrammingLanguage.objects.get(name='JavaScript')
-        cpp_lang = ProgrammingLanguage.objects.get(name='C++')
-        c_lang = ProgrammingLanguage.objects.get(name='C')
-        csharp_lang = ProgrammingLanguage.objects.get(name='C#')
+        python_lang = ProgrammingLanguage.objects.get(name="Python")
+        javascript_lang = ProgrammingLanguage.objects.get(name="JavaScript")
+        cpp_lang = ProgrammingLanguage.objects.get(name="C++")
+        c_lang = ProgrammingLanguage.objects.get(name="C")
+        csharp_lang = ProgrammingLanguage.objects.get(name="C#")
 
         templates_data = [
             {
-                'name': 'Hello World',
-                'description': 'Python ile ilk program',
-                'language': python_lang,
-                'emoji': '[Hello]',
-                'is_featured': True,
-                'code': '''print("Hello, World!")
+                "name": "Hello World",
+                "description": "Python ile ilk program",
+                "language": python_lang,
+                "emoji": "[Hello]",
+                "is_featured": True,
+                "code": """print("Hello, World!")
 print("CodePlay'e hoş geldin!")
 
 # Bu basit program ile başlayalım
 name = input("Adın nedir? ")
-print(f"Merhaba {name}! Hoş geldin CodePlay'e!")'''
+print(f"Merhaba {name}! Hoş geldin CodePlay'e!")""",
             },
             {
-                'name': 'Basit Hesap Makinesi',
-                'description': 'Python hesap makinesi',
-                'language': python_lang,
-                'emoji': '[CALC]',
-                'is_featured': True,
-                'code': '''# Basit Hesap Makinesi
+                "name": "Basit Hesap Makinesi",
+                "description": "Python hesap makinesi",
+                "language": python_lang,
+                "emoji": "[CALC]",
+                "is_featured": True,
+                "code": """# Basit Hesap Makinesi
 def hesapla(a, b, islem):
     if islem == '+':
         return a + b
@@ -102,15 +102,15 @@ print("=== CodePlay Hesap Makinesi ===")
 print("5 + 3 =", hesapla(5, 3, '+'))
 print("10 - 4 =", hesapla(10, 4, '-'))
 print("6 * 7 =", hesapla(6, 7, '*'))
-print("15 / 3 =", hesapla(15, 3, '/'))'''
+print("15 / 3 =", hesapla(15, 3, '/'))""",
             },
             {
-                'name': 'AI Chatbot',
-                'description': 'Basit AI chatbot yapısı',
-                'language': python_lang,
-                'emoji': '[BOT]',
-                'is_featured': True,
-                'code': '''import random
+                "name": "AI Chatbot",
+                "description": "Basit AI chatbot yapısı",
+                "language": python_lang,
+                "emoji": "[BOT]",
+                "is_featured": True,
+                "code": """import random
 
 class BasitChatbot:
     def __init__(self):
@@ -133,15 +133,15 @@ bot = BasitChatbot()
 print("🤖 CodePlay Bot: Merhaba! Benimle konuşabilirsin.")
 print("Bot:", bot.cevap_ver("merhaba"))
 print("Bot:", bot.cevap_ver("nasılsın"))
-print("Bot:", bot.cevap_ver("ne yapıyorsun"))'''
+print("Bot:", bot.cevap_ver("ne yapıyorsun"))""",
             },
             {
-                'name': 'Web Sitesi Temeli',
-                'description': 'HTML/CSS/JS ile basit site',
-                'language': javascript_lang,
-                'emoji': '[WEB]',
-                'is_featured': True,
-                'code': '''// Web sitesi için JavaScript
+                "name": "Web Sitesi Temeli",
+                "description": "HTML/CSS/JS ile basit site",
+                "language": javascript_lang,
+                "emoji": "[WEB]",
+                "is_featured": True,
+                "code": """// Web sitesi için JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🌟 CodePlay Web Sitesi Yüklendi!');
 
@@ -174,15 +174,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     container.appendChild(button);
-});'''
+});""",
             },
             {
-                'name': 'Sayı Tahmin Oyunu',
-                'description': 'C++ ile basit oyun',
-                'language': cpp_lang,
-                'emoji': '[GAME]',
-                'is_featured': True,
-                'code': '''#include <iostream>
+                "name": "Sayı Tahmin Oyunu",
+                "description": "C++ ile basit oyun",
+                "language": cpp_lang,
+                "emoji": "[GAME]",
+                "is_featured": True,
+                "code": """#include <iostream>
 #include <random>
 #include <string>
 
@@ -217,15 +217,15 @@ int main() {
     } while (tahmin != gizliSayi);
 
     return 0;
-}'''
+}""",
             },
             {
-                'name': 'Hello World C',
-                'description': 'C ile ilk program',
-                'language': c_lang,
-                'emoji': '[FAST]',
-                'is_featured': False,
-                'code': '''#include <stdio.h>
+                "name": "Hello World C",
+                "description": "C ile ilk program",
+                "language": c_lang,
+                "emoji": "[FAST]",
+                "is_featured": False,
+                "code": """#include <stdio.h>
 
 int main() {
     printf("⚡ CodePlay ile C Programlama!\\n");
@@ -238,15 +238,15 @@ int main() {
     printf("%d + %d = %d\\n", a, b, toplam);
 
     return 0;
-}'''
+}""",
             },
             {
-                'name': 'C# Console App',
-                'description': 'C# konsol uygulaması',
-                'language': csharp_lang,
-                'emoji': '[WORK]',
-                'is_featured': False,
-                'code': '''using System;
+                "name": "C# Console App",
+                "description": "C# konsol uygulaması",
+                "language": csharp_lang,
+                "emoji": "[WORK]",
+                "is_featured": False,
+                "code": """using System;
 
 namespace CodePlayApp
 {
@@ -272,20 +272,20 @@ namespace CodePlayApp
             Console.ReadKey();
         }
     }
-}'''
-            }
+}""",
+            },
         ]
 
         for template_data in templates_data:
             template, created = CodeTemplate.objects.get_or_create(
-                name=template_data['name'],
-                language=template_data['language'],
-                defaults=template_data
+                name=template_data["name"],
+                language=template_data["language"],
+                defaults=template_data,
             )
             if created:
-                self.stdout.write(f'[+] Created template: {template}')
+                self.stdout.write(f"[+] Created template: {template}")
             else:
-                self.stdout.write(f'[!] Template already exists: {template}')
+                self.stdout.write(f"[!] Template already exists: {template}")
 
-        self.stdout.write(self.style.SUCCESS('CodePlay playground setup completed!'))
-        self.stdout.write('You can now visit /playground/ to start coding!')
+        self.stdout.write(self.style.SUCCESS("CodePlay playground setup completed!"))
+        self.stdout.write("You can now visit /playground/ to start coding!")

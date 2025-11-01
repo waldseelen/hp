@@ -2,6 +2,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter
 def mul(value, arg):
     """Multiplies the value by the argument."""
@@ -9,6 +10,7 @@ def mul(value, arg):
         return float(value) * float(arg)
     except (ValueError, TypeError):
         return 0
+
 
 @register.filter
 def div(value, arg):
@@ -20,6 +22,7 @@ def div(value, arg):
     except (ValueError, TypeError):
         return 0
 
+
 @register.filter
 def add_num(value, arg):
     """Adds the argument to the value."""
@@ -27,6 +30,7 @@ def add_num(value, arg):
         return float(value) + float(arg)
     except (ValueError, TypeError):
         return 0
+
 
 @register.filter
 def sub(value, arg):

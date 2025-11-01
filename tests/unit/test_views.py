@@ -1,13 +1,17 @@
 """
 Unit tests for main app views
 """
+
 import json
-import pytest
-from django.test import TestCase, Client
-from django.urls import reverse
+from unittest.mock import Mock, patch
+
 from django.contrib.auth import get_user_model
-from unittest.mock import patch, Mock
-from apps.main.performance import PerformanceMetric, performance_metrics, alert_manager
+from django.test import Client, TestCase
+from django.urls import reverse
+
+import pytest
+
+from apps.main.performance import PerformanceMetric, alert_manager, performance_metrics
 
 # TODO: These models need to be created in apps/main/models.py
 # WebPushSubscription, ErrorLog
@@ -26,28 +30,27 @@ class PerformanceViewsTest(TestCase):
         """Test recording performance metrics"""
         # Record a metric using the performance_metrics instance
         metric = performance_metrics.record_metric(
-            name='response_time',
-            value=350,
-            unit='ms'
+            name="response_time", value=350, unit="ms"
         )
 
-        self.assertEqual(metric.name, 'response_time')
+        self.assertEqual(metric.name, "response_time")
         self.assertEqual(metric.value, 350)
-        self.assertEqual(metric.unit, 'ms')
-        self.assertEqual(metric.status, 'normal')
+        self.assertEqual(metric.unit, "ms")
+        self.assertEqual(metric.status, "normal")
 
     def test_health_check_endpoint(self):
         """Test health check endpoint"""
-        response = self.client.get(reverse('health_check'))
+        response = self.client.get(reverse("health_check"))
         self.assertEqual(response.status_code, 200)
 
         data = response.json()
-        self.assertEqual(data['status'], 'healthy')
+        self.assertEqual(data["status"], "healthy")
 
 
 @pytest.mark.skip(reason="WebPushSubscription model not yet implemented")
 class WebPushViewsTest(TestCase):
     """Test web push notification views - TODO: implement"""
+
     pass
     #     ).exists())
 
@@ -108,16 +111,16 @@ class HomeViewTest(TestCase):
 
     def test_home_view(self):
         """Test home page renders correctly"""
-        response = self.client.get(reverse('home'))
+        response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Portfolio')
+        self.assertContains(response, "Portfolio")
 
     def test_personal_view(self):
         """Test personal page"""
-        response = self.client.get(reverse('main:personal'))
+        response = self.client.get(reverse("main:personal"))
         self.assertEqual(response.status_code, 200)
 
     def test_search_view(self):
         """Test search functionality"""
-        response = self.client.get(reverse('main:search'), {'q': 'test'})
+        response = self.client.get(reverse("main:search"), {"q": "test"})
         self.assertEqual(response.status_code, 200)

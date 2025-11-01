@@ -8,7 +8,7 @@ ve API response'larının oluşturulması sağlanır.
 
 TANIMLI SERİALİZER SINIFLARI:
 - PostSerializer: Blog yazıları için tam serialization (detay görünümleri)
-- PostListSerializer: Blog yazıları için hafif serialization (liste görünümleri) 
+- PostListSerializer: Blog yazıları için hafif serialization (liste görünümleri)
 - BlogSeriesSerializer: Blog serileri için serialization
 
 POSTSERIALIZER ÖZELLİKLERİ:
@@ -50,24 +50,39 @@ API KULLANIM DURUMLARI:
 """
 
 from rest_framework import serializers
-from .models import Post, BlogSeries
+
+from .models import BlogSeries, Post
 
 
 class PostSerializer(serializers.ModelSerializer):
-    author_name = serializers.CharField(source='author.username', read_only=True)
-    category_display = serializers.CharField(source='get_category_display', read_only=True)
+    author_name = serializers.CharField(source="author.username", read_only=True)
+    category_display = serializers.CharField(
+        source="get_category_display", read_only=True
+    )
     reading_time = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Post
         fields = [
-            'id', 'title', 'slug', 'content', 'excerpt',
-            'featured_image', 'category', 'category_display',
-            'tags', 'author', 'author_name', 'created_at',
-            'updated_at', 'status', 'reading_time', 'views'
+            "id",
+            "title",
+            "slug",
+            "content",
+            "excerpt",
+            "featured_image",
+            "category",
+            "category_display",
+            "tags",
+            "author",
+            "author_name",
+            "created_at",
+            "updated_at",
+            "status",
+            "reading_time",
+            "views",
         ]
-        read_only_fields = ['author', 'created_at', 'updated_at', 'views']
-    
+        read_only_fields = ["author", "created_at", "updated_at", "views"]
+
     def get_reading_time(self, obj):
         """Calculate estimated reading time based on content length"""
         if obj.content:
@@ -80,29 +95,40 @@ class PostSerializer(serializers.ModelSerializer):
 
 class BlogSeriesSerializer(serializers.ModelSerializer):
     post_count = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = BlogSeries
-        fields = ['id', 'name', 'description', 'post_count']
-    
+        fields = ["id", "name", "description", "post_count"]
+
     def get_post_count(self, obj):
         return obj.post_set.count()
 
 
 class PostListSerializer(serializers.ModelSerializer):
     """Lightweight serializer for list views"""
-    author_name = serializers.CharField(source='author.username', read_only=True)
-    category_display = serializers.CharField(source='get_category_display', read_only=True)
+
+    author_name = serializers.CharField(source="author.username", read_only=True)
+    category_display = serializers.CharField(
+        source="get_category_display", read_only=True
+    )
     reading_time = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Post
         fields = [
-            'id', 'title', 'slug', 'excerpt', 'featured_image',
-            'category', 'category_display', 'author_name',
-            'created_at', 'reading_time', 'views'
+            "id",
+            "title",
+            "slug",
+            "excerpt",
+            "featured_image",
+            "category",
+            "category_display",
+            "author_name",
+            "created_at",
+            "reading_time",
+            "views",
         ]
-    
+
     def get_reading_time(self, obj):
         if obj.content:
             word_count = len(obj.content.split())

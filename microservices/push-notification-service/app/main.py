@@ -6,28 +6,28 @@ Standalone microservice for handling web push notifications.
 Extracted from Django portfolio application.
 """
 
-from fastapi import FastAPI, HTTPException, Depends, status, Request
+import logging
+from contextlib import asynccontextmanager
+
+import sentry_sdk
+from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from contextlib import asynccontextmanager
-import logging
-import sentry_sdk
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
+from .auth import verify_token
 from .config import settings
 from .database import database, engine
-from .routers import subscriptions, notifications, analytics, health
 from .middleware import RateLimitMiddleware
 from .models import metadata
-from .auth import verify_token
+from .routers import analytics, health, notifications, subscriptions
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -43,6 +43,7 @@ if settings.SENTRY_DSN:
         environment=settings.ENVIRONMENT,
     )
 
+
 # Database lifecycle management
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -51,13 +52,13 @@ async def lifespan(app: FastAPI):
         # Connect to database
         await database.connect()
         logger.info("Database connected successfully")
-        
+
         # Create tables if they don't exist
         metadata.create_all(engine)
         logger.info("Database tables created/verified")
-        
+
         yield
-        
+
     except Exception as e:
         logger.error(f"Error during startup: {e}")
         raise
@@ -74,7 +75,7 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs" if settings.ENVIRONMENT == "development" else None,
     redoc_url="/redoc" if settings.ENVIRONMENT == "development" else None,
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 # Security middleware
@@ -89,10 +90,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_middleware(
-    TrustedHostMiddleware, 
-    allowed_hosts=settings.ALLOWED_HOSTS
-)
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.ALLOWED_HOSTS)
 
 app.add_middleware(RateLimitMiddleware)
 
@@ -107,10 +105,10 @@ async def http_exception_handler(request: Request, exc: HTTPException):
             "error": {
                 "code": exc.status_code,
                 "message": exc.detail,
-                "type": "http_error"
+                "type": "http_error",
             },
-            "request_id": getattr(request.state, "request_id", None)
-        }
+            "request_id": getattr(request.state, "request_id", None),
+        },
     )
 
 
@@ -124,15 +122,17 @@ async def general_exception_handler(request: Request, exc: Exception):
             "error": {
                 "code": 500,
                 "message": "Internal server error",
-                "type": "server_error"
+                "type": "server_error",
             },
-            "request_id": getattr(request.state, "request_id", None)
-        }
+            "request_id": getattr(request.state, "request_id", None),
+        },
     )
 
 
 # Dependency for authentication
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+):
     """Verify JWT token and return user information"""
     try:
         payload = verify_token(credentials.credentials)
@@ -147,31 +147,27 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 
 # Include routers
-app.include_router(
-    health.router,
-    prefix="/health",
-    tags=["health"]
-)
+app.include_router(health.router, prefix="/health", tags=["health"])
 
 app.include_router(
     subscriptions.router,
     prefix="/subscriptions",
     tags=["subscriptions"],
-    dependencies=[Depends(get_current_user)] if settings.REQUIRE_AUTH else []
+    dependencies=[Depends(get_current_user)] if settings.REQUIRE_AUTH else [],
 )
 
 app.include_router(
     notifications.router,
-    prefix="/notifications", 
+    prefix="/notifications",
     tags=["notifications"],
-    dependencies=[Depends(get_current_user)] if settings.REQUIRE_AUTH else []
+    dependencies=[Depends(get_current_user)] if settings.REQUIRE_AUTH else [],
 )
 
 app.include_router(
     analytics.router,
     prefix="/analytics",
     tags=["analytics"],
-    dependencies=[Depends(get_current_user)] if settings.REQUIRE_AUTH else []
+    dependencies=[Depends(get_current_user)] if settings.REQUIRE_AUTH else [],
 )
 
 
@@ -184,14 +180,14 @@ async def root():
         "version": "1.0.0",
         "status": "operational",
         "environment": settings.ENVIRONMENT,
-        "documentation": "/docs" if settings.ENVIRONMENT == "development" else None
+        "documentation": "/docs" if settings.ENVIRONMENT == "development" else None,
     }
 
 
 # Prometheus metrics endpoint
 if settings.PROMETHEUS_METRICS_ENABLED:
     from prometheus_fastapi_instrumentator import Instrumentator
-    
+
     instrumentator = Instrumentator(
         should_group_status_codes=False,
         should_ignore_untemplated=True,
@@ -202,17 +198,18 @@ if settings.PROMETHEUS_METRICS_ENABLED:
         inprogress_name="http_requests_inprogress",
         inprogress_labels=True,
     )
-    
+
     instrumentator.instrument(app)
     instrumentator.expose(app, endpoint="/metrics", include_in_schema=False)
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(
         "app.main:app",
         host="0.0.0.0",
         port=8001,
         reload=settings.ENVIRONMENT == "development",
-        log_level="info"
+        log_level="info",
     )

@@ -1,17 +1,26 @@
 """
 Template tags for image optimization
 """
+
 from django import template
 from django.conf import settings
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-import os
 
 register = template.Library()
 
 
 @register.simple_tag
-def lazy_image(src, alt="", css_class="", width="", height="", placeholder="", webp_src="", fallback=""):
+def lazy_image(
+    src,
+    alt="",
+    css_class="",
+    width="",
+    height="",
+    placeholder="",
+    webp_src="",
+    fallback="",
+):
     """
     Render an optimized lazy-loading image with progressive enhancement
 
@@ -28,44 +37,48 @@ def lazy_image(src, alt="", css_class="", width="", height="", placeholder="", w
     Returns:
         HTML string for optimized image
     """
-    classes = ['lazy-load']
+    classes = ["lazy-load"]
     if css_class:
         classes.append(css_class)
 
     if placeholder:
-        classes.append('progressive-load')
+        classes.append("progressive-load")
 
     # Build attributes
     attrs = {
-        'class': ' '.join(classes),
-        'alt': alt,
-        'loading': 'lazy',
-        'data-src': src,
+        "class": " ".join(classes),
+        "alt": alt,
+        "loading": "lazy",
+        "data-src": src,
     }
 
     if width:
-        attrs['width'] = width
+        attrs["width"] = width
     if height:
-        attrs['height'] = height
+        attrs["height"] = height
     if placeholder:
-        attrs['src'] = placeholder
-        attrs['data-placeholder'] = placeholder
+        attrs["src"] = placeholder
+        attrs["data-placeholder"] = placeholder
     else:
-        attrs['src'] = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E'
+        attrs["src"] = (
+            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E'
+        )
 
     if webp_src:
-        attrs['data-webp'] = webp_src
+        attrs["data-webp"] = webp_src
     if fallback:
-        attrs['data-fallback'] = fallback
+        attrs["data-fallback"] = fallback
 
     # Create img tag
-    attr_string = ' '.join([f'{k}="{v}"' for k, v in attrs.items()])
+    attr_string = " ".join([f'{k}="{v}"' for k, v in attrs.items()])
 
-    return format_html('<img {}>', mark_safe(attr_string))
+    return format_html("<img {}>", mark_safe(attr_string))
 
 
 @register.simple_tag
-def responsive_image(src, alt="", css_class="", sizes="100vw", srcset="", webp_srcset="", lazy=True):
+def responsive_image(
+    src, alt="", css_class="", sizes="100vw", srcset="", webp_srcset="", lazy=True
+):
     """
     Render a responsive image with srcset and sizes
 
@@ -83,38 +96,42 @@ def responsive_image(src, alt="", css_class="", sizes="100vw", srcset="", webp_s
     """
     classes = []
     if lazy:
-        classes.append('lazy-load')
+        classes.append("lazy-load")
     if css_class:
         classes.append(css_class)
 
     attrs = {
-        'alt': alt,
-        'sizes': sizes,
+        "alt": alt,
+        "sizes": sizes,
     }
 
     if classes:
-        attrs['class'] = ' '.join(classes)
+        attrs["class"] = " ".join(classes)
 
     if lazy:
-        attrs['loading'] = 'lazy'
-        attrs['data-src'] = src
-        attrs['src'] = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E'
+        attrs["loading"] = "lazy"
+        attrs["data-src"] = src
+        attrs["src"] = (
+            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E'
+        )
         if srcset:
-            attrs['data-srcset'] = srcset
+            attrs["data-srcset"] = srcset
         if webp_srcset:
-            attrs['data-webp-srcset'] = webp_srcset
+            attrs["data-webp-srcset"] = webp_srcset
     else:
-        attrs['src'] = src
+        attrs["src"] = src
         if srcset:
-            attrs['srcset'] = srcset
+            attrs["srcset"] = srcset
 
-    attr_string = ' '.join([f'{k}="{v}"' for k, v in attrs.items()])
+    attr_string = " ".join([f'{k}="{v}"' for k, v in attrs.items()])
 
-    return format_html('<img {}>', mark_safe(attr_string))
+    return format_html("<img {}>", mark_safe(attr_string))
 
 
 @register.simple_tag
-def optimized_image(src, alt="", width="", height="", quality=85, format="auto", lazy=True, css_class=""):
+def optimized_image(
+    src, alt="", width="", height="", quality=85, format="auto", lazy=True, css_class=""
+):
     """
     Generate an optimized image with automatic format selection and quality compression
 
@@ -136,7 +153,7 @@ def optimized_image(src, alt="", width="", height="", quality=85, format="auto",
 
     classes = []
     if lazy:
-        classes.append('lazy-load')
+        classes.append("lazy-load")
     if css_class:
         classes.append(css_class)
 
@@ -144,25 +161,27 @@ def optimized_image(src, alt="", width="", height="", quality=85, format="auto",
     # For example: src_webp = generate_webp_version(src, quality, width, height)
 
     attrs = {
-        'alt': alt,
-        'class': ' '.join(classes) if classes else '',
+        "alt": alt,
+        "class": " ".join(classes) if classes else "",
     }
 
     if width:
-        attrs['width'] = width
+        attrs["width"] = width
     if height:
-        attrs['height'] = height
+        attrs["height"] = height
 
     if lazy:
-        attrs['loading'] = 'lazy'
-        attrs['data-src'] = src
-        attrs['src'] = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E'
+        attrs["loading"] = "lazy"
+        attrs["data-src"] = src
+        attrs["src"] = (
+            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E'
+        )
     else:
-        attrs['src'] = src
+        attrs["src"] = src
 
-    attr_string = ' '.join([f'{k}="{v}"' for k, v in attrs.items() if v])
+    attr_string = " ".join([f'{k}="{v}"' for k, v in attrs.items() if v])
 
-    return format_html('<img {}>', mark_safe(attr_string))
+    return format_html("<img {}>", mark_safe(attr_string))
 
 
 @register.simple_tag
@@ -176,7 +195,7 @@ def cdn_url(path):
     Returns:
         Full CDN URL or regular static URL
     """
-    if getattr(settings, 'CDN_ENABLED', False) and getattr(settings, 'CDN_DOMAIN', ''):
+    if getattr(settings, "CDN_ENABLED", False) and getattr(settings, "CDN_DOMAIN", ""):
         return f"https://{settings.CDN_DOMAIN}{path}"
     else:
         return f"{settings.STATIC_URL.rstrip('/')}{path}"
@@ -197,7 +216,7 @@ def webp_support(image_url):
         return image_url
 
     # Check if WebP version exists
-    webp_url = image_url.rsplit('.', 1)[0] + '.webp'
+    webp_url = image_url.rsplit(".", 1)[0] + ".webp"
 
     # In production, you'd check if the WebP file actually exists
     # For now, return the WebP URL with fallback handling in the template
@@ -205,8 +224,10 @@ def webp_support(image_url):
     return webp_url
 
 
-@register.inclusion_tag('components/picture_element.html')
-def picture_tag(src, alt="", css_class="", width="", height="", webp_src="", avif_src="", lazy=True):
+@register.inclusion_tag("components/picture_element.html")
+def picture_tag(
+    src, alt="", css_class="", width="", height="", webp_src="", avif_src="", lazy=True
+):
     """
     Render a <picture> element with multiple format support
 
@@ -224,14 +245,14 @@ def picture_tag(src, alt="", css_class="", width="", height="", webp_src="", avi
         Dictionary for picture_element.html template
     """
     return {
-        'src': src,
-        'alt': alt,
-        'css_class': css_class,
-        'width': width,
-        'height': height,
-        'webp_src': webp_src,
-        'avif_src': avif_src,
-        'lazy': lazy,
+        "src": src,
+        "alt": alt,
+        "css_class": css_class,
+        "width": width,
+        "height": height,
+        "webp_src": webp_src,
+        "avif_src": avif_src,
+        "lazy": lazy,
     }
 
 
@@ -250,19 +271,19 @@ def image_preload(src, as_type="image", media="", sizes=""):
         Preload link HTML
     """
     attrs = {
-        'rel': 'preload',
-        'as': as_type,
-        'href': src,
+        "rel": "preload",
+        "as": as_type,
+        "href": src,
     }
 
     if media:
-        attrs['media'] = media
+        attrs["media"] = media
     if sizes:
-        attrs['imagesizes'] = sizes
+        attrs["imagesizes"] = sizes
 
-    attr_string = ' '.join([f'{k}="{v}"' for k, v in attrs.items()])
+    attr_string = " ".join([f'{k}="{v}"' for k, v in attrs.items()])
 
-    return format_html('<link {}>', mark_safe(attr_string))
+    return format_html("<link {}>", mark_safe(attr_string))
 
 
 @register.simple_tag(takes_context=True)
@@ -285,23 +306,23 @@ def critical_image(context, src, alt="", css_class="", width="", height=""):
     preload_html = image_preload(src)
 
     # Store preload in context for head section
-    if 'preload_images' not in context:
-        context['preload_images'] = []
-    context['preload_images'].append(preload_html)
+    if "preload_images" not in context:
+        context["preload_images"] = []
+    context["preload_images"].append(preload_html)
 
     # Return regular image tag (no lazy loading for critical images)
     attrs = {
-        'src': src,
-        'alt': alt,
+        "src": src,
+        "alt": alt,
     }
 
     if css_class:
-        attrs['class'] = css_class
+        attrs["class"] = css_class
     if width:
-        attrs['width'] = width
+        attrs["width"] = width
     if height:
-        attrs['height'] = height
+        attrs["height"] = height
 
-    attr_string = ' '.join([f'{k}="{v}"' for k, v in attrs.items()])
+    attr_string = " ".join([f'{k}="{v}"' for k, v in attrs.items()])
 
-    return format_html('<img {}>', mark_safe(attr_string))
+    return format_html("<img {}>", mark_safe(attr_string))

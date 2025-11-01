@@ -14,29 +14,38 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include, re_path
+
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
 from django.shortcuts import redirect
+from django.urls import include, path, re_path
 from django.views.generic import RedirectView
+
 from main.views import home, logout_view
 
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
-    path('', home, name='home'),
-    path('logout/', logout_view, name='logout'),
-    path('', include('main.urls')),
-    path('blog/', include('blog.urls')),
-    path('tools/', include('tools.urls')),
-    path('projects/', lambda request: redirect('tools:tool_list'), name='projects_redirect'),
-    path('contact/', include('contact.urls')),
-    path('chat/', include('chat.urls')),
-    path('favicon.ico', RedirectView.as_view(url='/static/images/icons/favicon.ico', permanent=True)),
+    path("", home, name="home"),
+    path("logout/", logout_view, name="logout"),
+    path("", include("main.urls")),
+    path("blog/", include("blog.urls")),
+    path("tools/", include("tools.urls")),
+    path(
+        "projects/",
+        lambda request: redirect("tools:tool_list"),
+        name="projects_redirect",
+    ),
+    path("contact/", include("contact.urls")),
+    path("chat/", include("chat.urls")),
+    path(
+        "favicon.ico",
+        RedirectView.as_view(url="/static/images/icons/favicon.ico", permanent=True),
+    ),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-handler404 = 'portfolio_site.views.error_404_view'
-handler500 = 'portfolio_site.views.error_500_view'
+handler404 = "portfolio_site.views.error_404_view"
+handler500 = "portfolio_site.views.error_500_view"

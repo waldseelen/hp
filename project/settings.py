@@ -10,8 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -25,73 +26,75 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-l994t=sodtt9oysm+#s9qkuh=r42mlt4rx_*d55+tj_u2xy&0m')
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "django-insecure-l994t=sodtt9oysm+#s9qkuh=r42mlt4rx_*d55+tj_u2xy&0m"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver', '.railway.app', '*']
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver", ".railway.app", "*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sitemaps',
-    'rest_framework',
-    'tinymce',
-    'apps.portfolio.apps.PortfolioConfig',
-    'main.apps.MainConfig',
-    'blog',
-    'tools',
-    'contact',
-    'chat',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.sitemaps",
+    "rest_framework",
+    "tinymce",
+    "apps.portfolio.apps.PortfolioConfig",
+    "main.apps.MainConfig",
+    "blog",
+    "tools",
+    "contact",
+    "chat",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'portfolio_site.urls'
+ROOT_URLCONF = "portfolio_site.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'main.context_processors.social_links',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "main.context_processors.social_links",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'portfolio_site.wsgi.application'
+WSGI_APPLICATION = "portfolio_site.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -101,16 +104,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -118,9 +121,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -130,126 +133,165 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Custom User Model
-AUTH_USER_MODEL = 'main.Admin'
+AUTH_USER_MODEL = "main.Admin"
 
 # Authentication backend - restricted admin only via environment variables
 AUTHENTICATION_BACKENDS = [
-    'apps.main.auth_backends.RestrictedAdminBackend',
+    "apps.main.auth_backends.RestrictedAdminBackend",
 ]
 
 # REST Framework
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
 }
 
 # Cache Configuration
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'portfolio-cache',
-        'TIMEOUT': 300,
-        'OPTIONS': {
-            'MAX_ENTRIES': 1000,
-            'CULL_FREQUENCY': 3,
-        }
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "portfolio-cache",
+        "TIMEOUT": 300,
+        "OPTIONS": {
+            "MAX_ENTRIES": 1000,
+            "CULL_FREQUENCY": 3,
+        },
     }
 }
 
 # Email Configuration
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = ''
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST = ""
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-DEFAULT_FROM_EMAIL = 'bugraakin01@gmail.com'
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
+DEFAULT_FROM_EMAIL = "bugraakin01@gmail.com"
 
 # Security Settings
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-X_FRAME_OPTIONS = 'DENY'
+X_FRAME_OPTIONS = "DENY"
 
 # Admin Configuration
-ADMIN_URL = 'admin/'  # Can be changed for security
+ADMIN_URL = "admin/"  # Can be changed for security
 
 # Static files
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
+    BASE_DIR / "static",
 ]
 
 # Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # TinyMCE Configuration for Rich Text Editing
 TINYMCE_DEFAULT_CONFIG = {
-    'height': 500,
-    'width': '100%',
-    'plugins': [
-        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-        'insertdatetime', 'media', 'table', 'help', 'wordcount',
-        'codesample', 'emoticons', 'textcolor', 'paste', 'autosave'
+    "height": 500,
+    "width": "100%",
+    "plugins": [
+        "advlist",
+        "autolink",
+        "lists",
+        "link",
+        "image",
+        "charmap",
+        "preview",
+        "anchor",
+        "searchreplace",
+        "visualblocks",
+        "code",
+        "fullscreen",
+        "insertdatetime",
+        "media",
+        "table",
+        "help",
+        "wordcount",
+        "codesample",
+        "emoticons",
+        "textcolor",
+        "paste",
+        "autosave",
     ],
-    'toolbar': 'undo redo | formatselect | bold italic backcolor forecolor | ' +
-               'alignleft aligncenter alignright alignjustify | ' +
-               'bullist numlist outdent indent | removeformat | ' +
-               'link image media table codesample | ' +
-               'searchreplace | fullscreen | emoticons | help',
-    'menubar': 'file edit view insert format tools table help',
-    'toolbar_mode': 'sliding',
-    'statusbar': True,
-    'relative_urls': False,
-    'automatic_uploads': True,
-    'file_picker_types': 'file image media',
-    'images_upload_url': '/api/upload/images/',
-    'codesample_languages': [
-        {'text': 'Python', 'value': 'python'},
-        {'text': 'JavaScript', 'value': 'javascript'},
-        {'text': 'HTML', 'value': 'html'},
-        {'text': 'CSS', 'value': 'css'},
-        {'text': 'SQL', 'value': 'sql'},
-        {'text': 'Bash', 'value': 'bash'},
+    "toolbar": "undo redo | formatselect | bold italic backcolor forecolor | "
+    + "alignleft aligncenter alignright alignjustify | "
+    + "bullist numlist outdent indent | removeformat | "
+    + "link image media table codesample | "
+    + "searchreplace | fullscreen | emoticons | help",
+    "menubar": "file edit view insert format tools table help",
+    "toolbar_mode": "sliding",
+    "statusbar": True,
+    "relative_urls": False,
+    "automatic_uploads": True,
+    "file_picker_types": "file image media",
+    "images_upload_url": "/api/upload/images/",
+    "codesample_languages": [
+        {"text": "Python", "value": "python"},
+        {"text": "JavaScript", "value": "javascript"},
+        {"text": "HTML", "value": "html"},
+        {"text": "CSS", "value": "css"},
+        {"text": "SQL", "value": "sql"},
+        {"text": "Bash", "value": "bash"},
     ],
-    'license_key': 'gpl',  # Use GPL for open source
+    "license_key": "gpl",  # Use GPL for open source
 }
 
 # Content Management Settings
 CONTENT_SANITIZATION = {
-    'ENABLED': True,
-    'ALLOWED_TAGS': [
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'p', 'br', 'hr',
-        'strong', 'em', 'u', 's', 'code',
-        'a', 'img',
-        'ul', 'ol', 'li',
-        'blockquote', 'pre',
-        'table', 'thead', 'tbody', 'tr', 'th', 'td',
-        'div', 'span',
+    "ENABLED": True,
+    "ALLOWED_TAGS": [
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "p",
+        "br",
+        "hr",
+        "strong",
+        "em",
+        "u",
+        "s",
+        "code",
+        "a",
+        "img",
+        "ul",
+        "ol",
+        "li",
+        "blockquote",
+        "pre",
+        "table",
+        "thead",
+        "tbody",
+        "tr",
+        "th",
+        "td",
+        "div",
+        "span",
     ],
-    'STRIP_JAVASCRIPT': True,
-    'VERIFY_LINKS': True,
+    "STRIP_JAVASCRIPT": True,
+    "VERIFY_LINKS": True,
 }
 
 # MeiliSearch Configuration
-MEILISEARCH_HOST = os.environ.get('MEILI_HOST', 'http://localhost:7700')
-MEILISEARCH_MASTER_KEY = os.environ.get('MEILI_MASTER_KEY', 'masterKey123456789')
-MEILISEARCH_INDEX_NAME = os.environ.get('MEILI_INDEX_NAME', 'portfolio_search')
+MEILISEARCH_HOST = os.environ.get("MEILI_HOST", "http://localhost:7700")
+MEILISEARCH_MASTER_KEY = os.environ.get("MEILI_MASTER_KEY", "masterKey123456789")
+MEILISEARCH_INDEX_NAME = os.environ.get("MEILI_INDEX_NAME", "portfolio_search")
 MEILISEARCH_TIMEOUT = 5  # seconds
 MEILISEARCH_BATCH_SIZE = 100  # documents per batch

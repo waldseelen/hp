@@ -1,7 +1,9 @@
 """
 Template tags for SEO optimization
 """
+
 from django import template
+
 from apps.main.seo import SEOOptimizer
 
 register = template.Library()
@@ -29,7 +31,7 @@ def optimize_title(title, site_name="Portfolio", max_length=60):
 def extract_keywords(content, max_keywords=10):
     """Extract keywords from content"""
     keywords = SEOOptimizer.extract_keywords(content, max_keywords)
-    return ', '.join(keywords)
+    return ", ".join(keywords)
 
 
 @register.filter

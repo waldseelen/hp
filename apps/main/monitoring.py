@@ -24,15 +24,15 @@ Usage:
 
 import logging
 import time
-from typing import Dict, List, Optional, Any
-from datetime import datetime, timedelta
 from contextlib import contextmanager
+from typing import Any, Dict, List, Optional
+
 from django.core.cache import cache
-from django.conf import settings
 from django.utils import timezone
 
 try:
     import sentry_sdk
+
     SENTRY_AVAILABLE = True
 except ImportError:
     SENTRY_AVAILABLE = False
@@ -48,10 +48,10 @@ class SearchMonitor:
     """
 
     # Cache keys
-    CACHE_KEY_METRICS = 'search:metrics'
-    CACHE_KEY_ERRORS = 'search:errors:recent'
-    CACHE_KEY_QUERIES = 'search:queries:recent'
-    CACHE_KEY_HEALTH = 'search:health:status'
+    CACHE_KEY_METRICS = "search:metrics"
+    CACHE_KEY_ERRORS = "search:errors:recent"
+    CACHE_KEY_QUERIES = "search:queries:recent"
+    CACHE_KEY_HEALTH = "search:health:status"
 
     # Thresholds
     LATENCY_WARNING_MS = 100
@@ -98,25 +98,33 @@ class SearchMonitor:
                 duration_ms=duration_ms,
                 error=error_occurred,
                 error_message=error_message,
-                user_id=user_id
+                user_id=user_id,
             )
 
             # Check if latency exceeds thresholds
             if duration_ms > self.LATENCY_ERROR_MS:
-                logger.error(f"Search query exceeded error threshold: {duration_ms:.2f}ms for '{query}'")
+                logger.error(
+                    f"Search query exceeded error threshold: {duration_ms:.2f}ms for '{query}'"
+                )
             elif duration_ms > self.LATENCY_WARNING_MS:
                 logger.warning(f"Search query slow: {duration_ms:.2f}ms for '{query}'")
 
-    def _log_query(self, query: str, duration_ms: float, error: bool,
-                   error_message: Optional[str], user_id: Optional[int]):
+    def _log_query(
+        self,
+        query: str,
+        duration_ms: float,
+        error: bool,
+        error_message: Optional[str],
+        user_id: Optional[int],
+    ):
         """Log search query with metadata"""
         log_entry = {
-            'timestamp': timezone.now().isoformat(),
-            'query': query,
-            'duration_ms': round(duration_ms, 2),
-            'error': error,
-            'error_message': error_message,
-            'user_id': user_id,
+            "timestamp": timezone.now().isoformat(),
+            "query": query,
+            "duration_ms": round(duration_ms, 2),
+            "error": error,
+            "error_message": error_message,
+            "user_id": user_id,
         }
 
         # Update metrics
@@ -134,30 +142,35 @@ class SearchMonitor:
 
     def _update_metrics(self, duration_ms: float, error: bool):
         """Update aggregate metrics"""
-        metrics = cache.get(self.CACHE_KEY_METRICS, {
-            'total_queries': 0,
-            'total_errors': 0,
-            'total_duration_ms': 0,
-            'min_duration_ms': float('inf'),
-            'max_duration_ms': 0,
-            'last_updated': timezone.now().isoformat(),
-        })
+        metrics = cache.get(
+            self.CACHE_KEY_METRICS,
+            {
+                "total_queries": 0,
+                "total_errors": 0,
+                "total_duration_ms": 0,
+                "min_duration_ms": float("inf"),
+                "max_duration_ms": 0,
+                "last_updated": timezone.now().isoformat(),
+            },
+        )
 
-        metrics['total_queries'] += 1
+        metrics["total_queries"] += 1
         if error:
-            metrics['total_errors'] += 1
+            metrics["total_errors"] += 1
 
-        metrics['total_duration_ms'] += duration_ms
-        metrics['min_duration_ms'] = min(metrics['min_duration_ms'], duration_ms)
-        metrics['max_duration_ms'] = max(metrics['max_duration_ms'], duration_ms)
-        metrics['avg_duration_ms'] = metrics['total_duration_ms'] / metrics['total_queries']
-        metrics['error_rate'] = metrics['total_errors'] / metrics['total_queries']
-        metrics['last_updated'] = timezone.now().isoformat()
+        metrics["total_duration_ms"] += duration_ms
+        metrics["min_duration_ms"] = min(metrics["min_duration_ms"], duration_ms)
+        metrics["max_duration_ms"] = max(metrics["max_duration_ms"], duration_ms)
+        metrics["avg_duration_ms"] = (
+            metrics["total_duration_ms"] / metrics["total_queries"]
+        )
+        metrics["error_rate"] = metrics["total_errors"] / metrics["total_queries"]
+        metrics["last_updated"] = timezone.now().isoformat()
 
         cache.set(self.CACHE_KEY_METRICS, metrics, self.metrics_ttl)
 
         # Alert if error rate is high
-        if metrics['error_rate'] > self.ERROR_RATE_WARNING:
+        if metrics["error_rate"] > self.ERROR_RATE_WARNING:
             logger.warning(
                 f"High search error rate: {metrics['error_rate']:.2%} "
                 f"({metrics['total_errors']}/{metrics['total_queries']})"
@@ -181,8 +194,8 @@ class SearchMonitor:
 
         # Add health status
         health = self.check_index_health()
-        metrics['health_status'] = health['status']
-        metrics['health_message'] = health['message']
+        metrics["health_status"] = health["status"]
+        metrics["health_message"] = health["message"]
 
         return metrics
 
@@ -209,10 +222,10 @@ class SearchMonitor:
             return cached_health
 
         health = {
-            'status': 'unknown',
-            'message': 'Health check not performed',
-            'checked_at': timezone.now().isoformat(),
-            'details': {}
+            "status": "unknown",
+            "message": "Health check not performed",
+            "checked_at": timezone.now().isoformat(),
+            "details": {},
         }
 
         try:
@@ -221,22 +234,22 @@ class SearchMonitor:
             # Check if MeiliSearch is reachable
             stats = search_index_manager.index.get_stats()
 
-            health['status'] = 'healthy'
-            health['message'] = 'Search index is operational'
-            health['details'] = {
-                'document_count': stats.get('numberOfDocuments', 0),
-                'is_indexing': stats.get('isIndexing', False),
-                'field_distribution': stats.get('fieldDistribution', {}),
+            health["status"] = "healthy"
+            health["message"] = "Search index is operational"
+            health["details"] = {
+                "document_count": stats.get("numberOfDocuments", 0),
+                "is_indexing": stats.get("isIndexing", False),
+                "field_distribution": stats.get("fieldDistribution", {}),
             }
 
             # Check if indexing is stuck
-            if stats.get('isIndexing') and stats.get('numberOfDocuments', 0) == 0:
-                health['status'] = 'warning'
-                health['message'] = 'Indexing in progress but no documents yet'
+            if stats.get("isIndexing") and stats.get("numberOfDocuments", 0) == 0:
+                health["status"] = "warning"
+                health["message"] = "Indexing in progress but no documents yet"
 
         except Exception as e:
-            health['status'] = 'error'
-            health['message'] = f'Health check failed: {str(e)}'
+            health["status"] = "error"
+            health["message"] = f"Health check failed: {str(e)}"
             logger.error(f"Search index health check failed: {e}", exc_info=True)
 
             if SENTRY_AVAILABLE:
@@ -247,9 +260,15 @@ class SearchMonitor:
 
         return health
 
-    def log_index_sync(self, model_name: str, operation: str,
-                       success: bool, duration_ms: float,
-                       document_count: int = 1, error: Optional[str] = None):
+    def log_index_sync(
+        self,
+        model_name: str,
+        operation: str,
+        success: bool,
+        duration_ms: float,
+        document_count: int = 1,
+        error: Optional[str] = None,
+    ):
         """
         Log index synchronization event.
 
@@ -262,13 +281,13 @@ class SearchMonitor:
             error: Error message if failed
         """
         log_entry = {
-            'timestamp': timezone.now().isoformat(),
-            'model': model_name,
-            'operation': operation,
-            'success': success,
-            'duration_ms': round(duration_ms, 2),
-            'document_count': document_count,
-            'error': error,
+            "timestamp": timezone.now().isoformat(),
+            "model": model_name,
+            "operation": operation,
+            "success": success,
+            "duration_ms": round(duration_ms, 2),
+            "document_count": document_count,
+            "error": error,
         }
 
         if success:
@@ -277,22 +296,20 @@ class SearchMonitor:
                 f"documents in {duration_ms:.2f}ms"
             )
         else:
-            logger.error(
-                f"Index sync failed: {operation} {model_name} - {error}"
-            )
+            logger.error(f"Index sync failed: {operation} {model_name} - {error}")
 
             if SENTRY_AVAILABLE:
                 sentry_sdk.capture_message(
                     f"Index sync failure: {model_name} {operation}",
-                    level='error',
-                    extras=log_entry
+                    level="error",
+                    extras=log_entry,
                 )
 
         # Store sync events
-        sync_events = cache.get('search:sync:events', [])
+        sync_events = cache.get("search:sync:events", [])
         sync_events.insert(0, log_entry)
         sync_events = sync_events[:100]
-        cache.set('search:sync:events', sync_events, 86400)
+        cache.set("search:sync:events", sync_events, 86400)
 
     def get_dashboard_data(self) -> Dict[str, Any]:
         """
@@ -302,11 +319,11 @@ class SearchMonitor:
             dict: All monitoring data for admin dashboard
         """
         return {
-            'metrics': self.get_metrics(),
-            'recent_queries': self.get_recent_queries(10),
-            'recent_errors': self.get_recent_errors(10),
-            'health': self.check_index_health(),
-            'sync_events': cache.get('search:sync:events', [])[:10],
+            "metrics": self.get_metrics(),
+            "recent_queries": self.get_recent_queries(10),
+            "recent_errors": self.get_recent_errors(10),
+            "health": self.check_index_health(),
+            "sync_events": cache.get("search:sync:events", [])[:10],
         }
 
     def reset_metrics(self):
@@ -315,7 +332,7 @@ class SearchMonitor:
         cache.delete(self.CACHE_KEY_ERRORS)
         cache.delete(self.CACHE_KEY_QUERIES)
         cache.delete(self.CACHE_KEY_HEALTH)
-        cache.delete('search:sync:events')
+        cache.delete("search:sync:events")
         logger.info("Search monitoring metrics reset")
 
 

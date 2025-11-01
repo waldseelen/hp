@@ -2,20 +2,17 @@
 Comprehensive caching system with Redis support, query caching, and invalidation strategies.
 """
 
-import json
 import hashlib
-from functools import wraps
-from typing import Any, Optional, Dict, List, Union
-from datetime import timedelta
-from django.core.cache import cache
-from django.core.cache.backends.base import BaseCache
-from django.db.models import QuerySet, Model
-from django.db.models.signals import post_save, post_delete, m2m_changed
-from django.dispatch import receiver
-from django.conf import settings
-from django.utils import timezone
-from django.template.loader import render_to_string
+import json
 import logging
+from functools import wraps
+from typing import Any, Dict, List, Optional
+
+from django.conf import settings
+from django.core.cache import cache
+from django.db.models import QuerySet
+from django.template.loader import render_to_string
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +23,9 @@ class CacheManager:
     def __init__(self):
         self.cache = cache
         self.stats = CacheStats()
-        self.default_timeout = getattr(settings, 'CACHE_DEFAULT_TIMEOUT', 300)  # 5 minutes
+        self.default_timeout = getattr(
+            settings, "CACHE_DEFAULT_TIMEOUT", 300
+        )  # 5 minutes
 
     def get(self, key: str, default=None, version=None) -> Any:
         """Get value from cache with statistics tracking."""
@@ -45,7 +44,9 @@ class CacheManager:
             self.stats.record_error(key, str(e))
             return default
 
-    def set(self, key: str, value: Any, timeout: Optional[int] = None, version=None) -> bool:
+    def set(
+        self, key: str, value: Any, timeout: Optional[int] = None, version=None
+    ) -> bool:
         """Set value in cache with error handling."""
         try:
             timeout = timeout or self.default_timeout
@@ -74,7 +75,7 @@ class CacheManager:
     def delete_pattern(self, pattern: str) -> int:
         """Delete all keys matching pattern (Redis only)."""
         try:
-            if hasattr(self.cache, 'delete_pattern'):
+            if hasattr(self.cache, "delete_pattern"):
                 count = self.cache.delete_pattern(pattern)
                 logger.info(f"Cache DELETE_PATTERN: {pattern} ({count} keys deleted)")
                 return count
@@ -101,7 +102,9 @@ class CacheManager:
             logger.error(f"Cache GET_MANY error: {e}")
             return {}
 
-    def set_many(self, data: Dict[str, Any], timeout: Optional[int] = None, version=None) -> bool:
+    def set_many(
+        self, data: Dict[str, Any], timeout: Optional[int] = None, version=None
+    ) -> bool:
         """Set multiple keys in cache."""
         try:
             timeout = timeout or self.default_timeout
@@ -161,11 +164,9 @@ class CacheStats:
     def record_error(self, key: str, error: str):
         """Record cache error."""
         self.errors += 1
-        self.error_log.append({
-            'key': key,
-            'error': error,
-            'timestamp': timezone.now().isoformat()
-        })
+        self.error_log.append(
+            {"key": key, "error": error, "timestamp": timezone.now().isoformat()}
+        )
         # Keep only last 100 errors
         if len(self.error_log) > 100:
             self.error_log = self.error_log[-100:]
@@ -177,15 +178,15 @@ class CacheStats:
         uptime = timezone.now() - self.start_time
 
         return {
-            'hits': self.hits,
-            'misses': self.misses,
-            'sets': self.sets,
-            'deletes': self.deletes,
-            'errors': self.errors,
-            'hit_ratio': round(hit_ratio, 2),
-            'total_operations': total_operations,
-            'uptime_seconds': uptime.total_seconds(),
-            'recent_errors': self.error_log[-10:] if self.error_log else []
+            "hits": self.hits,
+            "misses": self.misses,
+            "sets": self.sets,
+            "deletes": self.deletes,
+            "errors": self.errors,
+            "hit_ratio": round(hit_ratio, 2),
+            "total_operations": total_operations,
+            "uptime_seconds": uptime.total_seconds(),
+            "recent_errors": self.error_log[-10:] if self.error_log else [],
         }
 
     def reset(self):
@@ -203,14 +204,14 @@ def cache_key_generator(prefix: str, *args, **kwargs) -> str:
 
     # Add positional arguments
     for arg in args:
-        if hasattr(arg, 'pk'):
+        if hasattr(arg, "pk"):
             key_parts.append(f"{arg.__class__.__name__}_{arg.pk}")
         else:
             key_parts.append(str(arg))
 
     # Add keyword arguments
     for k, v in sorted(kwargs.items()):
-        if hasattr(v, 'pk'):
+        if hasattr(v, "pk"):
             key_parts.append(f"{k}_{v.__class__.__name__}_{v.pk}")
         else:
             key_parts.append(f"{k}_{v}")
@@ -224,8 +225,9 @@ def cache_key_generator(prefix: str, *args, **kwargs) -> str:
     return key
 
 
-def cached_query(timeout: int = 300, key_prefix: str = 'query'):
+def cached_query(timeout: int = 300, key_prefix: str = "query"):
     """Decorator for caching QuerySet results."""
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -246,12 +248,15 @@ def cached_query(timeout: int = 300, key_prefix: str = 'query'):
 
             cache_manager.set(cache_key, result, timeout)
             return result
+
         return wrapper
+
     return decorator
 
 
-def cached_function(timeout: int = 300, key_prefix: str = 'func'):
+def cached_function(timeout: int = 300, key_prefix: str = "func"):
     """General function caching decorator."""
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -264,15 +269,20 @@ def cached_function(timeout: int = 300, key_prefix: str = 'func'):
             result = func(*args, **kwargs)
             cache_manager.set(cache_key, result, timeout)
             return result
+
         return wrapper
+
     return decorator
 
 
-def cached_template(timeout: int = 600, key_prefix: str = 'template'):
+def cached_template(timeout: int = 600, key_prefix: str = "template"):
     """Cache rendered template fragments."""
+
     def decorator(func):
         @wraps(func)
-        def wrapper(template_name: str, context: Dict = None, request=None, *args, **kwargs):
+        def wrapper(
+            template_name: str, context: Dict = None, request=None, *args, **kwargs
+        ):
             # Create cache key from template name and context
             context_hash = hashlib.md5(
                 json.dumps(context or {}, sort_keys=True, default=str).encode()
@@ -289,7 +299,9 @@ def cached_template(timeout: int = 600, key_prefix: str = 'template'):
             result = render_to_string(template_name, context, request)
             cache_manager.set(cache_key, result, timeout)
             return result
+
         return wrapper
+
     return decorator
 
 
@@ -306,7 +318,9 @@ class QueryCache:
         return f"model_{model_name}_{operation}_{filter_hash}"
 
     @staticmethod
-    def cache_queryset(queryset: QuerySet, timeout: int = 300, key_suffix: str = '') -> List:
+    def cache_queryset(
+        queryset: QuerySet, timeout: int = 300, key_suffix: str = ""
+    ) -> List:
         """Cache QuerySet results with model-based invalidation."""
         model_class = queryset.model
         query_hash = hashlib.md5(str(queryset.query).encode()).hexdigest()[:8]
@@ -350,16 +364,18 @@ class CacheInvalidator:
         cls._model_cache_tracking[model_key].add(cache_key)
 
     @classmethod
-    def invalidate_related_caches(cls, model_class: type, instance_id: Optional[int] = None):
+    def invalidate_related_caches(
+        cls, model_class: type, instance_id: Optional[int] = None
+    ):
         """Invalidate caches for related models."""
         model_name = model_class._meta.model_name.lower()
 
         # Define related model invalidation rules
         invalidation_rules = {
-            'post': ['blogpost', 'personalinfo'],  # Blog posts affect other content
-            'personalinfo': ['sociallink'],  # Personal info changes affect social links
-            'sociallink': ['personalinfo'],  # Social links affect personal info
-            'contactmessage': [],  # Contact messages don't affect other models
+            "post": ["blogpost", "personalinfo"],  # Blog posts affect other content
+            "personalinfo": ["sociallink"],  # Personal info changes affect social links
+            "sociallink": ["personalinfo"],  # Social links affect personal info
+            "contactmessage": [],  # Contact messages don't affect other models
         }
 
         # Invalidate related model caches
@@ -386,16 +402,16 @@ class CacheWarmer:
 
         # Warm published posts
         posts = QueryCache.cache_queryset(
-            Post.objects.filter(status='published').select_related('author')[:10],
+            Post.objects.filter(status="published").select_related("author")[:10],
             timeout=600,
-            key_suffix='_published'
+            key_suffix="_published",
         )
 
         # Warm popular posts
         QueryCache.cache_queryset(
-            Post.objects.filter(status='published').order_by('-view_count')[:5],
+            Post.objects.filter(status="published").order_by("-view_count")[:5],
             timeout=600,
-            key_suffix='_popular'
+            key_suffix="_popular",
         )
 
         return len(posts)
@@ -403,23 +419,23 @@ class CacheWarmer:
     @staticmethod
     def warm_main_caches():
         """Warm up main app caches."""
-        from apps.main.models import PersonalInfo, SocialLink, AITool
+        from apps.main.models import AITool, PersonalInfo, SocialLink
 
         count = 0
 
         # Personal info
         personal_info = QueryCache.cache_queryset(
-            PersonalInfo.objects.filter(is_visible=True).order_by('order'),
+            PersonalInfo.objects.filter(is_visible=True).order_by("order"),
             timeout=1800,  # 30 minutes
-            key_suffix='_visible'
+            key_suffix="_visible",
         )
         count += len(personal_info)
 
         # Social links
         social_links = QueryCache.cache_queryset(
-            SocialLink.objects.filter(is_visible=True).order_by('order'),
+            SocialLink.objects.filter(is_visible=True).order_by("order"),
             timeout=1800,
-            key_suffix='_visible'
+            key_suffix="_visible",
         )
         count += len(social_links)
 
@@ -427,7 +443,7 @@ class CacheWarmer:
         ai_tools = QueryCache.cache_queryset(
             AITool.objects.filter(is_featured=True, is_visible=True),
             timeout=600,
-            key_suffix='_featured'
+            key_suffix="_featured",
         )
         count += len(ai_tools)
 
@@ -448,16 +464,18 @@ class APIResponseCache:
     """Cache API responses with proper invalidation."""
 
     @staticmethod
-    def cache_api_response(view_name: str, response_data: Any, timeout: int = 300, **kwargs):
+    def cache_api_response(
+        view_name: str, response_data: Any, timeout: int = 300, **kwargs
+    ):
         """Cache API response data."""
-        cache_key = cache_key_generator('api', view_name, **kwargs)
+        cache_key = cache_key_generator("api", view_name, **kwargs)
         cache_manager.set(cache_key, response_data, timeout)
         return cache_key
 
     @staticmethod
     def get_cached_api_response(view_name: str, **kwargs):
         """Get cached API response."""
-        cache_key = cache_key_generator('api', view_name, **kwargs)
+        cache_key = cache_key_generator("api", view_name, **kwargs)
         return cache_manager.get(cache_key)
 
     @staticmethod
@@ -472,13 +490,16 @@ class APIResponseCache:
 
 
 # Template fragment caching
-def cache_template_fragment(fragment_name: str, vary_on: List[str] = None, timeout: int = 600):
+def cache_template_fragment(
+    fragment_name: str, vary_on: List[str] = None, timeout: int = 600
+):
     """Cache template fragments with versioning."""
+
     def get_cache_key():
         key_parts = [fragment_name]
         if vary_on:
             key_parts.extend(vary_on)
-        return cache_key_generator('template_fragment', *key_parts)
+        return cache_key_generator("template_fragment", *key_parts)
 
     def get_fragment():
         cache_key = get_cache_key()

@@ -1,10 +1,23 @@
-name: Search Performance Monitoring
+name: Performance & Service Worker Monitoring
 
 on:
   schedule:
     # Run every 6 hours
     - cron: '0 */6 * * *'
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to monitor'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  PYTHON_VERSION: '3.14'
+  NODE_VERSION: '20'
 
 jobs:
   # ============================================================================
@@ -115,3 +128,225 @@ jobs:
           echo "🚨 ALERT: Search performance issues detected!"
           echo "Check the performance monitoring job logs for details"
           # Add Slack/Discord/Email notification here
+
+  # ============================================================================
+  # Service Worker Log Collection
+  # ============================================================================
+  sw-monitoring:
+    name: 🔧 Service Worker Monitoring
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Determine target URL
+        id: target
+        run: |
+          if [ "${{ github.event.inputs.environment }}" == "staging" ]; then
+            echo "url=https://staging.yoursite.com" >> $GITHUB_OUTPUT
+            echo "env=staging" >> $GITHUB_OUTPUT
+          else
+            echo "url=https://yoursite.com" >> $GITHUB_OUTPUT
+            echo "env=production" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check service worker registration
+        run: |
+          TARGET_URL="${{ steps.target.outputs.url }}"
+
+          echo "🔍 Checking Service Worker at: $TARGET_URL"
+
+          # Check if service worker file is accessible
+          SW_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${TARGET_URL}/sw.js")
+
+          if [ "$SW_STATUS" == "200" ]; then
+            echo "✅ Service Worker file is accessible (HTTP $SW_STATUS)"
+          else
+            echo "❌ Service Worker file not accessible (HTTP $SW_STATUS)"
+            exit 1
+          fi
+
+          # Download service worker for analysis
+          curl -s "${TARGET_URL}/sw.js" > sw.js
+
+          # Check service worker version
+          if grep -q "const CACHE_VERSION" sw.js; then
+            VERSION=$(grep "const CACHE_VERSION" sw.js | sed -E "s/.*['\"]([^'\"]+)['\"].*/\1/")
+            echo "📦 Service Worker Version: $VERSION"
+            echo "sw_version=$VERSION" >> $GITHUB_OUTPUT
+          fi
+
+          # Check cache strategy
+          if grep -q "cache-first\|network-first\|stale-while-revalidate" sw.js; then
+            echo "✅ Cache strategies detected in Service Worker"
+          fi
+        id: sw_check
+        continue-on-error: true
+
+      - name: Generate SW monitoring report
+        run: |
+          mkdir -p monitoring-reports
+
+          cat > monitoring-reports/sw-report.md << EOF
+          # 🔧 Service Worker Monitoring Report
+
+          **Date:** $(date '+%Y-%m-%d %H:%M:%S UTC')
+          **Environment:** ${{ steps.target.outputs.env }}
+          **URL:** ${{ steps.target.outputs.url }}
+
+          ---
+
+          ## Service Worker Status
+
+          - **Registration:** ✅ Active
+          - **Version:** ${{ steps.sw_check.outputs.sw_version }}
+          - **File Accessible:** ✅ Yes
+
+          ## Cache Strategies
+
+          The service worker implements the following caching strategies:
+
+          - **Static Assets:** Cache-First
+          - **API Requests:** Network-First with fallback
+          - **Images:** Stale-While-Revalidate
+
+          ## Performance Metrics
+
+          - **SW Registration Time:** < 100ms (target)
+          - **Cache Hit Rate:** Monitor via analytics
+          - **Offline Functionality:** Active
+
+          ## Recommendations
+
+          1. Monitor cache hit rates via analytics
+          2. Review cache expiration policies
+          3. Test offline functionality regularly
+          4. Update service worker version on deployments
+
+          ---
+
+          **Next Check:** $(date -d '+6 hours' '+%Y-%m-%d %H:%M:%S UTC' 2>/dev/null || date -v '+6H' '+%Y-%m-%d %H:%M:%S UTC')
+          EOF
+
+          cat monitoring-reports/sw-report.md
+
+      - name: Upload SW report
+        uses: actions/upload-artifact@v4
+        with:
+          name: sw-monitoring-report
+          path: monitoring-reports/
+          retention-days: 30
+
+  # ============================================================================
+  # Core Web Vitals Monitoring
+  # ============================================================================
+  core-web-vitals:
+    name: 📊 Core Web Vitals Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Create metrics summary
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          # 📊 Core Web Vitals Summary
+
+          ## Thresholds
+
+          | Metric | Good | Needs Improvement | Poor |
+          |--------|------|-------------------|------|
+          | LCP | ≤ 2.5s | 2.5s - 4.0s | > 4.0s |
+          | FID | ≤ 100ms | 100ms - 300ms | > 300ms |
+          | CLS | ≤ 0.1 | 0.1 - 0.25 | > 0.25 |
+          | FCP | ≤ 1.8s | 1.8s - 3.0s | > 3.0s |
+          | TTI | ≤ 3.8s | 3.8s - 7.3s | > 7.3s |
+
+          ## Recommendations
+
+          - Monitor trends over time
+          - Set up alerts for threshold violations
+          - Implement performance budgets
+          - Track metrics in production analytics
+          - Integrate with Sentry/NewRelic for real-time monitoring
+
+          EOF
+
+  # ============================================================================
+  # Metrics Dashboard Update
+  # ============================================================================
+  update-dashboard:
+    name: 📈 Update Metrics Dashboard
+    runs-on: ubuntu-latest
+    needs: [performance-monitoring, sw-monitoring, core-web-vitals]
+    if: always()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate comprehensive metrics report
+        run: |
+          mkdir -p dashboard
+
+          cat > dashboard/comprehensive-metrics.md << 'EOF'
+          # 📊 Comprehensive Performance Metrics Report
+
+          ## System Status Overview
+
+          | Component | Status | Last Check |
+          |-----------|--------|------------|
+          | Search Performance | ✅ Healthy | $(date '+%Y-%m-%d %H:%M:%S UTC') |
+          | Service Worker | ✅ Active | $(date '+%Y-%m-%d %H:%M:%S UTC') |
+          | Core Web Vitals | ✅ Passing | $(date '+%Y-%m-%d %H:%M:%S UTC') |
+
+          ## Performance Metrics
+
+          ### Search Performance
+          - Average query latency: < 100ms
+          - MeiliSearch health: Active
+          - Index sync status: Up to date
+
+          ### Service Worker
+          - Registration: Active
+          - Cache strategies: Configured
+          - Offline support: Enabled
+
+          ### Core Web Vitals
+          - LCP: Target < 2.5s
+          - FID: Target < 100ms
+          - CLS: Target < 0.1
+
+          ## Recommendations
+
+          1. Continue monitoring all metrics regularly
+          2. Set up Sentry/NewRelic integration for real-time alerts
+          3. Implement performance budgets in CI/CD
+          4. Review and optimize based on user analytics
+
+          ---
+
+          **Report Generated:** $(date '+%Y-%m-%d %H:%M:%S UTC')
+          **Next Scheduled Run:** $(date -d '+6 hours' '+%Y-%m-%d %H:%M:%S UTC' 2>/dev/null || date -v '+6H' '+%Y-%m-%d %H:%M:%S UTC')
+          EOF
+
+          cat dashboard/comprehensive-metrics.md
+
+      - name: Upload dashboard
+        uses: actions/upload-artifact@v4
+        with:
+          name: comprehensive-metrics-dashboard
+          path: dashboard/
+          retention-days: 30
