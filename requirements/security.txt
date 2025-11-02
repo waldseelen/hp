@@ -1,0 +1,30 @@
+# Security Testing Requirements
+
+# Core security tools
+bandit>=1.7.5
+safety>=2.3.5
+pytest-security>=0.1.0
+
+# Additional security tools
+pip-audit>=2.6.1
+semgrep>=1.45.0
+
+# Penetration testing (optional)
+# owasp-zap-api-python>=0.3.0
+
+# Security headers testing
+requests>=2.31.0
+beautifulsoup4>=4.12.2
+
+# SSL/TLS testing
+cryptography>=41.0.5
+certifi>=2023.7.22
+
+# Code quality (security-related)
+pylint>=3.0.2
+flake8-bandit>=4.1.1
+flake8-bugbear>=23.9.16
+
+# Dependency checking
+pipdeptree>=2.13.1
+pip-check>=2.8.1

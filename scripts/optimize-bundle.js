@@ -30,7 +30,7 @@ function combineCSS(files) {
       return `/* ${path.basename(file)} */\n${css}\n`;
     })
     .join('\n');
-  
+
   return combinedCSS;
 }
 
@@ -38,69 +38,69 @@ function combineCSS(files) {
 async function optimizeBundle() {
   try {
     console.log('🚀 Starting bundle optimization...');
-    
+
     const staticDir = path.join(__dirname, '..', 'static');
     const cssDir = path.join(staticDir, 'css');
     const optimizedDir = path.join(cssDir, 'optimized');
-    
+
     // Create optimized directory
     if (!fs.existsSync(optimizedDir)) {
       fs.mkdirSync(optimizedDir, { recursive: true });
     }
-    
+
     // Define CSS bundles
     const cssBundles = {
       // Critical bundle for above-the-fold content
       'critical.min.css': [
         path.join(cssDir, 'critical', 'base.css'),
       ],
-      
+
       // Main bundle for core styles
       'main.min.css': [
         path.join(cssDir, 'custom.css'),
         path.join(cssDir, 'components.css'),
         path.join(cssDir, 'accessibility.css'),
       ],
-      
+
       // Enhanced bundle for additional features
       'enhanced.min.css': [
         path.join(cssDir, 'animations.css'),
         path.join(cssDir, 'component-library.css'),
       ],
-      
+
       // Tailwind bundle (compiled)
       'tailwind.min.css': [
         path.join(cssDir, 'output.css'),
         path.join(cssDir, 'components-compiled.css'),
       ]
     };
-    
+
     // Process each bundle
     Object.entries(cssBundles).forEach(([bundleName, files]) => {
       console.log(`📦 Processing bundle: ${bundleName}`);
-      
+
       // Combine CSS files
       const combinedCSS = combineCSS(files);
-      
+
       if (combinedCSS.trim()) {
         // Minify combined CSS
         const minifiedCSS = minifyCSS(combinedCSS);
-        
+
         // Calculate compression ratio
         const originalSize = Buffer.byteLength(combinedCSS, 'utf8');
         const minifiedSize = Buffer.byteLength(minifiedCSS, 'utf8');
         const compressionRatio = ((originalSize - minifiedSize) / originalSize * 100).toFixed(1);
-        
+
         // Write optimized bundle
         const outputPath = path.join(optimizedDir, bundleName);
         fs.writeFileSync(outputPath, minifiedCSS);
-        
+
         console.log(`   ✅ ${bundleName}: ${originalSize} → ${minifiedSize} bytes (${compressionRatio}% reduction)`);
       } else {
         console.log(`   ⚠️  ${bundleName}: No content found`);
       }
     });
-    
+
     // Generate bundle manifest
     const manifest = {
       generated: new Date().toISOString(),
@@ -125,12 +125,12 @@ async function optimizeBundle() {
         async: ['tailwind.min.css']
       }
     };
-    
+
     fs.writeFileSync(
       path.join(optimizedDir, 'manifest.json'),
       JSON.stringify(manifest, null, 2)
     );
-    
+
     // Generate Django template helper
     const djangoHelper = `
 {# Optimized CSS Loading Helper #}
@@ -145,18 +145,18 @@ async function optimizeBundle() {
 </style>
 
 <!-- Main CSS bundle - High priority -->
-<link rel="preload" 
-      href="{% static 'css/optimized/main.min.css' %}" 
-      as="style" 
+<link rel="preload"
+      href="{% static 'css/optimized/main.min.css' %}"
+      as="style"
       onload="this.onload=null;this.rel='stylesheet'">
 <noscript>
   <link rel="stylesheet" href="{% static 'css/optimized/main.min.css' %}">
 </noscript>
 
 <!-- Enhanced CSS bundle - Load after main content -->
-<link rel="preload" 
-      href="{% static 'css/optimized/enhanced.min.css' %}" 
-      as="style" 
+<link rel="preload"
+      href="{% static 'css/optimized/enhanced.min.css' %}"
+      as="style"
       onload="this.onload=null;this.rel='stylesheet'"
       media="print"
       onload="this.media='all'">
@@ -179,18 +179,18 @@ async function optimizeBundle() {
   <link rel="stylesheet" href="{% static 'css/optimized/tailwind.min.css' %}">
 </noscript>
 `;
-    
+
     // Create templates directory if it doesn't exist
     const templatesDir = path.join(__dirname, '..', 'templates', 'partials');
     if (!fs.existsSync(templatesDir)) {
       fs.mkdirSync(templatesDir, { recursive: true });
     }
-    
+
     fs.writeFileSync(
       path.join(templatesDir, 'optimized-css.html'),
       djangoHelper.trim()
     );
-    
+
     // Generate performance optimization guide
     const performanceGuide = `
 # CSS Bundle Optimization Guide
@@ -260,19 +260,19 @@ npm run build:production
 
 Check current bundle sizes in manifest.json
 `;
-    
+
     fs.writeFileSync(
       path.join(optimizedDir, 'PERFORMANCE.md'),
       performanceGuide.trim()
     );
-    
+
     console.log('\n🎉 Bundle optimization completed!');
     console.log('📊 Optimization summary:');
     console.log(`   📁 Bundles: ${Object.keys(cssBundles).length}`);
     console.log(`   📄 Manifest: static/css/optimized/manifest.json`);
     console.log(`   🎨 Template: templates/partials/optimized-css.html`);
     console.log(`   📋 Guide: static/css/optimized/PERFORMANCE.md`);
-    
+
     // Calculate total savings
     const totalOriginal = Object.keys(cssBundles).reduce((total, bundleName) => {
       const files = cssBundles[bundleName];
@@ -283,14 +283,14 @@ Check current bundle sizes in manifest.json
         return size;
       }, 0);
     }, 0);
-    
+
     const totalOptimized = Object.keys(manifest.bundles).reduce((total, bundleName) => {
       return total + manifest.bundles[bundleName].size;
     }, 0);
-    
+
     const totalSavings = ((totalOriginal - totalOptimized) / totalOriginal * 100).toFixed(1);
     console.log(`   💾 Total savings: ${totalSavings}% (${totalOriginal} → ${totalOptimized} bytes)`);
-    
+
   } catch (error) {
     console.error('❌ Bundle optimization failed:', error);
     process.exit(1);

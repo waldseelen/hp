@@ -338,11 +338,72 @@ class SecureFileValidator:
         return True
 
 
-def validate_json_input(
-    data: Dict[str, Any], schema: Dict[str, Any]
-) -> Dict[str, Any]:  # noqa: C901
+def _check_required_field(field, value, rules):
+    """Check if required field is present."""
+    if rules.get("required", False) and value is None:
+        raise ValidationError(f"Field {field} is required")
+
+
+def _validate_field_type(field, value, rules):
+    """Validate and convert field type."""
+    expected_type = rules.get("type", str)
+    if not isinstance(value, expected_type):
+        try:
+            return expected_type(value)
+        except (ValueError, TypeError):
+            raise ValidationError(f"Field {field} must be of type {expected_type.__name__}")
+    return value
+
+
+def _validate_string_field(field, value, rules):
+    """Validate string length and sanitize."""
+    if not isinstance(value, str):
+        return value
+
+    min_length = rules.get("min_length", 0)
+    max_length = rules.get("max_length", 1000)
+
+    if len(value) < min_length:
+        raise ValidationError(f"Field {field} must be at least {min_length} characters")
+
+    if len(value) > max_length:
+        raise ValidationError(f"Field {field} must be at most {max_length} characters")
+
+    return InputSanitizer.sanitize_text(value, max_length)
+
+
+def _validate_number_field(field, value, rules):
+    """Validate number range."""
+    if not isinstance(value, (int, float)):
+        return value
+
+    min_value = rules.get("min_value")
+    max_value = rules.get("max_value")
+
+    if min_value is not None and value < min_value:
+        raise ValidationError(f"Field {field} must be at least {min_value}")
+
+    if max_value is not None and value > max_value:
+        raise ValidationError(f"Field {field} must be at most {max_value}")
+
+    return value
+
+
+def _validate_pattern_field(field, value, rules):
+    """Validate string pattern match."""
+    pattern = rules.get("pattern")
+    if pattern and isinstance(value, str):
+        if not re.match(pattern, value):
+            raise ValidationError(f"Field {field} does not match required pattern")
+    return value
+
+
+def validate_json_input(data: Dict[str, Any], schema: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Validate JSON input against a schema
+    Validate JSON input against a schema.
+
+    Refactored to reduce complexity: C:18 → C:5
+    Uses dedicated validators for type, string, number, pattern.
 
     Args:
         data: Input data to validate
@@ -359,57 +420,13 @@ def validate_json_input(
     for field, rules in schema.items():
         value = data.get(field)
 
-        # Check required fields
-        if rules.get("required", False) and value is None:
-            raise ValidationError(f"Field {field} is required")
+        _check_required_field(field, value, rules)
 
         if value is not None:
-            # Type validation
-            expected_type = rules.get("type", str)
-            if not isinstance(value, expected_type):
-                try:
-                    value = expected_type(value)
-                except (ValueError, TypeError):
-                    raise ValidationError(
-                        f"Field {field} must be of type {expected_type.__name__}"
-                    )
-
-            # Length validation for strings
-            if isinstance(value, str):
-                min_length = rules.get("min_length", 0)
-                max_length = rules.get("max_length", 1000)
-
-                if len(value) < min_length:
-                    raise ValidationError(
-                        f"Field {field} must be at least {min_length} characters"
-                    )
-
-                if len(value) > max_length:
-                    raise ValidationError(
-                        f"Field {field} must be at most {max_length} characters"
-                    )
-
-                # Sanitize string
-                value = InputSanitizer.sanitize_text(value, max_length)
-
-            # Range validation for numbers
-            if isinstance(value, (int, float)):
-                min_value = rules.get("min_value")
-                max_value = rules.get("max_value")
-
-                if min_value is not None and value < min_value:
-                    raise ValidationError(f"Field {field} must be at least {min_value}")
-
-                if max_value is not None and value > max_value:
-                    raise ValidationError(f"Field {field} must be at most {max_value}")
-
-            # Pattern validation
-            pattern = rules.get("pattern")
-            if pattern and isinstance(value, str):
-                if not re.match(pattern, value):
-                    raise ValidationError(
-                        f"Field {field} does not match required pattern"
-                    )
+            value = _validate_field_type(field, value, rules)
+            value = _validate_string_field(field, value, rules)
+            value = _validate_number_field(field, value, rules)
+            value = _validate_pattern_field(field, value, rules)
 
             validated_data[field] = value
 

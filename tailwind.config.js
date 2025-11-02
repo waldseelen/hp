@@ -4,31 +4,31 @@
  *
  * Bu dosya Django portfolio projesinin Tailwind CSS konfigürasyonunu tanımlar.
  * Modern, responsive ve dark theme destekli tasarım sistemini yapılandırır.
- * 
+ *
  * TEMEL KONFİGÜRASYONLAR:
  * - Content: Django template dosyalarını tarar (./templates/**/*.html)
  * - Dark Mode: Class-based dark mode desteği ('class' stratejisi)
  * - Custom Colors: Primary ve secondary renk paletleri
  * - Animations: Fade-in, slide-up ve starfield animasyonları
- * 
+ *
  * RENK PALETLERİ:
  * - Primary (50-900): Ana tema renkleri (khaki/altın tonları)
  * - Secondary (800-900): Koyu tema için gri tonları
- * 
+ *
  * ANİMASYON SİSTEMİ:
  * - fade-in: Yumuşak görünüm geçişleri
  * - slide-up: Yukarı kayma efekti
  * - starfield: Arka plan yıldız animasyonu
- * 
+ *
  * BUILD KOMUTU:
  * npm run build:css (input.css -> output.css)
- * 
+ *
  * KULLANIM ALANLARI:
  * - Django template dosyalarında class-based styling
  * - Responsive design breakpoints
  * - Dark/light theme switching
  * - Modern UI component styling
- * 
+ *
  * @type {import('tailwindcss').Config}
  */
 module.exports = {

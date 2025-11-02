@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import models
 from django.utils import timezone
+from django.utils.functional import cached_property
 
 from apps.main.file_validators import image_validator
 
@@ -18,6 +19,37 @@ class ToolManager(models.Manager):
     def visible(self):
         """Get all visible tools"""
         return self.filter(is_visible=True)
+
+    def get_similar_tools(self, tool, limit=3):
+        """Get similar tools based on category and tag similarity
+
+        Args:
+            tool: The Tool instance to find similar tools for
+            limit: Maximum number of similar tools to return
+
+        Returns:
+            List of similar Tool instances, sorted by tag similarity
+
+        Note:
+            Optimized to fetch all matching tools in a single query
+        """
+        # Fetch all similar tools in one query (no related objects to prefetch)
+        similar = self.visible().filter(category=tool.category).exclude(pk=tool.pk)
+
+        if tool.tags:
+            # Score by tag similarity
+            scored_tools = []
+            for similar_tool in similar:
+                if similar_tool.tags:
+                    common_tags = set(tool.tags) & set(similar_tool.tags)
+                    if common_tags:
+                        scored_tools.append((len(common_tags), similar_tool))
+
+            # Sort by score and return top results
+            scored_tools.sort(key=lambda x: x[0], reverse=True)
+            return [similar_tool for _, similar_tool in scored_tools[:limit]]
+
+        return list(similar[:limit])
 
 
 class Tool(models.Model):
@@ -136,40 +168,37 @@ class Tool(models.Model):
         self.full_clean()
         super().save(*args, **kwargs)
 
-    @property
+    @cached_property
     def rating_stars(self):
-        """Get star rating as string"""
+        """Get star rating as string (cached property)
+
+        Returns:
+            str: Visual star representation or "No rating"
+
+        Note:
+            Cached to avoid repeated string concatenation
+        """
         if not self.rating:
             return "No rating"
         return "⭐" * self.rating + "☆" * (5 - self.rating)
 
-    @property
+    @cached_property
     def is_free(self):
-        """Check if the tool is free"""
+        """Check if the tool is free (cached property)
+
+        Returns:
+            bool or None: True if free, False if paid, None if pricing unknown
+
+        Note:
+            Cached to avoid repeated string processing
+        """
         if not self.pricing:
             return None
         return self.pricing.lower() in ["free", "open source", "freemium"]
 
     def get_similar_tools(self, limit=3):
-        """Get similar tools based on category and tags"""
-        similar = (
-            Tool.objects.visible().filter(category=self.category).exclude(pk=self.pk)
-        )
-
-        if self.tags:
-            # Score by tag similarity
-            scored_tools = []
-            for tool in similar:
-                if tool.tags:
-                    common_tags = set(self.tags) & set(tool.tags)
-                    if common_tags:
-                        scored_tools.append((len(common_tags), tool))
-
-            # Sort by score and return top results
-            scored_tools.sort(key=lambda x: x[0], reverse=True)
-            return [tool for _, tool in scored_tools[:limit]]
-
-        return similar[:limit]
+        """Get similar tools based on category and tags (delegates to manager)"""
+        return Tool.objects.get_similar_tools(self, limit=limit)
 
     def __str__(self):
         category_indicator = f"[{self.category}]"

@@ -6,109 +6,109 @@ const { defineConfig, devices } = require('@playwright/test');
  * E2E Testing Configuration for Phase 10 Integration Tests
  */
 module.exports = defineConfig({
-  testDir: './tests/e2e',
+    testDir: './tests/e2e',
 
-  /* Run tests in files in parallel */
-  fullyParallel: true,
+    /* Run tests in files in parallel */
+    fullyParallel: true,
 
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+    /* Fail the build on CI if you accidentally left test.only in the source code. */
+    forbidOnly: !!process.env.CI,
 
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+    /* Retry on CI only */
+    retries: process.env.CI ? 2 : 0,
 
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+    /* Opt out of parallel tests on CI. */
+    workers: process.env.CI ? 1 : undefined,
 
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [
-    ['html', { outputFolder: 'test-results/html-report' }],
-    ['json', { outputFile: 'test-results/results.json' }],
-    ['list']
-  ],
+    /* Reporter to use. See https://playwright.dev/docs/test-reporters */
+    reporter: [
+        ['html', { outputFolder: 'test-results/html-report' }],
+        ['json', { outputFile: 'test-results/results.json' }],
+        ['list']
+    ],
 
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.BASE_URL || 'http://127.0.0.1:8000',
+    /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+    use: {
+        /* Base URL to use in actions like `await page.goto('/')`. */
+        baseURL: process.env.BASE_URL || 'http://127.0.0.1:8000',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+        /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+        trace: 'on-first-retry',
 
-    /* Take screenshot on failure */
-    screenshot: 'only-on-failure',
+        /* Take screenshot on failure */
+        screenshot: 'only-on-failure',
 
-    /* Record video on failure */
-    video: 'retain-on-failure',
+        /* Record video on failure */
+        video: 'retain-on-failure',
 
-    /* Global timeout for actions */
-    actionTimeout: 10000,
+        /* Global timeout for actions */
+        actionTimeout: 10000,
 
-    /* Global timeout for navigation */
-    navigationTimeout: 30000,
-  },
-
-  /* Configure projects for major browsers */
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+        /* Global timeout for navigation */
+        navigationTimeout: 30000,
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+    /* Configure projects for major browsers */
+    projects: [
+        {
+            name: 'chromium',
+            use: { ...devices['Desktop Chrome'] },
+        },
+
+        {
+            name: 'firefox',
+            use: { ...devices['Desktop Firefox'] },
+        },
+
+        {
+            name: 'webkit',
+            use: { ...devices['Desktop Safari'] },
+        },
+
+        /* Test against mobile viewports. */
+        {
+            name: 'Mobile Chrome',
+            use: { ...devices['Pixel 5'] },
+        },
+        {
+            name: 'Mobile Safari',
+            use: { ...devices['iPhone 12'] },
+        },
+
+        /* Test against branded browsers. */
+        {
+            name: 'Microsoft Edge',
+            use: { ...devices['Desktop Edge'], channel: 'msedge' },
+        },
+        {
+            name: 'Google Chrome',
+            use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+        },
+    ],
+
+    /* Global setup and teardown */
+    globalSetup: './tests/e2e/global-setup.js',
+    globalTeardown: './tests/e2e/global-teardown.js',
+
+    /* Folder for test artifacts such as screenshots, videos, traces, etc. */
+    outputDir: 'test-results/',
+
+    /* Timeout for each test */
+    timeout: 60000,
+
+    /* Expect timeout */
+    expect: {
+        timeout: 15000
     },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+    /* Web Server configuration - automatically start Django server for tests */
+    webServer: {
+        command: '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" manage.py runserver 127.0.0.1:8001',
+        url: 'http://127.0.0.1:8001',
+        reuseExistingServer: !process.env.CI,
+        timeout: 120 * 1000, // 2 minutes timeout
+        env: {
+            DJANGO_SETTINGS_MODULE: 'portfolio_site.settings.test'
+        }
     },
-
-    /* Test against mobile viewports. */
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
-    },
-
-    /* Test against branded browsers. */
-    {
-      name: 'Microsoft Edge',
-      use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    },
-    {
-      name: 'Google Chrome',
-      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    },
-  ],
-
-  /* Global setup and teardown */
-  globalSetup: './tests/e2e/global-setup.js',
-  globalTeardown: './tests/e2e/global-teardown.js',
-
-  /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-  outputDir: 'test-results/',
-
-  /* Timeout for each test */
-  timeout: 60000,
-
-  /* Expect timeout */
-  expect: {
-    timeout: 15000
-  },
-
-  /* Web Server configuration - automatically start Django server for tests */
-  webServer: {
-    command: 'python manage.py runserver 127.0.0.1:8001',
-    url: 'http://127.0.0.1:8001',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000, // 2 minutes timeout
-    env: {
-      DJANGO_SETTINGS_MODULE: 'portfolio_site.settings.test'
-    }
-  },
 });

@@ -9,10 +9,10 @@ module.exports = {
   plugins: [
     // Tailwind CSS
     require('@tailwindcss/postcss'),
-    
+
     // Autoprefixer for vendor prefixes
     require('autoprefixer'),
-    
+
     // PurgeCSS for production builds
     ...(isProduction ? [
       require('@fullhuman/postcss-purgecss').default({
@@ -26,7 +26,7 @@ module.exports = {
           './contact/**/*.py',
           './chat/**/*.py',
         ],
-        
+
         // Default extractors for different file types
         defaultExtractor: content => {
           // Match all possible class names
@@ -34,17 +34,17 @@ module.exports = {
           const innerMatches = content.match(/[^<>"'`\s.()]*[^<>"'`\s.():]/g) || [];
           return broadMatches.concat(innerMatches);
         },
-        
+
         // Keep dynamic classes that might be added by JavaScript
         safelist: [
           // Alpine.js classes
           /^x-/,
           'x-cloak',
-          
+
           // Theme classes
           'dark',
           'light',
-          
+
           // Dynamic state classes
           'loading',
           'error',
@@ -54,24 +54,24 @@ module.exports = {
           'open',
           'closed',
           'active',
-          
+
           // Animation classes
           /^animate-/,
           /^transition-/,
-          
+
           // Pseudo-class variants
           /^hover:/,
           /^focus:/,
           /^active:/,
           /^group-hover:/,
-          
+
           // Responsive variants
           /^sm:/,
           /^md:/,
           /^lg:/,
           /^xl:/,
           /^2xl:/,
-          
+
           // Custom component classes
           'btn',
           'btn-primary',
@@ -83,13 +83,13 @@ module.exports = {
           'skip-nav',
           'sr-only',
           'focus-visible',
-          
+
           // Dynamic background and text colors
           /^bg-/,
           /^text-/,
           /^border-/,
         ],
-        
+
         // Patterns for whitelist
         whitelistPatterns: [
           /^bg-.*-\d+$/,
@@ -107,7 +107,7 @@ module.exports = {
         ],
       })
     ] : []),
-    
+
     // CSS minification for production
     ...(isProduction ? [
       require('cssnano')({

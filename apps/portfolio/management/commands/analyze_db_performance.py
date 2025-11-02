@@ -11,11 +11,7 @@ from django.test.utils import override_settings
 
 from apps.blog.models import Post
 from apps.contact.models import ContactMessage
-from apps.main.models import (
-    AITool,
-    PersonalInfo,
-    SocialLink,
-)
+from apps.main.models import AITool, PersonalInfo, SocialLink
 
 
 class Command(BaseCommand):

@@ -79,6 +79,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8==6.1.0
           pip install flake8-docstrings flake8-bugbear flake8-comprehensions
+          pip install radon==6.0.1
 
       - name: Run flake8
         run: |
@@ -91,6 +92,43 @@ jobs:
             --format='::error file=%(path)s,line=%(row)d,col=%(col)d::%(code)s: %(text)s' \
             --statistics \
             --count
+        continue-on-error: false
+
+      - name: Check Cyclomatic Complexity
+        run: |
+          echo "🔄 Checking cyclomatic complexity (max=10)..."
+          python -m flake8 apps/ \
+            --exclude=migrations,__pycache__ \
+            --select=C901 \
+            --max-complexity=10 \
+            --format='::error file=%(path)s,line=%(row)d,col=%(col)d::%(code)s: %(text)s' \
+            --statistics \
+            --count
+        continue-on-error: false
+
+      - name: Check Cognitive Complexity
+        run: |
+          echo "🧠 Checking cognitive complexity with radon..."
+          radon cc apps/ -a -nb --total-average --exclude="migrations,__pycache__"
+
+          # Check for functions with complexity > 15 (cognitive complexity threshold)
+          VIOLATIONS=$(radon cc apps/ -j --exclude="migrations,__pycache__" | python -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          violations = []
+          for file, funcs in data.items():
+              for func in funcs:
+                  if func['complexity'] > 15:
+                      violations.append(f\"{file}:{func['lineno']} - {func['name']} (complexity: {func['complexity']})\")
+          print('\n'.join(violations))
+          print(f'Total violations: {len(violations)}')
+          sys.exit(1 if violations else 0)
+          ")
+
+          if [ $? -ne 0 ]; then
+            echo "::error::Found functions with cognitive complexity > 15"
+            exit 1
+          fi
         continue-on-error: false
 
       - name: Generate flake8 report

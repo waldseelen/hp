@@ -4,10 +4,35 @@ from django.urls import resolve
 register = template.Library()
 
 
+def _matches_url_name(current_url_name, url_name):
+    """Check if current URL name matches target."""
+    return current_url_name == url_name
+
+
+def _matches_section(url_name, request_path):
+    """Check if current path matches section by keyword."""
+    section_map = {
+        "home": lambda p: p == "/",
+        "blog": lambda p: "blog" in p,
+        "tools": lambda p: "tools" in p or "projects" in p,
+        "contact": lambda p: "contact" in p,
+        "chat": lambda p: "chat" in p,
+        "personal": lambda p: "personal" in p,
+        "music": lambda p: "music" in p,
+    }
+
+    matcher = section_map.get(url_name)
+    return matcher(request_path) if matcher else False
+
+
 @register.simple_tag(takes_context=True)
-def nav_active(context, url_name, css_class="active"):  # noqa: C901
+def nav_active(context, url_name, css_class="active"):
     """
     Template tag to determine if the current page matches the given URL name.
+
+    Refactored to reduce complexity: C:18 → C:4
+    Uses matcher functions for URL and section checking.
+
     Returns the CSS class if there's a match, empty string otherwise.
 
     Usage: {% nav_active 'home' %} or {% nav_active 'home' 'custom-active-class' %}
@@ -15,33 +40,14 @@ def nav_active(context, url_name, css_class="active"):  # noqa: C901
     request = context["request"]
     try:
         current_url_name = resolve(request.path_info).url_name
-        # Also check if the URL namespace matches for app-specific URLs
-        resolve(request.path_info).namespace
 
-        # Handle different URL patterns
-        if current_url_name == url_name:
+        if _matches_url_name(current_url_name, url_name):
             return css_class
 
-        # Check if we're on a sub-page of the same section
-        if url_name == "home" and request.path == "/":
-            return css_class
-        elif url_name == "blog" and "blog" in request.path:
-            return css_class
-        elif url_name == "tools" and (
-            "tools" in request.path or "projects" in request.path
-        ):
-            return css_class
-        elif url_name == "contact" and "contact" in request.path:
-            return css_class
-        elif url_name == "chat" and "chat" in request.path:
-            return css_class
-        elif url_name == "personal" and "personal" in request.path:
-            return css_class
-        elif url_name == "music" and "music" in request.path:
+        if _matches_section(url_name, request.path):
             return css_class
 
     except Exception:
-        # If there's any error resolving the URL, return empty string
         pass
 
     return ""

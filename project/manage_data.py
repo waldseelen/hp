@@ -163,7 +163,7 @@ project_root/
 
 ## Performance Tips
 
-- Use `select_related()` and `prefetch_related()` 
+- Use `select_related()` and `prefetch_related()`
 - Implement caching strategically
 - Optimize database queries
 - Use async views for I/O-bound operations

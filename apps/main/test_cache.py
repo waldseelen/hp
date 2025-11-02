@@ -124,9 +124,18 @@ class SignalCacheInvalidationTestCase(TransactionTestCase):
         """Test that PersonalInfo cache is invalidated on save."""
         from apps.main.models import PersonalInfo
 
-        # Set cache
-        cache.set("home_page_data_user1", {"data": "old"}, 900)
+        # Ensure signal handlers are loaded
+        import apps.core.cache_signals  # noqa: F401
+
+        # Set cache - use keys that our signal handler actually invalidates
+        cache.set("home_page_data", {"data": "old"}, 900)
         cache.set("personal_page_data", {"data": "old"}, 900)
+        cache.set("about_page_data", {"data": "old"}, 900)
+
+        # Verify cache is set before save
+        self.assertIsNotNone(cache.get("home_page_data"))
+        self.assertIsNotNone(cache.get("personal_page_data"))
+        self.assertIsNotNone(cache.get("about_page_data"))
 
         # Create PersonalInfo instance with correct fields
         personal_info = PersonalInfo(
@@ -134,13 +143,11 @@ class SignalCacheInvalidationTestCase(TransactionTestCase):
         )
         personal_info.save()
 
-        # Verify cache was invalidated
-        # Note: In test environment with in-memory cache, pattern matching might not work
-        # So we check if at least one cache is cleared
-        self.assertTrue(
-            cache.get("home_page_data_user1") is None
-            or cache.get("personal_page_data") is None
-        )
+        # Verify cache was invalidated by checking all three keys
+        # Signal handler invalidates home_page_data, personal_page_data, and about_page_data
+        self.assertIsNone(cache.get("home_page_data"), "home_page_data cache should be invalidated")
+        self.assertIsNone(cache.get("personal_page_data"), "personal_page_data cache should be invalidated")
+        self.assertIsNone(cache.get("about_page_data"), "about_page_data cache should be invalidated")
 
     def test_sociallink_cache_invalidation_on_save(self):
         """Test that SocialLink cache is invalidated on save."""

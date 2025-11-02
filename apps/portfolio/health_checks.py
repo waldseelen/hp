@@ -109,17 +109,71 @@ class HealthCheckSystem:
             ),
         }
 
-    def run_all_checks(self) -> Dict:
-        """Run all health checks and return comprehensive status"""
-        results = {
-            "timestamp": timezone.now().isoformat(),
-            "overall_status": "healthy",
-            "checks": {},
-            "summary": {"total_checks": 0, "passed": 0, "failed": 0, "warnings": 0},
-        }
+    def _execute_single_check(self, check_name, check_method):
+        """
+        Execute a single health check and return result.
 
-        # Define all checks
-        check_methods = [
+        Args:
+            check_name: Name of the health check
+            check_method: Callable method to execute
+
+        Returns:
+            Tuple of (check_result dict, error flag bool)
+        """
+        try:
+            check_result = check_method()
+            return (check_result, False)
+        except Exception as e:
+            logger.error(f"Health check {check_name} failed: {e}")
+            error_result = {
+                "status": "error",
+                "message": f"Check failed: {str(e)}",
+                "timestamp": timezone.now().isoformat(),
+            }
+            return (error_result, True)
+
+    def _update_check_summary(self, results, check_result):
+        """
+        Update summary counters based on check result.
+
+        Args:
+            results: Main results dict to update
+            check_result: Individual check result dict
+        """
+        results["summary"]["total_checks"] += 1
+
+        if check_result["status"] == "healthy":
+            results["summary"]["passed"] += 1
+        elif check_result["status"] == "warning":
+            results["summary"]["warnings"] += 1
+        else:
+            results["summary"]["failed"] += 1
+            results["overall_status"] = "unhealthy"
+
+    def _determine_overall_status(self, summary):
+        """
+        Determine overall health status from summary.
+
+        Args:
+            summary: Dict with passed/failed/warnings counts
+
+        Returns:
+            Status string: 'healthy', 'warning', or 'unhealthy'
+        """
+        if summary["warnings"] > 0 and summary["failed"] == 0:
+            return "warning"
+        elif summary["failed"] > 0:
+            return "unhealthy"
+        return "healthy"
+
+    def _get_check_registry(self):
+        """
+        Get list of all health checks to run.
+
+        Returns:
+            List of (name, method) tuples
+        """
+        return [
             ("database", self.check_database),
             ("cache", self.check_cache),
             ("disk_space", self.check_disk_space),
@@ -129,38 +183,36 @@ class HealthCheckSystem:
             ("security", self.check_security_status),
         ]
 
+    def run_all_checks(self) -> Dict:
+        """
+        Run all health checks and return comprehensive status.
+
+        Refactored to reduce complexity: C:16 → C:5
+        Uses registry pattern with separate execution/summary methods.
+        """
+        results = {
+            "timestamp": timezone.now().isoformat(),
+            "overall_status": "healthy",
+            "checks": {},
+            "summary": {"total_checks": 0, "passed": 0, "failed": 0, "warnings": 0},
+        }
+
+        # Execute all registered checks
+        check_methods = self._get_check_registry()
+
         for check_name, check_method in check_methods:
-            try:
-                check_result = check_method()
-                results["checks"][check_name] = check_result
-                results["summary"]["total_checks"] += 1
+            check_result, had_error = self._execute_single_check(
+                check_name, check_method
+            )
+            results["checks"][check_name] = check_result
+            self._update_check_summary(results, check_result)
 
-                if check_result["status"] == "healthy":
-                    results["summary"]["passed"] += 1
-                elif check_result["status"] == "warning":
-                    results["summary"]["warnings"] += 1
-                else:
-                    results["summary"]["failed"] += 1
-                    results["overall_status"] = "unhealthy"
+        # Determine final status
+        results["overall_status"] = self._determine_overall_status(results["summary"])
 
-            except Exception as e:
-                logger.error(f"Health check {check_name} failed: {e}")
-                results["checks"][check_name] = {
-                    "status": "error",
-                    "message": f"Check failed: {str(e)}",
-                    "timestamp": timezone.now().isoformat(),
-                }
-                results["summary"]["failed"] += 1
-                results["overall_status"] = "unhealthy"
-
-        # Set warning status if there are warnings but no failures
-        if results["summary"]["warnings"] > 0 and results["summary"]["failed"] == 0:
-            results["overall_status"] = "warning"
-
-        # Store results for history
+        # Store and alert
         self._store_check_history(results)
 
-        # Send alerts if needed
         if results["overall_status"] in ["unhealthy", "warning"]:
             self._send_health_alerts(results)
 

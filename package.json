@@ -69,6 +69,7 @@
         "@babel/core": "^7.28.4",
         "@babel/preset-env": "^7.28.3",
         "@fullhuman/postcss-purgecss": "^7.0.2",
+        "@playwright/test": "^1.56.1",
         "@tailwindcss/cli": "^4.1.12",
         "@tailwindcss/postcss": "^4.1.13",
         "autoprefixer": "^10.4.21",

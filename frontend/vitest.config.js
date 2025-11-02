@@ -14,7 +14,7 @@ export default defineConfig({
   test: {
     // Test Environment
     environment: 'jsdom',
-    
+
     // Test File Patterns
     include: [
       'tests/unit/**/*.test.js',
@@ -29,7 +29,7 @@ export default defineConfig({
 
     // Global Test Configuration
     globals: true,
-    
+
     // Setup Files
     setupFiles: [
       'tests/unit/setup.js'
@@ -62,11 +62,11 @@ export default defineConfig({
 
     // Test Timeout
     testTimeout: 10000,
-    
+
     // Mock Configuration
     clearMocks: true,
     restoreMocks: true,
-    
+
     // Parallel Execution
     pool: 'threads',
     poolOptions: {

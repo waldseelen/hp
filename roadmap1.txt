@@ -1,0 +1,445 @@
+# GÖREVLER LİSTESİ
+
+## Database & Query Optimization
+- [ ] Analyze current database queries using django-debug-toolbar
+- [ ] Identify N+1 query patterns in critical paths
+- [ ] Implement select_related() and prefetch_related()
+- [ ] Create missing database indexes
+- [ ] Benchmark query performance before/after
+- [ ] Update slow ORM queries
+- [ ] No N+1 queries detected in critical paths
+- [ ] Query count per request ≤20
+- [ ] Database query time <50ms per operation
+- [ ] Indexes created for foreign keys and frequently queried fields
+- [ ] Performance improvement ≥30%
+
+## Redis & Caching
+- [ ] Configure Redis as cache backend
+- [ ] Implement session storage in Redis
+- [ ] Create cache layer for frequent queries
+- [ ] Implement cache invalidation strategy
+- [ ] Configure cache expiration times
+- [ ] Add cache monitoring and hit rate tracking
+- [ ] Session storage moved to Redis
+- [ ] Cache hit rate >80%
+- [ ] Cache invalidation working correctly
+- [ ] Redis memory usage within limits
+- [ ] Cache performance improvement ≥40%
+
+## Frontend Performance
+- [ ] Code splitting for JavaScript bundles
+- [ ] Minify and compress CSS/JavaScript
+- [ ] Lazy load images and components
+- [ ] Implement critical CSS
+- [ ] Optimize font loading
+- [ ] Run Lighthouse audit
+- [ ] Lighthouse score ≥90
+- [ ] First Contentful Paint <2s
+- [ ] Largest Contentful Paint <3s
+- [ ] Cumulative Layout Shift <0.1
+- [ ] JavaScript bundle size <200KB (gzipped)
+
+## CDN Integration
+- [ ] Configure CloudFront/Cloudflare CDN
+- [ ] Set up cache headers and invalidation
+- [ ] Migrate static files to CDN
+- [ ] Configure compression settings
+- [ ] Set up monitoring and analytics
+- [ ] Static assets served from CDN
+- [ ] Cache headers properly configured
+- [ ] Assets cached for long duration (1 year)
+- [ ] Bandwidth usage reduced ≥50%
+
+## API Response Caching
+- [ ] Add HTTP caching headers (ETag, Cache-Control)
+- [ ] Implement conditional requests (If-Modified-Since)
+- [ ] Cache GET endpoints in Redis
+- [ ] Implement cache invalidation on updates
+- [ ] Add cache versioning
+- [ ] API responses cached appropriately
+- [ ] Cache invalidation on data updates
+- [ ] Response times <500ms (p95)
+- [ ] Client-side caching working
+
+## Load Testing & Performance
+- [ ] Set up load testing environment (Locust/Artillery)
+- [ ] Create realistic user traffic simulations
+- [ ] Run load tests for 1000+ concurrent users
+- [ ] Test database performance under load
+- [ ] Test cache performance under load
+- [ ] Identify bottlenecks and optimize
+- [ ] Homepage <1s (p95) under load
+- [ ] API endpoints <500ms (p95) under load
+- [ ] No errors during peak load
+- [ ] Graceful degradation at over-capacity
+- [ ] All performance targets met
+
+## Production Deployment
+- [ ] Task 4.1: Infrastructure Setup
+- [ ] Task 4.2: Database Migration
+- [ ] Task 4.3: SSL & Domain Configuration
+- [ ] Task 4.4: Monitoring & Alerting Setup
+- [ ] Task 4.5: Backup & Disaster Recovery
+- [ ] Task 4.6: Deployment Checklist
+
+## Post-Launch Optimization
+- [ ] Real-world performance monitoring
+- [ ] A/B testing for optimizations
+- [ ] User feedback integration
+- [ ] Continuous security updates
+- [ ] Regular performance audits
+
+## Task 23.1: Search Index Manager Refactoring
+- [ ] Extract _validate_config(options) method (C: ≤5)
+- [ ] Extract _get_models_to_reindex(options) method (C: ≤6)
+- [ ] Refactor handle() to orchestrator pattern (C: ≤7)
+- [ ] Add progress bar for long-running operations
+- [ ] Test with different model combinations
+- [ ] Test with various batch sizes (1, 10, 100, 1000)
+- [ ] Test error handling (DB down, Redis down, permissions)
+- [ ] Verify index integrity after reindexing
+- [ ] Search results identical before/after
+- [ ] Precision/recall metrics maintained
+- [ ] Performance benchmark <5% change
+- [ ] Test edge cases (empty query, special chars, long queries)
+- [ ] A/B test with 1000+ queries
+
+## Task 23.2: Search Query Complexity Refactoring
+- [ ] Analyze current query building logic
+- [ ] Extract query components
+- [ ] Create QueryBuilder pattern
+
+## Task 23.3: Tag Cloud Collection Refactoring
+- [ ] Create BaseTagCollector abstract class with collect_tags() method
+- [ ] Implement BlogPostTagCollector → collects blog tags
+- [ ] Implement ToolTagCollector → collects tool tags
+- [ ] Implement PortfolioTagCollector → collects portfolio tags
+- [ ] Implement CategoryTagCollector → collects category tags
+- [ ] Main method uses collector registry: {model: CollectorClass}
+- [ ] Target Complexity: 25 → ≤5 per collector, ≤6 for main method
+- [ ] Test tag counts match between old/new implementations
+- [ ] Test with empty models (no tags)
+- [ ] Test tag deduplication logic
+- [ ] Test with high load scenarios
+- [ ] Test error handling (DB unavailable, cache unavailable)
+
+## Task 23.4: Relevance Score Calculation Refactoring
+- [ ] Extract scoring logic from apps/main/search.py:210
+- [ ] Extract scoring logic from apps/portfolio/search.py:211
+- [ ] Create scorer pattern for both
+- [ ] Target Complexity: 23 → ≤5 per scoring function, ≤7 for pipeline
+- [ ] Metrics output identical before/after
+- [ ] All scoring tests passing
+- [ ] Performance metrics maintained
+
+## Task 23.5: Performance Analysis Command Refactoring
+- [ ] Extract _collect_database_metrics() (C: ≤6)
+- [ ] Extract _collect_cache_metrics() (C: ≤5)
+- [ ] Extract _collect_response_time_metrics() (C: ≤6)
+- [ ] Extract _collect_error_metrics() (C: ≤5)
+- [ ] Extract _generate_performance_report(metrics) (C: ≤6)
+- [ ] Create base command with template method pattern
+- [ ] Metrics output identical before/after
+- [ ] Test with high load scenarios
+- [ ] Test error handling
+- [ ] Report formatting correct
+
+## Task 23.6: Search Result Formatting Refactoring
+- [ ] Refactor all 3 functions to use formatter pattern (C: ≤6)
+- [ ] Extract common formatting logic
+- [ ] Create reusable formatters
+- [ ] Output format identical to original
+- [ ] Performance benchmarks maintained
+- [ ] All edge cases covered
+
+## Task 23.7: Logging & JSON Formatting Refactoring
+- [ ] Extract _extract_user_context(record) → user info
+- [ ] Extract _extract_request_context(record) → request info
+- [ ] Extract JSON formatting logic
+- [ ] Create context extractors
+- [ ] Log output format consistent
+- [ ] JSON parsing still works
+- [ ] Performance impact minimal
+
+## Task 23.8: Validation Functions Consolidation
+- [ ] Consolidate 6 validation functions
+- [ ] Target Complexity: 15-16 → ≤7 per function
+- [ ] Create validation framework
+- [ ] All validators work identically
+- [ ] No false negatives/positives
+- [ ] Performance improved
+
+## Task 23.9: View Logic & Middleware Refactoring
+- [ ] Refactor 17 view/middleware functions (C: 11-14 range)
+- [ ] Apply design patterns
+- [ ] Extract helper methods
+- [ ] All views work identically
+- [ ] Middleware behavior unchanged
+- [ ] Performance maintained
+
+## Task 23.10: Comprehensive Test Coverage
+- [ ] Write tests for all refactored modules
+- [ ] Achieve ≥90% coverage for refactored modules
+- [ ] Test edge cases and error scenarios
+- [ ] Integration tests for all refactorings
+- [ ] Coverage reports ≥90%
+- [ ] All tests passing
+- [ ] No regressions detected
+
+## Task 23.11: Performance Validation & Regression Testing
+- [ ] Run baseline performance tests
+- [ ] Compare before/after metrics
+- [ ] Validate <5% performance change
+- [ ] Load testing with high concurrency
+- [ ] Performance benchmarks maintained
+- [ ] No memory leaks
+- [ ] CPU usage similar to baseline
+- [ ] Response times consistent
+
+## Task 23.12: CI/CD Complexity Monitoring Integration
+- [ ] Update .github/workflows/code-quality.yml
+- [ ] Add complexity check step: flake8 --select=C901 --max-complexity=10
+- [ ] Add cognitive complexity check: radon cc . -a -nb
+- [ ] Fail build if any function >10 complexity
+- [ ] Add pre-commit hook for complexity
+- [ ] Create complexity monitoring dashboard (optional)
+- [ ] Update docs/development/code-quality-standards.md
+- [ ] CI/CD complexity checks active
+- [ ] Pre-commit hooks updated
+- [ ] Quality standards documented
+
+## Task 23.13: Code Review & Documentation Finalization
+- [ ] Schedule comprehensive code review sessions
+- [ ] Address all review feedback
+- [ ] Update docs/development/technical-debt-complexity.md
+- [ ] Create docs/development/refactoring-patterns.md
+- [ ] Update docs/architecture/code-organization.md
+- [ ] Git housekeeping
+- [ ] All code reviews approved
+- [ ] Documentation fully updated
+- [ ] Release tagged
+
+## Week 4 Completion Checklist
+- [ ] Test coverage ≥90% for refactored modules
+- [ ] Zero performance regressions confirmed
+- [ ] CI/CD complexity monitoring active
+- [ ] All code reviews completed and approved
+- [ ] Documentation finalized
+- [ ] Final Phase 23 Review Meeting: Celebrate success, retrospective
+
+## Pre-Deployment Backup Checklist
+- [ ] Database Snapshot
+- [ ] Git Release Tag
+- [ ] Static Files Backup
+- [ ] Environment Variables
+- [ ] Dependencies Snapshot
+
+## Rollback Procedure Steps
+- [ ] Check homepage loads
+- [ ] Check API health
+- [ ] Check error rate in Sentry: Should drop to <0.1%
+- [ ] Check logs: No new errors
+
+## Post-Rollback Procedures (Within 1 Hour)
+- [ ] Create incident report
+- [ ] Document what went wrong
+- [ ] Document what worked (rollback process)
+- [ ] Identify root cause (initial assessment)
+
+## Post-Rollback Procedures (Within 24 Hours)
+- [ ] Conduct post-mortem meeting
+- [ ] Create action items to prevent recurrence
+- [ ] Fix issue in development/staging
+- [ ] Write regression test for the bug
+- [ ] Update rollback procedures if needed
+
+## Before Next Deployment
+- [ ] Verify fix in staging environment
+- [ ] Run full test suite including new regression test
+- [ ] Review deployment checklist
+- [ ] Communicate re-deployment plan to team
+- [ ] Schedule deployment for low-traffic window
+
+## Developer Onboarding: Day 1 Environment Setup
+- [ ] Homepage loads at http://localhost:8000
+- [ ] Admin panel accessible at /admin
+- [ ] No console errors in browser
+- [ ] Static files (CSS/JS) loading properly
+- [ ] Database queries working (check debug toolbar)
+
+## Developer Onboarding: Day 2 Code Quality Setup
+- [ ] Pre-commit hooks installed and running
+- [ ] Black/isort format code automatically
+- [ ] Flake8/mypy catch code issues
+- [ ] Tests pass (exit code 0)
+- [ ] Coverage report generated
+
+## Resources & Support
+- [ ] Read: AGENTS.md - Project contribution guidelines
+- [ ] Read: memory-bank/projectbrief.md - Project overview
+- [ ] Read: memory-bank/systemPatterns.md - Architecture patterns
+- [ ] Read: memory-bank/techContext.md - Tech stack details
+- [ ] Review: This roadmap (Phase 16-22)
+
+## Scaling Triggers: Upgrade from Tier 1 → Tier 2
+- [ ] Database storage >80% used
+- [ ] Response time consistently >2s
+- [ ] >1000 active users/month
+- [ ] >100k page views/month
+- [ ] Need email sending (>100/day)
+- [ ] Need better uptime SLA (99.9%)
+
+## Scaling Triggers: Upgrade from Tier 2 → Tier 3
+- [ ] >10k active users/month
+- [ ] >1M API calls/month
+- [ ] Need multi-region deployment
+- [ ] Response time SLA <200ms required
+- [ ] Need 99.95%+ uptime
+- [ ] Compliance requirements (SOC2, etc.)
+- [ ] Security needs (WAF, advanced DDoS)
+
+## Security Gate
+- [ ] No hardcoded secrets in code
+- [ ] Security headers properly configured
+- [ ] HTTPS/TLS enabled
+- [ ] CSRF and XSS protections verified
+- [ ] Input validation comprehensive
+- [ ] Authentication/Authorization working
+- [ ] Rate limiting configured
+
+## Performance Gate
+- [ ] Core Web Vitals targets met
+- [ ] Load testing completed (≥1000 concurrent users)
+- [ ] Database indexes in place
+- [ ] Caching strategies verified
+- [ ] Static assets optimized
+- [ ] CDN configured and tested
+
+## Infrastructure Gate
+- [ ] Production database provisioned
+- [ ] Redis cache configured
+- [ ] Email/SMTP configured
+- [ ] DNS and domain configured
+- [ ] SSL certificate installed and renewed
+- [ ] Backup and disaster recovery tested
+- [ ] Log aggregation working
+
+## Deployment Day (Week 2): Pre-Deployment Tasks
+- [ ] Final code freeze on main branch
+- [ ] Database backup taken
+- [ ] Rollback plan documented
+- [ ] Team communication channels open
+- [ ] Monitoring dashboards prepared
+
+## Deployment Day: Deployment Steps
+- [ ] Deploy code to production
+- [ ] Run database migrations
+- [ ] Collect static files
+- [ ] Warm cache with critical pages
+- [ ] Verify all health checks pass
+- [ ] Monitor error rates and performance
+
+## Deployment Day: Post-Deployment Verification
+- [ ] All pages load correctly
+- [ ] Forms submit successfully
+- [ ] APIs respond properly
+- [ ] Database queries performant
+- [ ] No errors in Sentry
+- [ ] Monitoring alerts all green
+- [ ] User acceptance testing passed
+
+## Post-Deployment (Week 3+): Monitoring & Operations
+- [ ] Daily error log review
+- [ ] Weekly performance reports
+- [ ] Monthly security audits
+- [ ] Quarterly performance optimization
+- [ ] Regular dependency updates
+- [ ] Continuous security patches
+
+## Post-Deployment: Optimization & Improvement
+- [ ] Analyze user behavior metrics
+- [ ] Optimize based on real-world usage
+- [ ] Implement user feedback
+- [ ] Plan future feature releases
+- [ ] Document lessons learned
+
+## Weekly Maintenance Checklist
+- [ ] Monday: Review weekend error logs in Sentry
+- [ ] Wednesday: Check performance metrics (LCP, FID, CLS)
+- [ ] Friday: Run security scan (make security)
+
+## Monthly Maintenance Checklist
+- [ ] Security audit with bandit
+- [ ] Dependency updates (pip, npm)
+- [ ] Performance optimization review
+- [ ] Backup verification (test restore)
+- [ ] SSL certificate check (auto-renew working?)
+- [ ] Database cleanup (old logs, expired sessions)
+- [ ] Review and update documentation
+
+## Quarterly Reviews
+- [ ] Review user feedback and analytics
+- [ ] Plan feature releases for next quarter
+- [ ] Capacity planning (will we need to scale?)
+- [ ] Team retrospective (what went well, what didn't)
+- [ ] Update documentation (architecture, runbooks)
+- [ ] Test disaster recovery procedures
+
+## Documentation Maintenance
+- [ ] After Phase 16: Update contribution guide, code style guide
+- [ ] After Phase 19: Update architecture diagrams, system design
+- [ ] After Phase 20: Update deployment runbook, infra diagrams
+- [ ] After Phase 21: Update monitoring guide, alert thresholds
+- [ ] After Phase 22: Update testing guide, coverage targets
+- [ ] After any incident: Update incident response, add to troubleshooting
+
+## Documentation Quality Checks
+- [ ] All code examples tested and working
+- [ ] All links working (no 404s)
+- [ ] Screenshots up to date
+- [ ] No sensitive data in examples
+- [ ] Clear and concise language
+- [ ] Proper formatting (Markdown linting passes)
+
+## Phase 16 Completion Gate
+- [ ] Flake8: 0 violations in apps/
+- [ ] Mypy: ≥90% type coverage, 0 errors
+- [ ] Bandit: 0 high/critical security issues
+- [ ] Pre-commit hooks: 100% passing
+
+## Phase 20 Completion Gate
+- [ ] SSL Labs: A+ rating
+- [ ] SecurityHeaders.com: A+ rating
+- [ ] No hardcoded secrets (verified)
+- [ ] OWASP Top 10: All addressed
+
+## Phase 22 Completion Gate
+- [ ] Unit test coverage: ≥85%
+- [ ] Integration tests: All critical journeys covered
+- [ ] E2E tests: All smoke tests passing
+- [ ] Performance: All pages <2s load
+
+## Production Deployment Gate
+- [ ] All quality gates above passed
+- [ ] Lighthouse: ≥90 score (all categories)
+- [ ] Load test: 1000 concurrent users handled
+- [ ] Rollback: Tested and <5 min
+- [ ] Monitoring: All alerts configured
+
+## Immediate Action Items (This Week)
+- [ ] Read complete roadmap (this document)
+- [ ] Choose execution approach (Option 1/2/3)
+- [ ] Set up project tracking (GitHub Projects, Jira, etc.)
+- [ ] Assign team members to Developer/Production tracks
+
+## Day 2-3 (Phase 16 Start)
+- [ ] Fix .flake8 config (remove '#' from ignore list)
+- [ ] Install linting tools: pip install flake8 mypy bandit django-stubs
+- [ ] Run baseline analysis and document findings
+- [ ] Set up pre-commit hooks
+
+## Week 1 Milestone
+- [ ] Phase 16 complete (linting passing)
+- [ ] Phase 20 complete (security hardened)
+- [ ] Rollback procedures tested
+- [ ] Monitoring alerts configured

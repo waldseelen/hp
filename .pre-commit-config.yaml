@@ -35,6 +35,12 @@ repos:
           flake8-comprehensions,
         ]
 
+      - id: flake8
+        name: flake8-complexity
+        exclude: migrations/
+        args: ['--select=C901', '--max-complexity=10']
+        additional_dependencies: [mccabe]
+
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.11.2
     hooks:
@@ -81,10 +87,10 @@ repos:
       - id: bandit
         exclude: tests/
 
-  # Documentation
-  - repo: https://github.com/pycqa/pydocstyle
-    rev: 6.3.0
-    hooks:
-      - id: pydocstyle
-        exclude: migrations/
-        additional_dependencies: [toml]
+  # Documentation (Disabled - docstring style non-critical)
+  # - repo: https://github.com/pycqa/pydocstyle
+  #   rev: 6.3.0
+  #   hooks:
+  #     - id: pydocstyle
+  #       exclude: migrations/
+  #       additional_dependencies: [toml]

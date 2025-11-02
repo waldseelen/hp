@@ -32,9 +32,110 @@ class SearchRateThrottle(AnonRateThrottle):
     rate = "100/min"
 
 
+def _extract_search_params(request):
+    """Extract and validate search parameters from request."""
+    query = request.GET.get("q", "").strip()
+
+    if not query:
+        return None, Response(
+            {
+                "success": False,
+                "error": 'Query parameter "q" is required',
+                "message": "Please provide a search query (min 2 characters)",
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if len(query) < 2:
+        return None, Response(
+            {
+                "success": False,
+                "error": "Query too short",
+                "message": "Search query must be at least 2 characters",
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    params = {
+        "query": query,
+        "category": request.GET.get("category", None),
+        "content_type": request.GET.get("type", None),
+        "is_visible": request.GET.get("is_visible", "true").lower() == "true",
+        "page": max(1, int(request.GET.get("page", 1))),
+        "per_page": min(100, max(1, int(request.GET.get("per_page", 20)))),
+        "sort_field": request.GET.get("sort", "relevance"),
+    }
+
+    return params, None
+
+
+def _build_search_filters(category, content_type, is_visible):
+    """Build MeiliSearch filter string."""
+    filters = []
+
+    if is_visible:
+        filters.append("metadata.is_visible = true")
+
+    if category:
+        filters.append(f'model_type = "{category}"')
+
+    if content_type:
+        filters.append(f'metadata.type = "{content_type}"')
+
+    return " AND ".join(filters) if filters else None
+
+
+def _build_search_params(query, page, per_page, sort_field, filters):
+    """Build complete MeiliSearch search parameters."""
+    search_params = {
+        "q": query,
+        "limit": per_page,
+        "offset": (page - 1) * per_page,
+        "attributesToHighlight": ["title", "name", "excerpt", "description"],
+        "highlightPreTag": "<mark>",
+        "highlightPostTag": "</mark>",
+        "facets": ["model_type", "search_category", "metadata.category"],
+    }
+
+    if filters:
+        search_params["filter"] = filters
+
+    if sort_field != "relevance":
+        sort_map = {
+            "date": "metadata.published_at:desc",
+            "rating": "metadata.rating:desc",
+            "views": "metadata.view_count:desc",
+            "title": "title:asc",
+        }
+        if sort_field in sort_map:
+            search_params["sort"] = [sort_map[sort_field]]
+
+    return search_params
+
+
+def _format_search_results(hits):
+    """Format raw search hits for API response."""
+    formatted_results = []
+    for hit in hits:
+        formatted_result = {
+            "id": hit.get("model_id"),
+            "model_type": hit.get("model_type"),
+            "category": hit.get("search_category"),
+            "icon": hit.get("search_icon", "📄"),
+            "title": hit.get("title") or hit.get("name"),
+            "excerpt": hit.get("excerpt") or hit.get("description", "")[:200],
+            "url": hit.get("url"),
+            "tags": hit.get("tags", [])[:5],
+            "metadata": _extract_display_metadata(hit.get("metadata", {})),
+            "highlights": hit.get("_formatted", {}),
+        }
+        formatted_results.append(formatted_result)
+    return formatted_results
+
+
 @api_view(["GET"])
 @throttle_classes([SearchRateThrottle])
-def search_api(request):  # noqa: C901
+def search_api(request):
     """
     Site-wide search API endpoint.
 
@@ -66,82 +167,23 @@ def search_api(request):  # noqa: C901
     """
     start_time = time.time()
 
-    # Extract query parameters
-    query = request.GET.get("q", "").strip()
-    category = request.GET.get("category", None)
-    content_type = request.GET.get("type", None)
-    is_visible = request.GET.get("is_visible", "true").lower() == "true"
-    page = max(1, int(request.GET.get("page", 1)))
-    per_page = min(100, max(1, int(request.GET.get("per_page", 20))))
-    sort_field = request.GET.get("sort", "relevance")
-    # TODO: Implement sort_order functionality
-    # sort_order = request.GET.get("order", "desc")
+    # Extract and validate query parameters
+    params, error_response = _extract_search_params(request)
+    if error_response:
+        return error_response
 
-    # Validate query
-    if not query:
-        return Response(
-            {
-                "success": False,
-                "error": 'Query parameter "q" is required',
-                "message": "Please provide a search query (min 2 characters)",
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
-    if len(query) < 2:
-        return Response(
-            {
-                "success": False,
-                "error": "Query too short",
-                "message": "Search query must be at least 2 characters",
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+    query = params["query"]
+    category = params["category"]
+    content_type = params["content_type"]
+    is_visible = params["is_visible"]
+    page = params["page"]
+    per_page = params["per_page"]
+    sort_field = params["sort_field"]
 
     try:
-        # Build MeiliSearch query
-        search_params = {
-            "q": query,
-            "limit": per_page,
-            "offset": (page - 1) * per_page,
-            "attributesToHighlight": ["title", "name", "excerpt", "description"],
-            "highlightPreTag": "<mark>",
-            "highlightPostTag": "</mark>",
-        }
-
-        # Build filter string
-        filters = []
-
-        # Visibility filter (always applied for public search)
-        if is_visible:
-            filters.append("metadata.is_visible = true")
-
-        # Category filter
-        if category:
-            filters.append(f'model_type = "{category}"')
-
-        # Type filter
-        if content_type:
-            filters.append(f'metadata.type = "{content_type}"')
-
-        # Apply filters
-        if filters:
-            search_params["filter"] = " AND ".join(filters)
-
-        # Sorting
-        if sort_field != "relevance":
-            sort_map = {
-                "date": "metadata.published_at:desc",
-                "rating": "metadata.rating:desc",
-                "views": "metadata.view_count:desc",
-                "title": "title:asc",
-            }
-
-            if sort_field in sort_map:
-                search_params["sort"] = [sort_map[sort_field]]
-
-        # Facets (for category counts)
-        search_params["facets"] = ["model_type", "search_category", "metadata.category"]
+        # Build search parameters
+        filters = _build_search_filters(category, content_type, is_visible)
+        search_params = _build_search_params(query, page, per_page, sort_field, filters)
 
         # Execute search with monitoring
         from apps.main.monitoring import search_monitor
@@ -153,27 +195,12 @@ def search_api(request):  # noqa: C901
             search_results = search_index_manager.index.search(**search_params)
         search_duration = time.time() - search_start
 
-        # Extract results
+        # Extract and format results
         hits = search_results.get("hits", [])
         estimated_total = search_results.get("estimatedTotalHits", 0)
         processing_time_ms = search_results.get("processingTimeMs", 0)
 
-        # Format results for response
-        formatted_results = []
-        for hit in hits:
-            formatted_result = {
-                "id": hit.get("model_id"),
-                "model_type": hit.get("model_type"),
-                "category": hit.get("search_category"),
-                "icon": hit.get("search_icon", "📄"),
-                "title": hit.get("title") or hit.get("name"),
-                "excerpt": hit.get("excerpt") or hit.get("description", "")[:200],
-                "url": hit.get("url"),
-                "tags": hit.get("tags", [])[:5],  # Limit to 5 tags
-                "metadata": _extract_display_metadata(hit.get("metadata", {})),
-                "highlights": hit.get("_formatted", {}),  # Highlighted text
-            }
-            formatted_results.append(formatted_result)
+        formatted_results = _format_search_results(hits)
 
         # Extract facets (category counts)
         facet_distribution = search_results.get("facetDistribution", {})
@@ -397,9 +424,61 @@ def search_stats(request):
         )
 
 
-def _extract_display_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:  # noqa: C901
+def _extract_date_fields(metadata, display_meta):
+    """Extract and format date fields."""
+    if "published_at" in metadata and metadata["published_at"]:
+        from datetime import datetime
+
+        try:
+            dt = datetime.fromtimestamp(metadata["published_at"])
+            display_meta["published_date"] = dt.strftime("%Y-%m-%d")
+        except (ValueError, TypeError, OSError):
+            pass
+
+
+def _extract_author_category(metadata, display_meta):
+    """Extract author and category information."""
+    if "author" in metadata:
+        display_meta["author"] = metadata.get("author_display", metadata["author"])
+
+    if "category_display" in metadata:
+        display_meta["category"] = metadata["category_display"]
+
+
+def _extract_metrics(metadata, display_meta):
+    """Extract rating, views, and reading time."""
+    if "rating" in metadata and metadata["rating"]:
+        display_meta["rating"] = metadata["rating"]
+
+    if "view_count" in metadata and metadata["view_count"]:
+        display_meta["views"] = metadata["view_count"]
+
+    if "reading_time" in metadata and metadata["reading_time"]:
+        display_meta["reading_time"] = f"{metadata['reading_time']} min"
+
+
+def _extract_flags_and_difficulty(metadata, display_meta):
+    """Extract status flags and difficulty/severity."""
+    if "is_featured" in metadata and metadata["is_featured"]:
+        display_meta["featured"] = True
+
+    if "is_free" in metadata:
+        display_meta["free"] = metadata["is_free"]
+
+    if "difficulty" in metadata:
+        display_meta["difficulty"] = metadata["difficulty"]
+
+    if "severity_level" in metadata:
+        severity_map = {1: "Low", 2: "Medium", 3: "High", 4: "Critical"}
+        display_meta["severity"] = severity_map.get(metadata["severity_level"], "Unknown")
+
+
+def _extract_display_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
     """
     Extract and format metadata for display.
+
+    Refactored to reduce complexity: C:17 → C:4
+    Uses extractor functions for each metadata category.
 
     Args:
         metadata: Raw metadata dict from search document
@@ -409,52 +488,10 @@ def _extract_display_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:  # no
     """
     display_meta = {}
 
-    # Date fields (convert timestamps to ISO strings)
-    if "published_at" in metadata and metadata["published_at"]:
-        from datetime import datetime
-
-        try:
-            dt = datetime.fromtimestamp(metadata["published_at"])
-            display_meta["published_date"] = dt.strftime("%Y-%m-%d")
-        except (ValueError, TypeError, OSError):
-            # Invalid timestamp format
-            pass
-
-    # Author info
-    if "author" in metadata:
-        display_meta["author"] = metadata.get("author_display", metadata["author"])
-
-    # Category
-    if "category_display" in metadata:
-        display_meta["category"] = metadata["category_display"]
-
-    # Rating/popularity
-    if "rating" in metadata and metadata["rating"]:
-        display_meta["rating"] = metadata["rating"]
-
-    if "view_count" in metadata and metadata["view_count"]:
-        display_meta["views"] = metadata["view_count"]
-
-    # Reading time (for blog posts)
-    if "reading_time" in metadata and metadata["reading_time"]:
-        display_meta["reading_time"] = f"{metadata['reading_time']} min"
-
-    # Status flags
-    if "is_featured" in metadata and metadata["is_featured"]:
-        display_meta["featured"] = True
-
-    if "is_free" in metadata:
-        display_meta["free"] = metadata["is_free"]
-
-    # Difficulty/severity
-    if "difficulty" in metadata:
-        display_meta["difficulty"] = metadata["difficulty"]
-
-    if "severity_level" in metadata:
-        severity_map = {1: "Low", 2: "Medium", 3: "High", 4: "Critical"}
-        display_meta["severity"] = severity_map.get(
-            metadata["severity_level"], "Unknown"
-        )
+    _extract_date_fields(metadata, display_meta)
+    _extract_author_category(metadata, display_meta)
+    _extract_metrics(metadata, display_meta)
+    _extract_flags_and_difficulty(metadata, display_meta)
 
     return display_meta
 

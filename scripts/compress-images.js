@@ -2,10 +2,10 @@
 /**
  * IMAGE COMPRESSION SCRIPT
  * =========================
- * 
+ *
  * Advanced image optimization tool for Django portfolio project.
  * Compresses and converts images to modern formats (WebP, AVIF).
- * 
+ *
  * FEATURES:
  * - Supports JPEG, PNG, GIF, SVG
  * - Converts to WebP and AVIF formats
@@ -13,7 +13,7 @@
  * - Preserves originals in backup folder
  * - Compression statistics
  * - Responsive image generation
- * 
+ *
  * USAGE:
  *   node scripts/compress-images.js
  *   npm run compress:images
@@ -51,7 +51,7 @@ class ImageCompressor {
     async initialize() {
         console.log('🖼️  Image Compression Started');
         console.log('==============================');
-        
+
         // Create directories
         [this.config.outputDir, this.config.backupDir].forEach(dir => {
             if (!fs.existsSync(dir)) {
@@ -66,7 +66,7 @@ class ImageCompressor {
             `${this.config.sourceDir}/**/*.{jpg,jpeg,png,gif,webp}`,
             `${this.config.sourceDir}/*.{jpg,jpeg,png,gif,webp}`
         ];
-        
+
         let files = [];
         for (const pattern of patterns) {
             const matches = glob.sync(pattern, {
@@ -78,7 +78,7 @@ class ImageCompressor {
             });
             files = files.concat(matches);
         }
-        
+
         return [...new Set(files)];
     }
 
@@ -86,7 +86,7 @@ class ImageCompressor {
         try {
             const metadata = await sharp(filePath).metadata();
             const stats = fs.statSync(filePath);
-            
+
             return {
                 width: metadata.width,
                 height: metadata.height,
@@ -110,7 +110,7 @@ class ImageCompressor {
             const relativeDir = path.relative(this.config.sourceDir, path.dirname(filePath));
             const outputDir = path.join(this.config.outputDir, relativeDir);
             const backupPath = path.join(this.config.backupDir, path.relative(this.config.sourceDir, filePath));
-            
+
             // Create output directory
             if (!fs.existsSync(outputDir)) {
                 fs.mkdirSync(outputDir, { recursive: true });
@@ -131,9 +131,9 @@ class ImageCompressor {
             // Optimize original format
             const originalExt = path.extname(filePath).toLowerCase();
             const originalOutputPath = path.join(outputDir, `${fileName}${originalExt}`);
-            
+
             let optimizedSharp = sharp_instance.clone();
-            
+
             if (originalExt === '.jpg' || originalExt === '.jpeg') {
                 optimizedSharp = optimizedSharp.jpeg({
                     quality: this.config.quality.jpeg,
@@ -147,7 +147,7 @@ class ImageCompressor {
                     progressive: true
                 });
             }
-            
+
             await optimizedSharp.toFile(originalOutputPath);
             const originalCompressedSize = fs.statSync(originalOutputPath).size;
             results.push({
@@ -159,9 +159,9 @@ class ImageCompressor {
             // Generate modern formats
             for (const format of this.config.formats) {
                 const outputPath = path.join(outputDir, `${fileName}.${format}`);
-                
+
                 let formatSharp = sharp_instance.clone();
-                
+
                 if (format === 'webp') {
                     formatSharp = formatSharp.webp({
                         quality: this.config.quality.webp,
@@ -173,7 +173,7 @@ class ImageCompressor {
                         effort: 9
                     });
                 }
-                
+
                 await formatSharp.toFile(outputPath);
                 const formatSize = fs.statSync(outputPath).size;
                 results.push({
@@ -188,7 +188,7 @@ class ImageCompressor {
                 for (const width of this.config.responsiveSizes) {
                     if (width < imageInfo.width) {
                         const responsiveOutputPath = path.join(outputDir, `${fileName}-${width}w.webp`);
-                        
+
                         await sharp_instance
                             .clone()
                             .resize(width, null, {
@@ -200,7 +200,7 @@ class ImageCompressor {
                                 effort: 6
                             })
                             .toFile(responsiveOutputPath);
-                            
+
                         const responsiveSize = fs.statSync(responsiveOutputPath).size;
                         results.push({
                             format: `webp-${width}w`,
@@ -226,7 +226,7 @@ class ImageCompressor {
             console.log(`   📊 ${this.formatBytes(imageInfo.size)} → ${this.formatBytes(Math.min(...results.map(r => r.size)))} (${savedPercentage}% saved)`);
             console.log(`   📐 ${imageInfo.width}×${imageInfo.height} ${imageInfo.format.toUpperCase()}`);
             console.log(`   🎯 Generated ${results.length} optimized versions:`);
-            
+
             results.forEach(result => {
                 const relativePath = path.relative('static', result.path);
                 console.log(`      ${result.format.padEnd(8)} ${this.formatBytes(result.size).padStart(8)} → ${relativePath}`);
@@ -244,7 +244,7 @@ class ImageCompressor {
             this.config.stats.errors++;
             console.error(`❌ Error compressing ${filePath}:`);
             console.error(`   ${error.message}`);
-            
+
             return {
                 success: false,
                 error: error.message
@@ -262,32 +262,32 @@ class ImageCompressor {
 
     async run() {
         await this.initialize();
-        
+
         const imageFiles = await this.findImageFiles();
-        
+
         if (imageFiles.length === 0) {
             console.log('⚠️  No images found to compress');
             return;
         }
-        
+
         console.log(`📦 Found ${imageFiles.length} images to process\n`);
-        
+
         // Process each image
         for (const file of imageFiles) {
             await this.compressImage(file);
             console.log(''); // Empty line for readability
         }
-        
+
         // Print summary statistics
         this.printSummary();
     }
 
     printSummary() {
         const stats = this.config.stats;
-        const totalSavedPercentage = stats.originalSize > 0 
+        const totalSavedPercentage = stats.originalSize > 0
             ? ((stats.savedBytes / stats.originalSize) * 100).toFixed(1)
             : '0.0';
-        
+
         console.log('📊 IMAGE COMPRESSION SUMMARY');
         console.log('============================');
         console.log(`Images processed: ${stats.processed}`);
@@ -297,11 +297,11 @@ class ImageCompressor {
         console.log(`Total saved: ${this.formatBytes(stats.savedBytes)} (${totalSavedPercentage}%)`);
         console.log(`Output directory: ${this.config.outputDir}`);
         console.log(`Backup directory: ${this.config.backupDir}`);
-        
+
         if (stats.errors > 0) {
             console.log(`\n⚠️  ${stats.errors} images had errors during compression`);
         }
-        
+
         if (stats.processed > 0) {
             console.log('\n✅ Image compression completed successfully!');
             console.log('\n💡 USAGE TIPS:');

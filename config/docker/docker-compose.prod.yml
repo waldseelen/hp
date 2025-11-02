@@ -117,20 +117,20 @@ services:
       DEBUG: "False"
       SECRET_KEY: ${SECRET_KEY:?Secret key required}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:?Allowed hosts required}
-      
+
       # Database Configuration
       DATABASE_URL: postgres://${POSTGRES_USER:-portfolio_user}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-portfolio_prod}
-      
+
       # Redis Configuration
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
-      
+
       # Gunicorn Configuration
       PORT: 8000
       GUNICORN_WORKERS: ${GUNICORN_WORKERS:-4}
       GUNICORN_WORKER_CLASS: ${GUNICORN_WORKER_CLASS:-sync}
       GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-30}
       GUNICORN_MAX_REQUESTS: ${GUNICORN_MAX_REQUESTS:-1000}
-      
+
       # Email Configuration
       EMAIL_BACKEND: ${EMAIL_BACKEND:-django.core.mail.backends.smtp.EmailBackend}
       EMAIL_HOST: ${EMAIL_HOST}
@@ -138,14 +138,14 @@ services:
       EMAIL_USE_TLS: ${EMAIL_USE_TLS:-True}
       EMAIL_HOST_USER: ${EMAIL_HOST_USER}
       EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
-      
+
       # Security
       SECURE_SSL_REDIRECT: ${SECURE_SSL_REDIRECT:-True}
       SECURE_HSTS_SECONDS: ${SECURE_HSTS_SECONDS:-31536000}
-      
+
       # Monitoring
       SENTRY_DSN: ${SENTRY_DSN}
-      
+
       # Media and Static Files
       MEDIA_URL: /media/
       STATIC_URL: /static/
@@ -251,15 +251,15 @@ volumes:
   postgres_data_prod:
     name: portfolio_postgres_data_prod
     driver: local
-  
+
   redis_data_prod:
     name: portfolio_redis_data_prod
     driver: local
-  
+
   static_files_prod:
     name: portfolio_static_files_prod
     driver: local
-  
+
   media_files_prod:
     name: portfolio_media_files_prod
     driver: local

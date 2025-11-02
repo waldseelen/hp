@@ -41,9 +41,7 @@ from django_ratelimit import ALL as ratelimit_ALL
 from django_ratelimit.decorators import ratelimit
 from rest_framework import filters, status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.generics import (
-    ListAPIView,
-)
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -86,9 +84,7 @@ from .serializers import (
 )
 
 # Import APM decorators for distributed tracing
-from .utils.apm_decorators import (
-    trace_function,
-)
+from .utils.apm_decorators import trace_function
 
 # Setup enhanced logging
 logger = logging.getLogger(__name__)
@@ -664,7 +660,7 @@ def projects_view(request: HttpRequest) -> HttpResponse:  # noqa: C901
             if project.tech_stack:
                 techs = [t.strip() for t in project.tech_stack.split(",")]
                 technologies.extend(techs)
-        technologies = sorted(list(set(technologies)))
+        technologies = sorted(set(technologies))
 
         context = {
             "projects": page_projects,

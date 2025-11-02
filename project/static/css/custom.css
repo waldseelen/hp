@@ -12,18 +12,18 @@
     --primary-700: #8b7355;
     --primary-800: #6b705c;
     --primary-900: #4a4e3a;
-    
+
     --secondary-800: #1f2937;
     --secondary-900: #111827;
-    
+
     --text-primary: #f9fafb;
     --text-secondary: #d1d5db;
     --text-muted: #9ca3af;
-    
+
     --bg-primary: #111827;
     --bg-secondary: #1f2937;
     --bg-card: rgba(31, 41, 55, 0.5);
-    
+
     --border-primary: rgba(75, 85, 99, 0.5);
     --border-secondary: rgba(107, 114, 128, 0.3);
 }
@@ -431,22 +431,22 @@
 }
 
 @keyframes slideUp {
-    from { 
-        opacity: 0; 
-        transform: translateY(10px); 
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
 @keyframes pulse-glow {
-    0%, 100% { 
-        box-shadow: 0 0 5px rgba(240, 230, 140, 0.5); 
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(240, 230, 140, 0.5);
     }
-    50% { 
-        box-shadow: 0 0 20px rgba(240, 230, 140, 0.8), 0 0 30px rgba(240, 230, 140, 0.6); 
+    50% {
+        box-shadow: 0 0 20px rgba(240, 230, 140, 0.8), 0 0 30px rgba(240, 230, 140, 0.6);
     }
 }
 
@@ -522,20 +522,20 @@ html {
     .starfield {
         animation: none;
     }
-    
+
     .animate-starfield,
     .animate-fade-in,
     .animate-slide-up,
     .animate-pulse-glow {
         animation: none;
     }
-    
+
     .card-interactive,
     .btn-primary,
     .btn-secondary {
         transform: none;
     }
-    
+
     .card-interactive:hover,
     .btn-primary:hover,
     .btn-secondary:hover {
@@ -621,11 +621,11 @@ html {
         background-size: 200px 100px;
         animation-duration: 30s;
     }
-    
+
     .heading-1 {
         font-size: 1.875rem;
     }
-    
+
     .heading-2 {
         font-size: 1.5rem;
     }

@@ -10,6 +10,12 @@ from django.utils import timezone
 import pyotp
 import qrcode
 
+from apps.core.utils.model_helpers import (
+    auto_set_published_at,
+    calculate_reading_time,
+    generate_unique_slug,
+)
+
 
 class Admin(AbstractUser):
     email = models.EmailField(unique=True)
@@ -814,21 +820,16 @@ class BlogPost(models.Model):
         app_label = "portfolio"
 
     def save(self, *args, **kwargs):
+        # Auto-generate unique slug from title
         if not self.slug:
-            from django.utils.text import slugify
-
-            self.slug = slugify(self.title)
+            self.slug = generate_unique_slug(self)
 
         # Otomatik okuma süresi hesaplama (ortalama 200 kelime/dakika)
         if self.content:
-            word_count = len(self.content.split())
-            self.reading_time = max(1, word_count // 200)
+            self.reading_time = calculate_reading_time(self.content)
 
         # Yayınlanma tarihi otomatik set etme
-        if self.status == "published" and not self.published_at:
-            self.published_at = timezone.now()
-        elif self.status != "published":
-            self.published_at = None
+        auto_set_published_at(self)
 
         super().save(*args, **kwargs)
 

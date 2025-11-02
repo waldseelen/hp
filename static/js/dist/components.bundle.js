@@ -32,7 +32,7 @@ eval("{/**\r\n * Cookie Consent Banner\r\n * GDPR-compliant cookie consent manag
 
 /******/ 	});
 /************************************************************************/
-/******/ 	
+/******/
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval-source-map devtool is used.
@@ -40,6 +40,6 @@ eval("{/**\r\n * Cookie Consent Banner\r\n * GDPR-compliant cookie consent manag
 /******/ 	__webpack_modules__[804]();
 /******/ 	var __webpack_exports__ = {};
 /******/ 	__webpack_modules__[20]();
-/******/ 	
+/******/
 /******/ })()
 ;

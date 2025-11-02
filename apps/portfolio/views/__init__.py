@@ -1,9 +1,5 @@
 # Main views module
-from .search import (
-    SearchView,
-    TagCloudView,
-    search_by_tag,
-)
+from .search import SearchView, TagCloudView, search_by_tag
 
 # Create function-based view aliases for URL patterns
 search_view = SearchView.as_view()

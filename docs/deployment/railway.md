@@ -27,7 +27,7 @@ The startup script (`scripts/railway-start.sh`) validates that `SECRET_KEY` and 
 ## One-Time Railway Setup
 
 1. **Create Project** – From the Railway dashboard create a new project and connect it to your GitHub repository (or plan to deploy via CLI).
-2. **Add Services** – Provision the following services from the Railway templates: 
+2. **Add Services** – Provision the following services from the Railway templates:
    - **PostgreSQL** (required)
    - **Redis** (optional, but the project can use it if available)
 3. **Configure Environment Variables** – Add the required variables listed above. The Postgres template populates `DATABASE_URL` automatically.

@@ -13,7 +13,7 @@
             Curated collection of useful tools and resources
         </p>
     </div>
-    
+
     <!-- Favorites Section -->
     {% if favorites and not search_query and not selected_category %}
         <section class="mb-16">
@@ -29,18 +29,18 @@
                             </h3>
                             <span class="text-yellow-400 text-xl">⭐</span>
                         </div>
-                        
+
                         <p class="text-gray-400 text-sm mb-4">{{ tool.description|truncatewords:20 }}</p>
-                        
+
                         <div class="flex justify-between items-center">
                             <span class="text-xs bg-blue-600/30 text-blue-300 px-2 py-1 rounded">
                                 {{ tool.category }}
                             </span>
-                            <a href="{{ tool.url }}" target="_blank" 
+                            <a href="{{ tool.url }}" target="_blank"
                                class="text-blue-400 hover:underline text-sm flex items-center">
                                 Try it
                                 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                 </svg>
                             </a>
@@ -50,7 +50,7 @@
             </div>
         </section>
     {% endif %}
-    
+
     <!-- Filters -->
     <h2 id="tools-filter-heading" class="sr-only">Filter tools by search and category</h2>
     <div class="max-w-4xl mx-auto mb-12">
@@ -66,7 +66,7 @@
                        aria-label="Search tools by name or description"
                        class="w-full px-4 py-3 bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-600 focus:border-blue-400 focus:outline-none text-white placeholder-gray-400">
             </div>
-            
+
             <!-- Category Filter -->
             <div class="md:w-48">
                 <label for="category-filter" class="sr-only">Filter by category</label>
@@ -82,22 +82,22 @@
                     {% endfor %}
                 </select>
             </div>
-            
+
             <button type="submit"
                     class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors whitespace-nowrap"
                     aria-label="Apply filters to tool list">
                 Filter
             </button>
-            
+
             {% if search_query or selected_category %}
-                <a href="{% url 'tools:list' %}" 
+                <a href="{% url 'tools:list' %}"
                    class="px-6 py-3 border border-gray-600 hover:border-gray-500 rounded-lg transition-colors whitespace-nowrap inline-block text-center">
                     Clear
                 </a>
             {% endif %}
         </form>
     </div>
-    
+
     <!-- Tools Grid -->
     {% if tools %}
         <div class="max-w-6xl mx-auto">
@@ -114,9 +114,9 @@
                                 <span class="text-yellow-400 text-sm">⭐</span>
                             {% endif %}
                         </div>
-                        
+
                         <p class="text-gray-400 text-sm mb-4">{{ tool.description|truncatewords:20 }}</p>
-                        
+
                         {% if tool.tags %}
                             <div class="flex flex-wrap gap-1 mb-4">
                                 {% for tag in tool.tags %}
@@ -126,16 +126,16 @@
                                 {% endfor %}
                             </div>
                         {% endif %}
-                        
+
                         <div class="flex justify-between items-center">
                             <span class="text-xs bg-blue-600/20 text-blue-400 px-2 py-1 rounded">
                                 {{ tool.category }}
                             </span>
-                            <a href="{{ tool.url }}" target="_blank" 
+                            <a href="{{ tool.url }}" target="_blank"
                                class="text-blue-400 hover:underline text-sm flex items-center">
                                 Visit
                                 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                 </svg>
                             </a>
@@ -143,32 +143,32 @@
                     </div>
                 {% endfor %}
             </div>
-            
+
             <!-- Pagination -->
             {% if is_paginated %}
                 <div class="flex justify-center">
                     <nav class="flex space-x-2">
                         {% if page_obj.has_previous %}
-                            <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" 
+                            <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
                                class="px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded border border-gray-600">
                                 First
                             </a>
-                            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" 
+                            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
                                class="px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded border border-gray-600">
                                 Previous
                             </a>
                         {% endif %}
-                        
+
                         <span class="px-3 py-2 bg-blue-600 rounded border border-blue-600">
                             Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
                         </span>
-                        
+
                         {% if page_obj.has_next %}
-                            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" 
+                            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
                                class="px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded border border-gray-600">
                                 Next
                             </a>
-                            <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" 
+                            <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
                                class="px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded border border-gray-600">
                                 Last
                             </a>

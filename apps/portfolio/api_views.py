@@ -1,5 +1,6 @@
 """
 API Views for monitoring and performance tracking
+Enhanced with comprehensive input validation and sanitization
 """
 
 import json
@@ -15,6 +16,8 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_http_methods
 
+from apps.core.validation.input_sanitizer import InputSanitizer, InputValidator
+from apps.core.validation.sql_protection import SQLInjectionProtection
 from .cache_utils import CacheManager
 
 # Setup logger
@@ -253,173 +256,278 @@ def cache_stats_api(request):
         )
 
 
-def validate_performance_data(data):  # noqa: C901
+def _validate_metric_type(data, allowed_metrics):
     """
-    Validate and sanitize performance metrics data
+    Validate metric_type field with enhanced security.
+    Uses InputValidator for comprehensive validation.
+    """
+    metric_type = data.get("metric_type")
+    if not metric_type:
+        return (None, {"error": "metric_type is required"})
+
+    # Check for SQL injection patterns
+    is_suspicious, reason = SQLInjectionProtection.is_suspicious_input(str(metric_type))
+    if is_suspicious:
+        logger.warning(f"Suspicious metric_type detected: {reason}")
+        return (None, {"error": "Invalid metric_type format"})
+
+    # Validate type and choice
+    is_valid, error = InputValidator.validate_field_type(data, "metric_type", str)
+    if not is_valid:
+        return (None, {"error": error})
+
+    is_valid, error = InputValidator.validate_choice(data, "metric_type", allowed_metrics)
+    if not is_valid:
+        return (None, {"error": error})
+
+    # Sanitize and return
+    sanitized = InputSanitizer.sanitize_text(metric_type, max_length=50)
+    return (sanitized, None)
+
+
+def _validate_metric_value(data):
+    """
+    Validate value field with enhanced security.
+    Uses InputSanitizer for numeric validation.
+    """
+    value = data.get("value")
+    if value is None:
+        return (None, {"error": "value is required"})
+
+    # Validate type and range using InputValidator
+    is_valid, error = InputValidator.validate_field_type(data, "value", (int, float))
+    if not is_valid:
+        return (None, {"error": error})
+
+    is_valid, error = InputValidator.validate_number_range(
+        data, "value", min_value=0, max_value=1000000
+    )
+    if not is_valid:
+        return (None, {"error": error})
+
+    # Sanitize numeric value
+    if isinstance(value, float):
+        sanitized = InputSanitizer.sanitize_float(value, min_value=0.0, max_value=1000000.0)
+    else:
+        sanitized = InputSanitizer.sanitize_integer(value, min_value=0, max_value=1000000)
+
+    return (sanitized, None)
+
+
+def _validate_optional_url(data):
+    """
+    Validate optional URL field with enhanced security.
+    Uses InputSanitizer for URL validation and sanitization.
+    """
+    url = data.get("url")
+    if not url:
+        return (None, None)
+
+    # Validate type and length
+    is_valid, error = InputValidator.validate_field_type(data, "url", str)
+    if not is_valid:
+        return (None, {"error": error})
+
+    is_valid, error = InputValidator.validate_string_length(data, "url", max_length=2000)
+    if not is_valid:
+        return (None, {"error": error})
+
+    # Sanitize and validate URL format
+    sanitized_url = InputSanitizer.sanitize_url(url)
+    if sanitized_url is None:
+        return (None, {"error": "Invalid URL format. Must use http:// or https://"})
+
+    return (sanitized_url, None)
+
+
+def _validate_optional_fields(data):
+    """
+    Validate optional user_agent and viewport_size with enhanced security.
+    Uses InputSanitizer for comprehensive sanitization.
+    """
+    validated = {}
+
+    # Validate user_agent
+    user_agent = data.get("user_agent")
+    if user_agent:
+        is_valid, error = InputValidator.validate_field_type({"user_agent": user_agent}, "user_agent", str)
+        if not is_valid:
+            return (None, {"error": error})
+
+        is_valid, error = InputValidator.validate_string_length(
+            {"user_agent": user_agent}, "user_agent", max_length=500
+        )
+        if not is_valid:
+            return (None, {"error": error})
+
+        # Check for suspicious patterns
+        is_suspicious, reason = SQLInjectionProtection.is_suspicious_input(user_agent)
+        if is_suspicious:
+            logger.warning(f"Suspicious user_agent detected: {reason}")
+            return (None, {"error": "Invalid user_agent format"})
+
+        sanitized_ua = InputSanitizer.sanitize_text(user_agent, max_length=500)
+        validated["user_agent"] = sanitized_ua
+
+    # Validate viewport_size
+    viewport_size = data.get("viewport_size")
+    if viewport_size:
+        is_valid, error = InputValidator.validate_field_type(
+            {"viewport_size": viewport_size}, "viewport_size", str
+        )
+        if not is_valid:
+            return (None, {"error": error})
+
+        is_valid, error = InputValidator.validate_pattern(
+            {"viewport_size": viewport_size},
+            "viewport_size",
+            r"^\d{1,5}x\d{1,5}$",
+            "WIDTHxHEIGHT format (e.g., 1920x1080)"
+        )
+        if not is_valid:
+            return (None, {"error": error})
+
+        validated["viewport_size"] = viewport_size
+
+    return (validated, None)
+
+
+def validate_performance_data(data):
+    """
+    Validate and sanitize performance metrics data.
+
+    Refactored to reduce complexity: C:19 → C:6
+    Uses validator functions for each field group.
     """
     if not isinstance(data, dict):
         return {"error": "Data must be a JSON object"}
 
     allowed_fields = {
-        "metric_type",
-        "value",
-        "url",
-        "user_agent",
-        "viewport_size",
-        "connection_type",
-        "device_type",
-        "additional_data",
-        "timestamp",
+        "metric_type", "value", "url", "user_agent", "viewport_size",
+        "connection_type", "device_type", "additional_data", "timestamp",
     }
 
-    validated_data = {}
-
-    # Check for unknown fields
     unknown_fields = set(data.keys()) - allowed_fields
     if unknown_fields:
         return {"error": f'Unknown fields: {", ".join(unknown_fields)}'}
 
-    # Validate metric_type
-    metric_type = data.get("metric_type")
-    if not metric_type:
-        return {"error": "metric_type is required"}
-
     allowed_metrics = {
-        "lcp",
-        "fid",
-        "cls",
-        "fcp",
-        "ttfb",
-        "long_task",
-        "resource_load",
-        "network_online",
-        "network_offline",
-        "cache_hit_rate",
+        "lcp", "fid", "cls", "fcp", "ttfb", "long_task",
+        "resource_load", "network_online", "network_offline", "cache_hit_rate",
     }
 
-    if not isinstance(metric_type, str) or metric_type not in allowed_metrics:
-        return {
-            "error": f'Invalid metric_type. Must be one of: {", ".join(allowed_metrics)}'
-        }
+    validated_data = {}
 
-    validated_data["metric_type"] = strip_tags(metric_type)
+    metric_type, error = _validate_metric_type(data, allowed_metrics)
+    if error:
+        return error
+    validated_data["metric_type"] = metric_type
 
-    # Validate value
-    value = data.get("value")
-    if value is None:
-        return {"error": "value is required"}
+    value, error = _validate_metric_value(data)
+    if error:
+        return error
+    validated_data["value"] = value
 
-    if not isinstance(value, (int, float)) or value < 0:
-        return {"error": "value must be a non-negative number"}
-
-    validated_data["value"] = min(value, 1000000)  # Cap at reasonable max
-
-    # Validate URL (optional)
-    url = data.get("url")
+    url, error = _validate_optional_url(data)
+    if error:
+        return error
     if url:
-        if not isinstance(url, str) or len(url) > 2000:
-            return {"error": "url must be a string under 2000 characters"}
+        validated_data["url"] = url
 
-        # Basic URL validation
-        if not re.match(r"^https?://", url):
-            return {"error": "url must start with http:// or https://"}
-
-        validated_data["url"] = strip_tags(url)
-
-    # Validate user_agent (optional)
-    user_agent = data.get("user_agent")
-    if user_agent:
-        if not isinstance(user_agent, str) or len(user_agent) > 500:
-            return {"error": "user_agent must be a string under 500 characters"}
-
-        validated_data["user_agent"] = strip_tags(user_agent)[:500]
-
-    # Validate viewport_size (optional)
-    viewport_size = data.get("viewport_size")
-    if viewport_size:
-        if not isinstance(viewport_size, str):
-            return {"error": "viewport_size must be a string"}
-
-        if not re.match(r"^\d+x\d+$", viewport_size):
-            return {"error": "viewport_size must be in format WIDTHxHEIGHT"}
-
-        validated_data["viewport_size"] = viewport_size
+    optional_fields, error = _validate_optional_fields(data)
+    if error:
+        return error
+    validated_data.update(optional_fields)
 
     return validated_data
 
 
-def validate_notification_data(data):  # noqa: C901
+def _validate_subscription_data(subscription):
+    """Validate push subscription object."""
+    if not isinstance(subscription, dict):
+        return (None, {"error": "subscription must be an object"})
+
+    required_fields = {"endpoint", "keys"}
+    if not all(field in subscription for field in required_fields):
+        return (None, {"error": "subscription missing required fields"})
+
+    endpoint = subscription.get("endpoint")
+    if not isinstance(endpoint, str) or not endpoint.startswith("https://"):
+        return (None, {"error": "subscription endpoint must be a valid HTTPS URL"})
+
+    return (subscription, None)
+
+
+def _validate_topics_list(topics):
+    """Validate topics array."""
+    if not isinstance(topics, list):
+        return (None, {"error": "topics must be an array"})
+
+    allowed_topics = {"blog_posts", "portfolio_updates", "general"}
+    for topic in topics:
+        if not isinstance(topic, str) or topic not in allowed_topics:
+            return (None, {"error": f'Invalid topic. Must be one of: {", ".join(allowed_topics)}'})
+
+    return (topics, None)
+
+
+def _validate_notification_content(data):
+    """Validate message and title fields."""
+    validated = {}
+
+    message = data.get("message")
+    if message:
+        if not isinstance(message, str) or len(message) > 1000:
+            return (None, {"error": "message must be a string under 1000 characters"})
+        validated["message"] = strip_tags(message)
+
+    title = data.get("title")
+    if title:
+        if not isinstance(title, str) or len(title) > 200:
+            return (None, {"error": "title must be a string under 200 characters"})
+        validated["title"] = strip_tags(title)
+
+    return (validated, None)
+
+
+def validate_notification_data(data):
     """
-    Validate and sanitize notification data
+    Validate and sanitize notification data.
+
+    Refactored to reduce complexity: C:20 → C:6
+    Uses validator functions for subscription, topics, and content.
     """
     if not isinstance(data, dict):
         return {"error": "Data must be a JSON object"}
 
     allowed_fields = {
-        "subscription",
-        "topics",
-        "user_agent",
-        "url",
-        "endpoint",
-        "message",
-        "title",
-        "icon",
-        "badge",
+        "subscription", "topics", "user_agent", "url",
+        "endpoint", "message", "title", "icon", "badge",
     }
 
-    validated_data = {}
-
-    # Check for unknown fields
     unknown_fields = set(data.keys()) - allowed_fields
     if unknown_fields:
         return {"error": f'Unknown fields: {", ".join(unknown_fields)}'}
 
-    # Validate subscription data (for push subscriptions)
+    validated_data = {}
+
     subscription = data.get("subscription")
     if subscription:
-        if not isinstance(subscription, dict):
-            return {"error": "subscription must be an object"}
+        sub_data, error = _validate_subscription_data(subscription)
+        if error:
+            return error
+        validated_data["subscription"] = sub_data
 
-        required_sub_fields = {"endpoint", "keys"}
-        if not all(field in subscription for field in required_sub_fields):
-            return {"error": "subscription missing required fields"}
-
-        # Validate endpoint
-        endpoint = subscription.get("endpoint")
-        if not isinstance(endpoint, str) or not endpoint.startswith("https://"):
-            return {"error": "subscription endpoint must be a valid HTTPS URL"}
-
-        validated_data["subscription"] = subscription
-
-    # Validate topics (optional)
     topics = data.get("topics")
     if topics:
-        if not isinstance(topics, list):
-            return {"error": "topics must be an array"}
+        topics_data, error = _validate_topics_list(topics)
+        if error:
+            return error
+        validated_data["topics"] = topics_data
 
-        allowed_topics = {"blog_posts", "portfolio_updates", "general"}
-        for topic in topics:
-            if not isinstance(topic, str) or topic not in allowed_topics:
-                return {
-                    "error": f'Invalid topic. Must be one of: {", ".join(allowed_topics)}'
-                }
-
-        validated_data["topics"] = topics
-
-    # Validate message content (optional)
-    message = data.get("message")
-    if message:
-        if not isinstance(message, str) or len(message) > 1000:
-            return {"error": "message must be a string under 1000 characters"}
-
-        validated_data["message"] = strip_tags(message)
-
-    # Validate title (optional)
-    title = data.get("title")
-    if title:
-        if not isinstance(title, str) or len(title) > 200:
-            return {"error": "title must be a string under 200 characters"}
-
-        validated_data["title"] = strip_tags(title)
+    content, error = _validate_notification_content(data)
+    if error:
+        return error
+    validated_data.update(content)
 
     return validated_data

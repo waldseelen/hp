@@ -34,7 +34,7 @@ class UIEnhancements {
         window.addEventListener('load', () => this.onWindowLoad());
         window.addEventListener('resize', () => this.onWindowResize());
         window.addEventListener('scroll', this.throttle(this.onWindowScroll, 16), { passive: true });
-        
+
         // Page visibility
         document.addEventListener('visibilitychange', () => this.onVisibilityChange());
 
@@ -115,12 +115,12 @@ class UIEnhancements {
         if (window.__imgLazyOwner && window.__imgLazyOwner !== 'ui-enhancements') {
             return;
         }
-        
+
         // Set owner if not already set
         if (!window.__imgLazyOwner) {
             window.__imgLazyOwner = 'ui-enhancements';
         }
-        
+
         const images = document.querySelectorAll('img[data-src]');
         if ('IntersectionObserver' in window) {
             const observerOptions = {
@@ -177,11 +177,11 @@ class UIEnhancements {
 
     enhanceForm(form) {
         const inputs = form.querySelectorAll('input, textarea, select');
-        
+
         inputs.forEach(input => {
             // Add floating label effect
             this.addFloatingLabel(input);
-            
+
             // Add validation feedback
             input.addEventListener('blur', () => this.validateInput(input));
             input.addEventListener('input', () => this.clearValidationErrors(input));
@@ -213,7 +213,7 @@ class UIEnhancements {
     validateInput(input) {
         const isValid = input.checkValidity();
         const container = input.closest('.form-group');
-        
+
         if (container) {
             container.classList.toggle('has-error', !isValid);
             container.classList.toggle('has-success', isValid && input.value);
@@ -255,7 +255,7 @@ class UIEnhancements {
 
     setupCardInteractions() {
         const cards = document.querySelectorAll('.card-interactive');
-        
+
         cards.forEach(card => {
             // Mouse move effect for cards
             card.addEventListener('mousemove', (e) => {
@@ -263,7 +263,7 @@ class UIEnhancements {
                 const { left, top } = card.getBoundingClientRect();
                 const x = clientX - left;
                 const y = clientY - top;
-                
+
                 card.style.setProperty('--mouse-x', `${x}px`);
                 card.style.setProperty('--mouse-y', `${y}px`);
             });
@@ -431,7 +431,7 @@ class ToastManager {
         const titleEl = toast.querySelector('.toast-title');
         const messageEl = toast.querySelector('.toast-message');
         const iconEl = toast.querySelector('.toast-icon');
-        
+
         if (titleEl) titleEl.textContent = options.title || this.getDefaultTitle(type);
         if (messageEl) messageEl.textContent = message;
         if (iconEl) this.setToastIcon(iconEl, type);
@@ -469,7 +469,7 @@ class ToastManager {
         if (!actionsContainer || !actions.length) return;
 
         actionsContainer.classList.remove('hidden');
-        
+
         actions.forEach((action, index) => {
             const button = actionsContainer.querySelector(
                 index === 0 ? '.toast-action-primary' : '.toast-action-secondary'
@@ -487,11 +487,11 @@ class ToastManager {
     setupProgressBar(toast, duration) {
         const progressContainer = toast.querySelector('.toast-progress-container');
         const progressBar = toast.querySelector('.toast-progress');
-        
+
         if (progressContainer && progressBar) {
             progressContainer.classList.remove('hidden');
             progressBar.style.setProperty('--duration', `${duration}ms`);
-            
+
             requestAnimationFrame(() => {
                 progressBar.style.width = '0%';
             });
@@ -518,7 +518,7 @@ class ToastManager {
     getDefaultTitle(type) {
         const titles = {
             success: 'Success',
-            error: 'Error', 
+            error: 'Error',
             warning: 'Warning',
             info: 'Info'
         };
@@ -549,22 +549,22 @@ class ModalManager {
 
         this.previousFocus = document.activeElement;
         this.activeModal = modal;
-        
+
         modal.classList.add('modal-open');
         modal.setAttribute('aria-hidden', 'false');
-        
+
         // Focus management
         const focusableElements = modal.querySelectorAll(
             'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
-        
+
         if (focusableElements.length > 0) {
             focusableElements[0].focus();
         }
 
         // Escape key to close
         document.addEventListener('keydown', this.handleModalEscape);
-        
+
         // Prevent body scroll
         document.body.style.overflow = 'hidden';
     }
@@ -575,7 +575,7 @@ class ModalManager {
 
         modal.classList.remove('modal-open');
         modal.setAttribute('aria-hidden', 'true');
-        
+
         // Restore focus
         if (this.previousFocus) {
             this.previousFocus.focus();
@@ -583,10 +583,10 @@ class ModalManager {
 
         // Remove event listeners
         document.removeEventListener('keydown', this.handleModalEscape);
-        
+
         // Restore body scroll
         document.body.style.overflow = '';
-        
+
         this.activeModal = null;
         this.previousFocus = null;
     }
@@ -628,7 +628,7 @@ class ScrollManager {
         const scrollTop = window.pageYOffset;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         const scrolled = (scrollTop / docHeight) * 100;
-        
+
         this.progressBar.style.width = `${Math.min(scrolled, 100)}%`;
     }
 
@@ -744,7 +744,7 @@ class SearchManager {
         // Setup event listeners
         this.input.addEventListener('input', this.debounce((e) => this.handleInput(e.target.value), 300));
         this.input.addEventListener('keydown', (e) => this.handleKeydown(e));
-        
+
         // Setup filter buttons
         const filters = this.modal.querySelectorAll('.search-filter');
         filters.forEach(filter => {
@@ -767,7 +767,7 @@ class SearchManager {
         this.modal.classList.add('search-modal-open');
         this.modal.style.opacity = '1';
         this.modal.style.visibility = 'visible';
-        
+
         if (this.input) {
             this.input.focus();
         }
@@ -782,14 +782,14 @@ class SearchManager {
         this.modal.classList.remove('search-modal-open');
         this.modal.style.opacity = '0';
         this.modal.style.visibility = 'hidden';
-        
+
         this.clearResults();
         this.selectedIndex = -1;
     }
 
     handleInput(query) {
         this.currentQuery = query.trim();
-        
+
         if (this.debounceTimer) {
             clearTimeout(this.debounceTimer);
         }
@@ -842,7 +842,7 @@ class SearchManager {
 
     async performSearch(query) {
         this.showLoading();
-        
+
         try {
             const activeFilter = this.modal.querySelector('.search-filter.active')?.dataset.filter || 'all';
             const response = await fetch(`/search/?q=${encodeURIComponent(query)}&filter=${activeFilter}`, {
@@ -853,19 +853,19 @@ class SearchManager {
                     'Content-Type': 'application/json'
                 }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
-            
+
             this.results = data.results || [];
             this.displayResults(this.results);
-            
+
             // Save to recent searches
             this.saveRecentSearch(query);
-            
+
         } catch (error) {
             console.error('Search error:', error);
             this.showError('Search temporarily unavailable');
@@ -877,7 +877,7 @@ class SearchManager {
     showLoading() {
         const loading = document.getElementById('search-loading');
         if (loading) loading.classList.remove('hidden');
-        
+
         const recent = document.getElementById('search-recent');
         if (recent) recent.style.display = 'none';
     }
@@ -971,11 +971,11 @@ class SearchManager {
     showRecentSearches() {
         const recent = document.getElementById('search-recent');
         if (recent) recent.style.display = 'block';
-        
+
         // Load and display recent searches from localStorage
         const recentSearches = this.getRecentSearches();
         const listContainer = document.getElementById('recent-searches-list');
-        
+
         if (listContainer && recentSearches.length > 0) {
             listContainer.innerHTML = '';
             recentSearches.forEach(search => {
@@ -996,7 +996,7 @@ class SearchManager {
         recent = recent.filter(item => item !== query);
         recent.unshift(query);
         recent = recent.slice(0, 5); // Keep only 5 recent searches
-        
+
         localStorage.setItem('recentSearches', JSON.stringify(recent));
     }
 
@@ -1127,7 +1127,7 @@ class KeyboardManager {
         document.addEventListener('keydown', (e) => {
             const key = this.getKeyString(e);
             const handler = this.shortcuts.get(key);
-            
+
             if (handler) {
                 // Don't trigger shortcuts when typing in inputs
                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
@@ -1138,7 +1138,7 @@ class KeyboardManager {
                     }
                     return;
                 }
-                
+
                 e.preventDefault();
                 handler(e);
             }
@@ -1147,11 +1147,11 @@ class KeyboardManager {
 
     getKeyString(e) {
         let key = e.key.toLowerCase();
-        
+
         if (e.ctrlKey) key = `ctrl+${key}`;
         if (e.altKey) key = `alt+${key}`;
         if (e.shiftKey && key.length > 1) key = `shift+${key}`;
-        
+
         return key;
     }
 }
@@ -1171,7 +1171,7 @@ class ThemeManager {
 
     applyTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
-        
+
         // Update theme color meta tag
         const themeColorMeta = document.querySelector('meta[name="theme-color"]');
         if (themeColorMeta) {
@@ -1195,10 +1195,10 @@ class ThemeManager {
 // Global Functions
 window.toggleSearchModal = () => {
     if (!window.uiEnhancements) return;
-    
+
     const searchManager = window.uiEnhancements.searchManager;
     const isOpen = searchManager.modal?.classList.contains('search-modal-open');
-    
+
     if (isOpen) {
         searchManager.close();
     } else {
@@ -1227,12 +1227,12 @@ window.showToast = (message, type = 'info', options = {}) => {
 // Initialize UI Enhancements
 document.addEventListener('DOMContentLoaded', () => {
     window.uiEnhancements = new UIEnhancements();
-    
+
     // Initialize search manager
     if (window.uiEnhancements.searchManager) {
         window.uiEnhancements.searchManager.initialize();
     }
-    
+
     console.log('UI Enhancements initialized successfully');
 });
 

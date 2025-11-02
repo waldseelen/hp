@@ -8,7 +8,7 @@ from django import template
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
-from apps.main.cache import cache_manager
+from apps.main.cache_utils import cache_manager
 
 register = template.Library()
 

@@ -15,7 +15,7 @@ describe('Testing Infrastructure', () => {
     it('should mock functions', () => {
         const mockFn = vi.fn();
         mockFn('test');
-        
+
         expect(mockFn).toHaveBeenCalledWith('test');
         expect(mockFn).toHaveBeenCalledTimes(1);
     });

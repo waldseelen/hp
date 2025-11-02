@@ -2,17 +2,17 @@
 /**
  * BUNDLE ANALYZER SCRIPT
  * ======================
- * 
+ *
  * Analyzes static file bundles and provides optimization recommendations.
  * Generates detailed reports about file sizes, dependencies, and performance.
- * 
+ *
  * FEATURES:
  * - Bundle size analysis
  * - File dependency mapping
  * - Performance recommendations
  * - Detailed reporting (JSON, HTML)
  * - Optimization suggestions
- * 
+ *
  * USAGE:
  *   node scripts/analyze-bundle.js
  *   npm run analyze:bundle
@@ -33,7 +33,7 @@ class BundleAnalyzer {
                 total_bundle: 2 * 1024 * 1024 // 2MB
             }
         };
-        
+
         this.analysis = {
             files: [],
             dependencies: new Map(),
@@ -52,7 +52,7 @@ class BundleAnalyzer {
     async initialize() {
         console.log('📊 Bundle Analysis Started');
         console.log('===========================');
-        
+
         // Create reports directory
         if (!fs.existsSync(this.config.outputDir)) {
             fs.mkdirSync(this.config.outputDir, { recursive: true });
@@ -62,10 +62,10 @@ class BundleAnalyzer {
 
     async analyzeFiles() {
         console.log('🔍 Analyzing static files...');
-        
+
         const fileTypes = ['css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'webp', 'avif', 'svg', 'woff', 'woff2', 'ttf'];
         const patterns = fileTypes.map(ext => `${this.config.staticDir}/**/*.${ext}`);
-        
+
         let allFiles = [];
         for (const pattern of patterns) {
             const matches = glob.sync(pattern, {
@@ -77,7 +77,7 @@ class BundleAnalyzer {
             });
             allFiles = allFiles.concat(matches);
         }
-        
+
         // Analyze each file
         for (const filePath of allFiles) {
             const fileInfo = await this.analyzeFile(filePath);
@@ -85,10 +85,10 @@ class BundleAnalyzer {
                 this.analysis.files.push(fileInfo);
             }
         }
-        
+
         // Calculate statistics
         this.calculateStats();
-        
+
         console.log(`📊 Analyzed ${this.analysis.files.length} files`);
     }
 
@@ -97,7 +97,7 @@ class BundleAnalyzer {
             const stats = fs.statSync(filePath);
             const ext = path.extname(filePath).toLowerCase();
             const relativePath = path.relative(this.config.staticDir, filePath);
-            
+
             const fileInfo = {
                 path: filePath,
                 relativePath: relativePath,
@@ -111,19 +111,19 @@ class BundleAnalyzer {
                 isDuplicate: false,
                 compressionRatio: null
             };
-            
+
             // Analyze file content for dependencies (CSS/JS only)
             if (ext === '.css' || ext === '.js') {
                 fileInfo.dependencies = await this.findDependencies(filePath);
             }
-            
+
             // Estimate compression potential
             if (ext === '.css' || ext === '.js') {
                 fileInfo.compressionRatio = await this.estimateCompression(filePath);
             }
-            
+
             return fileInfo;
-            
+
         } catch (error) {
             console.warn(`⚠️  Could not analyze ${filePath}: ${error.message}`);
             return null;
@@ -146,7 +146,7 @@ class BundleAnalyzer {
             '.ttf': 'font',
             '.eot': 'font'
         };
-        
+
         return typeMap[extension] || 'other';
     }
 
@@ -155,7 +155,7 @@ class BundleAnalyzer {
             const content = fs.readFileSync(filePath, 'utf8');
             const dependencies = [];
             const ext = path.extname(filePath);
-            
+
             if (ext === '.css') {
                 // Find @import statements
                 const importRegex = /@import\s+['"]([^'"]+)['"]/g;
@@ -163,7 +163,7 @@ class BundleAnalyzer {
                 while ((match = importRegex.exec(content)) !== null) {
                     dependencies.push(match[1]);
                 }
-                
+
                 // Find url() references
                 const urlRegex = /url\(['"]?([^'")]+)['"]?\)/g;
                 while ((match = urlRegex.exec(content)) !== null) {
@@ -177,9 +177,9 @@ class BundleAnalyzer {
                     dependencies.push(match[1] || match[2]);
                 }
             }
-            
+
             return dependencies;
-            
+
         } catch (error) {
             return [];
         }
@@ -189,15 +189,15 @@ class BundleAnalyzer {
         try {
             const content = fs.readFileSync(filePath, 'utf8');
             const originalSize = Buffer.byteLength(content, 'utf8');
-            
+
             // Simple estimation based on repetitive patterns
             const uniqueChars = new Set(content).size;
             const totalChars = content.length;
-            
+
             // Rough estimate: more unique characters = less compressible
             const compressionRatio = Math.max(0.3, Math.min(0.9, uniqueChars / totalChars));
             return compressionRatio;
-            
+
         } catch (error) {
             return null;
         }
@@ -205,18 +205,18 @@ class BundleAnalyzer {
 
     calculateStats() {
         const stats = this.analysis.stats;
-        
+
         stats.totalFiles = this.analysis.files.length;
         stats.totalSize = this.analysis.files.reduce((sum, file) => sum + file.size, 0);
-        
+
         if (stats.totalFiles > 0) {
             stats.avgFileSize = stats.totalSize / stats.totalFiles;
-            
+
             // Find largest file
-            const largestFile = this.analysis.files.reduce((largest, current) => 
+            const largestFile = this.analysis.files.reduce((largest, current) =>
                 current.size > largest.size ? current : largest
             );
-            
+
             stats.largestFile = largestFile.relativePath;
             stats.largestSize = largestFile.size;
         }
@@ -224,24 +224,24 @@ class BundleAnalyzer {
 
     async findDuplicates() {
         console.log('🔍 Finding duplicate files...');
-        
+
         const hashMap = new Map();
-        
+
         for (const file of this.analysis.files) {
             try {
                 const content = fs.readFileSync(file.path);
                 const hash = require('crypto').createHash('md5').update(content).digest('hex');
-                
+
                 if (hashMap.has(hash)) {
                     const existing = hashMap.get(hash);
                     file.isDuplicate = true;
                     existing.isDuplicate = true;
-                    
+
                     // Add to duplicates array if not already present
-                    const duplicateGroup = this.analysis.duplicates.find(group => 
+                    const duplicateGroup = this.analysis.duplicates.find(group =>
                         group.some(f => f.path === existing.path)
                     );
-                    
+
                     if (duplicateGroup) {
                         duplicateGroup.push(file);
                     } else {
@@ -254,16 +254,16 @@ class BundleAnalyzer {
                 // Skip files that can't be read
             }
         }
-        
+
         console.log(`📊 Found ${this.analysis.duplicates.length} duplicate groups`);
     }
 
     generateRecommendations() {
         console.log('💡 Generating recommendations...');
-        
+
         const recommendations = [];
         const stats = this.analysis.stats;
-        
+
         // Bundle size recommendations
         if (stats.totalSize > this.config.thresholds.total_bundle) {
             recommendations.push({
@@ -279,7 +279,7 @@ class BundleAnalyzer {
                 ]
             });
         }
-        
+
         // Large files recommendations
         const largeFiles = this.analysis.files.filter(f => f.isHuge);
         if (largeFiles.length > 0) {
@@ -297,13 +297,13 @@ class BundleAnalyzer {
                 ]
             });
         }
-        
+
         // Duplicate files recommendations
         if (this.analysis.duplicates.length > 0) {
             const totalDuplicateSize = this.analysis.duplicates.reduce((sum, group) => {
                 return sum + (group.length - 1) * group[0].size;
             }, 0);
-            
+
             recommendations.push({
                 type: 'duplicates',
                 severity: 'medium',
@@ -317,22 +317,22 @@ class BundleAnalyzer {
                 ]
             });
         }
-        
+
         // Compression recommendations
-        const uncompressedFiles = this.analysis.files.filter(f => 
-            (f.type === 'stylesheet' || f.type === 'script') && 
-            !f.name.includes('.min.') && 
+        const uncompressedFiles = this.analysis.files.filter(f =>
+            (f.type === 'stylesheet' || f.type === 'script') &&
+            !f.name.includes('.min.') &&
             f.compressionRatio && f.compressionRatio < 0.7
         );
-        
+
         if (uncompressedFiles.length > 0) {
             recommendations.push({
                 type: 'compression',
                 severity: 'low',
                 title: `${uncompressedFiles.length} files could benefit from minification`,
                 description: 'Minification can significantly reduce file sizes for CSS and JavaScript.',
-                files: uncompressedFiles.map(f => ({ 
-                    path: f.relativePath, 
+                files: uncompressedFiles.map(f => ({
+                    path: f.relativePath,
                     size: f.size,
                     estimatedSaving: Math.round(f.size * (1 - f.compressionRatio))
                 })),
@@ -343,14 +343,14 @@ class BundleAnalyzer {
                 ]
             });
         }
-        
+
         this.analysis.recommendations = recommendations;
         console.log(`📊 Generated ${recommendations.length} recommendations`);
     }
 
     async generateReports() {
         console.log('📄 Generating reports...');
-        
+
         // Generate JSON report
         const jsonReport = {
             timestamp: new Date().toISOString(),
@@ -359,15 +359,15 @@ class BundleAnalyzer {
             duplicates: this.analysis.duplicates,
             recommendations: this.analysis.recommendations
         };
-        
+
         const jsonPath = path.join(this.config.outputDir, 'bundle-analysis.json');
         fs.writeFileSync(jsonPath, JSON.stringify(jsonReport, null, 2));
-        
+
         // Generate HTML report
         const htmlReport = this.generateHTMLReport(jsonReport);
         const htmlPath = path.join(this.config.outputDir, 'bundle-analysis.html');
         fs.writeFileSync(htmlPath, htmlReport);
-        
+
         console.log(`📄 Reports generated:`);
         console.log(`   JSON: ${jsonPath}`);
         console.log(`   HTML: ${htmlPath}`);
@@ -409,7 +409,7 @@ class BundleAnalyzer {
             <h1>Bundle Analysis Report</h1>
             <p>Generated on ${new Date(data.timestamp).toLocaleString()}</p>
         </div>
-        
+
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-value">${data.stats.totalFiles}</div>
@@ -428,7 +428,7 @@ class BundleAnalyzer {
                 <div class="stat-label">Largest File</div>
             </div>
         </div>
-        
+
         <div class="section">
             <h2>Recommendations</h2>
             ${data.recommendations.map(rec => `
@@ -441,7 +441,7 @@ class BundleAnalyzer {
                 </div>
             `).join('')}
         </div>
-        
+
         <div class="section">
             <h2>File Breakdown by Type</h2>
             <table>
@@ -460,7 +460,7 @@ class BundleAnalyzer {
                 </tbody>
             </table>
         </div>
-        
+
         <div class="section">
             <h2>Largest Files</h2>
             <div class="file-list">
@@ -482,7 +482,7 @@ class BundleAnalyzer {
 
     getFileTypeStats(files) {
         const typeStats = {};
-        
+
         files.forEach(file => {
             if (!typeStats[file.type]) {
                 typeStats[file.type] = {
@@ -491,11 +491,11 @@ class BundleAnalyzer {
                     totalSize: 0
                 };
             }
-            
+
             typeStats[file.type].count++;
             typeStats[file.type].totalSize += file.size;
         });
-        
+
         return Object.values(typeStats).map(type => ({
             ...type,
             avgSize: type.totalSize / type.count
@@ -512,26 +512,26 @@ class BundleAnalyzer {
 
     async run() {
         await this.initialize();
-        
+
         // Analyze all files
         await this.analyzeFiles();
-        
+
         // Find duplicates
         await this.findDuplicates();
-        
+
         // Generate recommendations
         this.generateRecommendations();
-        
+
         // Generate reports
         await this.generateReports();
-        
+
         // Print summary
         this.printSummary();
     }
 
     printSummary() {
         const stats = this.analysis.stats;
-        
+
         console.log('\n📊 BUNDLE ANALYSIS SUMMARY');
         console.log('===========================');
         console.log(`Total files: ${stats.totalFiles}`);
@@ -540,11 +540,11 @@ class BundleAnalyzer {
         console.log(`Average file size: ${this.formatBytes(stats.avgFileSize)}`);
         console.log(`Duplicates found: ${this.analysis.duplicates.length} groups`);
         console.log(`Recommendations: ${this.analysis.recommendations.length}`);
-        
+
         if (stats.totalSize > this.config.thresholds.total_bundle) {
             console.log('\n⚠️  Bundle size exceeds recommended limit!');
         }
-        
+
         console.log('\n✅ Analysis completed successfully!');
         console.log(`📄 View detailed report: ${this.config.outputDir}/bundle-analysis.html`);
     }

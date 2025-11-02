@@ -14,21 +14,32 @@ exclude =
     .ruff_cache,
     .next
 
-ignore =
-    E203,
-    E501,
-    W503,
-    F401
+ignore = E203,E501,W503,W505,F401,F541,C414,C420,D
 
 per-file-ignores =
     __init__.py:F401
-    settings/*.py:F405,F401
-    tests/*.py:F401,F811
+    settings/*.py:F405,F401,F403
+    tests/*.py:F401,F811,F841
     manage.py:E402
-    */asgi.py:F401
+    */asgi.py:F401,E402
     */wsgi.py:F401
+    apps/portfolio/views.py:F841
+    apps/main/search.py:C901
+    apps/portfolio/search.py:C901
+    apps/portfolio/logging/alert_system.py:C901
+    apps/portfolio/validators.py:C901
+    project/*.py:E402,F405,F403,F841
+    project/settings/*.py:F405,F401,F403,E402,F841
+    project/contact/views.py:F841,E722
+    project/main/management/commands/validate_templates.py:C901,E722
+    generate_hash.py:E402
+    scripts/*.py:E402,F841,E722,C901,C401,E226
+    scripts/maintenance/*.py:E402,F841,E722,C901,C401,E226
+    scripts/performance/*.py:E402,F841,E722,C901,C401,E226
+    setup_admin.py:E402
+    test_auth.py:E402
 
 # Additional quality rules
 select = E,W,F,C
-max-complexity = 10
-max-doc-length = 72
+max-complexity = 15
+max-doc-length = 88

@@ -15,19 +15,19 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   // Test Directory
   testDir: './tests/e2e',
-  
+
   // Run tests in files in parallel
   fullyParallel: true,
-  
+
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
-  
+
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
-  
+
   // Opt out of parallel tests on CI
   workers: process.env.CI ? 1 : undefined,
-  
+
   // Reporter to use
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],
@@ -35,13 +35,13 @@ export default defineConfig({
     ['junit', { outputFile: 'playwright-report/results.xml' }],
     process.env.CI ? ['github'] : ['list']
   ],
-  
+
   // Global test timeout
   timeout: 30 * 1000,
-  
+
   // Global setup timeout
   globalTimeout: 60 * 1000 * 5,
-  
+
   // Expect timeout
   expect: {
     timeout: 5000
@@ -51,26 +51,26 @@ export default defineConfig({
   use: {
     // Base URL to use in actions like `await page.goto('/')`
     baseURL: process.env.BASE_URL || 'http://127.0.0.1:8001',
-    
+
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',
-    
+
     // Record video on failure
     video: 'retain-on-failure',
-    
+
     // Take screenshot on failure
     screenshot: 'only-on-failure',
-    
+
     // Browser context options
     viewport: { width: 1280, height: 720 },
     ignoreHTTPSErrors: true,
-    
+
     // Permissions for PWA testing
     permissions: ['notifications'],
-    
+
     // Service Worker support
     serviceWorkers: 'allow',
-    
+
     // Local storage and session storage
     storageState: undefined
   },
@@ -141,7 +141,7 @@ export default defineConfig({
 
   // Global Setup
   globalSetup: require.resolve('./tests/e2e/global-setup.js'),
-  
+
   // Global Teardown
   globalTeardown: require.resolve('./tests/e2e/global-teardown.js'),
 

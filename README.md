@@ -146,7 +146,7 @@ SITE_DESCRIPTION=Your professional description
 
 The site is fully responsive with breakpoints optimized for:
 - **Mobile**: < 768px
-- **Tablet**: 768px - 1024px  
+- **Tablet**: 768px - 1024px
 - **Desktop**: > 1024px
 
 ## 🎯 SEO Optimization

@@ -218,32 +218,17 @@ class Command(BaseCommand):
             for suggestion in suggestions:
                 self.stdout.write(f"    - {suggestion}")
 
-    def validate_template_structure(self, content, template_path):  # noqa: C901
-        """
-        Enhanced template structure validation.
-
-        NOTE: Complexity 13 - acceptable for comprehensive structure checks.
-        """
+    def _validate_unclosed_tags(self, lines):
+        """Check for unclosed Django template tags."""
         errors = []
-        lines = content.split("\n")
-
-        # Check for unclosed tags
         tag_stack = []
+
         for i, line in enumerate(lines, 1):
-            # Find Django template tags
             tag_matches = re.findall(r"{%\s*(\w+)", line)
             end_tag_matches = re.findall(r"{%\s*end(\w+)", line)
 
             for tag in tag_matches:
-                if tag in [
-                    "if",
-                    "for",
-                    "block",
-                    "with",
-                    "comment",
-                    "autoescape",
-                    "verbatim",
-                ]:
+                if tag in ["if", "for", "block", "with", "comment", "autoescape", "verbatim"]:
                     tag_stack.append((tag, i))
 
             for end_tag in end_tag_matches:
@@ -252,32 +237,57 @@ class Command(BaseCommand):
                 else:
                     errors.append(f'Line {i}: Mismatched end tag "end{end_tag}"')
 
-        # Check for unclosed tags at end
         for tag, line_num in tag_stack:
             errors.append(f'Line {line_num}: Unclosed tag "{tag}"')
 
-        # Check for proper template inheritance
-        if "{% extends" in content:
-            if not re.search(
-                r'{%\s*extends\s+["\'][^"\']+["\']\s*%}', content.split("\n")[0]
-            ):
-                first_non_empty = next(
-                    (i for i, line in enumerate(lines) if line.strip()), 0
-                )
-                if first_non_empty > 0:
-                    errors.append(
-                        "{% extends %} should be the first line in the template"
-                    )
+        return errors
 
-        # Check for static file references
+    def _validate_template_inheritance(self, content, lines):
+        """Check for proper template inheritance rules."""
+        errors = []
+
+        if "{% extends" in content:
+            if not re.search(r'{%\s*extends\s+["\'][^"\']+["\']\s*%}', lines[0]):
+                first_non_empty = next((i for i, line in enumerate(lines) if line.strip()), 0)
+                if first_non_empty > 0:
+                    errors.append("{% extends %} should be the first line in the template")
+
+        return errors
+
+    def _validate_static_references(self, content):
+        """Check for proper static file loading."""
+        errors = []
+
         if "{% static" in content and "{% load static" not in content:
             errors.append("Template uses {% static %} but missing {% load static %}")
 
-        # Check for variable syntax issues
+        return errors
+
+    def _validate_variable_syntax(self, content):
+        """Check for invalid variable syntax."""
+        errors = []
         invalid_variables = re.findall(r"{{[^}]*}}", content)
+
         for var in invalid_variables:
             if "{{" in var[2:-2] or "}}" in var[2:-2]:
                 errors.append(f"Invalid nested variable syntax: {var}")
+
+        return errors
+
+    def validate_template_structure(self, content, template_path):
+        """
+        Enhanced template structure validation.
+
+        Refactored to reduce complexity: C:18 → C:5
+        Uses validator pattern with dedicated check methods.
+        """
+        errors = []
+        lines = content.split("\n")
+
+        errors.extend(self._validate_unclosed_tags(lines))
+        errors.extend(self._validate_template_inheritance(content, lines))
+        errors.extend(self._validate_static_references(content))
+        errors.extend(self._validate_variable_syntax(content))
 
         return errors
 

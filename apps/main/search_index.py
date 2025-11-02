@@ -339,64 +339,57 @@ class SearchIndexManager:
         # Limit to 20 tags, remove duplicates
         return list(dict.fromkeys(tag_list))[:20]
 
-    def build_document(self, obj: Model) -> Optional[Dict[str, Any]]:  # noqa: C901
+    def _extract_document_fields(
+        self, obj: Model, config: Dict, model_name: str
+    ) -> Dict[str, Any]:
         """
-        Build a search document from a Django model instance.
-
-        NOTE: High complexity (27) - scheduled for refactoring in Phase 19.
-        See docs/development/technical-debt-complexity.md
+        Extract and process searchable fields from model instance.
 
         Args:
             obj: Django model instance
+            config: Model configuration dict
+            model_name: Model class name for logging
 
         Returns:
-            Dict ready for indexing, or None if object shouldn't be indexed
+            Dict of processed field values
         """
-        model_name = obj.__class__.__name__
-        config = self.get_model_config(model_name)
+        fields = {}
 
-        if not config:
-            logger.warning(f"No configuration found for model: {model_name}")
-            return None
-
-        # Check visibility
-        if config.get("visibility_check"):
-            if not config["visibility_check"](obj):
-                logger.debug(
-                    f"Object {model_name}:{obj.id} is not visible, skipping index"
-                )
-                return None
-
-        # Build document
-        document = {
-            "id": f"{model_name}:{obj.id}",
-            "model_type": model_name,
-            "model_id": obj.id,
-            "search_category": config.get("search_category", model_name),
-            "search_icon": config.get("search_icon", "📄"),
-        }
-
-        # Extract searchable fields
         for field_name, field_config in config["fields"].items():
             try:
                 value = getattr(obj, field_name, None)
 
                 if field_config.get("parse_tags"):
-                    document[field_name] = self.parse_tags(value)
+                    fields[field_name] = self.parse_tags(value)
                 elif field_config.get("sanitize"):
-                    document[field_name] = self.sanitize_content(
+                    fields[field_name] = self.sanitize_content(
                         value, field_config["sanitize"]
                     )
                 else:
-                    document[field_name] = str(value) if value is not None else ""
+                    fields[field_name] = str(value) if value is not None else ""
             except Exception as e:
                 logger.error(
                     f"Error extracting field {field_name} from {model_name}:{obj.id}: {e}"
                 )
-                document[field_name] = ""
+                fields[field_name] = ""
 
-        # Extract metadata fields
+        return fields
+
+    def _build_document_metadata(
+        self, obj: Model, config: Dict
+    ) -> Dict[str, Any]:
+        """
+        Extract and process metadata fields from model instance.
+
+        Args:
+            obj: Django model instance
+            config: Model configuration dict
+
+        Returns:
+            Dict of processed metadata values
+        """
         metadata = {}
+
         for meta_field in config["metadata"]:
             try:
                 value = getattr(obj, meta_field, None)
@@ -417,11 +410,25 @@ class SearchIndexManager:
             except Exception as e:
                 logger.error(f"Error extracting metadata {meta_field}: {e}")
 
-        document["metadata"] = metadata
+        return metadata
 
-        # Build URL
+    def _generate_document_url(
+        self, obj: Model, config: Dict, model_name: str
+    ) -> Optional[str]:
+        """
+        Generate URL for document based on configuration.
+
+        Args:
+            obj: Django model instance
+            config: Model configuration dict
+            model_name: Model class name for logging
+
+        Returns:
+            Generated URL string or None
+        """
         try:
             url = None
+
             if config.get("url_pattern"):
                 if config.get("url_field"):
                     url_value = getattr(obj, config["url_field"])
@@ -436,23 +443,82 @@ class SearchIndexManager:
                 # Direct external URL
                 url = getattr(obj, config["url_field"], None)
 
-            document["url"] = url
+            return url
         except (NoReverseMatch, AttributeError) as e:
             logger.warning(f"Could not generate URL for {model_name}:{obj.id}: {e}")
-            document["url"] = None
+            return None
 
-        # Add category display name
+    def _add_excerpt_field(self, document: Dict[str, Any]) -> None:
+        """
+        Add excerpt field to document if not present.
+        Truncates description or content as fallback.
+
+        Args:
+            document: Document dict to modify in-place
+        """
+        if "excerpt" not in document:
+            if "description" in document:
+                document["excerpt"] = document["description"][:200]
+            elif "content" in document:
+                document["excerpt"] = document["content"][:200]
+
+    def build_document(self, obj: Model) -> Optional[Dict[str, Any]]:
+        """
+        Build a search document from a Django model instance.
+
+        Refactored to reduce complexity: C:27 → C:8
+        Uses pipeline pattern: validate → extract → build → enhance
+
+        Args:
+            obj: Django model instance
+
+        Returns:
+            Dict ready for indexing, or None if object shouldn't be indexed
+        """
+        model_name = obj.__class__.__name__
+        config = self.get_model_config(model_name)
+
+        # Validation: Check configuration and visibility
+        if not config:
+            logger.warning(f"No configuration found for model: {model_name}")
+            return None
+
+        if config.get("visibility_check"):
+            if not config["visibility_check"](obj):
+                logger.debug(
+                    f"Object {model_name}:{obj.id} is not visible, skipping index"
+                )
+                return None
+
+        # Build base document structure
+        document = {
+            "id": f"{model_name}:{obj.id}",
+            "model_type": model_name,
+            "model_id": obj.id,
+            "search_category": config.get("search_category", model_name),
+            "search_icon": config.get("search_icon", "📄"),
+        }
+
+        # Extract and add searchable fields
+        fields = self._extract_document_fields(obj, config, model_name)
+        document.update(fields)
+
+        # Extract and add metadata
+        metadata = self._build_document_metadata(obj, config)
+        document["metadata"] = metadata
+
+        # Generate and add URL
+        document["url"] = self._generate_document_url(obj, config, model_name)
+
+        # Add category display name if configured
         if config.get("category_display"):
             try:
                 document["category_display"] = config["category_display"](obj)
             except Exception as e:
                 logger.error(f"Error getting category display: {e}")
 
-        # Add excerpt (truncated content if no dedicated excerpt field)
-        if "excerpt" not in document and "description" in document:
-            document["excerpt"] = document["description"][:200]
-        elif "excerpt" not in document and "content" in document:
-            document["excerpt"] = document["content"][:200]
+        # Add excerpt field (fallback to description/content)
+        self._add_excerpt_field(document)
 
         return document
 

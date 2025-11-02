@@ -6,8 +6,13 @@ import logging.config
 import os
 from pathlib import Path
 
-import dj_database_url
 from decouple import config
+
+# Optional imports for production
+try:
+    import dj_database_url
+except ImportError:
+    dj_database_url = None
 
 # Optional imports for production
 try:
@@ -58,19 +63,32 @@ INSTALLED_APPS = [
     # Third party apps
     "rest_framework",
     "corsheaders",
-    "django_extensions",
-    "channels",
-    "django_celery_beat",
-    "django_celery_results",
     # Local apps
+    "apps.core",
     "apps.main",
     "apps.blog",
+    "apps.portfolio",  # Portfolio models (Admin, UserSession, GDPR, Analytics, etc.)
     "apps.tools",
     "apps.contact",
     "apps.chat",
     "apps.playground",
     "apps.ai_optimizer",
 ]
+
+# Optional third-party apps (add if installed)
+OPTIONAL_APPS = [
+    "django_extensions",
+    "channels",
+    "django_celery_beat",
+    "django_celery_results",
+]
+
+for app in OPTIONAL_APPS:
+    try:
+        __import__(app)
+        INSTALLED_APPS.append(app)
+    except ImportError:
+        pass
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -124,11 +142,21 @@ WSGI_APPLICATION = "project.wsgi.application"
 
 # Database
 # Use DATABASE_URL environment variable for PostgreSQL, fallback to SQLite
-DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}", conn_max_age=600
-    )
-}
+# Database configuration
+if dj_database_url:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}", conn_max_age=600
+        )
+    }
+else:
+    # Fallback for development without dj_database_url
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # Channel Layers Configuration
 CHANNEL_LAYERS = {
@@ -714,8 +742,15 @@ if not DEBUG:
 # REDIS CACHE CONFIGURATION (Production)
 # ==========================================================================
 
+# Try to import django_redis (optional dependency)
+try:
+    import django_redis  # noqa: F401
+    DJANGO_REDIS_AVAILABLE = True
+except ImportError:
+    DJANGO_REDIS_AVAILABLE = False
+
 REDIS_URL = config("REDIS_URL", default="")
-if not DEBUG and REDIS_URL:
+if not DEBUG and REDIS_URL and DJANGO_REDIS_AVAILABLE:
     try:
         CACHES = {
             "default": {
@@ -759,7 +794,7 @@ if not DEBUG and REDIS_URL:
                 "LOCATION": "unique-snowflake-fallback",
             }
         }
-elif REDIS_URL:
+elif REDIS_URL and DJANGO_REDIS_AVAILABLE:
     # Development with Redis
     try:
         import redis
@@ -810,3 +845,48 @@ IMAGE_OPTIMIZATION = {
     "MAX_WIDTH": config("MAX_IMAGE_WIDTH", default=2000, cast=int),
     "MAX_HEIGHT": config("MAX_IMAGE_HEIGHT", default=2000, cast=int),
 }
+
+# ==========================================================================
+# EXTERNAL SERVICES & CDN CONFIGURATION
+# ==========================================================================
+# Centralized configuration for external service URLs to eliminate hardcoded values
+
+EXTERNAL_SERVICES = {
+    # Google Services
+    "google_fonts": config("GOOGLE_FONTS_URL", default="https://fonts.googleapis.com"),
+    "google_fonts_static": config(
+        "GOOGLE_FONTS_STATIC_URL", default="https://fonts.gstatic.com"
+    ),
+    "google_pagespeed_api": "https://www.googleapis.com/pagespeedapi/v5/runPagespeed",
+    "google_analytics": config("GOOGLE_ANALYTICS_URL", default=""),
+    # CDN Services
+    "cdn_tailwind": config("CDN_TAILWIND_URL", default="https://cdn.tailwindcss.com"),
+    "cdn_jsdelivr": config("CDN_JSDELIVR_URL", default="https://cdn.jsdelivr.net"),
+    "cdn_unpkg": config("CDN_UNPKG_URL", default="https://unpkg.com"),
+    "cdn_cloudflare": config(
+        "CDN_CLOUDFLARE_URL", default="https://cdnjs.cloudflare.com"
+    ),
+    # Social Media URLs (should be overridden via environment variables)
+    "social_github": config(
+        "SOCIAL_GITHUB_URL", default="https://github.com/bugraakin"
+    ),
+    "social_linkedin": config(
+        "SOCIAL_LINKEDIN_URL", default="https://linkedin.com/in/bugraak"
+    ),
+    "social_twitter": config(
+        "SOCIAL_TWITTER_URL", default="https://twitter.com/bugraakin"
+    ),
+    "social_cal": config("SOCIAL_CAL_URL", default="https://cal.com/bugraakin"),
+    # API Services
+    "github_api": "https://api.github.com",
+    "spotify_embed": "https://open.spotify.com/embed",
+    # Other Services
+    "perplexity_cdn": "https://r2cdn.perplexity.ai",
+    "pagespeed_web": "https://pagespeed.web.dev",
+}
+
+# Schema.org context URL (for structured data)
+SCHEMA_ORG_CONTEXT = "https://schema.org"
+
+# PageSpeed API Key (optional, for performance monitoring)
+PAGESPEED_API_KEY = config("PAGESPEED_API_KEY", default="")

@@ -26,32 +26,40 @@ class RestrictedAdminBackend(BaseBackend):
       - ALLOWED_ADMIN_PASSWORD_HASH (Django-compatible hash)
     """
 
-    def authenticate(  # noqa: C901
-        self,
-        request,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        **kwargs,
-    ):
+    def _validate_credentials(self, username, password):
+        """
+        Validate username and password against configured admin.
+
+        Returns:
+            Tuple of (allowed_email, is_valid)
+        """
         if not username or not password:
-            return None
+            return (None, False)
 
         allowed_email = config("ALLOWED_ADMIN_EMAIL", default="").strip()
         allowed_hash = config("ALLOWED_ADMIN_PASSWORD_HASH", default="").strip()
 
-        # Hard stop if not configured
         if not allowed_email or not allowed_hash:
-            return None
+            return (None, False)
 
-        # Only allow the configured email (case-insensitive)
         if username.lower() != allowed_email.lower():
-            return None
+            return (None, False)
 
-        # Verify password using the stored hash
         if not check_password(password, allowed_hash):
-            return None
+            return (None, False)
 
-        # Ensure user exists (create if missing) and has proper flags
+        return (allowed_email, True)
+
+    def _build_user_defaults(self, allowed_email):
+        """
+        Build default values for user creation.
+
+        Args:
+            allowed_email: Email address of admin user
+
+        Returns:
+            Dict of default field values
+        """
         defaults = {
             "email": allowed_email,
             "username": allowed_email.split("@")[0][:150],
@@ -60,45 +68,86 @@ class RestrictedAdminBackend(BaseBackend):
             "is_superuser": True,
             "last_login": timezone.now(),
         }
+
         # Add optional 'name' if model supports it
         try:
             field_names = {f.name for f in User._meta.get_fields()}
+            if "name" in field_names:
+                defaults["name"] = allowed_email.split("@")[0]
         except Exception:
-            field_names = set()
-        if "name" in field_names:
-            defaults["name"] = allowed_email.split("@")[0]
+            pass
 
-        user, created = User.objects.get_or_create(
-            email__iexact=allowed_email,
-            defaults=defaults,
-        )
+        return defaults
 
-        update_fields: list[str] = []
+    def _sync_user_attributes(self, user, allowed_email, defaults, created):
+        """
+        Ensure user has correct attributes and flags.
+
+        Args:
+            user: User instance to update
+            allowed_email: Expected email address
+            defaults: Dict with default values
+            created: Whether user was just created
+
+        Returns:
+            List of field names that were updated
+        """
+        update_fields = []
 
         if created:
-            # Ensure the database record cannot be used for password auth
             user.set_unusable_password()
             update_fields.append("password")
         else:
-            canonical_username = defaults["username"]
-            if user.username != canonical_username:
-                user.username = canonical_username
+            # Sync username and email
+            if user.username != defaults["username"]:
+                user.username = defaults["username"]
                 update_fields.append("username")
             if user.email != allowed_email:
                 user.email = allowed_email
                 update_fields.append("email")
 
+        # Sync permission flags
         for flag in ("is_active", "is_staff", "is_superuser"):
             if not getattr(user, flag):
                 setattr(user, flag, True)
                 update_fields.append(flag)
 
+        # Ensure unusable password
         if not created and user.has_usable_password():
             user.set_unusable_password()
             update_fields.append("password")
 
+        return update_fields
+
+    def authenticate(
+        self,
+        request,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        **kwargs,
+    ):
+        """
+        Authenticate the configured admin account only.
+
+        Refactored to reduce complexity: C:18 → C:4
+        Uses validator/builder/sync pattern for user management.
+        """
+        # Validate credentials
+        allowed_email, is_valid = self._validate_credentials(username, password)
+        if not is_valid:
+            return None
+
+        # Build defaults and get/create user
+        defaults = self._build_user_defaults(allowed_email)
+        user, created = User.objects.get_or_create(
+            email__iexact=allowed_email,
+            defaults=defaults,
+        )
+
+        # Sync user attributes
+        update_fields = self._sync_user_attributes(user, allowed_email, defaults, created)
+
         if update_fields:
-            # dict preserves order since Python 3.7; ensures unique field names
             unique_fields = list(dict.fromkeys(update_fields))
             user.save(update_fields=unique_fields)
 

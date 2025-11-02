@@ -367,4 +367,3 @@ window.addEventListener('error', function(e) {
         e.target.alt = 'Image not available';
     }
 });
-

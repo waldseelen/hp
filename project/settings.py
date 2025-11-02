@@ -63,6 +63,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "apps.core.middleware.rate_limiting.RateLimitMiddleware",  # Rate limiting for auth
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -99,23 +100,8 @@ DATABASES = {
 }
 
 
-# Password validation
+# Password validation (moved to SECURITY SETTINGS section below)
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
 
 
 # Internationalization
@@ -182,13 +168,83 @@ EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
 DEFAULT_FROM_EMAIL = "bugraakin01@gmail.com"
 
-# Security Settings
+# ==============================================================================
+# SECURITY SETTINGS - OWASP Top 10 & Best Practices
+# ==============================================================================
+
+# SSL/HTTPS Security (Enable in production)
+SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "False") == "True"
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = int(os.environ.get("SECURE_HSTS_SECONDS", "0"))  # 31536000 in prod (1 year)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get("SECURE_HSTS_INCLUDE_SUBDOMAINS", "False") == "True"
+SECURE_HSTS_PRELOAD = os.environ.get("SECURE_HSTS_PRELOAD", "False") == "True"
+
+# Cookie Security
+SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "False") == "True"  # True in production
+SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access
+SESSION_COOKIE_SAMESITE = "Lax"  # CSRF protection
+SESSION_COOKIE_AGE = 3600  # 1 hour
+SESSION_SAVE_EVERY_REQUEST = False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+CSRF_COOKIE_SECURE = os.environ.get("CSRF_COOKIE_SECURE", "False") == "True"  # True in production
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = "Lax"
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_AGE = 31449600  # 1 year
+
+# XSS & Content Type Protection
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Clickjacking Protection
 X_FRAME_OPTIONS = "DENY"
 
+# Content Security Policy (CSP) - Will be configured via middleware
+# See: apps/core/middleware/security_headers.py for implementation
+
+# Password Policy
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 12,  # Increased from Django default (8)
+        },
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
+
+# Rate Limiting Configuration
+RATE_LIMIT_CONFIG = {
+    "MAX_LOGIN_ATTEMPTS": int(os.environ.get("RATE_LIMIT_MAX_ATTEMPTS", "5")),
+    "LOCKOUT_DURATION": int(os.environ.get("RATE_LIMIT_LOCKOUT_DURATION", "900")),  # 15 min
+    "ATTEMPT_WINDOW": int(os.environ.get("RATE_LIMIT_ATTEMPT_WINDOW", "300")),  # 5 min
+    "ENABLE_IP_TRACKING": True,
+    "ENABLE_USERNAME_TRACKING": True,
+    "EXEMPT_IPS": ["127.0.0.1", "localhost"],
+}
+
+RATE_LIMIT_PATHS = [
+    "/admin/login/",
+    "/api/auth/login/",
+    "/api/auth/token/",
+    "/accounts/login/",
+    "/password-reset/",
+    "/api/auth/register/",
+]
+
 # Admin Configuration
-ADMIN_URL = "admin/"  # Can be changed for security
+ADMIN_URL = os.environ.get("ADMIN_URL", "admin/")  # Obfuscate in production
 
 # Static files
 STATIC_ROOT = BASE_DIR / "staticfiles"

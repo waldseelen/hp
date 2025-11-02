@@ -46,14 +46,14 @@ function generateOptimizedFontCSS() {
     --font-sans: 'Inter', 'Inter Fallback', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, 'Cascadia Code', 'Source Code Pro', Consolas, monospace;
     --font-system: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    
+
     /* Font weights */
     --font-light: 300;
     --font-normal: 400;
     --font-medium: 500;
     --font-semibold: 600;
     --font-bold: 700;
-    
+
     /* Font sizes with fluid scaling */
     --text-xs: clamp(0.75rem, 0.7rem + 0.2vw, 0.8rem);
     --text-sm: clamp(0.875rem, 0.8rem + 0.3vw, 0.95rem);
@@ -64,7 +64,7 @@ function generateOptimizedFontCSS() {
     --text-3xl: clamp(1.875rem, 1.5rem + 1.5vw, 2.5rem);
     --text-4xl: clamp(2.25rem, 1.8rem + 2vw, 3rem);
     --text-5xl: clamp(3rem, 2.2rem + 3vw, 4rem);
-    
+
     /* Line heights */
     --leading-tight: 1.25;
     --leading-normal: 1.5;
@@ -153,7 +153,7 @@ html {
         -moz-osx-font-smoothing: grayscale;
         font-weight: 400; /* Slightly heavier for dark backgrounds */
     }
-    
+
     .font-light {
         font-weight: var(--font-normal); /* Bump up light fonts in dark mode */
     }
@@ -181,7 +181,7 @@ html {
         font-size: 12pt;
         line-height: 1.4;
     }
-    
+
     .font-mono {
         font-family: 'Courier New', monospace;
     }
@@ -203,23 +203,23 @@ Font Preloading - Include in base template <head>
 <!-- Preload critical fonts -->
 {% if FEATURES.FONT_PRELOADING %}
 <link
-    rel="preload" 
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" 
+    rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
     as="style"
     onload="this.onload=null;this.rel='stylesheet'">
 <link
-    rel="preload" 
-    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" 
+    rel="preload"
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
     as="style"
     onload="this.onload=null;this.rel='stylesheet'">
 
 <!-- Fallback for JS disabled -->
 <noscript>
-    <link 
-        rel="stylesheet" 
+    <link
+        rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
-    <link 
-        rel="stylesheet" 
+    <link
+        rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
 </noscript>
 {% endif %}
@@ -228,7 +228,7 @@ Font Preloading - Include in base template <head>
 <script>
 (function() {
     'use strict';
-    
+
     // Font loading optimization
     if ('fonts' in document) {
         // Check if fonts are already cached
@@ -237,14 +237,14 @@ Font Preloading - Include in base template <head>
             document.fonts.load('500 16px Inter'),
             document.fonts.load('400 14px JetBrains Mono')
         ];
-        
+
         Promise.all(fontPromises).then(() => {
             document.documentElement.classList.add('fonts-loaded');
         }).catch(() => {
             // Fonts failed to load, use system fonts
             document.documentElement.classList.add('fonts-failed');
         });
-        
+
         // Timeout fallback
         setTimeout(() => {
             if (!document.documentElement.classList.contains('fonts-loaded')) {
@@ -252,7 +252,7 @@ Font Preloading - Include in base template <head>
             }
         }, 3000);
     }
-    
+
     // Font display swap polyfill for older browsers
     if (!CSS.supports('font-display', 'swap')) {
         const style = document.createElement('style');
@@ -311,28 +311,28 @@ html {
  */
 async function main() {
     console.log('🔤 Starting font optimization...\n');
-    
+
     try {
         // Create fonts directory structure
         await fs.mkdir('static/fonts', { recursive: true });
         await fs.mkdir('static/css', { recursive: true });
         await fs.mkdir('templates/components', { recursive: true });
-        
+
         // Generate optimized font CSS
         const fontCSS = generateOptimizedFontCSS();
         await fs.writeFile('static/css/fonts-optimized.css', fontCSS);
         console.log('✅ Generated optimized font CSS');
-        
+
         // Generate font preload template
         const preloadHTML = generateFontPreloadHTML();
         await fs.writeFile('templates/components/font_preload.html', preloadHTML);
         console.log('✅ Generated font preload template');
-        
+
         // Generate critical font CSS
         const criticalCSS = generateCriticalFontCSS();
         await fs.writeFile('templates/components/critical_fonts.html', criticalCSS);
         console.log('✅ Generated critical font CSS template');
-        
+
         // Generate font configuration for Django
         const fontConfig = `# Font optimization settings for Django
 FONT_OPTIMIZATION = {
@@ -360,10 +360,10 @@ def font_context(request):
             'FONT_DISPLAY_SWAP': True
         }
     }`;
-        
+
         await fs.writeFile('font_config.py', fontConfig);
         console.log('✅ Generated Django font configuration');
-        
+
         // Generate font metrics for CLS prevention
         const fontMetrics = {
             'Inter': {
@@ -381,10 +381,10 @@ def font_context(request):
                 xHeight: 0.5
             }
         };
-        
+
         await fs.writeFile('static/fonts/font-metrics.json', JSON.stringify(fontMetrics, null, 2));
         console.log('✅ Generated font metrics for CLS prevention');
-        
+
         // Create a comprehensive documentation
         const documentation = `# Font Optimization Documentation
 
@@ -409,10 +409,10 @@ This font optimization setup provides:
 <head>
     <!-- Critical fonts inline -->
     {% include 'components/critical_fonts.html' %}
-    
+
     <!-- Font preloading -->
     {% include 'components/font_preload.html' %}
-    
+
     <!-- Regular CSS -->
     <link rel="stylesheet" href="{% static 'css/fonts-optimized.css' %}">
 </head>
@@ -438,10 +438,10 @@ Use browser DevTools to monitor:
 - Older browsers: JavaScript polyfill fallback
 - No JS: Graceful degradation to system fonts
 `;
-        
+
         await fs.writeFile('FONT_OPTIMIZATION.md', documentation);
         console.log('✅ Generated comprehensive documentation');
-        
+
         console.log('\n🎉 Font optimization complete!');
         console.log('📄 Files generated:');
         console.log('   - static/css/fonts-optimized.css');
@@ -451,7 +451,7 @@ Use browser DevTools to monitor:
         console.log('   - static/fonts/font-metrics.json');
         console.log('   - FONT_OPTIMIZATION.md');
         console.log('\n📖 See FONT_OPTIMIZATION.md for implementation details');
-        
+
     } catch (error) {
         console.error('❌ Font optimization failed:', error);
         process.exit(1);

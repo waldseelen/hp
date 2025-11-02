@@ -168,15 +168,10 @@ class TagCloudView(TemplateView):
 
         return context
 
-    def _collect_all_tags(self):  # noqa: C901
-        """Collect tags from all models"""
+    def _collect_blog_tags(self, tag_data):
+        """Collect tags from blog posts."""
         from apps.blog.models import Post
-        from apps.main.models import AITool, Project
-        from apps.tools.models import Tool
 
-        tag_data = {}
-
-        # Blog posts
         try:
             posts = Post.objects.filter(status="published", tags__isnull=False)
             for post in posts:
@@ -187,7 +182,10 @@ class TagCloudView(TemplateView):
         except Exception:
             pass
 
-        # Projects
+    def _collect_project_tags(self, tag_data):
+        """Collect tags from projects."""
+        from apps.main.models import Project
+
         try:
             projects = Project.objects.filter(is_visible=True)
             for project in projects:
@@ -198,7 +196,10 @@ class TagCloudView(TemplateView):
         except Exception:
             pass
 
-        # Tools
+    def _collect_tool_tags(self, tag_data):
+        """Collect tags from tools."""
+        from apps.tools.models import Tool
+
         try:
             tools = Tool.objects.filter(is_visible=True)
             for tool in tools:
@@ -214,7 +215,10 @@ class TagCloudView(TemplateView):
         except Exception:
             pass
 
-        # AI Tools
+    def _collect_ai_tool_tags(self, tag_data):
+        """Collect tags from AI tools."""
+        from apps.main.models import AITool
+
         try:
             ai_tools = AITool.objects.filter(is_visible=True)
             for ai_tool in ai_tools:
@@ -225,6 +229,21 @@ class TagCloudView(TemplateView):
                             self._add_tag(tag_data, tag.strip(), "ai", ai_tool)
         except Exception:
             pass
+
+    def _collect_all_tags(self):
+        """
+        Collect tags from all searchable models.
+
+        Refactored to reduce complexity: C:25 → C:4
+        Uses aggregator pattern with dedicated collector methods.
+        """
+        tag_data = {}
+
+        # Collect from each model type
+        self._collect_blog_tags(tag_data)
+        self._collect_project_tags(tag_data)
+        self._collect_tool_tags(tag_data)
+        self._collect_ai_tool_tags(tag_data)
 
         return tag_data
 

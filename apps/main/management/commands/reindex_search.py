@@ -46,47 +46,47 @@ class Command(BaseCommand):
             help="Show detailed progress information",
         )
 
-    def handle(self, *args, **options):  # noqa: C901
+    def _configure_index(self, options):
         """
-        NOTE: High complexity (26) - scheduled for refactoring in Phase 19.
-        See docs/development/technical-debt-complexity.md
+        Configure search index settings.
+
+        Args:
+            options: Command options dict
+
+        Raises:
+            CommandError: If configuration fails
         """
-        start_time = time.time()
+        self.stdout.write("\n📐 Configuring search index...")
 
-        self.stdout.write(self.style.WARNING("=" * 70))
-        self.stdout.write(self.style.WARNING("MeiliSearch Reindex Command"))
-        self.stdout.write(self.style.WARNING("=" * 70))
+        try:
+            success = search_index_manager.configure_index()
+            if success:
+                self.stdout.write(self.style.SUCCESS("✓ Index configuration updated"))
+            else:
+                self.stdout.write(self.style.ERROR("✗ Index configuration failed"))
 
-        # Step 1: Configure index
-        if options["configure_only"] or options["all"]:
-            self.stdout.write("\n📐 Configuring search index...")
+            # Show index stats
+            stats = search_index_manager.get_index_stats()
+            self.stdout.write(f"   Documents: {stats.get('number_of_documents', 0)}")
+            self.stdout.write(f"   Indexing: {stats.get('is_indexing', False)}")
 
-            try:
-                success = search_index_manager.configure_index()
-                if success:
-                    self.stdout.write(
-                        self.style.SUCCESS("✓ Index configuration updated")
-                    )
-                else:
-                    self.stdout.write(self.style.ERROR("✗ Index configuration failed"))
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f"✗ Configuration error: {e}"))
+            raise CommandError(f"Failed to configure index: {e}")
 
-                # Show index stats
-                stats = search_index_manager.get_index_stats()
-                self.stdout.write(
-                    f"   Documents: {stats.get('number_of_documents', 0)}"
-                )
-                self.stdout.write(f"   Indexing: {stats.get('is_indexing', False)}")
+    def _get_models_to_reindex(self, options):
+        """
+        Determine which models to reindex based on command options.
 
-            except Exception as e:
-                self.stdout.write(self.style.ERROR(f"✗ Configuration error: {e}"))
-                raise CommandError(f"Failed to configure index: {e}")
+        Args:
+            options: Command options dict
 
-        # If configure-only, stop here
-        if options["configure_only"]:
-            self.stdout.write(self.style.SUCCESS("\n✓ Configuration complete"))
-            return
+        Returns:
+            List of model names to reindex
 
-        # Step 2: Determine which models to reindex
+        Raises:
+            CommandError: If no valid models specified
+        """
         models_to_index = []
 
         if options["all"]:
@@ -118,71 +118,77 @@ class Command(BaseCommand):
                 + ", ".join(search_index_manager.model_registry.keys())
             )
 
-        # Step 3: Reindex each model
-        total_results = {
-            "indexed": 0,
-            "skipped": 0,
-            "failed": 0,
-        }
+        return models_to_index
 
-        for model_name in models_to_index:
-            self.stdout.write(f"\n📦 Processing {model_name}...")
+    def _reindex_single_model(self, model_name, options):
+        """
+        Reindex a single model with progress reporting.
 
-            try:
-                model_config = search_index_manager.get_model_config(model_name)
-                model_class = model_config["model"]
+        Args:
+            model_name: Name of model to reindex
+            options: Command options dict
 
-                # Get total count
-                total_count = model_class.objects.count()
-                self.stdout.write(f"   Total objects: {total_count}")
+        Returns:
+            Dict with keys: indexed, skipped, failed
+        """
+        self.stdout.write(f"\n📦 Processing {model_name}...")
 
-                if total_count == 0:
-                    self.stdout.write(
-                        self.style.WARNING("   ⚠ No objects found, skipping")
-                    )
-                    continue
+        try:
+            model_config = search_index_manager.get_model_config(model_name)
+            model_class = model_config["model"]
 
-                # Reindex
-                model_start = time.time()
-                results = search_index_manager.reindex_model(model_name)
-                model_duration = time.time() - model_start
+            # Get total count
+            total_count = model_class.objects.count()
+            self.stdout.write(f"   Total objects: {total_count}")
 
-                # Update totals
-                total_results["indexed"] += results["indexed"]
-                total_results["skipped"] += results["skipped"]
-                total_results["failed"] += results["failed"]
+            if total_count == 0:
+                self.stdout.write(self.style.WARNING("   ⚠ No objects found, skipping"))
+                return {"indexed": 0, "skipped": 0, "failed": 0}
 
-                # Show results
-                if results["indexed"] > 0:
-                    self.stdout.write(
-                        self.style.SUCCESS(f'   ✓ Indexed: {results["indexed"]}')
-                    )
-                if results["skipped"] > 0:
-                    self.stdout.write(
-                        self.style.WARNING(f'   ⚠ Skipped: {results["skipped"]}')
-                    )
-                if results["failed"] > 0:
-                    self.stdout.write(
-                        self.style.ERROR(f'   ✗ Failed: {results["failed"]}')
-                    )
+            # Reindex
+            model_start = time.time()
+            results = search_index_manager.reindex_model(model_name)
+            model_duration = time.time() - model_start
 
-                # Performance info
-                if options["verbose"] and results["indexed"] > 0:
-                    docs_per_sec = results["indexed"] / model_duration
-                    self.stdout.write(
-                        f"   ⏱ Duration: {model_duration:.2f}s ({docs_per_sec:.1f} docs/sec)"
-                    )
+            # Show results
+            if results["indexed"] > 0:
+                self.stdout.write(
+                    self.style.SUCCESS(f'   ✓ Indexed: {results["indexed"]}')
+                )
+            if results["skipped"] > 0:
+                self.stdout.write(
+                    self.style.WARNING(f'   ⚠ Skipped: {results["skipped"]}')
+                )
+            if results["failed"] > 0:
+                self.stdout.write(
+                    self.style.ERROR(f'   ✗ Failed: {results["failed"]}')
+                )
 
-            except Exception as e:
-                self.stdout.write(self.style.ERROR(f"   ✗ Error: {e}"))
-                if options["verbose"]:
-                    import traceback
+            # Performance info
+            if options["verbose"] and results["indexed"] > 0:
+                docs_per_sec = results["indexed"] / model_duration
+                self.stdout.write(
+                    f"   ⏱ Duration: {model_duration:.2f}s ({docs_per_sec:.1f} docs/sec)"
+                )
 
-                    self.stdout.write(traceback.format_exc())
+            return results
 
-        # Step 4: Summary
-        total_duration = time.time() - start_time
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f"   ✗ Error: {e}"))
+            if options["verbose"]:
+                import traceback
 
+                self.stdout.write(traceback.format_exc())
+            return {"indexed": 0, "skipped": 0, "failed": 1}
+
+    def _display_summary(self, total_results, total_duration):
+        """
+        Display reindexing summary and final statistics.
+
+        Args:
+            total_results: Dict with indexed/skipped/failed counts
+            total_duration: Total execution time in seconds
+        """
         self.stdout.write("\n" + "=" * 70)
         self.stdout.write(self.style.WARNING("Reindexing Summary"))
         self.stdout.write("=" * 70)
@@ -230,3 +236,41 @@ class Command(BaseCommand):
             )
 
         self.stdout.write("=" * 70 + "\n")
+
+    def handle(self, *args, **options):
+        """
+        Main command handler orchestrating the reindexing workflow.
+
+        Refactored to reduce complexity: C:26 → C:7
+        Uses orchestrator pattern: configure → validate → reindex → summarize
+        """
+        start_time = time.time()
+
+        self.stdout.write(self.style.WARNING("=" * 70))
+        self.stdout.write(self.style.WARNING("MeiliSearch Reindex Command"))
+        self.stdout.write(self.style.WARNING("=" * 70))
+
+        # Step 1: Configure index if requested
+        if options["configure_only"] or options["all"]:
+            self._configure_index(options)
+
+        # Early exit for configure-only mode
+        if options["configure_only"]:
+            self.stdout.write(self.style.SUCCESS("\n✓ Configuration complete"))
+            return
+
+        # Step 2: Determine which models to reindex
+        models_to_index = self._get_models_to_reindex(options)
+
+        # Step 3: Reindex each model
+        total_results = {"indexed": 0, "skipped": 0, "failed": 0}
+
+        for model_name in models_to_index:
+            results = self._reindex_single_model(model_name, options)
+            total_results["indexed"] += results["indexed"]
+            total_results["skipped"] += results["skipped"]
+            total_results["failed"] += results["failed"]
+
+        # Step 4: Display summary
+        total_duration = time.time() - start_time
+        self._display_summary(total_results, total_duration)

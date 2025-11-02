@@ -8,7 +8,7 @@ const { test, expect } = require('@playwright/test');
  */
 
 test.describe('PWA Functionality', () => {
-  
+
   test.beforeEach(async ({ page }) => {
     // Navigate to home page before each test
     await page.goto('/');
@@ -59,7 +59,7 @@ test.describe('PWA Functionality', () => {
     // Test VAPID key endpoint
     const vapidResponse = await page.request.get('/main/api/webpush/vapid-public-key/');
     expect(vapidResponse.status()).toBe(200);
-    
+
     const vapidData = await vapidResponse.json();
     expect(vapidData.publicKey).toBeTruthy();
   });
@@ -72,12 +72,12 @@ test.describe('PWA Functionality', () => {
     const cacheCheck = await page.evaluate(async () => {
       const cacheNames = await caches.keys();
       const portfolioCache = cacheNames.find(name => name.includes('portfolio-v'));
-      
+
       if (!portfolioCache) return false;
-      
+
       const cache = await caches.open(portfolioCache);
       const cachedUrls = await cache.keys();
-      
+
       return cachedUrls.length > 0;
     });
 
@@ -94,13 +94,13 @@ test.describe('PWA Functionality', () => {
 
     // Try to navigate to a new page
     await page.goto('/main/personal/');
-    
+
     // Should show offline page or cached content
     const pageContent = await page.textContent('body');
-    const isOfflineOrCached = pageContent.includes('offline') || 
-                             pageContent.includes('Personal') || 
+    const isOfflineOrCached = pageContent.includes('offline') ||
+                             pageContent.includes('Personal') ||
                              pageContent.includes('Portfolio');
-    
+
     expect(isOfflineOrCached).toBeTruthy();
 
     // Restore online status
@@ -130,7 +130,7 @@ test.describe('PWA Functionality', () => {
   test('should handle app installation prompt @pwa', async ({ page, context }) => {
     // Check if beforeinstallprompt event is handled
     const installPromptHandled = await page.evaluate(() => {
-      return typeof window.deferredPrompt !== 'undefined' || 
+      return typeof window.deferredPrompt !== 'undefined' ||
              typeof window.installApp === 'function';
     });
 
@@ -142,37 +142,37 @@ test.describe('PWA Functionality', () => {
   test('should sync data when back online @pwa', async ({ page, context }) => {
     // Fill out a form while online
     await page.goto('/contact/');
-    
+
     // Check if contact form exists
     const form = page.locator('form');
     if (await form.count() > 0) {
       await page.fill('input[name="name"]', 'Test User');
       await page.fill('input[name="email"]', 'test@example.com');
-      
+
       // Go offline
       await context.setOffline(true);
-      
+
       // Try to submit (should queue for background sync)
       await page.click('button[type="submit"]');
-      
+
       // Go back online
       await context.setOffline(false);
-      
+
       // Wait for potential background sync
       await page.waitForTimeout(2000);
     }
-    
+
     // Test passes if no JavaScript errors occurred
     const errors = [];
     page.on('pageerror', (error) => errors.push(error));
-    
+
     expect(errors.length).toBe(0);
   });
 
   test('should handle service worker updates @pwa', async ({ page }) => {
     // Check if service worker update mechanism is in place
     const updateMechanism = await page.evaluate(() => {
-      return 'serviceWorker' in navigator && 
+      return 'serviceWorker' in navigator &&
              typeof window.addEventListener === 'function';
     });
 
@@ -181,7 +181,7 @@ test.describe('PWA Functionality', () => {
     // Verify service worker script is accessible
     const swResponse = await page.request.get('/static/js/sw.js');
     expect(swResponse.status()).toBe(200);
-    
+
     const swContent = await swResponse.text();
     expect(swContent).toContain('install');
     expect(swContent).toContain('activate');

@@ -10,7 +10,7 @@ const path = require('path');
 async function generateCriticalCSS() {
   try {
     console.log('🚀 Starting Critical CSS generation...');
-    
+
     // Define critical pages for CSS extraction
     const criticalPages = [
       {
@@ -32,13 +32,13 @@ async function generateCriticalCSS() {
         output: 'static/css/critical/contact.css'
       }
     ];
-    
+
     // Create critical CSS directory
     const criticalDir = path.join(__dirname, '..', 'static', 'css', 'critical');
     if (!fs.existsSync(criticalDir)) {
       fs.mkdirSync(criticalDir, { recursive: true });
     }
-    
+
     // Manual critical CSS rules for above-the-fold content
     const baseCriticalCSS = `
 /* Critical CSS - Above the fold styles */
@@ -167,13 +167,13 @@ nav {
   background-size: 100px 100px;
 }
 `;
-    
+
     // Write base critical CSS
     fs.writeFileSync(
       path.join(criticalDir, 'base.css'),
       baseCriticalCSS.trim()
     );
-    
+
     // Page-specific critical CSS
     const homeCriticalCSS = `
 /* Home page critical styles */
@@ -201,12 +201,12 @@ nav {
   }
 }
 `;
-    
+
     fs.writeFileSync(
       path.join(criticalDir, 'home.css'),
       (baseCriticalCSS + homeCriticalCSS).trim()
     );
-    
+
     // Blog critical CSS
     const blogCriticalCSS = `
 /* Blog page critical styles */
@@ -240,12 +240,12 @@ nav {
   border: 1px solid rgba(71, 85, 105, 0.3);
 }
 `;
-    
+
     fs.writeFileSync(
       path.join(criticalDir, 'blog.css'),
       (baseCriticalCSS + blogCriticalCSS).trim()
     );
-    
+
     // Contact critical CSS
     const contactCriticalCSS = `
 /* Contact page critical styles */
@@ -277,19 +277,19 @@ nav {
   margin-bottom: 0.5rem;
 }
 `;
-    
+
     fs.writeFileSync(
       path.join(criticalDir, 'contact.css'),
       (baseCriticalCSS + contactCriticalCSS).trim()
     );
-    
+
     console.log('✅ Critical CSS files generated successfully!');
     console.log('📁 Files created:');
     console.log('   - static/css/critical/base.css');
     console.log('   - static/css/critical/home.css');
     console.log('   - static/css/critical/blog.css');
     console.log('   - static/css/critical/contact.css');
-    
+
     // Generate usage instructions
     const usageInstructions = `
 <!-- Critical CSS Usage in Django Templates -->
@@ -324,14 +324,14 @@ nav {
 <link rel="preload" href="{% static 'css/output.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="{% static 'css/output.css' %}"></noscript>
 `;
-    
+
     fs.writeFileSync(
       path.join(criticalDir, 'USAGE.md'),
       usageInstructions.trim()
     );
-    
+
     console.log('   - static/css/critical/USAGE.md (implementation guide)');
-    
+
   } catch (error) {
     console.error('❌ Error generating critical CSS:', error);
     process.exit(1);

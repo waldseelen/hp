@@ -131,7 +131,7 @@ GET /metrics/
 {
     "id": "uuid",
     "notification_id": "uuid",
-    "subscription_id": "uuid", 
+    "subscription_id": "uuid",
     "status": "pending|sent|delivered|failed|expired",
     "response_code": "integer",
     "error_message": "string (optional)",

@@ -1,39 +1,100 @@
 """
-Production settings for portfolio project
+Production settings for portfolio project.
+All security settings enabled, DEBUG=False, production-grade configurations.
 """
 
 import os
 
-from .base import *
+from .base import *  # noqa: F401, F403
 
-# Production settings
+# Production settings - Override base.py defaults
 DEBUG = False
 
+# ALLOWED_HOSTS must be set via environment variable in production
 ALLOWED_HOSTS = config(
-    "ALLOWED_HOSTS", default="*", cast=lambda v: [s.strip() for s in v.split(",")]
+    "ALLOWED_HOSTS",
+    default="",  # Empty default - MUST be set in production
+    cast=lambda v: [s.strip() for s in v.split(",") if s.strip()],
 )
 
-# Production database
-DATABASES = {
-    "default": dj_database_url.config(
-        default=config("DATABASE_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
-        conn_max_age=600,
+# Validate ALLOWED_HOSTS is set
+if not ALLOWED_HOSTS or ALLOWED_HOSTS == ["*"]:
+    import warnings
+
+    warnings.warn(
+        "ALLOWED_HOSTS is not properly configured. Set it to your domain(s) in production.",
+        RuntimeWarning,
     )
-}
+
+# Production database with connection pooling
+if dj_database_url:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=config("DATABASE_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
+            conn_max_age=600,  # Keep connections alive for 10 minutes
+            conn_health_checks=True,  # Validate connections before use
+        )
+    }
+else:
+    # Fallback database configuration (development)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+            "OPTIONS": {
+                "timeout": 20,
+            },
+        }
+    }
 
 # Static files for production
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Security settings for production
+# ==========================================================================
+# PRODUCTION SECURITY SETTINGS
+# ==========================================================================
+# All security headers and HTTPS enforcement enabled
+
+# XSS Protection
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+X_FRAME_OPTIONS = "DENY"
+
+# HTTPS/SSL Enforcement
+SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=True, cast=bool)
+
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = config(
+    "SECURE_HSTS_SECONDS", default=31536000, cast=int
+)  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = config(
+    "SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True, cast=bool
+)
+SECURE_HSTS_PRELOAD = config("SECURE_HSTS_PRELOAD", default=True, cast=bool)
+
+# Cookie Security
+SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", default=True, cast=bool)
+CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", default=True, cast=bool)
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Strict"
+CSRF_COOKIE_SAMESITE = "Strict"
+
+# Proxy SSL Header (for services behind reverse proxies like Railway, Vercel)
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Template caching for production performance
+TEMPLATES[0]["APP_DIRS"] = False
+TEMPLATES[0]["OPTIONS"]["loaders"] = [
+    (
+        "django.template.loaders.cached.Loader",
+        [
+            "django.template.loaders.filesystem.Loader",
+            "django.template.loaders.app_directories.Loader",
+        ],
+    ),
+]
 
 # Production email settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

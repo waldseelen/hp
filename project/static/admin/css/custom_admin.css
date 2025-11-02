@@ -121,7 +121,7 @@
     margin-bottom: 8px !important;
 }
 
-input[type="text"], input[type="password"], input[type="email"], 
+input[type="text"], input[type="password"], input[type="email"],
 input[type="url"], input[type="number"], textarea, select {
     border: 2px solid #e5e7eb !important;
     border-radius: 8px !important;
@@ -252,8 +252,8 @@ fieldset.collapsed h2 {
     .form-row {
         margin-bottom: 15px !important;
     }
-    
-    input[type="text"], input[type="password"], input[type="email"], 
+
+    input[type="text"], input[type="password"], input[type="email"],
     input[type="url"], input[type="number"], textarea, select {
         padding: 10px 12px !important;
     }
@@ -266,77 +266,77 @@ fieldset.collapsed h2 {
         background-color: #111827 !important;
         color: #f9fafb !important;
     }
-    
+
     /* Content areas */
     #content, #content-main {
         background-color: #1f2937 !important;
         color: #f9fafb !important;
     }
-    
+
     /* Breadcrumbs dark mode */
     .breadcrumbs {
         background: #374151 !important;
         border-bottom: 1px solid #4b5563 !important;
         color: #f9fafb !important;
     }
-    
+
     .breadcrumbs a {
         color: #a78bfa !important;
     }
-    
+
     .breadcrumbs a:hover {
         color: #c4b5fd !important;
     }
-    
+
     /* Table styling dark mode */
     .module th {
         background: #374151 !important;
         color: #f9fafb !important;
         border-bottom: 2px solid #4b5563 !important;
     }
-    
+
     .module tr:nth-child(even) {
         background: #1f2937 !important;
     }
-    
+
     .module tr:nth-child(odd) {
         background: #111827 !important;
     }
-    
+
     .module tr:hover {
         background: #374151 !important;
     }
-    
+
     /* Form fields dark mode */
-    input[type="text"], input[type="password"], input[type="email"], 
+    input[type="text"], input[type="password"], input[type="email"],
     input[type="url"], input[type="number"], textarea, select {
         background-color: #374151 !important;
         color: #f9fafb !important;
         border: 2px solid #4b5563 !important;
     }
-    
+
     input:focus, textarea:focus, select:focus {
         background-color: #1f2937 !important;
         border-color: #8b5cf6 !important;
         box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3) !important;
     }
-    
+
     /* Labels dark mode */
     .form-row label {
         color: #f9fafb !important;
     }
-    
+
     /* Help text dark mode */
     .help {
         color: #9ca3af !important;
     }
-    
+
     /* Fieldsets dark mode */
     fieldset.module {
         background-color: #1f2937 !important;
         border: 1px solid #4b5563 !important;
     }
-    
+
     /* Pagination dark mode */
     .paginator {
         background: #374151 !important;
@@ -350,18 +350,18 @@ fieldset.collapsed h2 {
     .form-row label {
         color: #1f2937 !important;
     }
-    
+
     /* Module table improvements */
     .module th {
         background: #f8fafc !important;
         color: #1e293b !important;
         border-bottom: 2px solid #cbd5e1 !important;
     }
-    
+
     .module tr:nth-child(even) {
         background: #f1f5f9 !important;
     }
-    
+
     .module tr:hover {
         background: #e0f2fe !important;
     }
@@ -383,8 +383,8 @@ a:hover {
 }
 
 /* Better spacing for form elements */
-.form-row .vTextField, 
-.form-row .vTextareaField, 
+.form-row .vTextField,
+.form-row .vTextareaField,
 .form-row .vURLField,
 .form-row .vEmailField {
     width: 100% !important;

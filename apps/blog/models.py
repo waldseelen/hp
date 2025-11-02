@@ -4,19 +4,59 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.text import slugify
+from django.utils.functional import cached_property
 
+from apps.core.utils.model_helpers import auto_set_published_at, generate_unique_slug
 from apps.main.models import Admin
 
 
 class PostManager(models.Manager):
     def published(self):
-        """Get all published posts"""
-        return self.filter(status="published", published_at__lte=timezone.now())
+        """Get all published posts with author relationship loaded
+
+        Returns:
+            QuerySet: Published posts with author select_related to avoid N+1 queries
+        """
+        return self.filter(
+            status="published", published_at__lte=timezone.now()
+        ).select_related("author")
 
     def by_tag(self, tag):
         """Get posts by tag"""
         return self.filter(tags__icontains=tag)
+
+    def get_related_posts(self, post, limit=3):
+        """Get related posts based on tag similarity
+
+        Args:
+            post: The Post instance to find related posts for
+            limit: Maximum number of related posts to return
+
+        Returns:
+            List of related Post instances, sorted by tag similarity
+
+        Note:
+            Uses select_related for author to avoid N+1 queries
+        """
+        if not post.tags:
+            return list(
+                self.published().select_related("author").exclude(pk=post.pk)[:limit]
+            )
+
+        # Fetch all published posts in one query with author relationship
+        related = self.published().select_related("author").exclude(pk=post.pk)
+
+        # Score posts by tag matches
+        scored_posts = []
+        for related_post in related:
+            if related_post.tags:
+                common_tags = set(post.tags) & set(related_post.tags)
+                if common_tags:
+                    scored_posts.append((len(common_tags), related_post))
+
+        # Sort by score (number of common tags) and return top results
+        scored_posts.sort(key=lambda x: x[0], reverse=True)
+        return [related_post for _, related_post in scored_posts[:limit]]
 
 
 class Post(models.Model):
@@ -114,19 +154,12 @@ class Post(models.Model):
                     )
 
     def save(self, *args, **kwargs):
-        # Auto-generate slug from title
+        # Auto-generate unique slug from title
         if not self.slug:
-            base_slug = slugify(self.title)
-            slug = base_slug
-            counter = 1
-            while Post.objects.filter(slug=slug).exclude(pk=self.pk).exists():
-                slug = f"{base_slug}-{counter}"
-                counter += 1
-            self.slug = slug
+            self.slug = generate_unique_slug(self)
 
         # Auto-set published_at when status changes to published
-        if self.status == "published" and not self.published_at:
-            self.published_at = timezone.now()
+        auto_set_published_at(self)
 
         # Clean tags list
         if self.tags:
@@ -148,34 +181,39 @@ class Post(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
+        """Get the canonical URL for this post
+
+        Returns:
+            str: URL path to the post detail page
+        """
         return reverse("blog:detail", kwargs={"slug": self.slug})
 
-    def get_reading_time(self):
-        """Estimate reading time in minutes"""
+    @cached_property
+    def reading_time(self):
+        """Estimate reading time in minutes (cached property)
+
+        Returns:
+            int: Estimated reading time in minutes based on 200 words/min
+
+        Note:
+            Cached to avoid repeated content splitting. Cache cleared on save.
+        """
         if not self.content:
             return 0
         word_count = len(self.content.split())
         # Average reading speed: 200 words per minute
         return max(1, round(word_count / 200))
 
+    def get_reading_time(self):
+        """Backwards compatibility method for reading_time property
+
+        Deprecated: Use .reading_time property instead
+        """
+        return self.reading_time
+
     def get_related_posts(self, limit=3):
-        """Get related posts based on tags"""
-        if not self.tags:
-            return Post.objects.published().exclude(pk=self.pk)[:limit]
-
-        related = Post.objects.published().exclude(pk=self.pk)
-
-        # Score posts by tag matches
-        scored_posts = []
-        for post in related:
-            if post.tags:
-                common_tags = set(self.tags) & set(post.tags)
-                if common_tags:
-                    scored_posts.append((len(common_tags), post))
-
-        # Sort by score (number of common tags) and return top results
-        scored_posts.sort(key=lambda x: x[0], reverse=True)
-        return [post for _, post in scored_posts[:limit]]
+        """Get related posts based on tags (delegates to manager)"""
+        return Post.objects.get_related_posts(self, limit=limit)
 
     def increment_view_count(self):
         """Increment the view count for this post"""
@@ -183,15 +221,27 @@ class Post(models.Model):
 
     @property
     def is_published(self):
+        """Check if the post is published and live
+
+        Returns:
+            bool: True if status is published and published_at is in the past
+        """
         return (
             self.status == "published"
             and self.published_at
             and self.published_at <= timezone.now()
         )
 
-    @property
+    @cached_property
     def word_count(self):
-        """Get word count of the content"""
+        """Get word count of the content (cached property)
+
+        Returns:
+            int: Number of words in the content
+
+        Note:
+            Cached to avoid repeated content splitting. Cache cleared on save.
+        """
         if not self.content:
             return 0
         return len(self.content.split())

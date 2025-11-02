@@ -69,11 +69,7 @@ from apps.main.models import (
 from apps.main.performance import alert_manager, performance_metrics
 from apps.tools.models import Tool
 
-from ..cache_utils import (
-    CacheManager,
-    cache_page_data,
-    cache_queryset_medium,
-)
+from ..cache_utils import CacheManager, cache_page_data, cache_queryset_medium
 
 
 # Cache helper functions for home page data

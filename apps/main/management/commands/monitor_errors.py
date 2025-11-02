@@ -291,7 +291,7 @@ class Command(BaseCommand):
         self.last_report = datetime.now()
 
         # Reset counts for next period
-        self.error_counts = {key: 0 for key in self.error_counts}
+        self.error_counts = dict.fromkeys(self.error_counts, 0)
 
     def check_recovery_triggers(self):
         """Check if recovery actions should be triggered"""

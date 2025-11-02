@@ -12,10 +12,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from apps.blog.models import Post
-from apps.main.models import (
-    PersonalInfo,
-    SocialLink,
-)
+from apps.main.models import PersonalInfo, SocialLink
 from apps.tools.models import Tool
 
 User = get_user_model()
@@ -212,6 +209,10 @@ class MainViewsTest(TestCase):
 
     def setUp(self):
         self.client = Client()
+
+        # Import signal handlers to ensure cache invalidation works
+        import apps.core.cache_signals  # noqa: F401
+
         # Create test data
         PersonalInfo.objects.create(
             key="about", value="Test about information", is_visible=True, order=1
