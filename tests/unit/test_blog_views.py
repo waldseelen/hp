@@ -39,8 +39,8 @@ def published_posts(author):
     posts = []
     for i in range(5):
         post = Post.objects.create(
-            title=f"Published Post {i+1}",
-            content=f"Content for post {i+1}. " * 50,
+            title=f"Published Post {i + 1}",
+            content=f"Content for post {i + 1}. " * 50,
             status="published",
             author=author,
             published_at=timezone.now() - timedelta(days=i),
@@ -102,8 +102,8 @@ class TestPostListView:
         # Create 15 posts (more than paginate_by=10)
         for i in range(15):
             Post.objects.create(
-                title=f"Post {i+1}",
-                content=f"Content {i+1}",
+                title=f"Post {i + 1}",
+                content=f"Content {i + 1}",
                 status="published",
                 author=author,
                 published_at=timezone.now() - timedelta(days=i),

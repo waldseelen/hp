@@ -4,6 +4,7 @@ Performance Tasks Verification Script
 Verifies all completed performance optimization tasks
 """
 
+import json
 import os
 import sys
 
@@ -12,8 +13,6 @@ import django
 # Setup Django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 django.setup()
-
-import json
 
 from django.conf import settings
 from django.core.cache import caches

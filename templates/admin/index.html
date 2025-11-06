@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load i18n admin_urls static admin_list admin_dashboard %}
+{% load i18n admin_urls static admin_list admin_dashboard admin_cards %}
 
 {% block bodyclass %}dashboard{% endblock %}
 
@@ -18,7 +18,9 @@
     </article>
     <article class="stat-card">
       <span class="stat-card__label">Iletisim Mesajlari</span>
-      <span class="stat-card__value">{% model_count 'contact' 'ContactMessage' %}</span>
+      <a href="{% url 'admin:contact_contactmessage_changelist' %}">
+        <span class="stat-card__value">{% unread_contact_count %}</span>
+      </a>
       <span class="stat-card__meta">Son iletiler</span>
     </article>
     <article class="stat-card">
@@ -40,6 +42,58 @@
     </header>
     <div class="dashboard__apps">
       {{ block.super }}
+    </div>
+
+    <div class="dashboard__panels">
+      <section class="panel panel--posts">
+        <h3>Son Eklenen 5 Yazı</h3>
+        <ul>
+          {% for post in last_blog_posts 5 %}
+            <li>
+              <a href="{% url 'admin:blog_post_change' post.pk %}">{{ post.title }}</a>
+              — <small>{{ post.get_status_display }}</small>
+            </li>
+          {% empty %}
+            <li>Henüz yazı yok</li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <section class="panel panel--top-viewed">
+        <h3>En Çok Görüntülenen 5 Yazı</h3>
+        <ul>
+          {% for post in top_viewed_posts 5 %}
+            <li>
+              <a href="{% url 'admin:blog_post_change' post.pk %}">{{ post.title }}</a>
+              — <small>{{ post.view_count }} görüntüleme</small>
+            </li>
+          {% empty %}
+            <li>Veri yok</li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <section class="panel panel--performance">
+        <h3>Performans Özeti</h3>
+        {% with perf=performance_summary %}
+          {% if perf %}
+            <ul>
+              <li>p50: {{ perf.p50_ms }} ms — p95: {{ perf.p95_ms }} ms</li>
+              <li>DB sorgu sayısı: {{ perf.db_query_count }}</li>
+              <li>CPU: {{ perf.cpu_percent }}% — Memory: {{ perf.memory_percent }}%</li>
+              <li>Cache durumları:
+                <ul>
+                  {% for k, v in perf.cache_status.items %}
+                    <li>{{ k }}: {{ v }}</li>
+                  {% endfor %}
+                </ul>
+              </li>
+            </ul>
+          {% else %}
+            <p>Performans verisi bulunamadı.</p>
+          {% endif %}
+        {% endwith %}
+      </section>
     </div>
   </section>
 </div>

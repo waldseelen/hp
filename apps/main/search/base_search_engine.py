@@ -13,14 +13,15 @@ from typing import Dict, List, Optional
 
 from django.db.models import Q
 
-# Import models
-from apps.blog.models import Post
-from apps.portfolio.models import AITool, CybersecurityResource, UsefulResource
-from apps.tools.models import Tool
-
 # Import refactored components
 from .formatters.base_formatter import SearchResultFormatter
 from .scorers.relevance_scorer import RelevanceScorer
+
+# Models will be imported inside methods to avoid circular imports
+# from apps.blog.models import Post
+# from apps.portfolio.models import AITool, CybersecurityResource, UsefulResource
+# from apps.tools.models import Tool
+
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +37,11 @@ class SearchEngine:
     """
 
     def __init__(self):
+        # Import models inside __init__ to avoid circular imports
+        from apps.blog.models import Post
+        from apps.portfolio.models import AITool, CybersecurityResource, UsefulResource
+        from apps.tools.models import Tool
+
         self.models = {
             "blog_posts": {
                 "model": Post,
@@ -344,6 +350,8 @@ class SearchEngine:
 
         Complexity: 3 (maintained)
         """
+        from apps.blog.models import Post
+
         recent_items = []
 
         # Recent blog posts

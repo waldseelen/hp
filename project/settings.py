@@ -49,11 +49,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "tinymce",
     "apps.portfolio.apps.PortfolioConfig",
-    "main.apps.MainConfig",
-    "blog",
-    "tools",
-    "contact",
-    "chat",
+    "apps.main.apps.MainConfig",
+    "apps.blog.apps.BlogConfig",
+    "apps.tools.apps.ToolsConfig",
+    "apps.contact.apps.ContactConfig",
+    "apps.chat.apps.ChatConfig",
 ]
 
 MIDDLEWARE = [

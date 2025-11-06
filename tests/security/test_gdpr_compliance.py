@@ -13,6 +13,7 @@ import json
 from datetime import datetime, timedelta
 
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 from django.test import Client, RequestFactory, TestCase
 from django.utils import timezone
 

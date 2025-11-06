@@ -5,17 +5,16 @@ Tests for main app views and middleware
 import json
 from unittest.mock import patch
 
-from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
-from apps.blog.models import Post
-from apps.main.models import PersonalInfo, SocialLink
-from apps.tools.models import Tool
-
-User = get_user_model()
+# Move model imports inside test methods/setUp to avoid circular imports
+# from apps.blog.models import Post
+# from apps.main.models import PersonalInfo, SocialLink
+# from apps.tools.models import Tool
+# from django.contrib.auth import get_user_model
 
 
 class HealthCheckViewTest(TestCase):
@@ -67,30 +66,37 @@ class SearchViewTest(TestCase):
 
     def setUp(self):
         self.client = Client()
-        # Create test data
-        self.user = User.objects.create_user(
+
+    def test_search_view_get(self):
+        """Test search view GET request"""
+        from django.contrib.auth import get_user_model
+
+        from apps.blog.models import Post
+        from apps.tools.models import Tool
+
+        User = get_user_model()
+        # Create test user
+        user = User.objects.create_user(
             username="testuser", email="test@example.com", password="testpass123"
         )
 
         # Create test blog post
-        self.post = Post.objects.create(
+        Post.objects.create(
             title="Test Blog Post",
             content="This is test content for searching",
-            author=self.user,
+            author=user,
             status="published",
             published_at=timezone.now(),
             tags=["django", "testing"],
         )
 
         # Create test tool
-        self.tool = Tool.objects.create(
+        Tool.objects.create(
             title="Test Tool",
             description="This is a test tool for searching",
             is_visible=True,
         )
 
-    def test_search_view_get(self):
-        """Test search view GET request"""
         response = self.client.get(reverse("main:search"))
 
         self.assertEqual(response.status_code, 200)
@@ -100,6 +106,31 @@ class SearchViewTest(TestCase):
 
     def test_search_with_query(self):
         """Test search with query parameter"""
+        from django.contrib.auth import get_user_model
+
+        from apps.blog.models import Post
+        from apps.tools.models import Tool
+
+        User = get_user_model()
+        user = User.objects.create_user(
+            username="testuser", email="test@example.com", password="testpass123"
+        )
+
+        Post.objects.create(
+            title="Test Blog Post",
+            content="This is test content for searching",
+            author=user,
+            status="published",
+            published_at=timezone.now(),
+            tags=["django", "testing"],
+        )
+
+        Tool.objects.create(
+            title="Test Tool",
+            description="This is a test tool for searching",
+            is_visible=True,
+        )
+
         response = self.client.get(reverse("main:search"), {"q": "test"})
 
         self.assertEqual(response.status_code, 200)
@@ -108,6 +139,31 @@ class SearchViewTest(TestCase):
 
     def test_search_api_endpoint(self):
         """Test search API endpoint"""
+        from django.contrib.auth import get_user_model
+
+        from apps.blog.models import Post
+        from apps.tools.models import Tool
+
+        User = get_user_model()
+        user = User.objects.create_user(
+            username="testuser", email="test@example.com", password="testpass123"
+        )
+
+        Post.objects.create(
+            title="Test Blog Post",
+            content="This is test content for searching",
+            author=user,
+            status="published",
+            published_at=timezone.now(),
+            tags=["django", "testing"],
+        )
+
+        Tool.objects.create(
+            title="Test Tool",
+            description="This is a test tool for searching",
+            is_visible=True,
+        )
+
         response = self.client.get(
             reverse("main:search_api"),
             {"q": "test"},
@@ -210,8 +266,11 @@ class MainViewsTest(TestCase):
     def setUp(self):
         self.client = Client()
 
+    def test_home_view(self):
+        """Test home page view"""
         # Import signal handlers to ensure cache invalidation works
         import apps.core.cache_signals  # noqa: F401
+        from apps.main.models import PersonalInfo, SocialLink
 
         # Create test data
         PersonalInfo.objects.create(
@@ -225,8 +284,6 @@ class MainViewsTest(TestCase):
             order=1,
         )
 
-    def test_home_view(self):
-        """Test home page view"""
         response = self.client.get(reverse("main:home"))
 
         self.assertEqual(response.status_code, 200)
@@ -236,6 +293,22 @@ class MainViewsTest(TestCase):
 
     def test_personal_view(self):
         """Test personal/about page view"""
+        # Import signal handlers to ensure cache invalidation works
+        import apps.core.cache_signals  # noqa: F401
+        from apps.main.models import PersonalInfo, SocialLink
+
+        # Create test data
+        PersonalInfo.objects.create(
+            key="about", value="Test about information", is_visible=True, order=1
+        )
+
+        SocialLink.objects.create(
+            platform="github",
+            url="https://github.com/testuser",
+            is_visible=True,
+            order=1,
+        )
+
         response = self.client.get(reverse("main:personal"))
 
         self.assertEqual(response.status_code, 200)
@@ -244,6 +317,22 @@ class MainViewsTest(TestCase):
 
     def test_view_caching(self):
         """Test that views use caching properly"""
+        # Import signal handlers to ensure cache invalidation works
+        import apps.core.cache_signals  # noqa: F401
+        from apps.main.models import PersonalInfo, SocialLink
+
+        # Create test data
+        PersonalInfo.objects.create(
+            key="about", value="Test about information", is_visible=True, order=1
+        )
+
+        SocialLink.objects.create(
+            platform="github",
+            url="https://github.com/testuser",
+            is_visible=True,
+            order=1,
+        )
+
         # Clear cache first
         cache.clear()
 

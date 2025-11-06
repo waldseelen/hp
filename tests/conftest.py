@@ -4,15 +4,13 @@ Provides fixtures and configuration for Django testing
 """
 
 import os
-from datetime import datetime, timedelta
-from decimal import Decimal
 
 import django
 
 import pytest
 
 # Set Django settings module for testing BEFORE any Django imports
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "portfolio_site.settings.test")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings.simple")
 
 # Setup Django
 django.setup()

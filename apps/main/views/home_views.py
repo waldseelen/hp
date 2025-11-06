@@ -21,10 +21,10 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from apps.blog.models import Post
-from apps.tools.models import Tool
-
-from ..models import AITool, CybersecurityResource, PersonalInfo, SocialLink
+# Note: Model imports moved to function level to avoid circular imports
+# from apps.blog.models import Post
+# from apps.tools.models import Tool
+# from ..models import AITool, CybersecurityResource, PersonalInfo, SocialLink
 
 logger = logging.getLogger(__name__)
 
@@ -181,6 +181,12 @@ def home(request):
     ]
 
     try:
+        # Import models inside function to avoid circular imports
+        from apps.blog.models import Post
+        from apps.tools.models import Tool
+
+        from ..models import AITool, CybersecurityResource, PersonalInfo, SocialLink
+
         # Cache key for the home page data
         cache_key = "home_page_data"
         cached_data = cache.get(cache_key)

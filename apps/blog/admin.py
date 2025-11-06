@@ -67,6 +67,11 @@ class PostAdmin(admin.ModelAdmin):
         "reading_time_display",
         "image_preview",
     )
+    actions = [
+        "make_published",
+        "make_draft",
+        "make_unlisted",
+    ]
 
     def status_display(self, obj):
         colors = {
@@ -115,6 +120,25 @@ class PostAdmin(admin.ModelAdmin):
         if not change:
             obj.author = request.user
         super().save_model(request, obj, form, change)
+
+    # Bulk actions for changing post status
+    def make_published(self, request, queryset):
+        updated = queryset.update(status="published")
+        self.message_user(request, f"{updated} post(s) marked as published.")
+
+    make_published.short_description = "Mark selected posts as published"
+
+    def make_draft(self, request, queryset):
+        updated = queryset.update(status="draft")
+        self.message_user(request, f"{updated} post(s) marked as draft.")
+
+    make_draft.short_description = "Mark selected posts as draft"
+
+    def make_unlisted(self, request, queryset):
+        updated = queryset.update(status="unlisted")
+        self.message_user(request, f"{updated} post(s) marked as unlisted.")
+
+    make_unlisted.short_description = "Mark selected posts as unlisted"
 
     class Media:
         css = {"all": ("admin/css/forms.css",)}

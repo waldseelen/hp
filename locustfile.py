@@ -76,7 +76,7 @@ class BlogReaderTaskSet(SequentialTaskSet):
 
     def on_start(self):
         """Fetch blog post list on start."""
-        response = self.client.get("/blog/", name="Blog List")
+        self.client.get("/blog/", name="Blog List")
         # In real scenario, parse HTML to get actual post URLs
         self.blog_posts = [
             "/blog/post-1/",
@@ -136,7 +136,7 @@ class ContactFormTaskSet(SequentialTaskSet):
     @task
     def view_contact_page(self):
         """View contact page and get CSRF token."""
-        response = self.client.get("/contact/", name="Contact Page")
+        self.client.get("/contact/", name="Contact Page")
         # In production, parse CSRF token from HTML
 
     @task

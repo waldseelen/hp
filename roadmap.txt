@@ -35,16 +35,14 @@
 ## 🔧 KOD KALİTESİ & REFACTORING
 
 ### Validation Functions Consolidation
-- [x] Consolidate 6 validation functions (Inventory complete)
-- [x] Target Complexity: 15-16 → ≤7 per function (Plan created)
+
 - [ ] Create validation framework (BaseValidator + Registry)
 - [ ] All validators work identically
 - [ ] No false negatives/positives
 - [ ] Performance improved
 
 ### View Logic & Middleware Refactoring
-- [x] Refactor api_caching middleware (4 improvements)
-- [x] Refactor 17 view/middleware functions (Inventory complete - C: 11-14 range)
+
 - [ ] Apply design patterns (Strategy, Template, Helper extraction)
 - [ ] Extract helper methods (refactor_helpers.py)
 - [ ] All views work identically
@@ -180,9 +178,7 @@
 - [ ] Database queries working (check debug toolbar)
 
 ### Developer Onboarding: Day 2 Code Quality Setup
-- [x] Pre-commit hooks installed and running
-- [x] Black/isort format code automatically
-- [x] Flake8/mypy catch code issues
+
 - [ ] Tests pass (exit code 0)
 - [ ] Coverage report generated
 
