@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Local apps - only the ones that exist and work
+    "apps.core",  # Core middleware and utilities
     "apps.main",
     "apps.blog",
     "apps.tools",
@@ -38,6 +39,15 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # Performance & Optimization Middleware
+    "apps.core.middleware.api_caching.APICachingMiddleware",
+    "apps.core.middleware.api_caching.CacheInvalidationMiddleware",
+    "apps.core.middleware.api_caching.ResponseTimeMiddleware",
+    "apps.main.middleware.CacheControlMiddleware",  # From apps/main/middleware.py
+    "apps.main.middleware.CompressionMiddleware",  # From apps/main/middleware.py
+    "apps.main.middleware.PerformanceMiddleware",  # From apps/main/middleware.py
+    "apps.main.middleware.apm_middleware.APMMiddleware",  # From apps/main/middleware/apm_middleware.py
+    "apps.main.middleware.apm_middleware.DatabaseQueryTrackingMiddleware",  # From apps/main/middleware/apm_middleware.py
 ]
 
 ROOT_URLCONF = "project.urls"
@@ -84,17 +94,46 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# API Configuration
+API_VERSION = "v1"
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Simple cache
+# Simple cache - Local memory cache for development
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-    }
+        "LOCATION": "unique-snowflake",
+        "TIMEOUT": 300,
+    },
+    "query_cache": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "query-cache",
+        "TIMEOUT": 300,
+    },
+    "api_cache": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "api-cache",
+        "TIMEOUT": 600,
+    },
+    "template_cache": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "template-cache",
+        "TIMEOUT": 7200,
+    },
 }
 
 # Console email for development
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# Performance Budgets Configuration for APM
+PERFORMANCE_BUDGETS = {
+    "SLOW_TRANSACTION_THRESHOLD": 2.0,  # seconds
+    "VERY_SLOW_THRESHOLD": 5.0,  # seconds
+    "DATABASE_QUERY_THRESHOLD": 0.1,  # seconds
+    "CACHE_OPERATION_THRESHOLD": 0.05,  # seconds
+    "API_RESPONSE_THRESHOLD": 1.0,  # seconds
+}
 
 # Authentication: restrict to single admin account via custom backend
 AUTHENTICATION_BACKENDS = [

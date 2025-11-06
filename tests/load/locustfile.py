@@ -20,9 +20,10 @@ Run:
 Web UI: http://localhost:8089
 """
 
-from locust import HttpUser, task, between, TaskSet
 import random
 import time
+
+from locust import HttpUser, TaskSet, between, task
 
 
 class HomepageUserBehavior(TaskSet):
@@ -43,19 +44,25 @@ class HomepageUserBehavior(TaskSet):
     @task(5)
     def load_about(self):
         """Load about page"""
-        with self.client.get("/about/", catch_response=True, name="About Page") as response:
+        with self.client.get(
+            "/about/", catch_response=True, name="About Page"
+        ) as response:
             if response.status_code == 200:
                 response.success()
             elif response.status_code == 404:
                 # About page might not exist
                 response.success()
             else:
-                response.failure(f"About page failed with status {response.status_code}")
+                response.failure(
+                    f"About page failed with status {response.status_code}"
+                )
 
     @task(3)
     def load_ui_kit(self):
         """Load UI kit page"""
-        with self.client.get("/ui-kit/", catch_response=True, name="UI Kit") as response:
+        with self.client.get(
+            "/ui-kit/", catch_response=True, name="UI Kit"
+        ) as response:
             if response.status_code == 200:
                 response.success()
             else:
@@ -64,7 +71,9 @@ class HomepageUserBehavior(TaskSet):
     @task(2)
     def load_static_css(self):
         """Load main CSS file"""
-        with self.client.get("/static/css/output.css", catch_response=True, name="Static CSS") as response:
+        with self.client.get(
+            "/static/css/output.css", catch_response=True, name="Static CSS"
+        ) as response:
             if response.status_code == 200:
                 response.success()
             else:
@@ -73,7 +82,9 @@ class HomepageUserBehavior(TaskSet):
     @task(2)
     def load_static_js(self):
         """Load main JS file"""
-        with self.client.get("/static/js/main.js", catch_response=True, name="Static JS") as response:
+        with self.client.get(
+            "/static/js/main.js", catch_response=True, name="Static JS"
+        ) as response:
             if response.status_code == 200:
                 response.success()
             elif response.status_code == 404:
@@ -106,7 +117,9 @@ class BlogUserBehavior(TaskSet):
     @task(10)
     def load_blog_list(self):
         """Load blog list page"""
-        with self.client.get("/blog/", catch_response=True, name="Blog List") as response:
+        with self.client.get(
+            "/blog/", catch_response=True, name="Blog List"
+        ) as response:
             if response.status_code == 200:
                 response.success()
             else:
@@ -117,24 +130,32 @@ class BlogUserBehavior(TaskSet):
         """Load random blog post detail"""
         if self.blog_ids:
             blog_id = random.choice(self.blog_ids)
-            with self.client.get(f"/blog/{blog_id}/", catch_response=True, name="Blog Detail") as response:
+            with self.client.get(
+                f"/blog/{blog_id}/", catch_response=True, name="Blog Detail"
+            ) as response:
                 if response.status_code == 200:
                     response.success()
                 elif response.status_code == 404:
                     # Blog post might not exist
                     response.success()
                 else:
-                    response.failure(f"Blog detail failed with status {response.status_code}")
+                    response.failure(
+                        f"Blog detail failed with status {response.status_code}"
+                    )
 
     @task(5)
     def load_blog_paginated(self):
         """Load paginated blog list"""
         page = random.randint(1, 5)
-        with self.client.get(f"/blog/?page={page}", catch_response=True, name="Blog Pagination") as response:
+        with self.client.get(
+            f"/blog/?page={page}", catch_response=True, name="Blog Pagination"
+        ) as response:
             if response.status_code == 200 or response.status_code == 404:
                 response.success()
             else:
-                response.failure(f"Blog pagination failed with status {response.status_code}")
+                response.failure(
+                    f"Blog pagination failed with status {response.status_code}"
+                )
 
     @task(3)
     def search_blog(self):
@@ -142,11 +163,15 @@ class BlogUserBehavior(TaskSet):
         search_terms = ["python", "django", "web", "development", "tutorial", "test"]
         term = random.choice(search_terms)
 
-        with self.client.get(f"/blog/?q={term}", catch_response=True, name="Blog Search") as response:
+        with self.client.get(
+            f"/blog/?q={term}", catch_response=True, name="Blog Search"
+        ) as response:
             if response.status_code == 200:
                 response.success()
             else:
-                response.failure(f"Blog search failed with status {response.status_code}")
+                response.failure(
+                    f"Blog search failed with status {response.status_code}"
+                )
 
     @task(2)
     def load_blog_category(self):
@@ -154,11 +179,15 @@ class BlogUserBehavior(TaskSet):
         categories = ["tutorial", "news", "guide", "tips"]
         category = random.choice(categories)
 
-        with self.client.get(f"/blog/category/{category}/", catch_response=True, name="Blog Category") as response:
+        with self.client.get(
+            f"/blog/category/{category}/", catch_response=True, name="Blog Category"
+        ) as response:
             if response.status_code == 200 or response.status_code == 404:
                 response.success()
             else:
-                response.failure(f"Blog category failed with status {response.status_code}")
+                response.failure(
+                    f"Blog category failed with status {response.status_code}"
+                )
 
 
 class APIUserBehavior(TaskSet):
@@ -170,7 +199,9 @@ class APIUserBehavior(TaskSet):
     @task(10)
     def load_blog_api(self):
         """Load blog API endpoint"""
-        with self.client.get("/api/blog/", catch_response=True, name="API: Blog List") as response:
+        with self.client.get(
+            "/api/blog/", catch_response=True, name="API: Blog List"
+        ) as response:
             if response.status_code == 200:
                 response.success()
             elif response.status_code == 404:
@@ -184,40 +215,56 @@ class APIUserBehavior(TaskSet):
         """Load blog detail API endpoint"""
         blog_id = random.randint(1, 10)
 
-        with self.client.get(f"/api/blog/{blog_id}/", catch_response=True, name="API: Blog Detail") as response:
+        with self.client.get(
+            f"/api/blog/{blog_id}/", catch_response=True, name="API: Blog Detail"
+        ) as response:
             if response.status_code in [200, 404]:
                 response.success()
             else:
-                response.failure(f"Blog detail API failed with status {response.status_code}")
+                response.failure(
+                    f"Blog detail API failed with status {response.status_code}"
+                )
 
     @task(5)
     def load_portfolio_api(self):
         """Load portfolio API endpoint"""
-        with self.client.get("/api/portfolio/", catch_response=True, name="API: Portfolio") as response:
+        with self.client.get(
+            "/api/portfolio/", catch_response=True, name="API: Portfolio"
+        ) as response:
             if response.status_code in [200, 404]:
                 response.success()
             else:
-                response.failure(f"Portfolio API failed with status {response.status_code}")
+                response.failure(
+                    f"Portfolio API failed with status {response.status_code}"
+                )
 
     @task(3)
     def search_api(self):
         """Search via API"""
         search_term = random.choice(["test", "python", "django", "web"])
 
-        with self.client.get(f"/api/search/?q={search_term}", catch_response=True, name="API: Search") as response:
+        with self.client.get(
+            f"/api/search/?q={search_term}", catch_response=True, name="API: Search"
+        ) as response:
             if response.status_code in [200, 404]:
                 response.success()
             else:
-                response.failure(f"Search API failed with status {response.status_code}")
+                response.failure(
+                    f"Search API failed with status {response.status_code}"
+                )
 
     @task(2)
     def load_health_check(self):
         """Health check endpoint"""
-        with self.client.get("/health/", catch_response=True, name="API: Health Check") as response:
+        with self.client.get(
+            "/health/", catch_response=True, name="API: Health Check"
+        ) as response:
             if response.status_code in [200, 404]:
                 response.success()
             else:
-                response.failure(f"Health check failed with status {response.status_code}")
+                response.failure(
+                    f"Health check failed with status {response.status_code}"
+                )
 
 
 class ContactFormBehavior(TaskSet):
@@ -239,11 +286,15 @@ class ContactFormBehavior(TaskSet):
     @task(10)
     def load_contact_page(self):
         """Load contact form page"""
-        with self.client.get("/contact/", catch_response=True, name="Contact Page") as response:
+        with self.client.get(
+            "/contact/", catch_response=True, name="Contact Page"
+        ) as response:
             if response.status_code == 200:
                 response.success()
             else:
-                response.failure(f"Contact page failed with status {response.status_code}")
+                response.failure(
+                    f"Contact page failed with status {response.status_code}"
+                )
 
     @task(5)
     def submit_contact_form(self):
@@ -261,10 +312,7 @@ class ContactFormBehavior(TaskSet):
         }
 
         with self.client.post(
-            "/contact/",
-            data=form_data,
-            catch_response=True,
-            name="Contact Form Submit"
+            "/contact/", data=form_data, catch_response=True, name="Contact Form Submit"
         ) as response:
             if response.status_code in [200, 302]:
                 response.success()
@@ -272,18 +320,22 @@ class ContactFormBehavior(TaskSet):
                 # CSRF failure - expected in load testing
                 response.success()
             else:
-                response.failure(f"Contact form submission failed with status {response.status_code}")
+                response.failure(
+                    f"Contact form submission failed with status {response.status_code}"
+                )
 
 
 # ============================================================================
 # USER CLASSES - Define different user types and their weights
 # ============================================================================
 
+
 class HomepageUser(HttpUser):
     """
     Users primarily browsing homepage and static pages
     Weight: 40% of total users
     """
+
     tasks = [HomepageUserBehavior]
     wait_time = between(1, 3)  # Wait 1-3 seconds between tasks
     weight = 40
@@ -294,6 +346,7 @@ class BlogUser(HttpUser):
     Users browsing blog content
     Weight: 30% of total users
     """
+
     tasks = [BlogUserBehavior]
     wait_time = between(2, 5)  # Wait 2-5 seconds between tasks
     weight = 30
@@ -304,6 +357,7 @@ class APIUser(HttpUser):
     API consumers (mobile apps, integrations)
     Weight: 20% of total users
     """
+
     tasks = [APIUserBehavior]
     wait_time = between(0.5, 2)  # Faster requests for API
     weight = 20
@@ -314,6 +368,7 @@ class ContactFormUser(HttpUser):
     Users submitting contact forms
     Weight: 10% of total users
     """
+
     tasks = [ContactFormBehavior]
     wait_time = between(5, 10)  # Slower, users take time to fill forms
     weight = 10
@@ -323,11 +378,13 @@ class ContactFormUser(HttpUser):
 # COMBINED USER - All behaviors in one user
 # ============================================================================
 
+
 class CombinedUser(HttpUser):
     """
     Realistic user that performs multiple actions
     Simulates real user journey: Homepage → Blog → Contact
     """
+
     wait_time = between(1, 5)
 
     @task(10)

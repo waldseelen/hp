@@ -10,9 +10,9 @@ Available mocks:
 - MockCeleryApp: Mock for Celery task queue
 """
 
+from .celery_mock import MockCeleryApp
 from .meilisearch_mock import MockMeilisearchClient
 from .redis_mock import MockRedisClient
-from .celery_mock import MockCeleryApp
 
 __all__ = [
     "MockMeilisearchClient",

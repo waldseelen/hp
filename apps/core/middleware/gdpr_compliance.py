@@ -21,11 +21,12 @@ GDPR Articles Covered:
 import json
 import logging
 from datetime import datetime, timedelta
-from typing import Optional, Dict, Any
-from django.http import HttpRequest, HttpResponse
+from typing import Any, Dict, Optional
+
 from django.conf import settings
-from django.utils.deprecation import MiddlewareMixin
 from django.core.cache import cache
+from django.http import HttpRequest, HttpResponse
+from django.utils.deprecation import MiddlewareMixin
 
 logger = logging.getLogger(__name__)
 
@@ -48,30 +49,30 @@ class CookieConsentMiddleware(MiddlewareMixin):
     - marketing: Advertising/tracking cookies
     """
 
-    CONSENT_COOKIE_NAME = 'gdpr_consent'
-    CONSENT_VERSION = '1.0'
+    CONSENT_COOKIE_NAME = "gdpr_consent"
+    CONSENT_VERSION = "1.0"
     CONSENT_EXPIRY_DAYS = 365  # 13 months = ~395 days, using 365 for simplicity
 
     COOKIE_CATEGORIES = {
-        'necessary': {
-            'required': True,
-            'description': 'Essential cookies for website functionality',
-            'cookies': ['sessionid', 'csrftoken', 'gdpr_consent'],
+        "necessary": {
+            "required": True,
+            "description": "Essential cookies for website functionality",
+            "cookies": ["sessionid", "csrftoken", "gdpr_consent"],
         },
-        'functional': {
-            'required': False,
-            'description': 'Cookies for enhanced functionality and personalization',
-            'cookies': ['language', 'theme', 'timezone'],
+        "functional": {
+            "required": False,
+            "description": "Cookies for enhanced functionality and personalization",
+            "cookies": ["language", "theme", "timezone"],
         },
-        'analytics': {
-            'required': False,
-            'description': 'Cookies for website analytics and performance',
-            'cookies': ['_ga', '_gid', '_gat', 'analytics_session'],
+        "analytics": {
+            "required": False,
+            "description": "Cookies for website analytics and performance",
+            "cookies": ["_ga", "_gid", "_gat", "analytics_session"],
         },
-        'marketing': {
-            'required': False,
-            'description': 'Cookies for advertising and marketing',
-            'cookies': ['_fbp', '_gcl_au', 'marketing_id'],
+        "marketing": {
+            "required": False,
+            "description": "Cookies for advertising and marketing",
+            "cookies": ["_fbp", "_gcl_au", "marketing_id"],
         },
     }
 
@@ -90,27 +91,24 @@ class CookieConsentMiddleware(MiddlewareMixin):
 
         # Log consent status
         if consent_data:
-            logger.debug(
-                f"Cookie consent found: {consent_data.get('categories', {})}"
-            )
+            logger.debug(f"Cookie consent found: {consent_data.get('categories', {})}")
         else:
             logger.debug("No cookie consent found")
 
     def process_response(
-        self,
-        request: HttpRequest,
-        response: HttpResponse
+        self, request: HttpRequest, response: HttpResponse
     ) -> HttpResponse:
         """Filter cookies based on consent."""
-        consent_data = getattr(request, 'gdpr_consent', None)
+        consent_data = getattr(request, "gdpr_consent", None)
 
         if not consent_data:
             # No consent - only allow necessary cookies
-            self._filter_cookies(response, ['necessary'])
+            self._filter_cookies(response, ["necessary"])
         else:
             # Filter based on consented categories
             allowed_categories = [
-                cat for cat, consented in consent_data.get('categories', {}).items()
+                cat
+                for cat, consented in consent_data.get("categories", {}).items()
                 if consented
             ]
             self._filter_cookies(response, allowed_categories)
@@ -132,11 +130,11 @@ class CookieConsentMiddleware(MiddlewareMixin):
                 return None
 
             # Check version
-            if consent_data.get('version') != self.CONSENT_VERSION:
+            if consent_data.get("version") != self.CONSENT_VERSION:
                 return None
 
             # Check expiry
-            timestamp = consent_data.get('timestamp')
+            timestamp = consent_data.get("timestamp")
             if not timestamp:
                 return None
 
@@ -157,22 +155,16 @@ class CookieConsentMiddleware(MiddlewareMixin):
         """Check if consent banner should be shown."""
         return consent_data is None
 
-    def _filter_cookies(
-        self,
-        response: HttpResponse,
-        allowed_categories: list
-    ) -> None:
+    def _filter_cookies(self, response: HttpResponse, allowed_categories: list) -> None:
         """Remove cookies that are not in allowed categories."""
         # Get all allowed cookie names
         allowed_cookies = set()
         for category in allowed_categories:
             if category in self.COOKIE_CATEGORIES:
-                allowed_cookies.update(
-                    self.COOKIE_CATEGORIES[category]['cookies']
-                )
+                allowed_cookies.update(self.COOKIE_CATEGORIES[category]["cookies"])
 
         # Check response cookies
-        if hasattr(response, 'cookies'):
+        if hasattr(response, "cookies"):
             cookies_to_delete = []
 
             for cookie_name in response.cookies.keys():
@@ -185,7 +177,7 @@ class CookieConsentMiddleware(MiddlewareMixin):
 
                 # Check prefix match (e.g., _ga*)
                 for allowed_name in allowed_cookies:
-                    if allowed_name.endswith('*') and cookie_name.startswith(
+                    if allowed_name.endswith("*") and cookie_name.startswith(
                         allowed_name[:-1]
                     ):
                         is_allowed = True
@@ -224,14 +216,14 @@ class DataCollectionLoggingMiddleware(MiddlewareMixin):
         # Sensitive endpoints that collect personal data
         self.data_collection_endpoints = getattr(
             settings,
-            'GDPR_DATA_COLLECTION_ENDPOINTS',
+            "GDPR_DATA_COLLECTION_ENDPOINTS",
             [
-                '/api/contact/',
-                '/api/newsletter/',
-                '/api/analytics/',
-                '/accounts/register/',
-                '/accounts/profile/',
-            ]
+                "/api/contact/",
+                "/api/newsletter/",
+                "/api/analytics/",
+                "/accounts/register/",
+                "/accounts/profile/",
+            ],
         )
 
         logger.info("DataCollectionLoggingMiddleware initialized")
@@ -243,7 +235,7 @@ class DataCollectionLoggingMiddleware(MiddlewareMixin):
             return
 
         # Check if user has consented
-        consent_data = getattr(request, 'gdpr_consent', None)
+        consent_data = getattr(request, "gdpr_consent", None)
         has_consent = self._has_required_consent(request, consent_data)
 
         # Log data collection event
@@ -257,39 +249,33 @@ class DataCollectionLoggingMiddleware(MiddlewareMixin):
         return False
 
     def _has_required_consent(
-        self,
-        request: HttpRequest,
-        consent_data: Optional[Dict]
+        self, request: HttpRequest, consent_data: Optional[Dict]
     ) -> bool:
         """Check if user has given required consent for data collection."""
         if not consent_data:
             return False
 
         # For analytics endpoints, require analytics consent
-        if '/analytics/' in request.path:
-            return consent_data.get('categories', {}).get('analytics', False)
+        if "/analytics/" in request.path:
+            return consent_data.get("categories", {}).get("analytics", False)
 
         # For marketing endpoints, require marketing consent
-        if '/newsletter/' in request.path or '/marketing/' in request.path:
-            return consent_data.get('categories', {}).get('marketing', False)
+        if "/newsletter/" in request.path or "/marketing/" in request.path:
+            return consent_data.get("categories", {}).get("marketing", False)
 
         # For other data collection, functional consent is enough
-        return consent_data.get('categories', {}).get('functional', False)
+        return consent_data.get("categories", {}).get("functional", False)
 
-    def _log_data_collection(
-        self,
-        request: HttpRequest,
-        has_consent: bool
-    ) -> None:
+    def _log_data_collection(self, request: HttpRequest, has_consent: bool) -> None:
         """Log data collection event."""
         log_data = {
-            'timestamp': datetime.now().isoformat(),
-            'path': request.path,
-            'method': request.method,
-            'user': str(request.user) if request.user.is_authenticated else 'anonymous',
-            'ip_address': self._get_client_ip(request),
-            'has_consent': has_consent,
-            'consent_data': getattr(request, 'gdpr_consent', None),
+            "timestamp": datetime.now().isoformat(),
+            "path": request.path,
+            "method": request.method,
+            "user": str(request.user) if request.user.is_authenticated else "anonymous",
+            "ip_address": self._get_client_ip(request),
+            "has_consent": has_consent,
+            "consent_data": getattr(request, "gdpr_consent", None),
         }
 
         logger.info(f"Data collection event: {json.dumps(log_data)}")
@@ -299,11 +285,11 @@ class DataCollectionLoggingMiddleware(MiddlewareMixin):
 
     def _get_client_ip(self, request: HttpRequest) -> str:
         """Get client IP address."""
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
         if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
+            ip = x_forwarded_for.split(",")[0]
         else:
-            ip = request.META.get('REMOTE_ADDR')
+            ip = request.META.get("REMOTE_ADDR")
         return ip
 
 
@@ -324,7 +310,7 @@ class PrivacyPreferencesMiddleware(MiddlewareMixin):
     - communication_preferences: Email/SMS preferences
     """
 
-    CACHE_KEY_PREFIX = 'gdpr_prefs'
+    CACHE_KEY_PREFIX = "gdpr_prefs"
     CACHE_TIMEOUT = 3600  # 1 hour
 
     def __init__(self, get_response):
@@ -354,14 +340,14 @@ class PrivacyPreferencesMiddleware(MiddlewareMixin):
     def _get_default_preferences(self) -> Dict[str, Any]:
         """Get default privacy preferences for anonymous users."""
         return {
-            'data_retention_period': 30,  # days
-            'allow_profiling': False,
-            'allow_third_party': False,
-            'allow_analytics': False,
-            'communication_preferences': {
-                'email': False,
-                'sms': False,
-                'push': False,
+            "data_retention_period": 30,  # days
+            "allow_profiling": False,
+            "allow_third_party": False,
+            "allow_analytics": False,
+            "communication_preferences": {
+                "email": False,
+                "sms": False,
+                "push": False,
             },
         }
 
@@ -374,11 +360,11 @@ class PrivacyPreferencesMiddleware(MiddlewareMixin):
 
             if prefs:
                 return {
-                    'data_retention_period': prefs.data_retention_period,
-                    'allow_profiling': prefs.allow_profiling,
-                    'allow_third_party': prefs.allow_third_party,
-                    'allow_analytics': prefs.allow_analytics,
-                    'communication_preferences': prefs.communication_preferences,
+                    "data_retention_period": prefs.data_retention_period,
+                    "allow_profiling": prefs.allow_profiling,
+                    "allow_third_party": prefs.allow_third_party,
+                    "allow_analytics": prefs.allow_analytics,
+                    "communication_preferences": prefs.communication_preferences,
                 }
         except Exception as e:
             logger.error(f"Failed to load privacy preferences: {e}")
@@ -387,6 +373,7 @@ class PrivacyPreferencesMiddleware(MiddlewareMixin):
 
 
 # Helper functions
+
 
 def get_consent_categories(request: HttpRequest) -> Dict[str, bool]:
     """
@@ -397,11 +384,11 @@ def get_consent_categories(request: HttpRequest) -> Dict[str, bool]:
         if consent.get('analytics'):
             # Track analytics
     """
-    consent_data = getattr(request, 'gdpr_consent', None)
+    consent_data = getattr(request, "gdpr_consent", None)
     if not consent_data:
-        return {'necessary': True}  # Only necessary allowed without consent
+        return {"necessary": True}  # Only necessary allowed without consent
 
-    return consent_data.get('categories', {'necessary': True})
+    return consent_data.get("categories", {"necessary": True})
 
 
 def has_consent_for(request: HttpRequest, category: str) -> bool:
@@ -419,7 +406,7 @@ def has_consent_for(request: HttpRequest, category: str) -> bool:
 def set_consent_cookie(
     response: HttpResponse,
     categories: Dict[str, bool],
-    version: str = CookieConsentMiddleware.CONSENT_VERSION
+    version: str = CookieConsentMiddleware.CONSENT_VERSION,
 ) -> None:
     """
     Set consent cookie with user's preferences.
@@ -433,9 +420,9 @@ def set_consent_cookie(
         })
     """
     consent_data = {
-        'version': version,
-        'timestamp': datetime.now().isoformat(),
-        'categories': categories,
+        "version": version,
+        "timestamp": datetime.now().isoformat(),
+        "categories": categories,
     }
 
     response.set_cookie(
@@ -443,8 +430,8 @@ def set_consent_cookie(
         json.dumps(consent_data),
         max_age=CookieConsentMiddleware.CONSENT_EXPIRY_DAYS * 24 * 60 * 60,
         httponly=True,
-        secure=getattr(settings, 'SESSION_COOKIE_SECURE', True),
-        samesite='Lax',
+        secure=getattr(settings, "SESSION_COOKIE_SECURE", True),
+        samesite="Lax",
     )
 
     logger.info(f"Consent cookie set: {categories}")

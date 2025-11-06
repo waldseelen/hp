@@ -7,13 +7,14 @@ Tests cover:
 Target: 10 comprehensive tests for URL shortening service.
 """
 
-import pytest
-from django.utils import timezone
 from datetime import timedelta
+
 from django.db import IntegrityError
+from django.utils import timezone
+
+import pytest
 
 from apps.portfolio.models import ShortURL
-
 
 # ============================================================================
 # SHORTURL MODEL TESTS (Auto Code Generation, Analytics)

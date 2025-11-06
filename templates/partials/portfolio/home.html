@@ -129,7 +129,7 @@
                     {% if post.published_at %}<span>{{ post.published_at|date:"M d, Y" }}</span>{% endif %}
                     {% if post.read_time %}<span>{{ post.read_time }} {% trans 'min read' %}</span>{% endif %}
                 </div>
-                {% with post.link|default:post.get_absolute_url as detail_link %}
+                {% with post.link|default:"" as detail_link %}
                 <a class="insight-card__link" href="{{ detail_link|default:blog_list_url }}">
                     {% trans 'Read insight' %}
                 </a>
@@ -158,7 +158,7 @@
             {% for tool in favorite_tools|slice:":3" %}
             <article class="tool-card">
                 <div class="tool-card__meta">
-                    <span class="tool-card__badge">{{ tool.category_label|default:tool.get_category_display }}</span>
+                    <span class="tool-card__badge">{{ tool.category_label|default:'' }}</span>
                     {% if tool.rating %}<span class="tool-card__rating">{{ tool.rating }}/5</span>{% endif %}
                 </div>
                 <h3>{{ tool.name }}</h3>
@@ -194,7 +194,7 @@
                     {{ threat.severity_label|default:_('Priority') }}
                 </span>
                 <h3>{{ threat.title }}</h3>
-                <p>{{ threat.summary|default:threat.description|default:_('Advisory coming soon.') }}</p>
+                <p>{{ threat.summary|default:_('Advisory coming soon.') }}</p>
                 <a class="security-card__link" href="{{ threat.url|default:'#' }}" {% if threat.url %}target="_blank" rel="noopener noreferrer"{% endif %}>
                     {% trans 'See engagement overview' %}
                 </a>

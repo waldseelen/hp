@@ -82,6 +82,7 @@ TEMPLATES = [
     },
 ]
 
+
 # Disable migrations for faster tests
 class DisableMigrations:
     def __contains__(self, item):

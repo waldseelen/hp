@@ -9,7 +9,6 @@ from typing import Any, Optional
 
 from django.core.cache import cache
 
-
 __all__ = [
     "generate_cache_key",
     "cache_get_or_set",
@@ -106,8 +105,8 @@ def invalidate_cache_pattern(pattern: str) -> int:
     """
     try:
         # This works with Redis backend
-        from django.core.cache import caches
         from django.conf import settings
+        from django.core.cache import caches
 
         cache_backend = caches[settings.CACHES.get("default", {}).get("BACKEND", "")]
 

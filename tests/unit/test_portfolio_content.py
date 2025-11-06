@@ -10,18 +10,19 @@ Tests cover:
 Target: 24 comprehensive tests for content management.
 """
 
-import pytest
-from django.core.exceptions import ValidationError
-from django.utils import timezone
 import json
 
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+
+import pytest
+
 from apps.portfolio.models import (
-    PersonalInfo,
-    SocialLink,
     AITool,
     CybersecurityResource,
+    PersonalInfo,
+    SocialLink,
 )
-
 
 # ============================================================================
 # PERSONALINFO MODEL TESTS (JSON Validation, Type Choices)
@@ -242,9 +243,15 @@ class TestSocialLinkModel:
 
     def test_sociallink_ordering(self):
         """Test SocialLink ordering by order field."""
-        SocialLink.objects.create(platform="github", url="https://github.com/u", order=2)
-        SocialLink.objects.create(platform="linkedin", url="https://linkedin.com/in/u", order=1)
-        SocialLink.objects.create(platform="twitter", url="https://twitter.com/u", order=3)
+        SocialLink.objects.create(
+            platform="github", url="https://github.com/u", order=2
+        )
+        SocialLink.objects.create(
+            platform="linkedin", url="https://linkedin.com/in/u", order=1
+        )
+        SocialLink.objects.create(
+            platform="twitter", url="https://twitter.com/u", order=3
+        )
 
         ordered = list(SocialLink.objects.all())
         assert ordered[0].platform == "linkedin"
@@ -278,8 +285,15 @@ class TestAIToolModel:
     def test_aitool_all_categories(self):
         """Test all 9 AI tool categories."""
         categories = [
-            "general", "visual", "video", "audio", "text",
-            "code", "research", "productivity", "other"
+            "general",
+            "visual",
+            "video",
+            "audio",
+            "text",
+            "code",
+            "research",
+            "productivity",
+            "other",
         ]
         for cat in categories:
             tool = AITool.objects.create(
@@ -337,9 +351,27 @@ class TestAIToolModel:
 
     def test_aitool_ordering(self):
         """Test AITool ordering by category, order, name."""
-        AITool.objects.create(name="B Tool", description="Test", url="https://b.com", category="code", order=2)
-        AITool.objects.create(name="A Tool", description="Test", url="https://a.com", category="code", order=1)
-        AITool.objects.create(name="Z Tool", description="Test", url="https://z.com", category="general", order=1)
+        AITool.objects.create(
+            name="B Tool",
+            description="Test",
+            url="https://b.com",
+            category="code",
+            order=2,
+        )
+        AITool.objects.create(
+            name="A Tool",
+            description="Test",
+            url="https://a.com",
+            category="code",
+            order=1,
+        )
+        AITool.objects.create(
+            name="Z Tool",
+            description="Test",
+            url="https://z.com",
+            category="general",
+            order=1,
+        )
 
         ordered = list(AITool.objects.all())
         # Should be ordered by category first, then order, then name
@@ -373,8 +405,14 @@ class TestCybersecurityResourceModel:
     def test_cybersecurity_all_types(self):
         """Test all 8 cybersecurity resource types."""
         types = [
-            "tool", "threat", "standard", "practice",
-            "news", "tutorial", "certification", "other"
+            "tool",
+            "threat",
+            "standard",
+            "practice",
+            "news",
+            "tutorial",
+            "certification",
+            "other",
         ]
         for res_type in types:
             resource = CybersecurityResource.objects.create(
@@ -457,5 +495,5 @@ class TestCybersecurityResourceModel:
         ordered = list(CybersecurityResource.objects.all())
         # Urgent items first (by severity desc), then normal items
         assert ordered[0] == urgent_high  # is_urgent=True, severity=4
-        assert ordered[1] == urgent_low   # is_urgent=True, severity=1
-        assert ordered[2] == normal       # is_urgent=False, severity=2
+        assert ordered[1] == urgent_low  # is_urgent=True, severity=1
+        assert ordered[2] == normal  # is_urgent=False, severity=2

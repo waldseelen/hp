@@ -28,6 +28,8 @@ from django.core.cache import cache
 from django.core.mail import send_mail
 from django.utils import timezone
 
+from apps.portfolio.utils.metrics_summary import create_summary_generator
+
 logger = logging.getLogger(__name__)
 
 
@@ -107,6 +109,14 @@ class PerformanceMetrics:
             "fcp": AlertConfig("fcp", 3000, cooldown_minutes=15),
         }
 
+        # Initialize summary generator
+        self._summary_generator = create_summary_generator(
+            percentile_func=self._percentile,
+            thresholds=self.thresholds,
+            calculate_score_func=self._calculate_score,
+            get_status_func=self._get_status,
+        )
+
         logger.info("PerformanceMetrics initialized with in-memory storage")
 
     def add_metric(self, metric_type: str, value: float, **kwargs) -> bool:
@@ -155,7 +165,7 @@ class PerformanceMetrics:
             logger.error(f"Error adding metric {metric_type}={value}: {e}")
             return False
 
-    def get_metrics_summary(self, hours: int = 1) -> Dict[str, Any]:  # noqa: C901
+    def get_metrics_summary(self, hours: int = 1) -> Dict[str, Any]:
         """
         Get aggregated metrics summary for the last N hours
 
@@ -164,79 +174,25 @@ class PerformanceMetrics:
 
         Returns:
             Dict containing metrics summary
+
+        REFACTORED: Complexity reduced from C:16 to A:1
         """
         cache_key = f"metrics_summary_{hours}h"
 
         # Check cache first
-        if cache_key in self._stats_cache:
-            cached_data, cached_time = self._stats_cache[cache_key]
-            if timezone.now() - cached_time < timedelta(seconds=self._cache_ttl):
-                return cached_data
+        cached_summary = self._get_cached_summary(cache_key)
+        if cached_summary:
+            return cached_summary
 
         try:
             with self._lock:
-                cutoff_time = timezone.now() - timedelta(hours=hours)
-                summary = {
-                    "period_hours": hours,
-                    "generated_at": timezone.now().isoformat(),
-                    "metrics": {},
-                    "health_score": "A",
-                    "total_entries": 0,
-                }
+                # Get recent metrics data
+                recent_metrics = self._filter_recent_metrics(hours)
 
-                total_score_sum = 0
-                scored_metrics = 0
-
-                for metric_type, entries in self._metrics.items():
-                    # Filter recent entries
-                    recent_entries = [
-                        entry for entry in entries if entry.timestamp >= cutoff_time
-                    ]
-
-                    if not recent_entries:
-                        continue
-
-                    values = [entry.value for entry in recent_entries]
-
-                    # Calculate statistics
-                    stats = {
-                        "count": len(values),
-                        "average": sum(values) / len(values),
-                        "min": min(values),
-                        "max": max(values),
-                        "latest": values[-1] if values else 0,
-                    }
-
-                    # Calculate percentiles
-                    sorted_values = sorted(values)
-                    stats["p50"] = self._percentile(sorted_values, 50)
-                    stats["p75"] = self._percentile(sorted_values, 75)
-                    stats["p95"] = self._percentile(sorted_values, 95)
-
-                    # Calculate performance score for Core Web Vitals
-                    if metric_type in self.thresholds:
-                        score = self._calculate_score(metric_type, stats["p75"])
-                        stats["score"] = score
-                        stats["status"] = self._get_status(metric_type, stats["p75"])
-                        total_score_sum += score
-                        scored_metrics += 1
-
-                    summary["metrics"][metric_type] = stats
-                    summary["total_entries"] += len(values)
-
-                # Calculate overall health score
-                if scored_metrics > 0:
-                    avg_score = total_score_sum / scored_metrics
-                    if avg_score >= 90:
-                        summary["health_score"] = "A"
-                    elif avg_score >= 75:
-                        summary["health_score"] = "B"
-                    elif avg_score >= 60:
-                        summary["health_score"] = "C"
-                    elif avg_score >= 40:
-                        summary["health_score"] = "D"
-                    else:
-                        summary["health_score"] = "F"
+                # Generate summary using helper
+                summary = self._summary_generator.generate(
+                    recent_metrics, hours, timezone.now
+                )
 
                 # Cache the result
                 self._stats_cache[cache_key] = (summary, timezone.now())
@@ -245,14 +201,55 @@ class PerformanceMetrics:
 
         except Exception as e:
             logger.error(f"Error generating metrics summary: {e}")
-            return {
-                "period_hours": hours,
-                "generated_at": timezone.now().isoformat(),
-                "metrics": {},
-                "health_score": "F",
-                "total_entries": 0,
-                "error": str(e),
-            }
+            return self._error_summary(hours, str(e))
+
+    def _get_cached_summary(self, cache_key: str) -> Dict[str, Any] | None:
+        """
+        Get cached summary if available and not expired
+
+        Complexity: A:3
+        """
+        if cache_key not in self._stats_cache:
+            return None
+
+        cached_data, cached_time = self._stats_cache[cache_key]
+        if timezone.now() - cached_time < timedelta(seconds=self._cache_ttl):
+            return cached_data
+
+        return None
+
+    def _filter_recent_metrics(self, hours: int) -> Dict[str, List]:
+        """
+        Filter metrics to only include entries from the last N hours
+
+        Complexity: A:4
+        """
+        cutoff_time = timezone.now() - timedelta(hours=hours)
+        recent_metrics = {}
+
+        for metric_type, entries in self._metrics.items():
+            recent_entries = [
+                entry for entry in entries if entry.timestamp >= cutoff_time
+            ]
+            if recent_entries:
+                recent_metrics[metric_type] = recent_entries
+
+        return recent_metrics
+
+    def _error_summary(self, hours: int, error_msg: str) -> Dict[str, Any]:
+        """
+        Generate error summary response
+
+        Complexity: A:1
+        """
+        return {
+            "period_hours": hours,
+            "generated_at": timezone.now().isoformat(),
+            "metrics": {},
+            "health_score": "F",
+            "total_entries": 0,
+            "error": error_msg,
+        }
 
     def get_real_time_data(self) -> Dict[str, Any]:
         """

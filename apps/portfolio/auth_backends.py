@@ -11,6 +11,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.utils import timezone
 
+from apps.portfolio.utils.auth_helpers import AuthenticationOrchestrator
+
 logger = logging.getLogger(__name__)
 User = get_user_model()
 
@@ -20,7 +22,11 @@ class TwoFactorAuthBackend(ModelBackend):
     Custom authentication backend with 2FA support and security features
     """
 
-    def authenticate(  # noqa: C901
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._orchestrator = AuthenticationOrchestrator(self.user_can_authenticate)
+
+    def authenticate(
         self,
         request,
         username=None,
@@ -41,62 +47,12 @@ class TwoFactorAuthBackend(ModelBackend):
 
         Returns:
             User instance if authentication successful, None otherwise
+
+        REFACTORED: Complexity reduced from C:14 to A:1
         """
-        if username is None or password is None:
-            return None
-
-        try:
-            # Get user by email (username field)
-            user = User.objects.get(email__iexact=username)
-        except User.DoesNotExist:
-            # Run the default password hasher once to reduce the timing
-            # difference between an existing and a nonexistent user
-            User().set_password(password)
-            return None
-
-        # Check if account is locked
-        if user.is_account_locked():
-            logger.warning(f"Login attempt on locked account: {username}")
-            return None
-
-        # Verify password
-        if not user.check_password(password):
-            user.record_failed_login()
-            logger.warning(f"Failed password attempt for: {username}")
-            return None
-
-        # If 2FA is not enabled, proceed with normal authentication
-        if not user.is_2fa_enabled:
-            if self.user_can_authenticate(user):
-                user.record_successful_login()
-                return user
-            return None
-
-        # 2FA is enabled - verify TOTP token or backup code
-        if totp_token:
-            if user.verify_totp(totp_token):
-                if self.user_can_authenticate(user):
-                    user.record_successful_login()
-                    logger.info(f"Successful 2FA login with TOTP: {username}")
-                    return user
-            else:
-                user.record_failed_login()
-                logger.warning(f"Invalid TOTP token for: {username}")
-                return None
-
-        elif backup_code:
-            if user.use_backup_code(backup_code):
-                if self.user_can_authenticate(user):
-                    user.record_successful_login()
-                    logger.info(f"Successful 2FA login with backup code: {username}")
-                    return user
-            else:
-                user.record_failed_login()
-                logger.warning(f"Invalid backup code for: {username}")
-                return None
-
-        # 2FA is enabled but no valid token provided
-        return None
+        return self._orchestrator.authenticate_user(
+            username, password, totp_token, backup_code
+        )
 
     def get_user(self, user_id):
         """Get user by ID"""

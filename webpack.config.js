@@ -1,5 +1,6 @@
 const path = require('path');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
@@ -80,6 +81,10 @@ module.exports = {
     optimization: {
         splitChunks: {
             chunks: 'all',
+            maxInitialRequests: 25,
+            maxAsyncRequests: 30,
+            minSize: 20000,
+            maxSize: 244000,
             cacheGroups: {
                 vendor: {
                     test: /[\\/]node_modules[\\/]/,
@@ -96,11 +101,33 @@ module.exports = {
             }
         },
 
+        runtimeChunk: 'single',
         usedExports: true,
         sideEffects: false,
 
-        // Minimize in production
-        minimize: process.env.NODE_ENV === 'production'
+        // Minimize in production with TerserPlugin
+        minimize: process.env.NODE_ENV === 'production',
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    compress: {
+                        drop_console: process.env.NODE_ENV === 'production',
+                        drop_debugger: true,
+                        pure_funcs: ['console.log', 'console.info'],
+                        passes: 2
+                    },
+                    mangle: {
+                        safari10: true
+                    },
+                    format: {
+                        comments: false,
+                        ascii_only: true
+                    }
+                },
+                extractComments: false,
+                parallel: true
+            })
+        ]
     },
 
     resolve: {

@@ -18,11 +18,12 @@ Usage:
 
 from django import template
 from django.conf import settings
-from django.utils.safestring import mark_safe
 from django.templatetags.static import static
+from django.utils.safestring import mark_safe
+
 from apps.core.middleware.security_headers import (
+    SubresourceIntegrityHelper,
     get_csp_nonce,
-    SubresourceIntegrityHelper
 )
 
 register = template.Library()
@@ -40,10 +41,10 @@ def csp_nonce(context):
         {% csp_nonce as nonce %}
         <script nonce="{{ nonce }}">...</script>
     """
-    request = context.get('request')
+    request = context.get("request")
     if request:
-        return get_csp_nonce(request) or ''
-    return ''
+        return get_csp_nonce(request) or ""
+    return ""
 
 
 @register.simple_tag
@@ -70,9 +71,9 @@ def sri_script(path, **attrs):
         integrity = _sri_helper.generate_hash(path)
 
         # Build attributes
-        attr_str = ' '.join([f'{k}="{v}"' for k, v in attrs.items()])
+        attr_str = " ".join([f'{k}="{v}"' for k, v in attrs.items()])
         if attr_str:
-            attr_str = ' ' + attr_str
+            attr_str = " " + attr_str
 
         # Build script tag
         script_tag = (
@@ -83,13 +84,13 @@ def sri_script(path, **attrs):
 
         return mark_safe(script_tag)
 
-    except Exception as e:
+    except Exception:
         # Fallback to regular script tag in development
         if settings.DEBUG:
             url = static(path)
-            attr_str = ' '.join([f'{k}="{v}"' for k, v in attrs.items()])
+            attr_str = " ".join([f'{k}="{v}"' for k, v in attrs.items()])
             if attr_str:
-                attr_str = ' ' + attr_str
+                attr_str = " " + attr_str
             return mark_safe(f'<script src="{url}"{attr_str}></script>')
         raise
 
@@ -118,9 +119,9 @@ def sri_style(path, **attrs):
         integrity = _sri_helper.generate_hash(path)
 
         # Build attributes
-        attr_str = ' '.join([f'{k}="{v}"' for k, v in attrs.items()])
+        attr_str = " ".join([f'{k}="{v}"' for k, v in attrs.items()])
         if attr_str:
-            attr_str = ' ' + attr_str
+            attr_str = " " + attr_str
 
         # Build link tag
         link_tag = (
@@ -131,16 +132,14 @@ def sri_style(path, **attrs):
 
         return mark_safe(link_tag)
 
-    except Exception as e:
+    except Exception:
         # Fallback to regular link tag in development
         if settings.DEBUG:
             url = static(path)
-            attr_str = ' '.join([f'{k}="{v}"' for k, v in attrs.items()])
+            attr_str = " ".join([f'{k}="{v}"' for k, v in attrs.items()])
             if attr_str:
-                attr_str = ' ' + attr_str
-            return mark_safe(
-                f'<link rel="stylesheet" href="{url}"{attr_str}>'
-            )
+                attr_str = " " + attr_str
+            return mark_safe(f'<link rel="stylesheet" href="{url}"{attr_str}>')
         raise
 
 
@@ -165,7 +164,7 @@ def sri_integrity(path):
     except Exception:
         # Return empty string in development
         if settings.DEBUG:
-            return ''
+            return ""
         raise
 
 
@@ -186,16 +185,14 @@ def secure_script(context, content):
     Returns:
         HTML script tag with nonce
     """
-    request = context.get('request')
-    nonce = get_csp_nonce(request) if request else ''
+    request = context.get("request")
+    nonce = get_csp_nonce(request) if request else ""
 
     if nonce:
-        return mark_safe(
-            f'<script nonce="{nonce}">{content}</script>'
-        )
+        return mark_safe(f'<script nonce="{nonce}">{content}</script>')
     else:
         # Fallback without nonce (not recommended in production)
-        return mark_safe(f'<script>{content}</script>')
+        return mark_safe(f"<script>{content}</script>")
 
 
 @register.simple_tag(takes_context=True)
@@ -215,13 +212,11 @@ def secure_style(context, content):
     Returns:
         HTML style tag with nonce
     """
-    request = context.get('request')
-    nonce = get_csp_nonce(request) if request else ''
+    request = context.get("request")
+    nonce = get_csp_nonce(request) if request else ""
 
     if nonce:
-        return mark_safe(
-            f'<style nonce="{nonce}">{content}</style>'
-        )
+        return mark_safe(f'<style nonce="{nonce}">{content}</style>')
     else:
         # Fallback without nonce (not recommended in production)
-        return mark_safe(f'<style>{content}</style>')
+        return mark_safe(f"<style>{content}</style>")

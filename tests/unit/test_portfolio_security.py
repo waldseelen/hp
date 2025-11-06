@@ -11,18 +11,19 @@ Tests cover:
 Target: 25-30 tests for comprehensive security coverage.
 """
 
-import pytest
-from django.utils import timezone
 from datetime import timedelta
 
+from django.utils import timezone
+
+import pytest
+
 from apps.portfolio.models import (
+    AccountDeletionRequest,
     Admin,
-    UserSession,
     CookieConsent,
     DataExportRequest,
-    AccountDeletionRequest,
+    UserSession,
 )
-
 
 # ============================================================================
 # ADMIN MODEL TESTS (2FA, Backup Codes, Account Locking)
@@ -49,7 +50,10 @@ class TestAdminModel:
     def test_generate_totp_secret(self):
         """Test TOTP secret generation."""
         admin = Admin.objects.create_user(
-            username="admin2", email="admin2@example.com", name="Admin 2", password="pass"
+            username="admin2",
+            email="admin2@example.com",
+            name="Admin 2",
+            password="pass",
         )
         secret = admin.generate_totp_secret()
         assert secret is not None
@@ -63,7 +67,10 @@ class TestAdminModel:
     def test_get_totp_uri(self):
         """Test TOTP URI generation for QR code."""
         admin = Admin.objects.create_user(
-            username="admin3", email="admin3@example.com", name="Admin 3", password="pass"
+            username="admin3",
+            email="admin3@example.com",
+            name="Admin 3",
+            password="pass",
         )
         uri = admin.get_totp_uri()
         assert "otpauth://totp/" in uri
@@ -73,7 +80,10 @@ class TestAdminModel:
     def test_get_qr_code(self):
         """Test QR code generation."""
         admin = Admin.objects.create_user(
-            username="admin4", email="admin4@example.com", name="Admin 4", password="pass"
+            username="admin4",
+            email="admin4@example.com",
+            name="Admin 4",
+            password="pass",
         )
         qr_code = admin.get_qr_code()
         assert qr_code is not None
@@ -84,7 +94,10 @@ class TestAdminModel:
     def test_verify_totp_without_2fa(self):
         """Test TOTP verification fails when 2FA not enabled."""
         admin = Admin.objects.create_user(
-            username="admin5", email="admin5@example.com", name="Admin 5", password="pass"
+            username="admin5",
+            email="admin5@example.com",
+            name="Admin 5",
+            password="pass",
         )
         admin.generate_totp_secret()
         assert not admin.verify_totp("123456")  # 2FA not enabled
@@ -94,7 +107,10 @@ class TestAdminModel:
         import pyotp
 
         admin = Admin.objects.create_user(
-            username="admin6", email="admin6@example.com", name="Admin 6", password="pass"
+            username="admin6",
+            email="admin6@example.com",
+            name="Admin 6",
+            password="pass",
         )
         admin.generate_totp_secret()
         admin.is_2fa_enabled = True
@@ -110,7 +126,10 @@ class TestAdminModel:
     def test_generate_backup_codes(self):
         """Test backup code generation."""
         admin = Admin.objects.create_user(
-            username="admin7", email="admin7@example.com", name="Admin 7", password="pass"
+            username="admin7",
+            email="admin7@example.com",
+            name="Admin 7",
+            password="pass",
         )
         codes = admin.generate_backup_codes(count=8)
         assert len(codes) == 8
@@ -123,7 +142,10 @@ class TestAdminModel:
     def test_use_backup_code(self):
         """Test backup code usage (one-time use)."""
         admin = Admin.objects.create_user(
-            username="admin8", email="admin8@example.com", name="Admin 8", password="pass"
+            username="admin8",
+            email="admin8@example.com",
+            name="Admin 8",
+            password="pass",
         )
         codes = admin.generate_backup_codes(count=5)
         first_code = codes[0]
@@ -139,7 +161,10 @@ class TestAdminModel:
     def test_account_locking(self):
         """Test account locking functionality."""
         admin = Admin.objects.create_user(
-            username="admin9", email="admin9@example.com", name="Admin 9", password="pass"
+            username="admin9",
+            email="admin9@example.com",
+            name="Admin 9",
+            password="pass",
         )
         assert not admin.is_account_locked()
 
@@ -150,7 +175,10 @@ class TestAdminModel:
     def test_account_unlock(self):
         """Test account unlocking."""
         admin = Admin.objects.create_user(
-            username="admin10", email="admin10@example.com", name="Admin 10", password="pass"
+            username="admin10",
+            email="admin10@example.com",
+            name="Admin 10",
+            password="pass",
         )
         admin.failed_login_attempts = 5
         admin.lock_account()
@@ -164,7 +192,10 @@ class TestAdminModel:
     def test_record_failed_login(self):
         """Test failed login attempt recording."""
         admin = Admin.objects.create_user(
-            username="admin11", email="admin11@example.com", name="Admin 11", password="pass"
+            username="admin11",
+            email="admin11@example.com",
+            name="Admin 11",
+            password="pass",
         )
 
         # Record 4 failed attempts
@@ -181,7 +212,10 @@ class TestAdminModel:
     def test_record_successful_login(self):
         """Test successful login resets failed attempts."""
         admin = Admin.objects.create_user(
-            username="admin12", email="admin12@example.com", name="Admin 12", password="pass"
+            username="admin12",
+            email="admin12@example.com",
+            name="Admin 12",
+            password="pass",
         )
         admin.failed_login_attempts = 3
         admin.last_failed_login = timezone.now()
@@ -489,7 +523,10 @@ class TestAccountDeletionRequestModel:
         assert deletion_req.scheduled_deletion is not None
         expected_deletion = timezone.now() + timedelta(days=30)
         # Allow 1 minute tolerance
-        assert abs((deletion_req.scheduled_deletion - expected_deletion).total_seconds()) < 60
+        assert (
+            abs((deletion_req.scheduled_deletion - expected_deletion).total_seconds())
+            < 60
+        )
 
     def test_generate_confirmation_token(self, admin_user):
         """Test confirmation token generation."""

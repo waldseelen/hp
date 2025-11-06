@@ -1,0 +1,202 @@
+[
+  {
+    "timestamp": "2025-11-03T00:28:29.781978",
+    "database": {
+      "query_count": 0,
+      "avg_query_time_ms": 0,
+      "slow_queries_count": 0
+    },
+    "cache": {
+      "default": {
+        "status": "unavailable"
+      },
+      "api_cache": {
+        "status": "unavailable"
+      },
+      "query_cache": {
+        "status": "unavailable"
+      },
+      "template_cache": {
+        "status": "unavailable"
+      }
+    },
+    "response_time": {
+      "p50_ms": 0,
+      "p95_ms": 0,
+      "p99_ms": 0,
+      "sample_size": 0
+    },
+    "errors": {
+      "error_count": 0,
+      "error_rate": 0.0,
+      "error_types": {},
+      "status": "placeholder"
+    },
+    "system": {
+      "cpu_percent": 39.3,
+      "memory_percent": 47.0,
+      "memory_available_mb": 8297.25390625,
+      "disk_percent": 9.9
+    }
+  },
+  {
+    "timestamp": "2025-11-03T00:28:31.883118",
+    "database": {
+      "query_count": 0,
+      "avg_query_time_ms": 0,
+      "slow_queries_count": 0
+    },
+    "cache": {
+      "default": {
+        "status": "unavailable"
+      },
+      "api_cache": {
+        "status": "unavailable"
+      },
+      "query_cache": {
+        "status": "unavailable"
+      },
+      "template_cache": {
+        "status": "unavailable"
+      }
+    },
+    "response_time": {
+      "p50_ms": 0,
+      "p95_ms": 0,
+      "p99_ms": 0,
+      "sample_size": 0
+    },
+    "errors": {
+      "error_count": 0,
+      "error_rate": 0.0,
+      "error_types": {},
+      "status": "placeholder"
+    },
+    "system": {
+      "cpu_percent": 4.2,
+      "memory_percent": 46.9,
+      "memory_available_mb": 8305.93359375,
+      "disk_percent": 9.9
+    }
+  },
+  {
+    "timestamp": "2025-11-03T00:28:33.984651",
+    "database": {
+      "query_count": 0,
+      "avg_query_time_ms": 0,
+      "slow_queries_count": 0
+    },
+    "cache": {
+      "default": {
+        "status": "unavailable"
+      },
+      "api_cache": {
+        "status": "unavailable"
+      },
+      "query_cache": {
+        "status": "unavailable"
+      },
+      "template_cache": {
+        "status": "unavailable"
+      }
+    },
+    "response_time": {
+      "p50_ms": 0,
+      "p95_ms": 0,
+      "p99_ms": 0,
+      "sample_size": 0
+    },
+    "errors": {
+      "error_count": 0,
+      "error_rate": 0.0,
+      "error_types": {},
+      "status": "placeholder"
+    },
+    "system": {
+      "cpu_percent": 2.5,
+      "memory_percent": 46.9,
+      "memory_available_mb": 8316.515625,
+      "disk_percent": 9.9
+    }
+  },
+  {
+    "timestamp": "2025-11-03T00:28:36.085836",
+    "database": {
+      "query_count": 0,
+      "avg_query_time_ms": 0,
+      "slow_queries_count": 0
+    },
+    "cache": {
+      "default": {
+        "status": "unavailable"
+      },
+      "api_cache": {
+        "status": "unavailable"
+      },
+      "query_cache": {
+        "status": "unavailable"
+      },
+      "template_cache": {
+        "status": "unavailable"
+      }
+    },
+    "response_time": {
+      "p50_ms": 0,
+      "p95_ms": 0,
+      "p99_ms": 0,
+      "sample_size": 0
+    },
+    "errors": {
+      "error_count": 0,
+      "error_rate": 0.0,
+      "error_types": {},
+      "status": "placeholder"
+    },
+    "system": {
+      "cpu_percent": 2.6,
+      "memory_percent": 46.9,
+      "memory_available_mb": 8317.5625,
+      "disk_percent": 9.9
+    }
+  },
+  {
+    "timestamp": "2025-11-03T00:28:38.187393",
+    "database": {
+      "query_count": 0,
+      "avg_query_time_ms": 0,
+      "slow_queries_count": 0
+    },
+    "cache": {
+      "default": {
+        "status": "unavailable"
+      },
+      "api_cache": {
+        "status": "unavailable"
+      },
+      "query_cache": {
+        "status": "unavailable"
+      },
+      "template_cache": {
+        "status": "unavailable"
+      }
+    },
+    "response_time": {
+      "p50_ms": 0,
+      "p95_ms": 0,
+      "p99_ms": 0,
+      "sample_size": 0
+    },
+    "errors": {
+      "error_count": 0,
+      "error_rate": 0.0,
+      "error_types": {},
+      "status": "placeholder"
+    },
+    "system": {
+      "cpu_percent": 9.5,
+      "memory_percent": 46.9,
+      "memory_available_mb": 8319.25390625,
+      "disk_percent": 9.9
+    }
+  }
+]

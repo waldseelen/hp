@@ -5,8 +5,9 @@ Input Validation & Sanitization Tests
 Tests for comprehensive input validation framework.
 """
 
-import pytest
 from django.test import TestCase
+
+import pytest
 
 from apps.core.validation.input_sanitizer import (
     InputSanitizer,
@@ -23,16 +24,16 @@ class TestInputSanitizer(TestCase):
         dirty_text = "<script>alert('xss')</script>Hello"
         clean_text = InputSanitizer.sanitize_text(dirty_text)
 
-        assert '<script>' not in clean_text
-        assert 'Hello' in clean_text
+        assert "<script>" not in clean_text
+        assert "Hello" in clean_text
 
     def test_sanitize_text_escapes_special_chars(self):
         """Test that special characters are escaped"""
         text = "Hello <world> & 'test'"
         clean_text = InputSanitizer.sanitize_text(text)
 
-        assert '&lt;' in clean_text or '<' not in clean_text
-        assert '&gt;' in clean_text or '>' not in clean_text
+        assert "&lt;" in clean_text or "<" not in clean_text
+        assert "&gt;" in clean_text or ">" not in clean_text
 
     def test_sanitize_text_enforces_max_length(self):
         """Test max length enforcement"""
@@ -46,29 +47,29 @@ class TestInputSanitizer(TestCase):
         text_with_null = "Hello\x00World"
         clean_text = InputSanitizer.sanitize_text(text_with_null)
 
-        assert '\x00' not in clean_text
+        assert "\x00" not in clean_text
 
     def test_sanitize_html_removes_dangerous_tags(self):
         """Test dangerous HTML tag removal"""
         html = "<p>Safe</p><script>alert('xss')</script><p>More safe</p>"
         clean_html = InputSanitizer.sanitize_html(html)
 
-        assert '<script>' not in clean_html
-        assert '<p>' in clean_html
+        assert "<script>" not in clean_html
+        assert "<p>" in clean_html
 
     def test_sanitize_html_removes_dangerous_attributes(self):
         """Test dangerous attribute removal"""
         html = '<a href="#" onclick="alert(\'xss\')">Link</a>'
         clean_html = InputSanitizer.sanitize_html(html)
 
-        assert 'onclick' not in clean_html
+        assert "onclick" not in clean_html
 
     def test_sanitize_html_removes_javascript_protocol(self):
         """Test javascript: protocol removal"""
-        html = '<a href="javascript:alert(\'xss\')">Link</a>'
+        html = "<a href=\"javascript:alert('xss')\">Link</a>"
         clean_html = InputSanitizer.sanitize_html(html)
 
-        assert 'javascript:' not in clean_html
+        assert "javascript:" not in clean_html
 
     def test_sanitize_url_validates_protocol(self):
         """Test URL protocol validation"""
@@ -112,18 +113,18 @@ class TestInputSanitizer(TestCase):
         malicious_filename = "../../etc/passwd"
         safe_filename = InputSanitizer.sanitize_filename(malicious_filename)
 
-        assert '..' not in safe_filename
-        assert '/' not in safe_filename
-        assert '\\' not in safe_filename
+        assert ".." not in safe_filename
+        assert "/" not in safe_filename
+        assert "\\" not in safe_filename
 
     def test_sanitize_filename_removes_dangerous_chars(self):
         """Test dangerous character removal"""
         filename = "file<name>:test.txt"
         safe_filename = InputSanitizer.sanitize_filename(filename)
 
-        assert '<' not in safe_filename
-        assert '>' not in safe_filename
-        assert ':' not in safe_filename
+        assert "<" not in safe_filename
+        assert ">" not in safe_filename
+        assert ":" not in safe_filename
 
     def test_sanitize_filename_limits_length(self):
         """Test filename length limiting"""
@@ -240,9 +241,7 @@ class TestInputValidator(TestCase):
         """Test number range validation - below minimum"""
         data = {"age": -5}
 
-        is_valid, error = InputValidator.validate_number_range(
-            data, "age", min_value=0
-        )
+        is_valid, error = InputValidator.validate_number_range(data, "age", min_value=0)
 
         assert is_valid is False
         assert "at least" in error
@@ -281,7 +280,7 @@ class TestInputValidator(TestCase):
     def test_validate_pattern_success(self):
         """Test pattern validation - success case"""
         data = {"phone": "123-456-7890"}
-        pattern = r'^\d{3}-\d{3}-\d{4}$'
+        pattern = r"^\d{3}-\d{3}-\d{4}$"
 
         is_valid, error = InputValidator.validate_pattern(
             data, "phone", pattern, "phone format"
@@ -293,7 +292,7 @@ class TestInputValidator(TestCase):
     def test_validate_pattern_failure(self):
         """Test pattern validation - invalid pattern"""
         data = {"phone": "invalid"}
-        pattern = r'^\d{3}-\d{3}-\d{4}$'
+        pattern = r"^\d{3}-\d{3}-\d{4}$"
 
         is_valid, error = InputValidator.validate_pattern(
             data, "phone", pattern, "phone format"
@@ -353,7 +352,9 @@ class TestValidationPipeline(TestCase):
 
         pipeline = (
             ValidationPipeline()
-            .add_validator(lambda d: InputValidator.validate_required_fields(d, ["name"]))
+            .add_validator(
+                lambda d: InputValidator.validate_required_fields(d, ["name"])
+            )
             .add_validator(lambda d: InputValidator.validate_field_type(d, "age", int))
         )
 
@@ -370,15 +371,15 @@ class TestXSSProtection(TestCase):
         xss_input = "<script>alert('XSS')</script>Hello"
         sanitized = InputSanitizer.sanitize_text(xss_input)
 
-        assert '<script>' not in sanitized
-        assert 'alert' not in sanitized or 'script' not in sanitized
+        assert "<script>" not in sanitized
+        assert "alert" not in sanitized or "script" not in sanitized
 
     def test_xss_img_onerror_removed(self):
         """Test img onerror handler removal"""
-        xss_html = '<img src=x onerror="alert(\'XSS\')">'
+        xss_html = "<img src=x onerror=\"alert('XSS')\">"
         sanitized = InputSanitizer.sanitize_html(xss_html)
 
-        assert 'onerror' not in sanitized
+        assert "onerror" not in sanitized
 
     def test_xss_javascript_protocol_blocked(self):
         """Test javascript: protocol blocking"""

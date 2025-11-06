@@ -11,10 +11,12 @@ Tests cover:
 Target: 18 comprehensive tests for extended content features.
 """
 
-import pytest
+from unittest.mock import patch
+
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from unittest.mock import patch
+
+import pytest
 
 from apps.portfolio.models import (
     Admin,
@@ -24,7 +26,6 @@ from apps.portfolio.models import (
     SpotifyCurrentTrack,
     UsefulResource,
 )
-
 
 # ============================================================================
 # BLOGCATEGORY MODEL TESTS (6 Categories, Color/Icon)
@@ -216,9 +217,15 @@ class TestMusicPlaylistModel:
 
     def test_musicplaylist_ordering(self):
         """Test playlist ordering by order field."""
-        MusicPlaylist.objects.create(name="C", platform="spotify", url="https://c.com", order=3)
-        MusicPlaylist.objects.create(name="A", platform="spotify", url="https://a.com", order=1)
-        MusicPlaylist.objects.create(name="B", platform="spotify", url="https://b.com", order=2)
+        MusicPlaylist.objects.create(
+            name="C", platform="spotify", url="https://c.com", order=3
+        )
+        MusicPlaylist.objects.create(
+            name="A", platform="spotify", url="https://a.com", order=1
+        )
+        MusicPlaylist.objects.create(
+            name="B", platform="spotify", url="https://b.com", order=2
+        )
 
         ordered = list(MusicPlaylist.objects.all())
         assert ordered[0].name == "A"
@@ -310,8 +317,14 @@ class TestUsefulResourceModel:
     def test_usefulresource_all_categories(self):
         """Test all 8 resource categories."""
         categories = [
-            "development", "design", "productivity", "ai",
-            "learning", "entertainment", "utility", "other"
+            "development",
+            "design",
+            "productivity",
+            "ai",
+            "learning",
+            "entertainment",
+            "utility",
+            "other",
         ]
         for cat in categories:
             resource = UsefulResource.objects.create(
@@ -362,16 +375,25 @@ class TestUsefulResourceModel:
     def test_usefulresource_ordering(self):
         """Test resource ordering by category, order, name."""
         UsefulResource.objects.create(
-            name="B", description="Test", url="https://b.com",
-            category="design", order=2
+            name="B",
+            description="Test",
+            url="https://b.com",
+            category="design",
+            order=2,
         )
         UsefulResource.objects.create(
-            name="A", description="Test", url="https://a.com",
-            category="design", order=1
+            name="A",
+            description="Test",
+            url="https://a.com",
+            category="design",
+            order=1,
         )
         UsefulResource.objects.create(
-            name="Z", description="Test", url="https://z.com",
-            category="development", order=1
+            name="Z",
+            description="Test",
+            url="https://z.com",
+            category="development",
+            order=1,
         )
 
         ordered = list(UsefulResource.objects.all())

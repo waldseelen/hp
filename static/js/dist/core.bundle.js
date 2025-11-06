@@ -6,8 +6,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-/******/ (() => { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
+(self["webpackChunkbest"] = self["webpackChunkbest"] || []).push([[114],{
 
 /***/ 58:
 /***/ (() => {
@@ -19,138 +18,13 @@ eval("{(function () {\n  const doc = document;\n  const NAV_SCROLL_THRESHOLD = 3
 /***/ 971:
 /***/ (() => {
 
-eval("{// Theme Handler - CSP-compliant dark mode management\n(function () {\n  'use strict';\n\n  // Initialize theme management\n  function initTheme() {\n    const body = document.getElementById('app-body');\n    if (!body) return;\n\n    // Get saved theme or default to dark\n    const savedTheme = localStorage.getItem('darkMode');\n    const isDarkMode = savedTheme === 'true' || savedTheme === null;\n\n    // Apply initial theme\n    document.documentElement.classList.toggle('dark', isDarkMode);\n    body.classList.toggle('dark', isDarkMode);\n\n    // Store the theme state for Alpine.js components\n    window.themeState = {\n      darkMode: isDarkMode,\n      toggle: function () {\n        this.darkMode = !this.darkMode;\n        localStorage.setItem('darkMode', this.darkMode);\n        document.documentElement.classList.toggle('dark', this.darkMode);\n        body.classList.toggle('dark', this.darkMode);\n\n        // Dispatch custom event for other components\n        document.dispatchEvent(new CustomEvent('theme-changed', {\n          detail: {\n            darkMode: this.darkMode\n          }\n        }));\n      }\n    };\n  }\n\n  // Initialize when DOM is ready\n  if (document.readyState === 'loading') {\n    document.addEventListener('DOMContentLoaded', initTheme);\n  } else {\n    initTheme();\n  }\n})();//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiOTcxLmpzIiwibmFtZXMiOlsiaW5pdFRoZW1lIiwiYm9keSIsImRvY3VtZW50IiwiZ2V0RWxlbWVudEJ5SWQiLCJzYXZlZFRoZW1lIiwibG9jYWxTdG9yYWdlIiwiZ2V0SXRlbSIsImlzRGFya01vZGUiLCJkb2N1bWVudEVsZW1lbnQiLCJjbGFzc0xpc3QiLCJ0b2dnbGUiLCJ3aW5kb3ciLCJ0aGVtZVN0YXRlIiwiZGFya01vZGUiLCJzZXRJdGVtIiwiZGlzcGF0Y2hFdmVudCIsIkN1c3RvbUV2ZW50IiwiZGV0YWlsIiwicmVhZHlTdGF0ZSIsImFkZEV2ZW50TGlzdGVuZXIiXSwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsid2VicGFjazovL2Jlc3QvLi9zdGF0aWMvanMvY29yZS90aGVtZS1oYW5kbGVyLmpzPzRjZTQiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gVGhlbWUgSGFuZGxlciAtIENTUC1jb21wbGlhbnQgZGFyayBtb2RlIG1hbmFnZW1lbnRcclxuKGZ1bmN0aW9uKCkge1xyXG4gICAgJ3VzZSBzdHJpY3QnO1xyXG5cclxuICAgIC8vIEluaXRpYWxpemUgdGhlbWUgbWFuYWdlbWVudFxyXG4gICAgZnVuY3Rpb24gaW5pdFRoZW1lKCkge1xyXG4gICAgICAgIGNvbnN0IGJvZHkgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYXBwLWJvZHknKTtcclxuICAgICAgICBpZiAoIWJvZHkpIHJldHVybjtcclxuXHJcbiAgICAgICAgLy8gR2V0IHNhdmVkIHRoZW1lIG9yIGRlZmF1bHQgdG8gZGFya1xyXG4gICAgICAgIGNvbnN0IHNhdmVkVGhlbWUgPSBsb2NhbFN0b3JhZ2UuZ2V0SXRlbSgnZGFya01vZGUnKTtcclxuICAgICAgICBjb25zdCBpc0RhcmtNb2RlID0gc2F2ZWRUaGVtZSA9PT0gJ3RydWUnIHx8IHNhdmVkVGhlbWUgPT09IG51bGw7XHJcblxyXG4gICAgICAgIC8vIEFwcGx5IGluaXRpYWwgdGhlbWVcclxuICAgICAgICBkb2N1bWVudC5kb2N1bWVudEVsZW1lbnQuY2xhc3NMaXN0LnRvZ2dsZSgnZGFyaycsIGlzRGFya01vZGUpO1xyXG4gICAgICAgIGJvZHkuY2xhc3NMaXN0LnRvZ2dsZSgnZGFyaycsIGlzRGFya01vZGUpO1xyXG5cclxuICAgICAgICAvLyBTdG9yZSB0aGUgdGhlbWUgc3RhdGUgZm9yIEFscGluZS5qcyBjb21wb25lbnRzXHJcbiAgICAgICAgd2luZG93LnRoZW1lU3RhdGUgPSB7XHJcbiAgICAgICAgICAgIGRhcmtNb2RlOiBpc0RhcmtNb2RlLFxyXG4gICAgICAgICAgICB0b2dnbGU6IGZ1bmN0aW9uKCkge1xyXG4gICAgICAgICAgICAgICAgdGhpcy5kYXJrTW9kZSA9ICF0aGlzLmRhcmtNb2RlO1xyXG4gICAgICAgICAgICAgICAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oJ2RhcmtNb2RlJywgdGhpcy5kYXJrTW9kZSk7XHJcbiAgICAgICAgICAgICAgICBkb2N1bWVudC5kb2N1bWVudEVsZW1lbnQuY2xhc3NMaXN0LnRvZ2dsZSgnZGFyaycsIHRoaXMuZGFya01vZGUpO1xyXG4gICAgICAgICAgICAgICAgYm9keS5jbGFzc0xpc3QudG9nZ2xlKCdkYXJrJywgdGhpcy5kYXJrTW9kZSk7XHJcblxyXG4gICAgICAgICAgICAgICAgLy8gRGlzcGF0Y2ggY3VzdG9tIGV2ZW50IGZvciBvdGhlciBjb21wb25lbnRzXHJcbiAgICAgICAgICAgICAgICBkb2N1bWVudC5kaXNwYXRjaEV2ZW50KG5ldyBDdXN0b21FdmVudCgndGhlbWUtY2hhbmdlZCcsIHtcclxuICAgICAgICAgICAgICAgICAgICBkZXRhaWw6IHsgZGFya01vZGU6IHRoaXMuZGFya01vZGUgfVxyXG4gICAgICAgICAgICAgICAgfSkpO1xyXG4gICAgICAgICAgICB9XHJcbiAgICAgICAgfTtcclxuICAgIH1cclxuXHJcbiAgICAvLyBJbml0aWFsaXplIHdoZW4gRE9NIGlzIHJlYWR5XHJcbiAgICBpZiAoZG9jdW1lbnQucmVhZHlTdGF0ZSA9PT0gJ2xvYWRpbmcnKSB7XHJcbiAgICAgICAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGluaXRUaGVtZSk7XHJcbiAgICB9IGVsc2Uge1xyXG4gICAgICAgIGluaXRUaGVtZSgpO1xyXG4gICAgfVxyXG59KSgpOyJdLCJtYXBwaW5ncyI6IkFBQUE7QUFDQSxDQUFDLFlBQVc7RUFDUixZQUFZOztFQUVaO0VBQ0EsU0FBU0EsU0FBU0EsQ0FBQSxFQUFHO0lBQ2pCLE1BQU1DLElBQUksR0FBR0MsUUFBUSxDQUFDQyxjQUFjLENBQUMsVUFBVSxDQUFDO0lBQ2hELElBQUksQ0FBQ0YsSUFBSSxFQUFFOztJQUVYO0lBQ0EsTUFBTUcsVUFBVSxHQUFHQyxZQUFZLENBQUNDLE9BQU8sQ0FBQyxVQUFVLENBQUM7SUFDbkQsTUFBTUMsVUFBVSxHQUFHSCxVQUFVLEtBQUssTUFBTSxJQUFJQSxVQUFVLEtBQUssSUFBSTs7SUFFL0Q7SUFDQUYsUUFBUSxDQUFDTSxlQUFlLENBQUNDLFNBQVMsQ0FBQ0MsTUFBTSxDQUFDLE1BQU0sRUFBRUgsVUFBVSxDQUFDO0lBQzdETixJQUFJLENBQUNRLFNBQVMsQ0FBQ0MsTUFBTSxDQUFDLE1BQU0sRUFBRUgsVUFBVSxDQUFDOztJQUV6QztJQUNBSSxNQUFNLENBQUNDLFVBQVUsR0FBRztNQUNoQkMsUUFBUSxFQUFFTixVQUFVO01BQ3BCRyxNQUFNLEVBQUUsU0FBQUEsQ0FBQSxFQUFXO1FBQ2YsSUFBSSxDQUFDRyxRQUFRLEdBQUcsQ0FBQyxJQUFJLENBQUNBLFFBQVE7UUFDOUJSLFlBQVksQ0FBQ1MsT0FBTyxDQUFDLFVBQVUsRUFBRSxJQUFJLENBQUNELFFBQVEsQ0FBQztRQUMvQ1gsUUFBUSxDQUFDTSxlQUFlLENBQUNDLFNBQVMsQ0FBQ0MsTUFBTSxDQUFDLE1BQU0sRUFBRSxJQUFJLENBQUNHLFFBQVEsQ0FBQztRQUNoRVosSUFBSSxDQUFDUSxTQUFTLENBQUNDLE1BQU0sQ0FBQyxNQUFNLEVBQUUsSUFBSSxDQUFDRyxRQUFRLENBQUM7O1FBRTVDO1FBQ0FYLFFBQVEsQ0FBQ2EsYUFBYSxDQUFDLElBQUlDLFdBQVcsQ0FBQyxlQUFlLEVBQUU7VUFDcERDLE1BQU0sRUFBRTtZQUFFSixRQUFRLEVBQUUsSUFBSSxDQUFDQTtVQUFTO1FBQ3RDLENBQUMsQ0FBQyxDQUFDO01BQ1A7SUFDSixDQUFDO0VBQ0w7O0VBRUE7RUFDQSxJQUFJWCxRQUFRLENBQUNnQixVQUFVLEtBQUssU0FBUyxFQUFFO0lBQ25DaEIsUUFBUSxDQUFDaUIsZ0JBQWdCLENBQUMsa0JBQWtCLEVBQUVuQixTQUFTLENBQUM7RUFDNUQsQ0FBQyxNQUFNO0lBQ0hBLFNBQVMsQ0FBQyxDQUFDO0VBQ2Y7QUFDSixDQUFDLEVBQUUsQ0FBQyIsImlnbm9yZUxpc3QiOltdfQ==\n//# sourceURL=webpack-internal:///971\n\n}");
+eval("{// Theme Handler - CSP-compliant dark mode management\n(function () {\n  'use strict';\n\n  // Initialize theme management\n  function initTheme() {\n    const body = document.getElementById('app-body');\n    if (!body) return;\n\n    // Get saved theme or default to dark\n    const savedTheme = localStorage.getItem('darkMode');\n    const isDarkMode = savedTheme === 'true' || savedTheme === null;\n\n    // Apply initial theme\n    document.documentElement.classList.toggle('dark', isDarkMode);\n    body.classList.toggle('dark', isDarkMode);\n\n    // Store the theme state for Alpine.js components\n    window.themeState = {\n      darkMode: isDarkMode,\n      toggle: function () {\n        this.darkMode = !this.darkMode;\n        localStorage.setItem('darkMode', this.darkMode);\n        document.documentElement.classList.toggle('dark', this.darkMode);\n        body.classList.toggle('dark', this.darkMode);\n\n        // Dispatch custom event for other components\n        document.dispatchEvent(new CustomEvent('theme-changed', {\n          detail: {\n            darkMode: this.darkMode\n          }\n        }));\n      }\n    };\n  }\n\n  // Initialize when DOM is ready\n  if (document.readyState === 'loading') {\n    document.addEventListener('DOMContentLoaded', initTheme);\n  } else {\n    initTheme();\n  }\n})();//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiOTcxLmpzIiwibmFtZXMiOlsiaW5pdFRoZW1lIiwiYm9keSIsImRvY3VtZW50IiwiZ2V0RWxlbWVudEJ5SWQiLCJzYXZlZFRoZW1lIiwibG9jYWxTdG9yYWdlIiwiZ2V0SXRlbSIsImlzRGFya01vZGUiLCJkb2N1bWVudEVsZW1lbnQiLCJjbGFzc0xpc3QiLCJ0b2dnbGUiLCJ3aW5kb3ciLCJ0aGVtZVN0YXRlIiwiZGFya01vZGUiLCJzZXRJdGVtIiwiZGlzcGF0Y2hFdmVudCIsIkN1c3RvbUV2ZW50IiwiZGV0YWlsIiwicmVhZHlTdGF0ZSIsImFkZEV2ZW50TGlzdGVuZXIiXSwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsid2VicGFjazovL2Jlc3QvLi9zdGF0aWMvanMvY29yZS90aGVtZS1oYW5kbGVyLmpzPzRjZTQiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gVGhlbWUgSGFuZGxlciAtIENTUC1jb21wbGlhbnQgZGFyayBtb2RlIG1hbmFnZW1lbnRcclxuKGZ1bmN0aW9uKCkge1xyXG4gICAgJ3VzZSBzdHJpY3QnO1xyXG5cclxuICAgIC8vIEluaXRpYWxpemUgdGhlbWUgbWFuYWdlbWVudFxyXG4gICAgZnVuY3Rpb24gaW5pdFRoZW1lKCkge1xyXG4gICAgICAgIGNvbnN0IGJvZHkgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYXBwLWJvZHknKTtcclxuICAgICAgICBpZiAoIWJvZHkpIHJldHVybjtcclxuXHJcbiAgICAgICAgLy8gR2V0IHNhdmVkIHRoZW1lIG9yIGRlZmF1bHQgdG8gZGFya1xyXG4gICAgICAgIGNvbnN0IHNhdmVkVGhlbWUgPSBsb2NhbFN0b3JhZ2UuZ2V0SXRlbSgnZGFya01vZGUnKTtcclxuICAgICAgICBjb25zdCBpc0RhcmtNb2RlID0gc2F2ZWRUaGVtZSA9PT0gJ3RydWUnIHx8IHNhdmVkVGhlbWUgPT09IG51bGw7XHJcblxyXG4gICAgICAgIC8vIEFwcGx5IGluaXRpYWwgdGhlbWVcclxuICAgICAgICBkb2N1bWVudC5kb2N1bWVudEVsZW1lbnQuY2xhc3NMaXN0LnRvZ2dsZSgnZGFyaycsIGlzRGFya01vZGUpO1xyXG4gICAgICAgIGJvZHkuY2xhc3NMaXN0LnRvZ2dsZSgnZGFyaycsIGlzRGFya01vZGUpO1xyXG5cclxuICAgICAgICAvLyBTdG9yZSB0aGUgdGhlbWUgc3RhdGUgZm9yIEFscGluZS5qcyBjb21wb25lbnRzXHJcbiAgICAgICAgd2luZG93LnRoZW1lU3RhdGUgPSB7XHJcbiAgICAgICAgICAgIGRhcmtNb2RlOiBpc0RhcmtNb2RlLFxyXG4gICAgICAgICAgICB0b2dnbGU6IGZ1bmN0aW9uKCkge1xyXG4gICAgICAgICAgICAgICAgdGhpcy5kYXJrTW9kZSA9ICF0aGlzLmRhcmtNb2RlO1xyXG4gICAgICAgICAgICAgICAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oJ2RhcmtNb2RlJywgdGhpcy5kYXJrTW9kZSk7XHJcbiAgICAgICAgICAgICAgICBkb2N1bWVudC5kb2N1bWVudEVsZW1lbnQuY2xhc3NMaXN0LnRvZ2dsZSgnZGFyaycsIHRoaXMuZGFya01vZGUpO1xyXG4gICAgICAgICAgICAgICAgYm9keS5jbGFzc0xpc3QudG9nZ2xlKCdkYXJrJywgdGhpcy5kYXJrTW9kZSk7XHJcblxyXG4gICAgICAgICAgICAgICAgLy8gRGlzcGF0Y2ggY3VzdG9tIGV2ZW50IGZvciBvdGhlciBjb21wb25lbnRzXHJcbiAgICAgICAgICAgICAgICBkb2N1bWVudC5kaXNwYXRjaEV2ZW50KG5ldyBDdXN0b21FdmVudCgndGhlbWUtY2hhbmdlZCcsIHtcclxuICAgICAgICAgICAgICAgICAgICBkZXRhaWw6IHsgZGFya01vZGU6IHRoaXMuZGFya01vZGUgfVxyXG4gICAgICAgICAgICAgICAgfSkpO1xyXG4gICAgICAgICAgICB9XHJcbiAgICAgICAgfTtcclxuICAgIH1cclxuXHJcbiAgICAvLyBJbml0aWFsaXplIHdoZW4gRE9NIGlzIHJlYWR5XHJcbiAgICBpZiAoZG9jdW1lbnQucmVhZHlTdGF0ZSA9PT0gJ2xvYWRpbmcnKSB7XHJcbiAgICAgICAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGluaXRUaGVtZSk7XHJcbiAgICB9IGVsc2Uge1xyXG4gICAgICAgIGluaXRUaGVtZSgpO1xyXG4gICAgfVxyXG59KSgpO1xuIl0sIm1hcHBpbmdzIjoiQUFBQTtBQUNBLENBQUMsWUFBVztFQUNSLFlBQVk7O0VBRVo7RUFDQSxTQUFTQSxTQUFTQSxDQUFBLEVBQUc7SUFDakIsTUFBTUMsSUFBSSxHQUFHQyxRQUFRLENBQUNDLGNBQWMsQ0FBQyxVQUFVLENBQUM7SUFDaEQsSUFBSSxDQUFDRixJQUFJLEVBQUU7O0lBRVg7SUFDQSxNQUFNRyxVQUFVLEdBQUdDLFlBQVksQ0FBQ0MsT0FBTyxDQUFDLFVBQVUsQ0FBQztJQUNuRCxNQUFNQyxVQUFVLEdBQUdILFVBQVUsS0FBSyxNQUFNLElBQUlBLFVBQVUsS0FBSyxJQUFJOztJQUUvRDtJQUNBRixRQUFRLENBQUNNLGVBQWUsQ0FBQ0MsU0FBUyxDQUFDQyxNQUFNLENBQUMsTUFBTSxFQUFFSCxVQUFVLENBQUM7SUFDN0ROLElBQUksQ0FBQ1EsU0FBUyxDQUFDQyxNQUFNLENBQUMsTUFBTSxFQUFFSCxVQUFVLENBQUM7O0lBRXpDO0lBQ0FJLE1BQU0sQ0FBQ0MsVUFBVSxHQUFHO01BQ2hCQyxRQUFRLEVBQUVOLFVBQVU7TUFDcEJHLE1BQU0sRUFBRSxTQUFBQSxDQUFBLEVBQVc7UUFDZixJQUFJLENBQUNHLFFBQVEsR0FBRyxDQUFDLElBQUksQ0FBQ0EsUUFBUTtRQUM5QlIsWUFBWSxDQUFDUyxPQUFPLENBQUMsVUFBVSxFQUFFLElBQUksQ0FBQ0QsUUFBUSxDQUFDO1FBQy9DWCxRQUFRLENBQUNNLGVBQWUsQ0FBQ0MsU0FBUyxDQUFDQyxNQUFNLENBQUMsTUFBTSxFQUFFLElBQUksQ0FBQ0csUUFBUSxDQUFDO1FBQ2hFWixJQUFJLENBQUNRLFNBQVMsQ0FBQ0MsTUFBTSxDQUFDLE1BQU0sRUFBRSxJQUFJLENBQUNHLFFBQVEsQ0FBQzs7UUFFNUM7UUFDQVgsUUFBUSxDQUFDYSxhQUFhLENBQUMsSUFBSUMsV0FBVyxDQUFDLGVBQWUsRUFBRTtVQUNwREMsTUFBTSxFQUFFO1lBQUVKLFFBQVEsRUFBRSxJQUFJLENBQUNBO1VBQVM7UUFDdEMsQ0FBQyxDQUFDLENBQUM7TUFDUDtJQUNKLENBQUM7RUFDTDs7RUFFQTtFQUNBLElBQUlYLFFBQVEsQ0FBQ2dCLFVBQVUsS0FBSyxTQUFTLEVBQUU7SUFDbkNoQixRQUFRLENBQUNpQixnQkFBZ0IsQ0FBQyxrQkFBa0IsRUFBRW5CLFNBQVMsQ0FBQztFQUM1RCxDQUFDLE1BQU07SUFDSEEsU0FBUyxDQUFDLENBQUM7RUFDZjtBQUNKLENBQUMsRUFBRSxDQUFDIiwiaWdub3JlTGlzdCI6W119\n//# sourceURL=webpack-internal:///971\n\n}");
 
 /***/ })
 
-/******/ 	});
-/************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = __webpack_modules__;
-/******/
-/************************************************************************/
-/******/ 	/* webpack/runtime/chunk loaded */
-/******/ 	(() => {
-/******/ 		var deferred = [];
-/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
-/******/ 			if(chunkIds) {
-/******/ 				priority = priority || 0;
-/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
-/******/ 				deferred[i] = [chunkIds, fn, priority];
-/******/ 				return;
-/******/ 			}
-/******/ 			var notFulfilled = Infinity;
-/******/ 			for (var i = 0; i < deferred.length; i++) {
-/******/ 				var [chunkIds, fn, priority] = deferred[i];
-/******/ 				var fulfilled = true;
-/******/ 				for (var j = 0; j < chunkIds.length; j++) {
-/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
-/******/ 						chunkIds.splice(j--, 1);
-/******/ 					} else {
-/******/ 						fulfilled = false;
-/******/ 						if(priority < notFulfilled) notFulfilled = priority;
-/******/ 					}
-/******/ 				}
-/******/ 				if(fulfilled) {
-/******/ 					deferred.splice(i--, 1)
-/******/ 					var r = fn();
-/******/ 					if (r !== undefined) result = r;
-/******/ 				}
-/******/ 			}
-/******/ 			return result;
-/******/ 		};
-/******/ 	})();
-/******/
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/
-/******/ 	/* webpack/runtime/jsonp chunk loading */
-/******/ 	(() => {
-/******/ 		// no baseURI
-/******/
-/******/ 		// object to store loaded and loading chunks
-/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
-/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
-/******/ 		var installedChunks = {
-/******/ 			114: 0
-/******/ 		};
-/******/
-/******/ 		// no chunk on demand loading
-/******/
-/******/ 		// no prefetching
-/******/
-/******/ 		// no preloaded
-/******/
-/******/ 		// no HMR
-/******/
-/******/ 		// no HMR manifest
-/******/
-/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
-/******/
-/******/ 		// install a JSONP callback for chunk loading
-/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
-/******/ 			var [chunkIds, moreModules, runtime] = data;
-/******/ 			// add "moreModules" to the modules object,
-/******/ 			// then flag all "chunkIds" as loaded and fire callback
-/******/ 			var moduleId, chunkId, i = 0;
-/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
-/******/ 				for(moduleId in moreModules) {
-/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
-/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
-/******/ 					}
-/******/ 				}
-/******/ 				if(runtime) var result = runtime(__webpack_require__);
-/******/ 			}
-/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
-/******/ 			for(;i < chunkIds.length; i++) {
-/******/ 				chunkId = chunkIds[i];
-/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
-/******/ 					installedChunks[chunkId][0]();
-/******/ 				}
-/******/ 				installedChunks[chunkId] = 0;
-/******/ 			}
-/******/ 			return __webpack_require__.O(result);
-/******/ 		}
-/******/
-/******/ 		var chunkLoadingGlobal = self["webpackChunkbest"] = self["webpackChunkbest"] || [];
-/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
-/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
-/******/ 	})();
-/******/
-/************************************************************************/
-/******/
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval-source-map devtool is used.
-/******/ 	__webpack_require__(971);
-/******/ 	var __webpack_exports__ = __webpack_require__(58);
-/******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
-/******/
-/******/ })()
-;
+},
+/******/ __webpack_require__ => { // webpackRuntimeModules
+/******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
+/******/ var __webpack_exports__ = (__webpack_exec__(971), __webpack_exec__(58));
+/******/ }
+]);

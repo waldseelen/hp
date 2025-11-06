@@ -177,19 +177,27 @@ SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "False") == "True"
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # HTTP Strict Transport Security (HSTS)
-SECURE_HSTS_SECONDS = int(os.environ.get("SECURE_HSTS_SECONDS", "0"))  # 31536000 in prod (1 year)
-SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get("SECURE_HSTS_INCLUDE_SUBDOMAINS", "False") == "True"
+SECURE_HSTS_SECONDS = int(
+    os.environ.get("SECURE_HSTS_SECONDS", "0")
+)  # 31536000 in prod (1 year)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = (
+    os.environ.get("SECURE_HSTS_INCLUDE_SUBDOMAINS", "False") == "True"
+)
 SECURE_HSTS_PRELOAD = os.environ.get("SECURE_HSTS_PRELOAD", "False") == "True"
 
 # Cookie Security
-SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "False") == "True"  # True in production
+SESSION_COOKIE_SECURE = (
+    os.environ.get("SESSION_COOKIE_SECURE", "False") == "True"
+)  # True in production
 SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access
 SESSION_COOKIE_SAMESITE = "Lax"  # CSRF protection
 SESSION_COOKIE_AGE = 3600  # 1 hour
 SESSION_SAVE_EVERY_REQUEST = False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-CSRF_COOKIE_SECURE = os.environ.get("CSRF_COOKIE_SECURE", "False") == "True"  # True in production
+CSRF_COOKIE_SECURE = (
+    os.environ.get("CSRF_COOKIE_SECURE", "False") == "True"
+)  # True in production
 CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = "Lax"
 CSRF_USE_SESSIONS = False
@@ -227,7 +235,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Rate Limiting Configuration
 RATE_LIMIT_CONFIG = {
     "MAX_LOGIN_ATTEMPTS": int(os.environ.get("RATE_LIMIT_MAX_ATTEMPTS", "5")),
-    "LOCKOUT_DURATION": int(os.environ.get("RATE_LIMIT_LOCKOUT_DURATION", "900")),  # 15 min
+    "LOCKOUT_DURATION": int(
+        os.environ.get("RATE_LIMIT_LOCKOUT_DURATION", "900")
+    ),  # 15 min
     "ATTEMPT_WINDOW": int(os.environ.get("RATE_LIMIT_ATTEMPT_WINDOW", "300")),  # 5 min
     "ENABLE_IP_TRACKING": True,
     "ENABLE_USERNAME_TRACKING": True,

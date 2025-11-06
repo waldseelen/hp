@@ -15,7 +15,7 @@ Usage:
     locust -f tests/performance/locustfile.py --headless -u 500 -r 50 --run-time 10m --host http://localhost:8000
 """
 
-from locust import HttpUser, task, between
+from locust import HttpUser, between, task
 
 
 class PortfolioUser(HttpUser):
@@ -65,6 +65,7 @@ class PortfolioUser(HttpUser):
             "devops",
         ]
         import random
+
         query = random.choice(search_queries)
 
         with self.client.get(
@@ -72,7 +73,7 @@ class PortfolioUser(HttpUser):
             params={"q": query},
             headers={"X-Requested-With": "XMLHttpRequest"},
             catch_response=True,
-            name="/api/search/"
+            name="/api/search/",
         ) as response:
             if response.status_code == 200:
                 try:
@@ -94,6 +95,7 @@ class PortfolioUser(HttpUser):
         """
         pages = ["/ai/", "/cybersecurity/", "/useful/"]
         import random
+
         page = random.choice(pages)
         self.client.get(page)
 
@@ -146,5 +148,5 @@ class StressTestUser(HttpUser):
         self.client.get(
             "/api/search/",
             params={"q": "test"},
-            headers={"X-Requested-With": "XMLHttpRequest"}
+            headers={"X-Requested-With": "XMLHttpRequest"},
         )

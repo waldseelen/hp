@@ -12,12 +12,13 @@ Tests cover:
 Target: Verify cache integration works correctly (using LocMemCache).
 """
 
-import pytest
+import time
+from unittest.mock import patch
+
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
-from unittest.mock import patch
-import time
 
+import pytest
 
 # ============================================================================
 # BASIC CACHE OPERATIONS TESTS
@@ -101,11 +102,7 @@ class TestCacheDataTypes:
 
     def test_cache_dict_value(self):
         """Test caching dictionary values."""
-        data = {
-            "name": "John Doe",
-            "age": 30,
-            "city": "New York"
-        }
+        data = {"name": "John Doe", "age": 30, "city": "New York"}
         cache.set("dict_key", data, 3600)
 
         cached_data = cache.get("dict_key")
@@ -464,7 +461,8 @@ class TestCachePerformance:
     def test_cache_faster_than_database(self):
         """Test cache retrieval is faster than database query."""
         import time
-        from apps.portfolio.models import BlogPost, BlogCategory, Admin
+
+        from apps.portfolio.models import Admin, BlogCategory, BlogPost
 
         # Create test data
         category = BlogCategory.objects.create(name="Tech", slug="tech")
@@ -478,7 +476,7 @@ class TestCachePerformance:
             content="Content",
             category=category,
             author=admin,
-            status="published"
+            status="published",
         )
 
         # Database query (uncached)
@@ -512,8 +510,11 @@ class TestCacheBackendConfiguration:
         from django.conf import settings
 
         # In test settings, should be using LocMemCache
-        assert "locmem" in settings.CACHES["default"]["BACKEND"].lower() or \
-               settings.CACHES["default"]["BACKEND"] == "django.core.cache.backends.locmem.LocMemCache"
+        assert (
+            "locmem" in settings.CACHES["default"]["BACKEND"].lower()
+            or settings.CACHES["default"]["BACKEND"]
+            == "django.core.cache.backends.locmem.LocMemCache"
+        )
 
 
 # ============================================================================
@@ -541,7 +542,7 @@ class TestCacheErrorHandling:
         value_with_default = cache.get("none_key", default="default")
         # If key exists with None value, should return None (not default)
 
-    @patch('django.core.cache.cache.get')
+    @patch("django.core.cache.cache.get")
     def test_cache_connection_failure_handling(self, mock_get):
         """Test handling cache connection failures gracefully."""
         # Simulate cache failure

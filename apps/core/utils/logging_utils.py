@@ -9,7 +9,6 @@ from typing import Any, Optional
 
 from django.conf import settings
 
-
 __all__ = [
     "get_logger",
     "log_exception",

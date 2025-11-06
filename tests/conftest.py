@@ -4,11 +4,12 @@ Provides fixtures and configuration for Django testing
 """
 
 import os
-import django
-import pytest
-from decimal import Decimal
 from datetime import datetime, timedelta
+from decimal import Decimal
 
+import django
+
+import pytest
 
 # Set Django settings module for testing BEFORE any Django imports
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "portfolio_site.settings.test")
@@ -47,6 +48,7 @@ def api_client():
     """Django REST framework API client fixture."""
     try:
         from rest_framework.test import APIClient
+
         return APIClient()
     except ImportError:
         # If DRF is not installed, return None

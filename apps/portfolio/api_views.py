@@ -18,6 +18,7 @@ from django.views.decorators.http import require_http_methods
 
 from apps.core.validation.input_sanitizer import InputSanitizer, InputValidator
 from apps.core.validation.sql_protection import SQLInjectionProtection
+
 from .cache_utils import CacheManager
 
 # Setup logger
@@ -276,7 +277,9 @@ def _validate_metric_type(data, allowed_metrics):
     if not is_valid:
         return (None, {"error": error})
 
-    is_valid, error = InputValidator.validate_choice(data, "metric_type", allowed_metrics)
+    is_valid, error = InputValidator.validate_choice(
+        data, "metric_type", allowed_metrics
+    )
     if not is_valid:
         return (None, {"error": error})
 
@@ -307,9 +310,13 @@ def _validate_metric_value(data):
 
     # Sanitize numeric value
     if isinstance(value, float):
-        sanitized = InputSanitizer.sanitize_float(value, min_value=0.0, max_value=1000000.0)
+        sanitized = InputSanitizer.sanitize_float(
+            value, min_value=0.0, max_value=1000000.0
+        )
     else:
-        sanitized = InputSanitizer.sanitize_integer(value, min_value=0, max_value=1000000)
+        sanitized = InputSanitizer.sanitize_integer(
+            value, min_value=0, max_value=1000000
+        )
 
     return (sanitized, None)
 
@@ -328,7 +335,9 @@ def _validate_optional_url(data):
     if not is_valid:
         return (None, {"error": error})
 
-    is_valid, error = InputValidator.validate_string_length(data, "url", max_length=2000)
+    is_valid, error = InputValidator.validate_string_length(
+        data, "url", max_length=2000
+    )
     if not is_valid:
         return (None, {"error": error})
 
@@ -350,7 +359,9 @@ def _validate_optional_fields(data):
     # Validate user_agent
     user_agent = data.get("user_agent")
     if user_agent:
-        is_valid, error = InputValidator.validate_field_type({"user_agent": user_agent}, "user_agent", str)
+        is_valid, error = InputValidator.validate_field_type(
+            {"user_agent": user_agent}, "user_agent", str
+        )
         if not is_valid:
             return (None, {"error": error})
 
@@ -382,7 +393,7 @@ def _validate_optional_fields(data):
             {"viewport_size": viewport_size},
             "viewport_size",
             r"^\d{1,5}x\d{1,5}$",
-            "WIDTHxHEIGHT format (e.g., 1920x1080)"
+            "WIDTHxHEIGHT format (e.g., 1920x1080)",
         )
         if not is_valid:
             return (None, {"error": error})
@@ -403,8 +414,15 @@ def validate_performance_data(data):
         return {"error": "Data must be a JSON object"}
 
     allowed_fields = {
-        "metric_type", "value", "url", "user_agent", "viewport_size",
-        "connection_type", "device_type", "additional_data", "timestamp",
+        "metric_type",
+        "value",
+        "url",
+        "user_agent",
+        "viewport_size",
+        "connection_type",
+        "device_type",
+        "additional_data",
+        "timestamp",
     }
 
     unknown_fields = set(data.keys()) - allowed_fields
@@ -412,8 +430,16 @@ def validate_performance_data(data):
         return {"error": f'Unknown fields: {", ".join(unknown_fields)}'}
 
     allowed_metrics = {
-        "lcp", "fid", "cls", "fcp", "ttfb", "long_task",
-        "resource_load", "network_online", "network_offline", "cache_hit_rate",
+        "lcp",
+        "fid",
+        "cls",
+        "fcp",
+        "ttfb",
+        "long_task",
+        "resource_load",
+        "network_online",
+        "network_offline",
+        "cache_hit_rate",
     }
 
     validated_data = {}
@@ -466,7 +492,12 @@ def _validate_topics_list(topics):
     allowed_topics = {"blog_posts", "portfolio_updates", "general"}
     for topic in topics:
         if not isinstance(topic, str) or topic not in allowed_topics:
-            return (None, {"error": f'Invalid topic. Must be one of: {", ".join(allowed_topics)}'})
+            return (
+                None,
+                {
+                    "error": f'Invalid topic. Must be one of: {", ".join(allowed_topics)}'
+                },
+            )
 
     return (topics, None)
 
@@ -501,8 +532,15 @@ def validate_notification_data(data):
         return {"error": "Data must be a JSON object"}
 
     allowed_fields = {
-        "subscription", "topics", "user_agent", "url",
-        "endpoint", "message", "title", "icon", "badge",
+        "subscription",
+        "topics",
+        "user_agent",
+        "url",
+        "endpoint",
+        "message",
+        "title",
+        "icon",
+        "badge",
     }
 
     unknown_fields = set(data.keys()) - allowed_fields

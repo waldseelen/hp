@@ -21,6 +21,9 @@ KULLANIM:
     views.home(request)
 """
 
+# Auth views
+from .auth_views import logout_view
+
 # Home views
 from .home_views import home
 
@@ -29,9 +32,6 @@ from .info_views import music_view, personal_view
 
 # Tools views
 from .tools_views import ai_tools_view, cybersecurity_view, useful_view
-
-# Auth views
-from .auth_views import logout_view
 
 # Tüm viewları export et
 __all__ = [

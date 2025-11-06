@@ -15,11 +15,11 @@ Usage:
     python scripts/security_test.py --fix
 """
 
-import os
-import sys
-import subprocess
-import json
 import argparse
+import json
+import os
+import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -31,25 +31,25 @@ class SecurityTester:
         self.verbose = verbose
         self.fix = fix
         self.results = {
-            'timestamp': datetime.now().isoformat(),
-            'tests': {},
-            'summary': {
-                'total_issues': 0,
-                'critical': 0,
-                'high': 0,
-                'medium': 0,
-                'low': 0,
-            }
+            "timestamp": datetime.now().isoformat(),
+            "tests": {},
+            "summary": {
+                "total_issues": 0,
+                "critical": 0,
+                "high": 0,
+                "medium": 0,
+                "low": 0,
+            },
         }
 
         # Ensure we're in project root
         self.project_root = Path(__file__).parent.parent
         os.chdir(self.project_root)
 
-    def log(self, message, level='INFO'):
+    def log(self, message, level="INFO"):
         """Log message."""
-        if self.verbose or level in ['ERROR', 'WARNING']:
-            timestamp = datetime.now().strftime('%H:%M:%S')
+        if self.verbose or level in ["ERROR", "WARNING"]:
+            timestamp = datetime.now().strftime("%H:%M:%S")
             print(f"[{timestamp}] {level}: {message}")
 
     def run_command(self, command, check=True):
@@ -57,14 +57,11 @@ class SecurityTester:
         self.log(f"Running: {' '.join(command)}")
         try:
             result = subprocess.run(
-                command,
-                capture_output=True,
-                text=True,
-                check=check
+                command, capture_output=True, text=True, check=check
             )
             return result
         except subprocess.CalledProcessError as e:
-            self.log(f"Command failed: {e}", 'ERROR')
+            self.log(f"Command failed: {e}", "ERROR")
             return e
 
     def test_bandit(self):
@@ -74,37 +71,44 @@ class SecurityTester:
         self.log("=" * 60)
 
         # Run bandit
-        result = self.run_command([
-            'bandit',
-            '-r', '.',
-            '-f', 'json',
-            '-o', 'bandit-report.json',
-            '--exclude', './venv,./env,./.venv,./htmlcov,./node_modules',
-            '-ll'  # Only show medium and high severity
-        ], check=False)
+        result = self.run_command(
+            [
+                "bandit",
+                "-r",
+                ".",
+                "-f",
+                "json",
+                "-o",
+                "bandit-report.json",
+                "--exclude",
+                "./venv,./env,./.venv,./htmlcov,./node_modules",
+                "-ll",  # Only show medium and high severity
+            ],
+            check=False,
+        )
 
         # Parse results
         try:
-            with open('bandit-report.json', 'r') as f:
+            with open("bandit-report.json", "r") as f:
                 report = json.load(f)
 
-            issues = report.get('results', [])
-            self.results['tests']['bandit'] = {
-                'status': 'completed',
-                'issues_found': len(issues),
-                'issues': issues,
+            issues = report.get("results", [])
+            self.results["tests"]["bandit"] = {
+                "status": "completed",
+                "issues_found": len(issues),
+                "issues": issues,
             }
 
             # Count by severity
             for issue in issues:
-                severity = issue.get('issue_severity', 'LOW').lower()
-                self.results['summary']['total_issues'] += 1
-                if severity == 'high':
-                    self.results['summary']['high'] += 1
-                elif severity == 'medium':
-                    self.results['summary']['medium'] += 1
+                severity = issue.get("issue_severity", "LOW").lower()
+                self.results["summary"]["total_issues"] += 1
+                if severity == "high":
+                    self.results["summary"]["high"] += 1
+                elif severity == "medium":
+                    self.results["summary"]["medium"] += 1
                 else:
-                    self.results['summary']['low'] += 1
+                    self.results["summary"]["low"] += 1
 
             self.log(f"Bandit found {len(issues)} issues")
 
@@ -119,17 +123,14 @@ class SecurityTester:
                     )
 
         except FileNotFoundError:
-            self.log("Bandit report not found", 'ERROR')
-            self.results['tests']['bandit'] = {
-                'status': 'failed',
-                'error': 'Report not generated'
+            self.log("Bandit report not found", "ERROR")
+            self.results["tests"]["bandit"] = {
+                "status": "failed",
+                "error": "Report not generated",
             }
         except json.JSONDecodeError as e:
-            self.log(f"Failed to parse Bandit report: {e}", 'ERROR')
-            self.results['tests']['bandit'] = {
-                'status': 'failed',
-                'error': str(e)
-            }
+            self.log(f"Failed to parse Bandit report: {e}", "ERROR")
+            self.results["tests"]["bandit"] = {"status": "failed", "error": str(e)}
 
     def test_safety(self):
         """Run Safety dependency vulnerability scan."""
@@ -138,29 +139,27 @@ class SecurityTester:
         self.log("=" * 60)
 
         # Run safety
-        result = self.run_command([
-            'safety', 'check',
-            '--json',
-            '--output', 'safety-report.json'
-        ], check=False)
+        result = self.run_command(
+            ["safety", "check", "--json", "--output", "safety-report.json"], check=False
+        )
 
         # Parse results
         try:
-            with open('safety-report.json', 'r') as f:
+            with open("safety-report.json", "r") as f:
                 report = json.load(f)
 
             vulnerabilities = report if isinstance(report, list) else []
-            self.results['tests']['safety'] = {
-                'status': 'completed',
-                'vulnerabilities_found': len(vulnerabilities),
-                'vulnerabilities': vulnerabilities,
+            self.results["tests"]["safety"] = {
+                "status": "completed",
+                "vulnerabilities_found": len(vulnerabilities),
+                "vulnerabilities": vulnerabilities,
             }
 
             # Count vulnerabilities
             for vuln in vulnerabilities:
-                self.results['summary']['total_issues'] += 1
+                self.results["summary"]["total_issues"] += 1
                 # Safety doesn't provide severity, count as medium
-                self.results['summary']['medium'] += 1
+                self.results["summary"]["medium"] += 1
 
             self.log(f"Safety found {len(vulnerabilities)} vulnerabilities")
 
@@ -175,18 +174,15 @@ class SecurityTester:
                     )
 
         except FileNotFoundError:
-            self.log("Safety report not found - no vulnerabilities", 'INFO')
-            self.results['tests']['safety'] = {
-                'status': 'completed',
-                'vulnerabilities_found': 0,
-                'vulnerabilities': [],
+            self.log("Safety report not found - no vulnerabilities", "INFO")
+            self.results["tests"]["safety"] = {
+                "status": "completed",
+                "vulnerabilities_found": 0,
+                "vulnerabilities": [],
             }
         except json.JSONDecodeError as e:
-            self.log(f"Failed to parse Safety report: {e}", 'ERROR')
-            self.results['tests']['safety'] = {
-                'status': 'failed',
-                'error': str(e)
-            }
+            self.log(f"Failed to parse Safety report: {e}", "ERROR")
+            self.results["tests"]["safety"] = {"status": "failed", "error": str(e)}
 
     def test_security_tests(self):
         """Run security-focused pytest tests."""
@@ -195,24 +191,23 @@ class SecurityTester:
         self.log("=" * 60)
 
         # Run pytest with security tests
-        result = self.run_command([
-            'pytest',
-            'tests/security/',
-            '-v',
-            '--tb=short',
-            '--maxfail=5'
-        ], check=False)
+        result = self.run_command(
+            ["pytest", "tests/security/", "-v", "--tb=short", "--maxfail=5"],
+            check=False,
+        )
 
-        self.results['tests']['pytest_security'] = {
-            'status': 'completed' if result.returncode == 0 else 'failed',
-            'return_code': result.returncode,
-            'output': result.stdout if self.verbose else 'Run with --verbose to see output'
+        self.results["tests"]["pytest_security"] = {
+            "status": "completed" if result.returncode == 0 else "failed",
+            "return_code": result.returncode,
+            "output": (
+                result.stdout if self.verbose else "Run with --verbose to see output"
+            ),
         }
 
         if result.returncode == 0:
             self.log("All security tests passed ✓")
         else:
-            self.log(f"Security tests failed (exit code: {result.returncode})", 'ERROR')
+            self.log(f"Security tests failed (exit code: {result.returncode})", "ERROR")
 
     def check_ssl_configuration(self):
         """Check SSL/TLS configuration."""
@@ -223,44 +218,50 @@ class SecurityTester:
         issues = []
 
         # Check settings.py for SSL settings
-        settings_file = self.project_root / 'project' / 'settings.py'
+        settings_file = self.project_root / "project" / "settings.py"
         if settings_file.exists():
-            with open(settings_file, 'r') as f:
+            with open(settings_file, "r") as f:
                 content = f.read()
 
                 # Check for SSL enforcement
-                if 'SECURE_SSL_REDIRECT = True' not in content:
-                    issues.append({
-                        'severity': 'HIGH',
-                        'issue': 'SECURE_SSL_REDIRECT not enabled',
-                        'recommendation': 'Set SECURE_SSL_REDIRECT = True in production'
-                    })
+                if "SECURE_SSL_REDIRECT = True" not in content:
+                    issues.append(
+                        {
+                            "severity": "HIGH",
+                            "issue": "SECURE_SSL_REDIRECT not enabled",
+                            "recommendation": "Set SECURE_SSL_REDIRECT = True in production",
+                        }
+                    )
 
-                if 'SESSION_COOKIE_SECURE = True' not in content:
-                    issues.append({
-                        'severity': 'HIGH',
-                        'issue': 'SESSION_COOKIE_SECURE not enabled',
-                        'recommendation': 'Set SESSION_COOKIE_SECURE = True'
-                    })
+                if "SESSION_COOKIE_SECURE = True" not in content:
+                    issues.append(
+                        {
+                            "severity": "HIGH",
+                            "issue": "SESSION_COOKIE_SECURE not enabled",
+                            "recommendation": "Set SESSION_COOKIE_SECURE = True",
+                        }
+                    )
 
-                if 'CSRF_COOKIE_SECURE = True' not in content:
-                    issues.append({
-                        'severity': 'HIGH',
-                        'issue': 'CSRF_COOKIE_SECURE not enabled',
-                        'recommendation': 'Set CSRF_COOKIE_SECURE = True'
-                    })
+                if "CSRF_COOKIE_SECURE = True" not in content:
+                    issues.append(
+                        {
+                            "severity": "HIGH",
+                            "issue": "CSRF_COOKIE_SECURE not enabled",
+                            "recommendation": "Set CSRF_COOKIE_SECURE = True",
+                        }
+                    )
 
-        self.results['tests']['ssl_config'] = {
-            'status': 'completed',
-            'issues_found': len(issues),
-            'issues': issues
+        self.results["tests"]["ssl_config"] = {
+            "status": "completed",
+            "issues_found": len(issues),
+            "issues": issues,
         }
 
         # Update summary
         for issue in issues:
-            self.results['summary']['total_issues'] += 1
-            if issue['severity'] == 'HIGH':
-                self.results['summary']['high'] += 1
+            self.results["summary"]["total_issues"] += 1
+            if issue["severity"] == "HIGH":
+                self.results["summary"]["high"] += 1
 
         self.log(f"SSL configuration check: {len(issues)} issues found")
 
@@ -273,41 +274,45 @@ class SecurityTester:
         issues = []
 
         # Check for .env file
-        env_file = self.project_root / '.env'
+        env_file = self.project_root / ".env"
         if not env_file.exists():
-            issues.append({
-                'severity': 'MEDIUM',
-                'issue': '.env file not found',
-                'recommendation': 'Use .env file for environment variables'
-            })
+            issues.append(
+                {
+                    "severity": "MEDIUM",
+                    "issue": ".env file not found",
+                    "recommendation": "Use .env file for environment variables",
+                }
+            )
 
         # Check if .env is in .gitignore
-        gitignore_file = self.project_root / '.gitignore'
+        gitignore_file = self.project_root / ".gitignore"
         if gitignore_file.exists():
-            with open(gitignore_file, 'r') as f:
-                if '.env' not in f.read():
-                    issues.append({
-                        'severity': 'CRITICAL',
-                        'issue': '.env not in .gitignore',
-                        'recommendation': 'Add .env to .gitignore immediately'
-                    })
+            with open(gitignore_file, "r") as f:
+                if ".env" not in f.read():
+                    issues.append(
+                        {
+                            "severity": "CRITICAL",
+                            "issue": ".env not in .gitignore",
+                            "recommendation": "Add .env to .gitignore immediately",
+                        }
+                    )
 
-        self.results['tests']['secret_management'] = {
-            'status': 'completed',
-            'issues_found': len(issues),
-            'issues': issues
+        self.results["tests"]["secret_management"] = {
+            "status": "completed",
+            "issues_found": len(issues),
+            "issues": issues,
         }
 
         # Update summary
         for issue in issues:
-            self.results['summary']['total_issues'] += 1
-            severity = issue['severity'].lower()
-            if severity == 'critical':
-                self.results['summary']['critical'] += 1
-            elif severity == 'high':
-                self.results['summary']['high'] += 1
-            elif severity == 'medium':
-                self.results['summary']['medium'] += 1
+            self.results["summary"]["total_issues"] += 1
+            severity = issue["severity"].lower()
+            if severity == "critical":
+                self.results["summary"]["critical"] += 1
+            elif severity == "high":
+                self.results["summary"]["high"] += 1
+            elif severity == "medium":
+                self.results["summary"]["medium"] += 1
 
         self.log(f"Secret management check: {len(issues)} issues found")
 
@@ -318,8 +323,8 @@ class SecurityTester:
         self.log("=" * 60)
 
         # Save JSON report
-        report_file = self.project_root / 'security-audit-report.json'
-        with open(report_file, 'w') as f:
+        report_file = self.project_root / "security-audit-report.json"
+        with open(report_file, "w") as f:
             json.dump(self.results, f, indent=2)
 
         self.log(f"Report saved to: {report_file}")
@@ -337,13 +342,13 @@ class SecurityTester:
         print("=" * 60)
 
         # Overall status
-        if self.results['summary']['critical'] > 0:
+        if self.results["summary"]["critical"] > 0:
             print("\n❌ CRITICAL ISSUES FOUND - IMMEDIATE ACTION REQUIRED")
             return False
-        elif self.results['summary']['high'] > 0:
+        elif self.results["summary"]["high"] > 0:
             print("\n⚠️  HIGH PRIORITY ISSUES FOUND - ACTION REQUIRED")
             return False
-        elif self.results['summary']['medium'] > 0:
+        elif self.results["summary"]["medium"] > 0:
             print("\n⚠️  MEDIUM PRIORITY ISSUES FOUND")
             return True
         else:
@@ -383,18 +388,10 @@ class SecurityTester:
 
 def main():
     """Main entry point."""
-    parser = argparse.ArgumentParser(
-        description='Run security testing suite'
-    )
+    parser = argparse.ArgumentParser(description="Run security testing suite")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
     parser.add_argument(
-        '--verbose', '-v',
-        action='store_true',
-        help='Verbose output'
-    )
-    parser.add_argument(
-        '--fix',
-        action='store_true',
-        help='Attempt to fix issues automatically'
+        "--fix", action="store_true", help="Attempt to fix issues automatically"
     )
 
     args = parser.parse_args()
@@ -407,5 +404,5 @@ def main():
     sys.exit(0 if success else 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

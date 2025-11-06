@@ -7,8 +7,10 @@ Tests cover:
 - Spam detection (honeypot, patterns)
 - Edge cases and security
 """
-import pytest
+
 from django.core.exceptions import ValidationError
+
+import pytest
 
 from apps.contact.forms import ContactForm
 from apps.contact.models import ContactMessage
@@ -168,7 +170,9 @@ class TestNameFieldValidation:
                 "message": "Test message with enough characters",
             }
             form = ContactForm(data=form_data)
-            assert form.is_valid(), f"Name '{name}' should be valid. Errors: {form.errors}"
+            assert (
+                form.is_valid()
+            ), f"Name '{name}' should be valid. Errors: {form.errors}"
 
     def test_name_rejects_urls(self):
         """Test name field rejects URLs"""

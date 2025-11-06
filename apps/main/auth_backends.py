@@ -145,7 +145,9 @@ class RestrictedAdminBackend(BaseBackend):
         )
 
         # Sync user attributes
-        update_fields = self._sync_user_attributes(user, allowed_email, defaults, created)
+        update_fields = self._sync_user_attributes(
+            user, allowed_email, defaults, created
+        )
 
         if update_fields:
             unique_fields = list(dict.fromkeys(update_fields))

@@ -10,7 +10,6 @@ from urllib.parse import urlparse
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator, validate_email
 
-
 __all__ = [
     "validate_url_format",
     "validate_email_format",

@@ -13,7 +13,7 @@ Provides API key-based authentication with:
 import hashlib
 import secrets
 from datetime import datetime, timedelta
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -30,7 +30,7 @@ class APIKeyManager(models.Manager):
     Manager for API Key model
     """
 
-    def get_from_key(self, key: str) -> Optional['APIKey']:
+    def get_from_key(self, key: str) -> Optional["APIKey"]:
         """
         Get API key object from raw key string
         """
@@ -53,7 +53,7 @@ class APIKeyManager(models.Manager):
         self,
         user,
         name: str,
-        permissions: str = 'read',
+        permissions: str = "read",
         rate_limit: int = 1000,
         expires_days: Optional[int] = None,
     ) -> Dict[str, Any]:
@@ -83,8 +83,8 @@ class APIKeyManager(models.Manager):
         )
 
         return {
-            'key': raw_key,  # Show only once!
-            'api_key': api_key,
+            "key": raw_key,  # Show only once!
+            "api_key": api_key,
         }
 
     @staticmethod
@@ -101,82 +101,72 @@ class APIKey(models.Model):
     """
 
     class Permissions(models.TextChoices):
-        READ = 'read', _('Read Only')
-        WRITE = 'write', _('Read/Write')
-        ADMIN = 'admin', _('Full Access')
+        READ = "read", _("Read Only")
+        WRITE = "write", _("Read/Write")
+        ADMIN = "admin", _("Full Access")
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='api_keys',
-        help_text=_('User who owns this API key')
+        related_name="api_keys",
+        help_text=_("User who owns this API key"),
     )
 
     name = models.CharField(
-        max_length=200,
-        help_text=_('Descriptive name for this API key')
+        max_length=200, help_text=_("Descriptive name for this API key")
     )
 
     key_hash = models.CharField(
         max_length=64,
         unique=True,
         db_index=True,
-        help_text=_('SHA-256 hash of the API key')
+        help_text=_("SHA-256 hash of the API key"),
     )
 
     key_prefix = models.CharField(
-        max_length=8,
-        help_text=_('First 8 characters of key for identification')
+        max_length=8, help_text=_("First 8 characters of key for identification")
     )
 
     permissions = models.CharField(
         max_length=10,
         choices=Permissions.choices,
         default=Permissions.READ,
-        help_text=_('Permission level for this API key')
+        help_text=_("Permission level for this API key"),
     )
 
     is_active = models.BooleanField(
-        default=True,
-        help_text=_('Whether this API key is active')
+        default=True, help_text=_("Whether this API key is active")
     )
 
     rate_limit_per_hour = models.IntegerField(
-        default=1000,
-        help_text=_('Maximum requests per hour for this key')
+        default=1000, help_text=_("Maximum requests per hour for this key")
     )
 
     created_at = models.DateTimeField(
-        auto_now_add=True,
-        help_text=_('When this API key was created')
+        auto_now_add=True, help_text=_("When this API key was created")
     )
 
     last_used_at = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text=_('When this API key was last used')
+        null=True, blank=True, help_text=_("When this API key was last used")
     )
 
     expires_at = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text=_('When this API key expires')
+        null=True, blank=True, help_text=_("When this API key expires")
     )
 
     usage_count = models.IntegerField(
-        default=0,
-        help_text=_('Total number of requests using this key')
+        default=0, help_text=_("Total number of requests using this key")
     )
 
     objects = APIKeyManager()
 
     class Meta:
-        verbose_name = _('API Key')
-        verbose_name_plural = _('API Keys')
-        ordering = ['-created_at']
+        verbose_name = _("API Key")
+        verbose_name_plural = _("API Keys")
+        ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=['key_hash', 'is_active']),
-            models.Index(fields=['user', 'is_active']),
+            models.Index(fields=["key_hash", "is_active"]),
+            models.Index(fields=["user", "is_active"]),
         ]
 
     def __str__(self):
@@ -196,7 +186,7 @@ class APIKey(models.Model):
         Check if API key is within rate limit
         """
         # Use Redis cache for rate limiting
-        cache_key = f'api_key_rate_limit:{self.key_hash}'
+        cache_key = f"api_key_rate_limit:{self.key_hash}"
         current_count = cache.get(cache_key, 0)
 
         if current_count >= self.rate_limit_per_hour:
@@ -209,14 +199,14 @@ class APIKey(models.Model):
         Record API key usage
         """
         # Update rate limit counter
-        cache_key = f'api_key_rate_limit:{self.key_hash}'
+        cache_key = f"api_key_rate_limit:{self.key_hash}"
         current_count = cache.get(cache_key, 0)
         cache.set(cache_key, current_count + 1, timeout=3600)  # 1 hour
 
         # Update last used timestamp and usage count
         self.last_used_at = timezone.now()
         self.usage_count += 1
-        self.save(update_fields=['last_used_at', 'usage_count'])
+        self.save(update_fields=["last_used_at", "usage_count"])
 
         # Log usage (optional - can be stored in separate model)
         APIKeyUsage.objects.create(
@@ -230,16 +220,16 @@ class APIKey(models.Model):
         Revoke API key
         """
         self.is_active = False
-        self.save(update_fields=['is_active'])
+        self.save(update_fields=["is_active"])
 
     def has_permission(self, required_permission: str) -> bool:
         """
         Check if API key has required permission
         """
         permission_hierarchy = {
-            'read': 0,
-            'write': 1,
-            'admin': 2,
+            "read": 0,
+            "write": 1,
+            "admin": 2,
         }
 
         current_level = permission_hierarchy.get(self.permissions, 0)
@@ -254,32 +244,24 @@ class APIKeyUsage(models.Model):
     """
 
     api_key = models.ForeignKey(
-        APIKey,
-        on_delete=models.CASCADE,
-        related_name='usage_logs'
+        APIKey, on_delete=models.CASCADE, related_name="usage_logs"
     )
 
-    endpoint = models.CharField(
-        max_length=500,
-        help_text=_('API endpoint accessed')
-    )
+    endpoint = models.CharField(max_length=500, help_text=_("API endpoint accessed"))
 
-    ip_address = models.GenericIPAddressField(
-        help_text=_('IP address of the request')
-    )
+    ip_address = models.GenericIPAddressField(help_text=_("IP address of the request"))
 
     timestamp = models.DateTimeField(
-        auto_now_add=True,
-        help_text=_('When the request was made')
+        auto_now_add=True, help_text=_("When the request was made")
     )
 
     class Meta:
-        verbose_name = _('API Key Usage')
-        verbose_name_plural = _('API Key Usages')
-        ordering = ['-timestamp']
+        verbose_name = _("API Key Usage")
+        verbose_name_plural = _("API Key Usages")
+        ordering = ["-timestamp"]
         indexes = [
-            models.Index(fields=['api_key', '-timestamp']),
-            models.Index(fields=['-timestamp']),
+            models.Index(fields=["api_key", "-timestamp"]),
+            models.Index(fields=["-timestamp"]),
         ]
 
     def __str__(self):

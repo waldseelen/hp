@@ -9,16 +9,13 @@ Tests cover:
 Target: 12-15 comprehensive tests for analytics and testing.
 """
 
-import pytest
-from django.utils import timezone
 from datetime import timedelta
 
-from apps.portfolio.models import (
-    UserJourney,
-    ConversionFunnel,
-    ABTestAssignment,
-)
+from django.utils import timezone
 
+import pytest
+
+from apps.portfolio.models import ABTestAssignment, ConversionFunnel, UserJourney
 
 # ============================================================================
 # USERJOURNEY MODEL TESTS (Step Tracking, GDPR)
@@ -179,10 +176,7 @@ class TestABTestAssignmentModel:
         assert not assignment.has_converted
 
         # Record conversion
-        assignment.record_conversion(
-            conversion_type="purchase",
-            conversion_value=99.99
-        )
+        assignment.record_conversion(conversion_type="purchase", conversion_value=99.99)
 
         assert assignment.has_converted
         assert assignment.converted_at is not None
@@ -199,6 +193,7 @@ class TestABTestAssignmentModel:
 
         # Creating duplicate should raise IntegrityError
         from django.db import IntegrityError
+
         with pytest.raises(IntegrityError):
             ABTestAssignment.objects.create(
                 test_name="unique_test",

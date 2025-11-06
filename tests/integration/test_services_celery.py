@@ -12,11 +12,12 @@ Tests cover:
 Target: Verify Celery task integration works correctly.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
-from celery.result import AsyncResult
+from unittest.mock import MagicMock, patch
+
 from django.conf import settings
 
+import pytest
+from celery.result import AsyncResult
 
 # ============================================================================
 # CELERY TASK EXECUTION TESTS
@@ -27,7 +28,7 @@ from django.conf import settings
 class TestCeleryTaskExecution:
     """Test Celery task execution."""
 
-    @patch('apps.ai_optimizer.tasks.optimize_content.delay')
+    @patch("apps.ai_optimizer.tasks.optimize_content.delay")
     def test_optimize_content_task_triggered(self, mock_delay):
         """Test optimize_content Celery task can be triggered."""
         mock_result = MagicMock()
@@ -40,7 +41,7 @@ class TestCeleryTaskExecution:
         assert result.id == "test-task-id-123"
         mock_delay.assert_called_once_with("test content to optimize")
 
-    @patch('apps.ai_optimizer.tasks.optimize_content.apply_async')
+    @patch("apps.ai_optimizer.tasks.optimize_content.apply_async")
     def test_optimize_content_task_with_apply_async(self, mock_apply_async):
         """Test optimize_content task with apply_async (advanced options)."""
         mock_result = MagicMock()
@@ -48,10 +49,7 @@ class TestCeleryTaskExecution:
         mock_apply_async.return_value = mock_result
 
         # Trigger with countdown (delay execution by 60 seconds)
-        result = mock_apply_async(
-            args=["content"],
-            countdown=60
-        )
+        result = mock_apply_async(args=["content"], countdown=60)
 
         assert result.id == "test-task-id-456"
         mock_apply_async.assert_called_once()
@@ -66,10 +64,13 @@ class TestCeleryTaskExecution:
 class TestCeleryTaskResults:
     """Test Celery task result retrieval."""
 
-    @patch('celery.result.AsyncResult.get')
+    @patch("celery.result.AsyncResult.get")
     def test_task_result_retrieval(self, mock_get):
         """Test retrieving Celery task result."""
-        mock_get.return_value = {"status": "success", "optimized_content": "Optimized text"}
+        mock_get.return_value = {
+            "status": "success",
+            "optimized_content": "Optimized text",
+        }
 
         # Simulate getting task result
         result = AsyncResult("test-task-id")
@@ -78,7 +79,7 @@ class TestCeleryTaskResults:
         assert task_result["status"] == "success"
         assert "optimized_content" in task_result
 
-    @patch('celery.result.AsyncResult.ready')
+    @patch("celery.result.AsyncResult.ready")
     def test_task_completion_check(self, mock_ready):
         """Test checking if Celery task is complete."""
         mock_ready.return_value = True
@@ -88,7 +89,7 @@ class TestCeleryTaskResults:
 
         assert is_ready is True
 
-    @patch('celery.result.AsyncResult.successful')
+    @patch("celery.result.AsyncResult.successful")
     def test_task_success_check(self, mock_successful):
         """Test checking if Celery task completed successfully."""
         mock_successful.return_value = True
@@ -98,7 +99,7 @@ class TestCeleryTaskResults:
 
         assert is_successful is True
 
-    @patch('celery.result.AsyncResult.failed')
+    @patch("celery.result.AsyncResult.failed")
     def test_task_failure_check(self, mock_failed):
         """Test checking if Celery task failed."""
         mock_failed.return_value = False
@@ -119,7 +120,7 @@ class TestCeleryTaskChains:
     """Test Celery task chains (sequential execution)."""
 
     @pytest.mark.skip("Requires Celery chain implementation")
-    @patch('celery.chain')
+    @patch("celery.chain")
     def test_task_chain_execution(self, mock_chain):
         """Test executing tasks in a chain."""
         # Example: chain(task1.s(), task2.s(), task3.s())()
@@ -127,6 +128,7 @@ class TestCeleryTaskChains:
 
         # Create chain
         from celery import chain
+
         task_chain = chain(
             # Placeholder tasks
         )
@@ -147,7 +149,7 @@ class TestCeleryTaskGroups:
     """Test Celery task groups (parallel execution)."""
 
     @pytest.mark.skip("Requires Celery group implementation")
-    @patch('celery.group')
+    @patch("celery.group")
     def test_task_group_execution(self, mock_group):
         """Test executing tasks in a group (parallel)."""
         # Example: group(task1.s(), task2.s(), task3.s())()
@@ -155,6 +157,7 @@ class TestCeleryTaskGroups:
 
         # Create group
         from celery import group
+
         task_group = group(
             # Placeholder tasks
         )
@@ -185,7 +188,7 @@ class TestCeleryPeriodicTasks:
         assert "cleanup_task" in schedule
 
     @pytest.mark.skip("Requires Celery Beat configuration")
-    @patch('apps.ai_optimizer.tasks.cleanup_old_optimization_jobs.delay')
+    @patch("apps.ai_optimizer.tasks.cleanup_old_optimization_jobs.delay")
     def test_periodic_task_execution(self, mock_delay):
         """Test periodic task can be executed."""
         # Manually trigger periodic task
@@ -244,7 +247,7 @@ class TestCeleryTaskRouting:
 class TestCeleryErrorHandling:
     """Test Celery task error handling."""
 
-    @patch('apps.ai_optimizer.tasks.optimize_content.delay')
+    @patch("apps.ai_optimizer.tasks.optimize_content.delay")
     def test_task_with_invalid_arguments(self, mock_delay):
         """Test task handles invalid arguments gracefully."""
         mock_delay.side_effect = TypeError("Invalid argument type")
@@ -252,7 +255,7 @@ class TestCeleryErrorHandling:
         with pytest.raises(TypeError):
             mock_delay(None)  # Invalid argument
 
-    @patch('celery.result.AsyncResult.get')
+    @patch("celery.result.AsyncResult.get")
     def test_task_timeout_handling(self, mock_get):
         """Test handling task timeout."""
         from celery.exceptions import TimeoutError
@@ -274,7 +277,7 @@ class TestCeleryErrorHandling:
 class TestCeleryTaskStates:
     """Test Celery task states (PENDING, STARTED, SUCCESS, FAILURE)."""
 
-    @patch('celery.result.AsyncResult.state')
+    @patch("celery.result.AsyncResult.state")
     def test_task_pending_state(self, mock_state):
         """Test task in PENDING state."""
         mock_state.return_value = "PENDING"
@@ -282,7 +285,7 @@ class TestCeleryTaskStates:
         result = AsyncResult("test-task-id")
         assert result.state == "PENDING"
 
-    @patch('celery.result.AsyncResult.state')
+    @patch("celery.result.AsyncResult.state")
     def test_task_started_state(self, mock_state):
         """Test task in STARTED state."""
         mock_state.return_value = "STARTED"
@@ -290,7 +293,7 @@ class TestCeleryTaskStates:
         result = AsyncResult("test-task-id")
         assert result.state == "STARTED"
 
-    @patch('celery.result.AsyncResult.state')
+    @patch("celery.result.AsyncResult.state")
     def test_task_success_state(self, mock_state):
         """Test task in SUCCESS state."""
         mock_state.return_value = "SUCCESS"
@@ -298,7 +301,7 @@ class TestCeleryTaskStates:
         result = AsyncResult("test-task-id")
         assert result.state == "SUCCESS"
 
-    @patch('celery.result.AsyncResult.state')
+    @patch("celery.result.AsyncResult.state")
     def test_task_failure_state(self, mock_state):
         """Test task in FAILURE state."""
         mock_state.return_value = "FAILURE"
@@ -316,7 +319,7 @@ class TestCeleryTaskStates:
 class TestCeleryTaskRevocation:
     """Test Celery task revocation (cancellation)."""
 
-    @patch('celery.result.AsyncResult.revoke')
+    @patch("celery.result.AsyncResult.revoke")
     def test_task_revocation(self, mock_revoke):
         """Test revoking (canceling) a Celery task."""
         result = AsyncResult("test-task-id")
@@ -335,7 +338,7 @@ class TestCeleryTaskPriority:
     """Test Celery task priority."""
 
     @pytest.mark.skip("Requires broker supporting priority")
-    @patch('apps.ai_optimizer.tasks.optimize_content.apply_async')
+    @patch("apps.ai_optimizer.tasks.optimize_content.apply_async")
     def test_high_priority_task(self, mock_apply_async):
         """Test executing task with high priority."""
         mock_result = MagicMock()
@@ -343,10 +346,7 @@ class TestCeleryTaskPriority:
         mock_apply_async.return_value = mock_result
 
         # Execute with priority=9 (high priority)
-        result = mock_apply_async(
-            args=["urgent content"],
-            priority=9
-        )
+        result = mock_apply_async(args=["urgent content"], priority=9)
 
         assert result.id == "high-priority-task"
 

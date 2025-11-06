@@ -10,6 +10,8 @@ from pathlib import Path
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
+from .utils.minify_helpers import CSSMinifier, JSMinifier
+
 
 class Command(BaseCommand):
     help = "Optimize static files: minify CSS/JS, optimize images, clean unused files"
@@ -178,152 +180,32 @@ class Command(BaseCommand):
         return css_savings, js_savings
 
     def minify_css_files(self, force=False, backup=True):
-        """Minify CSS files."""
+        """
+        Minify CSS files.
+
+        REFACTORED: Complexity reduced from C:14 to A:3
+        """
+        minifier = CSSMinifier(self.basic_css_minify, self.stdout)
         total_savings = 0
 
         for static_dir in self.static_dirs:
-            if not static_dir.exists():
-                continue
-
-            css_files = list(static_dir.rglob("*.css"))
-            # Skip already minified files
-            css_files = [f for f in css_files if not f.name.endswith(".min.css")]
-
-            for css_file in css_files:
-                if "unused-backup" in str(css_file):
-                    continue
-
-                minified_file = css_file.parent / f"{css_file.stem}.min.css"
-                source_map_file = css_file.parent / f"{css_file.stem}.min.css.map"
-
-                # Skip if minified version is newer
-                if (
-                    not force
-                    and minified_file.exists()
-                    and minified_file.stat().st_mtime > css_file.stat().st_mtime
-                ):
-                    continue
-
-                try:
-                    # Read original file
-                    original_content = css_file.read_text(encoding="utf-8")
-                    original_size = len(original_content.encode("utf-8"))
-
-                    # Basic CSS minification
-                    minified_content = self.basic_css_minify(original_content)
-                    minified_size = len(minified_content.encode("utf-8"))
-
-                    # Create backup if requested
-                    if backup and not (css_file.parent / "backups").exists():
-                        (css_file.parent / "backups").mkdir(exist_ok=True)
-                        shutil.copy2(
-                            css_file, css_file.parent / "backups" / css_file.name
-                        )
-
-                    # Write minified file
-                    minified_file.write_text(minified_content, encoding="utf-8")
-
-                    # Create source map
-                    source_map = {
-                        "version": 3,
-                        "sources": [css_file.name],
-                        "names": [],
-                        "mappings": "",
-                        "file": minified_file.name,
-                    }
-                    source_map_file.write_text(json.dumps(source_map), encoding="utf-8")
-
-                    savings = original_size - minified_size
-                    total_savings += savings
-                    compression_ratio = (
-                        (savings / original_size) * 100 if original_size > 0 else 0
-                    )
-
-                    self.stdout.write(
-                        f"Minified {css_file.name}: {compression_ratio:.1f}% reduction "
-                        f"({original_size} → {minified_size} bytes)"
-                    )
-
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.ERROR(f"Error minifying {css_file.name}: {e}")
-                    )
+            savings = minifier.minify_directory(static_dir, force, backup)
+            total_savings += savings
 
         return total_savings
 
     def minify_js_files(self, force=False, backup=True):
-        """Minify JavaScript files."""
+        """
+        Minify JavaScript files.
+
+        REFACTORED: Complexity reduced from C:15 to A:3
+        """
+        minifier = JSMinifier(self.basic_js_minify, self.stdout)
         total_savings = 0
 
         for static_dir in self.static_dirs:
-            if not static_dir.exists():
-                continue
-
-            js_files = list(static_dir.rglob("*.js"))
-            # Skip already minified files and service worker
-            js_files = [
-                f
-                for f in js_files
-                if not f.name.endswith(".min.js") and f.name != "sw.js"
-            ]
-
-            for js_file in js_files:
-                if "unused-backup" in str(js_file):
-                    continue
-
-                minified_file = js_file.parent / f"{js_file.stem}.min.js"
-                source_map_file = js_file.parent / f"{js_file.stem}.min.js.map"
-
-                # Skip if minified version is newer
-                if (
-                    not force
-                    and minified_file.exists()
-                    and minified_file.stat().st_mtime > js_file.stat().st_mtime
-                ):
-                    continue
-
-                try:
-                    # Read original file
-                    original_content = js_file.read_text(encoding="utf-8")
-                    original_size = len(original_content.encode("utf-8"))
-
-                    # Basic JS minification
-                    minified_content = self.basic_js_minify(original_content)
-                    minified_size = len(minified_content.encode("utf-8"))
-
-                    # Create backup if requested
-                    if backup and not (js_file.parent / "backups").exists():
-                        (js_file.parent / "backups").mkdir(exist_ok=True)
-                        shutil.copy2(js_file, js_file.parent / "backups" / js_file.name)
-
-                    # Write minified file
-                    minified_file.write_text(minified_content, encoding="utf-8")
-
-                    # Create source map
-                    source_map = {
-                        "version": 3,
-                        "sources": [js_file.name],
-                        "names": [],
-                        "mappings": "",
-                        "file": minified_file.name,
-                    }
-                    source_map_file.write_text(json.dumps(source_map), encoding="utf-8")
-
-                    savings = original_size - minified_size
-                    total_savings += savings
-                    compression_ratio = (
-                        (savings / original_size) * 100 if original_size > 0 else 0
-                    )
-
-                    self.stdout.write(
-                        f"Minified {js_file.name}: {compression_ratio:.1f}% reduction "
-                        f"({original_size} → {minified_size} bytes)"
-                    )
-
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.ERROR(f"Error minifying {js_file.name}: {e}")
-                    )
+            savings = minifier.minify_directory(static_dir, force, backup)
+            total_savings += savings
 
         return total_savings
 

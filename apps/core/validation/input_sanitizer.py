@@ -13,8 +13,8 @@ import re
 from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.parse import urlparse
 
-from django.core.validators import EmailValidator, URLValidator, validate_ipv46_address
 from django.core.exceptions import ValidationError
+from django.core.validators import EmailValidator, URLValidator, validate_ipv46_address
 from django.utils.html import strip_tags
 
 
@@ -31,29 +31,45 @@ class InputSanitizer:
 
     # Dangerous HTML tags that should always be removed
     DANGEROUS_TAGS = [
-        'script', 'iframe', 'object', 'embed', 'applet',
-        'meta', 'link', 'style', 'base', 'form',
+        "script",
+        "iframe",
+        "object",
+        "embed",
+        "applet",
+        "meta",
+        "link",
+        "style",
+        "base",
+        "form",
     ]
 
     # Dangerous attributes that can execute JavaScript
     DANGEROUS_ATTRIBUTES = [
-        'onclick', 'onload', 'onerror', 'onmouseover', 'onmouseout',
-        'onfocus', 'onblur', 'onchange', 'onsubmit', 'href',
+        "onclick",
+        "onload",
+        "onerror",
+        "onmouseover",
+        "onmouseout",
+        "onfocus",
+        "onblur",
+        "onchange",
+        "onsubmit",
+        "href",
     ]
 
     # Suspicious patterns for potential attacks
     SUSPICIOUS_PATTERNS = [
-        r'javascript:',
-        r'data:text/html',
-        r'vbscript:',
-        r'<script',
-        r'</script>',
-        r'eval\(',
-        r'expression\(',
-        r'import\(',
-        r'@import',
-        r'document\.cookie',
-        r'window\.location',
+        r"javascript:",
+        r"data:text/html",
+        r"vbscript:",
+        r"<script",
+        r"</script>",
+        r"eval\(",
+        r"expression\(",
+        r"import\(",
+        r"@import",
+        r"document\.cookie",
+        r"window\.location",
     ]
 
     @staticmethod
@@ -83,10 +99,10 @@ class InputSanitizer:
         text = html.escape(text)
 
         # Remove null bytes
-        text = text.replace('\x00', '')
+        text = text.replace("\x00", "")
 
         # Normalize whitespace
-        text = ' '.join(text.split())
+        text = " ".join(text.split())
 
         # Enforce max length
         if max_length and len(text) > max_length:
@@ -95,7 +111,9 @@ class InputSanitizer:
         return text
 
     @classmethod
-    def sanitize_html(cls, html_content: str, allowed_tags: Optional[List[str]] = None) -> str:
+    def sanitize_html(
+        cls, html_content: str, allowed_tags: Optional[List[str]] = None
+    ) -> str:
         """
         Sanitize HTML content, allowing only safe tags.
 
@@ -111,25 +129,46 @@ class InputSanitizer:
 
         if allowed_tags is None:
             allowed_tags = [
-                'p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-                'ul', 'ol', 'li', 'a', 'img', 'blockquote', 'code', 'pre',
+                "p",
+                "br",
+                "strong",
+                "em",
+                "u",
+                "h1",
+                "h2",
+                "h3",
+                "h4",
+                "h5",
+                "h6",
+                "ul",
+                "ol",
+                "li",
+                "a",
+                "img",
+                "blockquote",
+                "code",
+                "pre",
             ]
 
         # Remove dangerous tags
         for tag in cls.DANGEROUS_TAGS:
-            pattern = rf'<{tag}[^>]*>.*?</{tag}>'
-            html_content = re.sub(pattern, '', html_content, flags=re.IGNORECASE | re.DOTALL)
+            pattern = rf"<{tag}[^>]*>.*?</{tag}>"
+            html_content = re.sub(
+                pattern, "", html_content, flags=re.IGNORECASE | re.DOTALL
+            )
 
         # Remove dangerous attributes
         for attr in cls.DANGEROUS_ATTRIBUTES:
             pattern = rf'\s{attr}=["\'][^"\']*["\']'
-            html_content = re.sub(pattern, '', html_content, flags=re.IGNORECASE)
+            html_content = re.sub(pattern, "", html_content, flags=re.IGNORECASE)
 
         # Check for suspicious patterns
         for pattern in cls.SUSPICIOUS_PATTERNS:
             if re.search(pattern, html_content, re.IGNORECASE):
                 # Remove the entire suspicious section
-                html_content = re.sub(pattern, '[REMOVED]', html_content, flags=re.IGNORECASE)
+                html_content = re.sub(
+                    pattern, "[REMOVED]", html_content, flags=re.IGNORECASE
+                )
 
         return html_content
 
@@ -151,12 +190,12 @@ class InputSanitizer:
         url = url.strip()
 
         # Check for suspicious protocols
-        if url.lower().startswith(('javascript:', 'data:', 'vbscript:')):
+        if url.lower().startswith(("javascript:", "data:", "vbscript:")):
             return None
 
         # Validate URL format
         try:
-            validator = URLValidator(schemes=['http', 'https'])
+            validator = URLValidator(schemes=["http", "https"])
             validator(url)
         except ValidationError:
             return None
@@ -168,7 +207,7 @@ class InputSanitizer:
                 return None
 
             # Ensure safe scheme
-            if parsed.scheme not in ['http', 'https']:
+            if parsed.scheme not in ["http", "https"]:
                 return None
 
             return url
@@ -215,27 +254,28 @@ class InputSanitizer:
             return "unnamed"
 
         # Remove path separators
-        filename = filename.replace('/', '_').replace('\\', '_')
+        filename = filename.replace("/", "_").replace("\\", "_")
 
         # Remove null bytes
-        filename = filename.replace('\x00', '')
+        filename = filename.replace("\x00", "")
 
         # Remove leading/trailing dots and whitespace
-        filename = filename.strip('. ')
+        filename = filename.strip(". ")
 
         # Remove dangerous characters
-        filename = re.sub(r'[<>:"|?*]', '', filename)
+        filename = re.sub(r'[<>:"|?*]', "", filename)
 
         # Limit length
         if len(filename) > 255:
-            name, ext = filename.rsplit('.', 1) if '.' in filename else (filename, '')
-            filename = name[:200] + ('.' + ext if ext else '')
+            name, ext = filename.rsplit(".", 1) if "." in filename else (filename, "")
+            filename = name[:200] + ("." + ext if ext else "")
 
         return filename or "unnamed"
 
     @staticmethod
-    def sanitize_integer(value: Any, min_value: Optional[int] = None,
-                        max_value: Optional[int] = None) -> Optional[int]:
+    def sanitize_integer(
+        value: Any, min_value: Optional[int] = None, max_value: Optional[int] = None
+    ) -> Optional[int]:
         """
         Sanitize and validate integer input.
 
@@ -261,8 +301,9 @@ class InputSanitizer:
             return None
 
     @staticmethod
-    def sanitize_float(value: Any, min_value: Optional[float] = None,
-                      max_value: Optional[float] = None) -> Optional[float]:
+    def sanitize_float(
+        value: Any, min_value: Optional[float] = None, max_value: Optional[float] = None
+    ) -> Optional[float]:
         """
         Sanitize and validate float input.
 
@@ -296,8 +337,9 @@ class InputValidator:
     """
 
     @staticmethod
-    def validate_required_fields(data: Dict[str, Any],
-                                 required_fields: List[str]) -> Tuple[bool, Optional[str]]:
+    def validate_required_fields(
+        data: Dict[str, Any], required_fields: List[str]
+    ) -> Tuple[bool, Optional[str]]:
         """
         Validate that all required fields are present.
 
@@ -319,8 +361,9 @@ class InputValidator:
         return (True, None)
 
     @staticmethod
-    def validate_field_type(data: Dict[str, Any], field: str,
-                           expected_type: type) -> Tuple[bool, Optional[str]]:
+    def validate_field_type(
+        data: Dict[str, Any], field: str, expected_type: type
+    ) -> Tuple[bool, Optional[str]]:
         """
         Validate that a field has the expected type.
 
@@ -341,9 +384,12 @@ class InputValidator:
         return (True, None)
 
     @staticmethod
-    def validate_string_length(data: Dict[str, Any], field: str,
-                              min_length: Optional[int] = None,
-                              max_length: Optional[int] = None) -> Tuple[bool, Optional[str]]:
+    def validate_string_length(
+        data: Dict[str, Any],
+        field: str,
+        min_length: Optional[int] = None,
+        max_length: Optional[int] = None,
+    ) -> Tuple[bool, Optional[str]]:
         """
         Validate string length constraints.
 
@@ -372,9 +418,12 @@ class InputValidator:
         return (True, None)
 
     @staticmethod
-    def validate_number_range(data: Dict[str, Any], field: str,
-                             min_value: Optional[Union[int, float]] = None,
-                             max_value: Optional[Union[int, float]] = None) -> Tuple[bool, Optional[str]]:
+    def validate_number_range(
+        data: Dict[str, Any],
+        field: str,
+        min_value: Optional[Union[int, float]] = None,
+        max_value: Optional[Union[int, float]] = None,
+    ) -> Tuple[bool, Optional[str]]:
         """
         Validate number range constraints.
 
@@ -403,8 +452,9 @@ class InputValidator:
         return (True, None)
 
     @staticmethod
-    def validate_choice(data: Dict[str, Any], field: str,
-                       allowed_values: List[Any]) -> Tuple[bool, Optional[str]]:
+    def validate_choice(
+        data: Dict[str, Any], field: str, allowed_values: List[Any]
+    ) -> Tuple[bool, Optional[str]]:
         """
         Validate that field value is in allowed choices.
 
@@ -421,13 +471,17 @@ class InputValidator:
 
         value = data[field]
         if value not in allowed_values:
-            return (False, f"{field} must be one of: {', '.join(map(str, allowed_values))}")
+            return (
+                False,
+                f"{field} must be one of: {', '.join(map(str, allowed_values))}",
+            )
 
         return (True, None)
 
     @staticmethod
-    def validate_pattern(data: Dict[str, Any], field: str,
-                        pattern: str, pattern_name: str = "format") -> Tuple[bool, Optional[str]]:
+    def validate_pattern(
+        data: Dict[str, Any], field: str, pattern: str, pattern_name: str = "format"
+    ) -> Tuple[bool, Optional[str]]:
         """
         Validate that field matches a regex pattern.
 

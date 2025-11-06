@@ -12,12 +12,17 @@ Tests cover:
 Target: Verify email integration works correctly.
 """
 
-import pytest
-from django.core import mail
-from django.core.mail import EmailMessage, EmailMultiAlternatives, send_mail, send_mass_mail
 from django.conf import settings
+from django.core import mail
+from django.core.mail import (
+    EmailMessage,
+    EmailMultiAlternatives,
+    send_mail,
+    send_mass_mail,
+)
 from django.template.loader import render_to_string
 
+import pytest
 
 # ============================================================================
 # BASIC EMAIL SENDING TESTS
@@ -154,7 +159,7 @@ class TestEmailTemplateRendering:
         """Test rendering email from template."""
         context = {
             "user_name": "John Doe",
-            "activation_link": "https://example.com/activate/abc123"
+            "activation_link": "https://example.com/activate/abc123",
         }
 
         # Render template
@@ -466,8 +471,10 @@ class TestEmailBackendConfiguration:
         from django.conf import settings
 
         # Check if EMAIL_BACKEND is set to locmem
-        assert "locmem" in settings.EMAIL_BACKEND.lower() or \
-               settings.EMAIL_BACKEND == "django.core.mail.backends.locmem.EmailBackend"
+        assert (
+            "locmem" in settings.EMAIL_BACKEND.lower()
+            or settings.EMAIL_BACKEND == "django.core.mail.backends.locmem.EmailBackend"
+        )
 
     def test_mail_outbox_accessible(self):
         """Test mail.outbox is accessible for testing."""

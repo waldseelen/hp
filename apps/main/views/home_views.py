@@ -24,12 +24,7 @@ from django.utils.translation import gettext_lazy as _
 from apps.blog.models import Post
 from apps.tools.models import Tool
 
-from ..models import (
-    AITool,
-    CybersecurityResource,
-    PersonalInfo,
-    SocialLink,
-)
+from ..models import AITool, CybersecurityResource, PersonalInfo, SocialLink
 
 logger = logging.getLogger(__name__)
 

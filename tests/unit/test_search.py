@@ -14,11 +14,13 @@ Tests cover:
 Target Coverage: 85%+ for apps/main/search*.py modules
 """
 
-import pytest
 from datetime import datetime, timedelta
-from unittest.mock import Mock, patch, MagicMock
-from django.utils import timezone
+from unittest.mock import MagicMock, Mock, patch
+
 from django.conf import settings
+from django.utils import timezone
+
+import pytest
 
 from apps.main.search import SearchEngine, search_engine
 from apps.main.search_index import SearchIndexManager, get_search_index_manager
@@ -232,9 +234,7 @@ class TestSearchEngineSearch:
 
         # Mock one model to return results
         with patch.object(engine, "_search_model") as mock_search:
-            mock_search.return_value = [
-                {"title": "Test", "relevance_score": 10}
-            ]
+            mock_search.return_value = [{"title": "Test", "relevance_score": 10}]
 
             result = engine.search("test", categories=["blog_posts"])
 
@@ -248,8 +248,7 @@ class TestSearchEngineSearch:
         # Mock search to return 100 results
         with patch.object(engine, "_search_model") as mock_search:
             mock_results = [
-                {"title": f"Result {i}", "relevance_score": 100 - i}
-                for i in range(100)
+                {"title": f"Result {i}", "relevance_score": 100 - i} for i in range(100)
             ]
             mock_search.return_value = mock_results
 
@@ -280,9 +279,7 @@ class TestSearchEngineSearch:
         engine = SearchEngine()
 
         with patch.object(engine, "_search_model") as mock_search:
-            mock_search.return_value = [
-                {"title": "Test Result", "relevance_score": 10}
-            ]
+            mock_search.return_value = [{"title": "Test Result", "relevance_score": 10}]
 
             result = engine.search("test")
 
@@ -601,7 +598,9 @@ class TestSearchSuggestions:
         assert len(suggestions) > 0
         # Check if any suggestion contains a tag
         suggestion_texts = [s["text"] for s in suggestions]
-        has_tag_suggestion = any("python" in text or "web" in text for text in suggestion_texts)
+        has_tag_suggestion = any(
+            "python" in text or "web" in text for text in suggestion_texts
+        )
         assert has_tag_suggestion
 
     def test_suggestions_exclude_query_terms(self):
@@ -621,7 +620,11 @@ class TestSearchSuggestions:
         # Should not suggest django or python again
         suggestion_texts = " ".join([s["text"] for s in suggestions])
         # Suggestions should not be ONLY the query terms
-        assert len(suggestions) == 0 or "web" in suggestion_texts or "Blog" in suggestion_texts
+        assert (
+            len(suggestions) == 0
+            or "web" in suggestion_texts
+            or "Blog" in suggestion_texts
+        )
 
 
 # ============================================================================
@@ -633,7 +636,9 @@ class TestSearchIndexDocumentBuilding:
     """Test SearchIndexManager document building"""
 
     @patch("apps.main.search_index.meilisearch.Client")
-    def test_build_document_creates_valid_structure(self, mock_client, sample_blog_post):
+    def test_build_document_creates_valid_structure(
+        self, mock_client, sample_blog_post
+    ):
         """Should build properly structured document"""
         manager = SearchIndexManager()
 
@@ -741,7 +746,10 @@ class TestSearchIndexOperations:
     def test_index_document_adds_to_index(self, mock_client, mock_meilisearch_client):
         """Should add document to Meilisearch index"""
         # Use mock client
-        with patch("apps.main.search_index.meilisearch.Client", return_value=mock_meilisearch_client):
+        with patch(
+            "apps.main.search_index.meilisearch.Client",
+            return_value=mock_meilisearch_client,
+        ):
             manager = SearchIndexManager()
 
             obj = Mock(
@@ -776,9 +784,14 @@ class TestSearchIndexOperations:
             assert len(index.documents) > 0
 
     @patch("apps.main.search_index.meilisearch.Client")
-    def test_delete_document_removes_from_index(self, mock_client, mock_meilisearch_client):
+    def test_delete_document_removes_from_index(
+        self, mock_client, mock_meilisearch_client
+    ):
         """Should remove document from index"""
-        with patch("apps.main.search_index.meilisearch.Client", return_value=mock_meilisearch_client):
+        with patch(
+            "apps.main.search_index.meilisearch.Client",
+            return_value=mock_meilisearch_client,
+        ):
             manager = SearchIndexManager()
 
             # First add a document
@@ -883,7 +896,6 @@ class TestSearchAPIViews:
         assert data["pagination"]["page"] == 2
         assert data["pagination"]["per_page"] == 20
         assert data["pagination"]["total_pages"] == 5  # 100 / 20
-
 
     @pytest.mark.django_db
     @patch("apps.main.views.search_views.search_index_manager")

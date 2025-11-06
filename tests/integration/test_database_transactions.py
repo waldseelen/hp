@@ -12,16 +12,16 @@ Tests cover:
 Target: Verify transactional integrity and ACID properties.
 """
 
-import pytest
-from django.db import transaction, IntegrityError, DatabaseError
-from django.db.utils import OperationalError
 from unittest.mock import patch
 
-from apps.portfolio.models import (
-    Admin, UserSession, BlogPost as PortfolioBlogPost,
-    BlogCategory, PersonalInfo, DataExportRequest
-)
+from django.db import DatabaseError, IntegrityError, transaction
+from django.db.utils import OperationalError
 
+import pytest
+
+from apps.portfolio.models import Admin, BlogCategory
+from apps.portfolio.models import BlogPost as PortfolioBlogPost
+from apps.portfolio.models import DataExportRequest, PersonalInfo, UserSession
 
 # ============================================================================
 # ATOMIC TRANSACTION TESTS
@@ -40,16 +40,14 @@ class TestAtomicTransactions:
             with transaction.atomic():
                 # Create admin
                 admin = Admin.objects.create(
-                    username="testadmin",
-                    email="admin@example.com"
+                    username="testadmin", email="admin@example.com"
                 )
                 admin.set_password("pass123")
                 admin.save()
 
                 # Create another with duplicate username (should fail)
                 Admin.objects.create(
-                    username="testadmin",  # Duplicate!
-                    email="admin2@example.com"
+                    username="testadmin", email="admin2@example.com"  # Duplicate!
                 )
         except IntegrityError:
             pass  # Expected
@@ -63,8 +61,7 @@ class TestAtomicTransactions:
 
         with transaction.atomic():
             admin = Admin.objects.create(
-                username="testadmin",
-                email="admin@example.com"
+                username="testadmin", email="admin@example.com"
             )
             admin.set_password("pass123")
             admin.save()
@@ -74,7 +71,7 @@ class TestAtomicTransactions:
                 user=admin,
                 session_key="session_key_1",
                 ip_address="192.168.1.1",
-                user_agent="Mozilla"
+                user_agent="Mozilla",
             )
 
         # Both should exist (transaction committed)
@@ -87,17 +84,13 @@ class TestAtomicTransactions:
 
         with transaction.atomic():
             # Outer transaction
-            category1 = BlogCategory.objects.create(
-                name="Tech",
-                slug="tech"
-            )
+            category1 = BlogCategory.objects.create(name="Tech", slug="tech")
 
             try:
                 with transaction.atomic():
                     # Inner transaction (savepoint)
                     category2 = BlogCategory.objects.create(
-                        name="Science",
-                        slug="science"
+                        name="Science", slug="science"
                     )
 
                     # Force error
@@ -106,10 +99,7 @@ class TestAtomicTransactions:
                 pass  # Inner transaction rolls back
 
             # Create another in outer transaction
-            category3 = BlogCategory.objects.create(
-                name="Art",
-                slug="art"
-            )
+            category3 = BlogCategory.objects.create(name="Art", slug="art")
 
         # category1 and category3 should exist, category2 should not
         assert BlogCategory.objects.filter(slug="tech").exists()
@@ -130,20 +120,14 @@ class TestSavepoints:
         """Test rolling back to a savepoint."""
         with transaction.atomic():
             # Create category
-            category = BlogCategory.objects.create(
-                name="Tech",
-                slug="tech"
-            )
+            category = BlogCategory.objects.create(name="Tech", slug="tech")
 
             # Create savepoint
             sid = transaction.savepoint()
 
             # Create personal info (will be rolled back)
             PersonalInfo.objects.create(
-                key="temp_key",
-                value="temp_value",
-                type="text",
-                display_order=1
+                key="temp_key", value="temp_value", type="text", display_order=1
             )
 
             # Rollback to savepoint
@@ -158,10 +142,7 @@ class TestSavepoints:
     def test_savepoint_commit(self):
         """Test committing a savepoint."""
         with transaction.atomic():
-            category = BlogCategory.objects.create(
-                name="Tech",
-                slug="tech"
-            )
+            category = BlogCategory.objects.create(name="Tech", slug="tech")
 
             # Create savepoint
             sid = transaction.savepoint()
@@ -171,7 +152,7 @@ class TestSavepoints:
                 key="committed_key",
                 value="committed_value",
                 type="text",
-                display_order=1
+                display_order=1,
             )
 
             # Commit savepoint
@@ -196,8 +177,7 @@ class TestTransactionIsolation:
         # Create admin in one transaction
         with transaction.atomic():
             admin = Admin.objects.create(
-                username="testadmin",
-                email="admin@example.com"
+                username="testadmin", email="admin@example.com"
             )
             admin.set_password("pass123")
             admin.save()
@@ -225,10 +205,7 @@ class TestSelectForUpdate:
 
     def test_select_for_update_locks_row(self):
         """Test select_for_update locks the selected row."""
-        admin = Admin.objects.create(
-            username="testadmin",
-            email="admin@example.com"
-        )
+        admin = Admin.objects.create(username="testadmin", email="admin@example.com")
         admin.set_password("pass123")
         admin.save()
 
@@ -246,17 +223,16 @@ class TestSelectForUpdate:
 
     def test_select_for_update_nowait(self):
         """Test select_for_update with nowait raises exception if locked."""
-        admin = Admin.objects.create(
-            username="testadmin",
-            email="admin@example.com"
-        )
+        admin = Admin.objects.create(username="testadmin", email="admin@example.com")
         admin.set_password("pass123")
         admin.save()
 
         # This test would require concurrent transactions
         # Simplified version: just test the query executes
         with transaction.atomic():
-            locked_admin = Admin.objects.select_for_update(nowait=True).get(username="testadmin")
+            locked_admin = Admin.objects.select_for_update(nowait=True).get(
+                username="testadmin"
+            )
             assert locked_admin is not None
 
     def test_select_for_update_skip_locked(self):
@@ -295,7 +271,7 @@ class TestTransactionDecorator:
             user=admin,
             session_key="session_key_1",
             ip_address="192.168.1.1",
-            user_agent="Mozilla"
+            user_agent="Mozilla",
         )
 
         return admin
@@ -345,7 +321,9 @@ class TestTransactionHooks:
             callback_executed.append(True)
 
         with transaction.atomic():
-            admin = Admin.objects.create(username="testadmin", email="admin@example.com")
+            admin = Admin.objects.create(
+                username="testadmin", email="admin@example.com"
+            )
             admin.set_password("pass123")
             admin.save()
 
@@ -367,7 +345,9 @@ class TestTransactionHooks:
 
         try:
             with transaction.atomic():
-                admin = Admin.objects.create(username="testadmin", email="admin@example.com")
+                admin = Admin.objects.create(
+                    username="testadmin", email="admin@example.com"
+                )
                 admin.set_password("pass123")
                 admin.save()
 
@@ -425,10 +405,7 @@ class TestTransactionPerformance:
         start_time = time.time()
         for i in range(50):
             PersonalInfo.objects.create(
-                key=f"key_without_{i}",
-                value=f"value_{i}",
-                type="text",
-                display_order=i
+                key=f"key_without_{i}", value=f"value_{i}", type="text", display_order=i
             )
         without_transaction_time = time.time() - start_time
 
@@ -440,7 +417,7 @@ class TestTransactionPerformance:
                     key=f"key_with_{i}",
                     value=f"value_{i}",
                     type="text",
-                    display_order=i
+                    display_order=i,
                 )
         with_transaction_time = time.time() - start_time
 

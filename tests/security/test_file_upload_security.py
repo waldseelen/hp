@@ -9,14 +9,12 @@ import os
 import tempfile
 from io import BytesIO
 
-import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
-from apps.core.validation.file_upload import (
-    FileUploadValidator,
-    ImageUploadValidator,
-)
+import pytest
+
+from apps.core.validation.file_upload import FileUploadValidator, ImageUploadValidator
 
 
 class TestFileUploadValidator(TestCase):
@@ -91,9 +89,7 @@ class TestFileUploadValidator(TestCase):
         content = b"a" * (1024 * 1024)
         uploaded_file = SimpleUploadedFile("test.jpg", content)
 
-        is_valid, error = validator.validate_file_size(
-            uploaded_file, category="image"
-        )
+        is_valid, error = validator.validate_file_size(uploaded_file, category="image")
 
         assert is_valid is True
         assert error is None
@@ -106,9 +102,7 @@ class TestFileUploadValidator(TestCase):
         content = b"a" * (15 * 1024 * 1024)
         uploaded_file = SimpleUploadedFile("test.jpg", content)
 
-        is_valid, error = validator.validate_file_size(
-            uploaded_file, category="image"
-        )
+        is_valid, error = validator.validate_file_size(uploaded_file, category="image")
 
         assert is_valid is False
         assert "size" in error.lower()
@@ -120,10 +114,10 @@ class TestFileUploadValidator(TestCase):
         malicious_name = "../../<script>alert('xss')</script>file.txt"
         safe_name = validator.sanitize_filename(malicious_name)
 
-        assert '..' not in safe_name
-        assert '<' not in safe_name
-        assert '>' not in safe_name
-        assert 'script' not in safe_name
+        assert ".." not in safe_name
+        assert "<" not in safe_name
+        assert ">" not in safe_name
+        assert "script" not in safe_name
 
     def test_sanitize_filename_limits_length(self):
         """Test filename length limiting"""
@@ -162,9 +156,9 @@ class TestImageUploadValidator(TestCase):
         try:
             from PIL import Image
 
-            img = Image.new('RGB', (100, 100), color='red')
+            img = Image.new("RGB", (100, 100), color="red")
             img_bytes = BytesIO()
-            img.save(img_bytes, format='PNG')
+            img.save(img_bytes, format="PNG")
             img_bytes.seek(0)
 
             uploaded_file = SimpleUploadedFile("test.png", img_bytes.read())
@@ -182,9 +176,9 @@ class TestImageUploadValidator(TestCase):
             from PIL import Image
 
             # Create 5000x5000 image (exceeds 4000x4000 limit)
-            img = Image.new('RGB', (5000, 5000), color='red')
+            img = Image.new("RGB", (5000, 5000), color="red")
             img_bytes = BytesIO()
-            img.save(img_bytes, format='PNG')
+            img.save(img_bytes, format="PNG")
             img_bytes.seek(0)
 
             uploaded_file = SimpleUploadedFile("test.png", img_bytes.read())
@@ -201,9 +195,9 @@ class TestImageUploadValidator(TestCase):
         try:
             from PIL import Image
 
-            img = Image.new('RGB', (100, 100), color='red')
+            img = Image.new("RGB", (100, 100), color="red")
             img_bytes = BytesIO()
-            img.save(img_bytes, format='PNG')
+            img.save(img_bytes, format="PNG")
             img_bytes.seek(0)
 
             uploaded_file = SimpleUploadedFile("test.png", img_bytes.read())
@@ -234,7 +228,7 @@ class TestMaliciousFileDetection(TestCase):
         """Test executable file blocking"""
         validator = FileUploadValidator()
 
-        dangerous_extensions = ['.exe', '.bat', '.cmd', '.vbs', '.dll', '.so']
+        dangerous_extensions = [".exe", ".bat", ".cmd", ".vbs", ".dll", ".so"]
 
         for ext in dangerous_extensions:
             is_valid, error = validator.validate_extension(f"file{ext}")
@@ -244,7 +238,7 @@ class TestMaliciousFileDetection(TestCase):
         """Test script file blocking"""
         validator = FileUploadValidator()
 
-        script_extensions = ['.sh', '.ps1', '.py', '.rb', '.pl']
+        script_extensions = [".sh", ".ps1", ".py", ".rb", ".pl"]
 
         for ext in script_extensions:
             is_valid, error = validator.validate_extension(f"script{ext}")
@@ -290,9 +284,9 @@ class TestFileUploadIntegration(TestCase):
         try:
             from PIL import Image
 
-            img = Image.new('RGB', (800, 600), color='blue')
+            img = Image.new("RGB", (800, 600), color="blue")
             img_bytes = BytesIO()
-            img.save(img_bytes, format='JPEG')
+            img.save(img_bytes, format="JPEG")
             img_bytes.seek(0)
 
             uploaded_file = SimpleUploadedFile("photo.jpg", img_bytes.read())

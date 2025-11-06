@@ -122,10 +122,9 @@ class SignalCacheInvalidationTestCase(TransactionTestCase):
 
     def test_personalinfo_cache_invalidation_on_save(self):
         """Test that PersonalInfo cache is invalidated on save."""
-        from apps.main.models import PersonalInfo
-
         # Ensure signal handlers are loaded
         import apps.core.cache_signals  # noqa: F401
+        from apps.main.models import PersonalInfo
 
         # Set cache - use keys that our signal handler actually invalidates
         cache.set("home_page_data", {"data": "old"}, 900)
@@ -145,9 +144,16 @@ class SignalCacheInvalidationTestCase(TransactionTestCase):
 
         # Verify cache was invalidated by checking all three keys
         # Signal handler invalidates home_page_data, personal_page_data, and about_page_data
-        self.assertIsNone(cache.get("home_page_data"), "home_page_data cache should be invalidated")
-        self.assertIsNone(cache.get("personal_page_data"), "personal_page_data cache should be invalidated")
-        self.assertIsNone(cache.get("about_page_data"), "about_page_data cache should be invalidated")
+        self.assertIsNone(
+            cache.get("home_page_data"), "home_page_data cache should be invalidated"
+        )
+        self.assertIsNone(
+            cache.get("personal_page_data"),
+            "personal_page_data cache should be invalidated",
+        )
+        self.assertIsNone(
+            cache.get("about_page_data"), "about_page_data cache should be invalidated"
+        )
 
     def test_sociallink_cache_invalidation_on_save(self):
         """Test that SocialLink cache is invalidated on save."""

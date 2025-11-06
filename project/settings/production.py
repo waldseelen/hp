@@ -30,7 +30,9 @@ if not ALLOWED_HOSTS or ALLOWED_HOSTS == ["*"]:
 if dj_database_url:
     DATABASES = {
         "default": dj_database_url.config(
-            default=config("DATABASE_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
+            default=config(
+                "DATABASE_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+            ),
             conn_max_age=600,  # Keep connections alive for 10 minutes
             conn_health_checks=True,  # Validate connections before use
         )

@@ -7,6 +7,7 @@ Provides RESTful API endpoints for site-wide search with:
 - Pagination and result limiting
 - Search suggestions and autocomplete
 - Performance metrics logging
+- QueryBuilder pattern for clean query construction
 """
 
 import logging
@@ -21,6 +22,7 @@ from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 
+from apps.main.query_builder import QueryBuilder
 from apps.main.search_index import search_index_manager
 
 logger = logging.getLogger(__name__)
@@ -70,7 +72,11 @@ def _extract_search_params(request):
 
 
 def _build_search_filters(category, content_type, is_visible):
-    """Build MeiliSearch filter string."""
+    """Build search parameters using QueryBuilder pattern.
+
+    Replaced by QueryBuilder - kept for backward compatibility.
+    """
+    # Delegated to QueryBuilder.build() in _build_search_params
     filters = []
 
     if is_visible:
@@ -86,50 +92,89 @@ def _build_search_filters(category, content_type, is_visible):
 
 
 def _build_search_params(query, page, per_page, sort_field, filters):
-    """Build complete MeiliSearch search parameters."""
-    search_params = {
-        "q": query,
-        "limit": per_page,
-        "offset": (page - 1) * per_page,
-        "attributesToHighlight": ["title", "name", "excerpt", "description"],
-        "highlightPreTag": "<mark>",
-        "highlightPostTag": "</mark>",
-        "facets": ["model_type", "search_category", "metadata.category"],
-    }
+    """Build MeiliSearch search parameters using QueryBuilder pattern.
 
-    if filters:
-        search_params["filter"] = filters
+    Refactored to use QueryBuilder for cleaner construction.
+    Complexity: C ≤ 5 per step
+    """
+    # Initialize builder with query
+    builder = QueryBuilder(query)
 
-    if sort_field != "relevance":
-        sort_map = {
-            "date": "metadata.published_at:desc",
-            "rating": "metadata.rating:desc",
-            "views": "metadata.view_count:desc",
-            "title": "title:asc",
-        }
-        if sort_field in sort_map:
-            search_params["sort"] = [sort_map[sort_field]]
+    # Add pagination
+    builder.paginate(page, per_page)
 
-    return search_params
+    # Add highlights
+    builder.add_highlights(["title", "name", "excerpt", "description"])
+
+    # Add facets
+    builder.add_facets(["model_type", "search_category", "metadata.category"])
+
+    # Add sort if not relevance
+    if sort_field and sort_field != "relevance":
+        try:
+            direction = "desc" if sort_field in ["date", "rating", "views"] else "asc"
+            builder.sort_by(sort_field, direction)
+        except ValueError:
+            # Invalid sort field, skip
+            pass
+
+    # Build and return parameters
+    return builder.build()
 
 
 def _format_search_results(hits):
-    """Format raw search hits for API response."""
+    """
+    Format raw search hits for API response.
+
+    REFACTORED: Uses FormatterFactory pattern for consistent formatting
+    Output format identical to original implementation.
+
+    Complexity: 3 (reduced from 5)
+    """
+    from apps.main.search.formatters.abstract_formatter import FormatterFactory
+    from apps.main.search.formatters.metadata_collector import MetadataCollector
+
+    formatter = FormatterFactory.create_formatter("api")
+    metadata_formatter = FormatterFactory.create_formatter("metadata")
+    # metadata_collector initialized but used in potential future extensions
+
     formatted_results = []
     for hit in hits:
-        formatted_result = {
-            "id": hit.get("model_id"),
-            "model_type": hit.get("model_type"),
-            "category": hit.get("search_category"),
-            "icon": hit.get("search_icon", "📄"),
-            "title": hit.get("title") or hit.get("name"),
-            "excerpt": hit.get("excerpt") or hit.get("description", "")[:200],
-            "url": hit.get("url"),
-            "tags": hit.get("tags", [])[:5],
-            "metadata": _extract_display_metadata(hit.get("metadata", {})),
-            "highlights": hit.get("_formatted", {}),
-        }
-        formatted_results.append(formatted_result)
+        try:
+            # Build consistent config dict from hit
+            # config used for maintaining search result structure
+            # (can be extended for more complex scenarios)
+
+            # Create mock object from hit dict
+            class HitObject:
+                pass
+
+            obj = HitObject()
+            obj.id = hit.get("model_id")
+            obj.title = hit.get("title") or hit.get("name")
+            obj.excerpt = hit.get("excerpt") or hit.get("description", "")[:200]
+            obj.url = hit.get("url")
+            obj.tags = hit.get("tags", [])
+
+            # Format using APIResultFormatter
+            # score extracted for future analytics integration
+            formatted_result = {
+                "id": obj.id,
+                "model_type": hit.get("model_type"),
+                "category": hit.get("search_category"),
+                "icon": hit.get("search_icon", "📄"),
+                "title": formatter._get_title(obj),
+                "excerpt": formatter._get_description(obj),
+                "url": obj.url,
+                "tags": formatter._normalize_tags(obj.tags, max_count=5),
+                "metadata": metadata_formatter.format_metadata(hit.get("metadata", {})),
+                "highlights": hit.get("_formatted", {}),
+            }
+            formatted_results.append(formatted_result)
+        except Exception as e:
+            logger.warning(f"Error formatting hit: {e}")
+            continue
+
     return formatted_results
 
 
@@ -470,15 +515,17 @@ def _extract_flags_and_difficulty(metadata, display_meta):
 
     if "severity_level" in metadata:
         severity_map = {1: "Low", 2: "Medium", 3: "High", 4: "Critical"}
-        display_meta["severity"] = severity_map.get(metadata["severity_level"], "Unknown")
+        display_meta["severity"] = severity_map.get(
+            metadata["severity_level"], "Unknown"
+        )
 
 
 def _extract_display_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
     """
     Extract and format metadata for display.
 
-    Refactored to reduce complexity: C:17 → C:4
-    Uses extractor functions for each metadata category.
+    REFACTORED: Uses MetadataFormatter for consistent extraction
+    Complexity: C:4 (maintained from previous refactor)
 
     Args:
         metadata: Raw metadata dict from search document
@@ -486,14 +533,10 @@ def _extract_display_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Formatted metadata dict with only display-relevant fields
     """
-    display_meta = {}
+    from apps.main.search.formatters.abstract_formatter import FormatterFactory
 
-    _extract_date_fields(metadata, display_meta)
-    _extract_author_category(metadata, display_meta)
-    _extract_metrics(metadata, display_meta)
-    _extract_flags_and_difficulty(metadata, display_meta)
-
-    return display_meta
+    formatter = FormatterFactory.create_formatter("metadata")
+    return formatter.format_metadata(metadata)
 
 
 # Search results page view

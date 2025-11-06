@@ -7,14 +7,15 @@ slug generation, tag validation, reading time calculation, and related posts.
 Coverage target: 85%+
 """
 
-import pytest
+from datetime import timedelta
+
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from datetime import timedelta
+
+import pytest
 
 from apps.blog.models import Post
 from apps.main.models import Admin
-
 
 # ============================================================================
 # Fixtures

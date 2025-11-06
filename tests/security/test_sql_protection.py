@@ -5,13 +5,14 @@ SQL Injection Protection Tests
 Tests for SQL injection protection utilities.
 """
 
-import pytest
 from django.test import TestCase
 
+import pytest
+
 from apps.core.validation.sql_protection import (
-    SQLInjectionProtection,
-    SafeRawQueryBuilder,
     DatabaseQueryValidator,
+    SafeRawQueryBuilder,
+    SQLInjectionProtection,
 )
 
 
@@ -28,7 +29,9 @@ class TestSQLInjectionProtection(TestCase):
         ]
 
         for input_str in clean_inputs:
-            is_suspicious, reason = SQLInjectionProtection.is_suspicious_input(input_str)
+            is_suspicious, reason = SQLInjectionProtection.is_suspicious_input(
+                input_str
+            )
             assert is_suspicious is False
 
     def test_is_suspicious_sql_keywords(self):
@@ -41,7 +44,9 @@ class TestSQLInjectionProtection(TestCase):
         ]
 
         for sql_input in sql_keywords:
-            is_suspicious, reason = SQLInjectionProtection.is_suspicious_input(sql_input)
+            is_suspicious, reason = SQLInjectionProtection.is_suspicious_input(
+                sql_input
+            )
             assert is_suspicious is True
             assert reason is not None
 
@@ -54,7 +59,9 @@ class TestSQLInjectionProtection(TestCase):
         ]
 
         for comment_input in comment_inputs:
-            is_suspicious, reason = SQLInjectionProtection.is_suspicious_input(comment_input)
+            is_suspicious, reason = SQLInjectionProtection.is_suspicious_input(
+                comment_input
+            )
             assert is_suspicious is True
 
     def test_is_suspicious_injection_patterns(self):
@@ -75,15 +82,15 @@ class TestSQLInjectionProtection(TestCase):
         search_term = "test%search_term"
         sanitized = SQLInjectionProtection.sanitize_search_term(search_term)
 
-        assert '%' not in sanitized
-        assert '_' not in sanitized
+        assert "%" not in sanitized
+        assert "_" not in sanitized
 
     def test_sanitize_search_term_removes_null_bytes(self):
         """Test null byte removal"""
         search_term = "test\x00term"
         sanitized = SQLInjectionProtection.sanitize_search_term(search_term)
 
-        assert '\x00' not in sanitized
+        assert "\x00" not in sanitized
 
     def test_sanitize_search_term_enforces_length(self):
         """Test length enforcement"""
@@ -180,9 +187,7 @@ class TestSafeRawQueryBuilder(TestCase):
         query = "SELECT * FROM users WHERE id = %s AND status = %s"
         params = (1, "active")
 
-        is_valid, error = SafeRawQueryBuilder.build_parameterized_query(
-            query, params
-        )
+        is_valid, error = SafeRawQueryBuilder.build_parameterized_query(query, params)
 
         assert is_valid is True
         assert error is None
@@ -192,9 +197,7 @@ class TestSafeRawQueryBuilder(TestCase):
         query = "SELECT * FROM users WHERE id = %s AND status = %s"
         params = (1,)  # Only 1 param, but query needs 2
 
-        is_valid, error = SafeRawQueryBuilder.build_parameterized_query(
-            query, params
-        )
+        is_valid, error = SafeRawQueryBuilder.build_parameterized_query(query, params)
 
         assert is_valid is False
         assert "mismatch" in error.lower()

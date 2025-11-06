@@ -11,15 +11,16 @@ Implements JSON Web Token authentication with:
 
 import logging
 from datetime import timedelta
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
+
 from rest_framework import authentication, exceptions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -48,15 +49,11 @@ class CustomJWTAuthentication(JWTAuthentication):
 
             # Additional security checks
             if not user.is_active:
-                raise exceptions.AuthenticationFailed(
-                    _('User account is disabled.')
-                )
+                raise exceptions.AuthenticationFailed(_("User account is disabled."))
 
             # Check if token is blacklisted
             if self._is_token_blacklisted(validated_token):
-                raise exceptions.AuthenticationFailed(
-                    _('Token has been revoked.')
-                )
+                raise exceptions.AuthenticationFailed(_("Token has been revoked."))
 
             # Log successful authentication
             logger.info(
@@ -71,9 +68,7 @@ class CustomJWTAuthentication(JWTAuthentication):
                 f"JWT authentication failed: {e} "
                 f"from {request.META.get('REMOTE_ADDR', 'unknown')}"
             )
-            raise exceptions.AuthenticationFailed(
-                _('Invalid or expired token.')
-            )
+            raise exceptions.AuthenticationFailed(_("Invalid or expired token."))
 
     def _is_token_blacklisted(self, token) -> bool:
         """
@@ -85,11 +80,9 @@ class CustomJWTAuthentication(JWTAuthentication):
                 OutstandingToken,
             )
 
-            jti = token.get('jti')
+            jti = token.get("jti")
             if jti:
-                return BlacklistedToken.objects.filter(
-                    token__jti=jti
-                ).exists()
+                return BlacklistedToken.objects.filter(token__jti=jti).exists()
         except Exception:
             # Token blacklist not configured - skip check
             pass
@@ -110,18 +103,18 @@ class JWTTokenManager:
         refresh = RefreshToken.for_user(user)
 
         # Add custom claims
-        refresh['username'] = user.username
-        refresh['email'] = user.email
-        refresh['is_staff'] = user.is_staff
+        refresh["username"] = user.username
+        refresh["email"] = user.email
+        refresh["is_staff"] = user.is_staff
 
         return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-            'access_expires_in': int(
-                settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds()
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+            "access_expires_in": int(
+                settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds()
             ),
-            'refresh_expires_in': int(
-                settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()
+            "refresh_expires_in": int(
+                settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds()
             ),
         }
 
@@ -136,24 +129,26 @@ class JWTTokenManager:
             refresh = RefreshToken(refresh_token)
 
             # Rotate refresh token if configured
-            if settings.SIMPLE_JWT.get('ROTATE_REFRESH_TOKENS', False):
+            if settings.SIMPLE_JWT.get("ROTATE_REFRESH_TOKENS", False):
                 refresh.set_jti()
                 refresh.set_exp()
 
             return {
-                'access': str(refresh.access_token),
-                'refresh': str(refresh) if settings.SIMPLE_JWT.get(
-                    'ROTATE_REFRESH_TOKENS', False
-                ) else refresh_token,
-                'access_expires_in': int(
-                    settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds()
+                "access": str(refresh.access_token),
+                "refresh": (
+                    str(refresh)
+                    if settings.SIMPLE_JWT.get("ROTATE_REFRESH_TOKENS", False)
+                    else refresh_token
+                ),
+                "access_expires_in": int(
+                    settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds()
                 ),
             }
 
         except TokenError as e:
             logger.warning(f"Token refresh failed: {e}")
             raise exceptions.AuthenticationFailed(
-                _('Invalid or expired refresh token.')
+                _("Invalid or expired refresh token.")
             )
 
     @staticmethod
@@ -168,17 +163,13 @@ class JWTTokenManager:
             )
 
             token = RefreshToken(refresh_token)
-            jti = token.get('jti')
+            jti = token.get("jti")
 
             if jti:
-                outstanding_token = OutstandingToken.objects.filter(
-                    jti=jti
-                ).first()
+                outstanding_token = OutstandingToken.objects.filter(jti=jti).first()
 
                 if outstanding_token:
-                    BlacklistedToken.objects.get_or_create(
-                        token=outstanding_token
-                    )
+                    BlacklistedToken.objects.get_or_create(token=outstanding_token)
                     logger.info(f"Token {jti} blacklisted successfully")
                     return True
 
@@ -189,12 +180,12 @@ class JWTTokenManager:
         return False
 
     @staticmethod
-    def validate_token(token: str, token_type: str = 'access') -> Dict[str, Any]:
+    def validate_token(token: str, token_type: str = "access") -> Dict[str, Any]:
         """
         Validate token and return payload
         """
         try:
-            if token_type == 'access':
+            if token_type == "access":
                 validated_token = AccessToken(token)
             else:
                 validated_token = RefreshToken(token)
@@ -203,9 +194,7 @@ class JWTTokenManager:
 
         except TokenError as e:
             logger.warning(f"Token validation failed: {e}")
-            raise exceptions.AuthenticationFailed(
-                _('Invalid or expired token.')
-            )
+            raise exceptions.AuthenticationFailed(_("Invalid or expired token."))
 
 
 class APIKeyAuthentication(authentication.BaseAuthentication):
@@ -213,13 +202,13 @@ class APIKeyAuthentication(authentication.BaseAuthentication):
     API Key authentication for server-to-server communication
     """
 
-    keyword = 'Api-Key'
+    keyword = "Api-Key"
 
     def authenticate(self, request):
         """
         Authenticate using API key from header
         """
-        api_key = request.META.get('HTTP_X_API_KEY') or request.GET.get('api_key')
+        api_key = request.META.get("HTTP_X_API_KEY") or request.GET.get("api_key")
 
         if not api_key:
             return None
@@ -231,24 +220,22 @@ class APIKeyAuthentication(authentication.BaseAuthentication):
             api_key_obj = APIKey.objects.get_from_key(api_key)
 
             if not api_key_obj:
-                raise exceptions.AuthenticationFailed(_('Invalid API key'))
+                raise exceptions.AuthenticationFailed(_("Invalid API key"))
 
             if not api_key_obj.is_active:
-                raise exceptions.AuthenticationFailed(_('API key is disabled'))
+                raise exceptions.AuthenticationFailed(_("API key is disabled"))
 
             if api_key_obj.is_expired:
-                raise exceptions.AuthenticationFailed(_('API key has expired'))
+                raise exceptions.AuthenticationFailed(_("API key has expired"))
 
             # Check rate limits
             if not api_key_obj.check_rate_limit():
-                raise exceptions.Throttled(
-                    detail=_('API key rate limit exceeded')
-                )
+                raise exceptions.Throttled(detail=_("API key rate limit exceeded"))
 
             # Update usage stats
             api_key_obj.record_usage(
                 endpoint=request.path,
-                ip_address=request.META.get('REMOTE_ADDR', 'unknown')
+                ip_address=request.META.get("REMOTE_ADDR", "unknown"),
             )
 
             logger.info(
@@ -259,39 +246,32 @@ class APIKeyAuthentication(authentication.BaseAuthentication):
             return (api_key_obj.user, api_key_obj)
 
         except APIKey.DoesNotExist:
-            raise exceptions.AuthenticationFailed(_('Invalid API key'))
+            raise exceptions.AuthenticationFailed(_("Invalid API key"))
         except Exception as e:
             logger.error(f"API key authentication error: {e}")
-            raise exceptions.AuthenticationFailed(
-                _('Authentication failed')
-            )
+            raise exceptions.AuthenticationFailed(_("Authentication failed"))
 
 
 # JWT Settings Configuration (add to settings.py)
 JWT_SETTINGS = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'UPDATE_LAST_LOGIN': True,
-
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': settings.SECRET_KEY,
-    'VERIFYING_KEY': None,
-    'AUDIENCE': None,
-    'ISSUER': None,
-
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
-
-    'JTI_CLAIM': 'jti',
-
-    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": settings.SECRET_KEY,
+    "VERIFYING_KEY": None,
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "JTI_CLAIM": "jti",
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }

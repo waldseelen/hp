@@ -8,8 +8,8 @@ Coverage target: 85%+
 """
 
 import pytest
-from apps.main.seo import SEOOptimizer
 
+from apps.main.seo import SEOOptimizer
 
 # ============================================================================
 # Meta Description Generation Tests
@@ -34,7 +34,9 @@ class TestMetaDescriptionGeneration:
 
     def test_generate_meta_description_strips_html(self):
         """Should strip HTML tags from content"""
-        content = "<p>This is a <strong>blog post</strong> about <a href='#'>Django</a>.</p>"
+        content = (
+            "<p>This is a <strong>blog post</strong> about <a href='#'>Django</a>.</p>"
+        )
         description = SEOOptimizer.generate_meta_description(content)
 
         assert "<p>" not in description
@@ -430,9 +432,7 @@ class TestSEOOptimizerEdgeCases:
 
     def test_title_optimization_only_site_name(self):
         """Should handle when title equals site name"""
-        optimized = SEOOptimizer.optimize_title(
-            "MyPortfolio", site_name="MyPortfolio"
-        )
+        optimized = SEOOptimizer.optimize_title("MyPortfolio", site_name="MyPortfolio")
 
         # Should not duplicate
         assert optimized.count("MyPortfolio") == 1

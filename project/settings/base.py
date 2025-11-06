@@ -106,6 +106,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "apps.main.ratelimit.APIRateLimitMiddleware",  # API-specific rate limiting
+    "apps.core.middleware.api_caching.APICachingMiddleware",  # API response caching with ETag
+    "apps.core.middleware.api_caching.CacheInvalidationMiddleware",  # Cache invalidation on updates
+    "apps.core.middleware.api_caching.ResponseTimeMiddleware",  # Response time tracking
     "apps.main.middleware.CacheControlMiddleware",  # Cache control headers
     "apps.main.middleware.CompressionMiddleware",  # Compression optimization
     "apps.main.middleware.PerformanceMiddleware",  # Performance monitoring
@@ -262,6 +265,30 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_COMPRESSION = True
 STATIC_WEBP_SUPPORT = True
 WHITENOISE_MAX_AGE = 31536000  # 1 year for static files
+WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_ALLOW_ALL_ORIGINS = True
+WHITENOISE_SKIP_COMPRESS_EXTENSIONS = (
+    "jpg",
+    "jpeg",
+    "png",
+    "gif",
+    "webp",
+    "zip",
+    "gz",
+    "tgz",
+    "bz2",
+    "tbz",
+    "xz",
+    "br",
+    "swf",
+    "flv",
+    "woff",
+    "woff2",
+)
+WHITENOISE_ADD_HEADERS_FUNCTION = "whitenoise.middleware.add_headers_function"
+WHITENOISE_AUTOREFRESH = False  # Disable in production
+WHITENOISE_USE_FINDERS = False  # Use STATIC_ROOT only
+WHITENOISE_INDEX_FILE = True  # Serve index.html for directories
 
 # CDN Configuration
 CDN_ENABLED = config("CDN_ENABLED", default=False, cast=bool)
@@ -279,6 +306,9 @@ IMAGE_QUALITY_COMPRESSION = 85
 # Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# API Configuration
+API_VERSION = "v1"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -739,21 +769,72 @@ if not DEBUG:
         EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # ==========================================================================
-# REDIS CACHE CONFIGURATION (Production)
+# REDIS CACHE CONFIGURATION (Production & Development)
 # ==========================================================================
 
 # Try to import django_redis (optional dependency)
 try:
     import django_redis  # noqa: F401
+
     DJANGO_REDIS_AVAILABLE = True
 except ImportError:
     DJANGO_REDIS_AVAILABLE = False
 
-REDIS_URL = config("REDIS_URL", default="")
-if not DEBUG and REDIS_URL and DJANGO_REDIS_AVAILABLE:
+REDIS_URL = config("REDIS_URL", default="redis://localhost:6379/1")
+
+if REDIS_URL and DJANGO_REDIS_AVAILABLE:
     try:
+        # Test Redis connection
+        import redis
+
+        r = redis.from_url(REDIS_URL)
+        r.ping()
+
+        # Multi-tier cache configuration
         CACHES = {
+            # Default cache for general purpose
             "default": {
+                "BACKEND": "django_redis.cache.RedisCache",
+                "LOCATION": REDIS_URL,
+                "OPTIONS": {
+                    "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                    "CONNECTION_POOL_KWARGS": {
+                        "max_connections": 50,
+                        "retry_on_timeout": True,
+                        "socket_keepalive": True,
+                        "socket_keepalive_options": {
+                            1: 1,  # TCP_KEEPIDLE
+                            2: 1,  # TCP_KEEPINTVL
+                            3: 5,  # TCP_KEEPCNT
+                        },
+                    },
+                    "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
+                    "SERIALIZER": "django_redis.serializers.json.JSONSerializer",
+                    "IGNORE_EXCEPTIONS": True,  # Don't crash on Redis errors
+                },
+                "KEY_PREFIX": "portfolio" if not DEBUG else "portfolio-dev",
+                "VERSION": 1,
+                "TIMEOUT": 3600,  # 1 hour default timeout
+            },
+            # Cache for database query results (shorter TTL)
+            "query_cache": {
+                "BACKEND": "django_redis.cache.RedisCache",
+                "LOCATION": REDIS_URL,
+                "OPTIONS": {
+                    "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                    "CONNECTION_POOL_KWARGS": {
+                        "max_connections": 30,
+                        "retry_on_timeout": True,
+                    },
+                    "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
+                    "IGNORE_EXCEPTIONS": True,
+                },
+                "KEY_PREFIX": "query" if not DEBUG else "query-dev",
+                "VERSION": 1,
+                "TIMEOUT": 300,  # 5 minutes for queries
+            },
+            # Cache for API responses
+            "api_cache": {
                 "BACKEND": "django_redis.cache.RedisCache",
                 "LOCATION": REDIS_URL,
                 "OPTIONS": {
@@ -762,24 +843,39 @@ if not DEBUG and REDIS_URL and DJANGO_REDIS_AVAILABLE:
                         "max_connections": 20,
                         "retry_on_timeout": True,
                     },
-                    "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
-                    "SERIALIZER": "django_redis.serializers.json.JSONSerializer",
+                    "IGNORE_EXCEPTIONS": True,
                 },
-                "KEY_PREFIX": "portfolio",
+                "KEY_PREFIX": "api" if not DEBUG else "api-dev",
                 "VERSION": 1,
-                "TIMEOUT": 3600,  # 1 hour default timeout
-            }
+                "TIMEOUT": 600,  # 10 minutes for API responses
+            },
+            # Cache for template fragments (longer TTL)
+            "template_cache": {
+                "BACKEND": "django_redis.cache.RedisCache",
+                "LOCATION": REDIS_URL,
+                "OPTIONS": {
+                    "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                    "CONNECTION_POOL_KWARGS": {
+                        "max_connections": 10,
+                        "retry_on_timeout": True,
+                    },
+                    "IGNORE_EXCEPTIONS": True,
+                },
+                "KEY_PREFIX": "template" if not DEBUG else "template-dev",
+                "VERSION": 1,
+                "TIMEOUT": 7200,  # 2 hours for templates
+            },
         }
 
-        # Session storage
+        # Session storage in Redis
         SESSION_ENGINE = "django.contrib.sessions.backends.cache"
         SESSION_CACHE_ALIAS = "default"
+        SESSION_COOKIE_AGE = 1209600  # 2 weeks
 
-        # Test Redis connection
-        import redis
-
-        r = redis.from_url(REDIS_URL)
-        r.ping()
+        # Cache key configuration
+        CACHE_MIDDLEWARE_ALIAS = "default"
+        CACHE_MIDDLEWARE_SECONDS = 600
+        CACHE_MIDDLEWARE_KEY_PREFIX = "middleware"
 
     except Exception as e:
         import warnings
@@ -787,34 +883,32 @@ if not DEBUG and REDIS_URL and DJANGO_REDIS_AVAILABLE:
         warnings.warn(
             f"Redis connection failed ({e}), falling back to local memory cache"
         )
-        # Fallback to local memory cache
-        CACHES = {
-            "default": {
-                "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-                "LOCATION": "unique-snowflake-fallback",
-            }
-        }
-elif REDIS_URL and DJANGO_REDIS_AVAILABLE:
-    # Development with Redis
-    try:
-        import redis
+        DJANGO_REDIS_AVAILABLE = False
 
-        r = redis.from_url(REDIS_URL)
-        r.ping()
-        CACHES = {
-            "default": {
-                "BACKEND": "django_redis.cache.RedisCache",
-                "LOCATION": REDIS_URL,
-                "OPTIONS": {
-                    "CLIENT_CLASS": "django_redis.client.DefaultClient",
-                },
-                "KEY_PREFIX": "portfolio-dev",
-                "VERSION": 1,
-            }
-        }
-    except Exception:
-        # Redis not available, use default local memory cache
-        pass
+# Fallback to local memory cache if Redis is not available
+if not DJANGO_REDIS_AVAILABLE or not REDIS_URL:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "unique-snowflake-fallback",
+            "TIMEOUT": 300,
+        },
+        "query_cache": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "query-cache",
+            "TIMEOUT": 300,
+        },
+        "api_cache": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "api-cache",
+            "TIMEOUT": 600,
+        },
+        "template_cache": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "template-cache",
+            "TIMEOUT": 7200,
+        },
+    }
 
 # ==========================================================================
 # CUSTOM SETTINGS

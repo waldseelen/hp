@@ -75,7 +75,7 @@
                         </div>
                         {% endif %}
                         <div class="flex justify-between items-center">
-                            <span class="tag-category bg-purple-500/20 text-purple-300">{{ resource.get_category_display }}</span>
+                            <span class="tag-category bg-purple-500/20 text-purple-300">{{ resource.type|default:resource.get_type_display|default:'' }}</span>
                             <a href="{{ resource.url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium transition-colors group">
                                 {% trans 'Visit' %}
                                 <svg class="w-4 h-4 ml-1 transform group-hover:scale-110 transition-transform external-link-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">

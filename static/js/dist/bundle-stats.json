@@ -1,0 +1,2627 @@
+{
+  "hash": "a6cfe162f9e32c9081ee",
+  "version": "5.101.3",
+  "time": 904,
+  "builtAt": 1762099381087,
+  "publicPath": "/static/js/dist/",
+  "outputPath": "C:\\Users\\HP\\AAA\\static\\js\\dist",
+  "assetsByChunkName": {
+    "core": [
+      "core.bundle.js"
+    ],
+    "main": [
+      "main.bundle.js"
+    ],
+    "analytics": [
+      "analytics.bundle.js"
+    ],
+    "animations": [
+      "animations.bundle.js"
+    ],
+    "components": [
+      "components.bundle.js"
+    ],
+    "runtime": [
+      "runtime.bundle.js"
+    ]
+  },
+  "assets": [
+    {
+      "type": "asset",
+      "name": "animations.bundle.js",
+      "size": 155142,
+      "emitted": true,
+      "comparedForEmit": false,
+      "cached": false,
+      "info": {
+        "javascriptModule": false,
+        "size": 155142
+      },
+      "chunkNames": [
+        "animations"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "related": [],
+      "chunks": [
+        974
+      ],
+      "auxiliaryChunks": [],
+      "isOverSizeLimit": false
+    },
+    {
+      "type": "asset",
+      "name": "main.bundle.js",
+      "size": 146371,
+      "emitted": true,
+      "comparedForEmit": false,
+      "cached": false,
+      "info": {
+        "javascriptModule": false,
+        "size": 146371
+      },
+      "chunkNames": [
+        "main"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "related": [],
+      "chunks": [
+        792
+      ],
+      "auxiliaryChunks": [],
+      "isOverSizeLimit": false
+    },
+    {
+      "type": "asset",
+      "name": "components.bundle.js",
+      "size": 110451,
+      "emitted": true,
+      "comparedForEmit": false,
+      "cached": false,
+      "info": {
+        "javascriptModule": false,
+        "size": 110451
+      },
+      "chunkNames": [
+        "components"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "related": [],
+      "chunks": [
+        179
+      ],
+      "auxiliaryChunks": [],
+      "isOverSizeLimit": false
+    },
+    {
+      "type": "asset",
+      "name": "analytics.bundle.js",
+      "size": 106656,
+      "emitted": true,
+      "comparedForEmit": false,
+      "cached": false,
+      "info": {
+        "javascriptModule": false,
+        "size": 106656
+      },
+      "chunkNames": [
+        "analytics"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "related": [],
+      "chunks": [
+        153
+      ],
+      "auxiliaryChunks": [],
+      "isOverSizeLimit": false
+    },
+    {
+      "type": "asset",
+      "name": "core.bundle.js",
+      "size": 44025,
+      "emitted": true,
+      "comparedForEmit": false,
+      "cached": false,
+      "info": {
+        "javascriptModule": false,
+        "size": 44025
+      },
+      "chunkNames": [
+        "core"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "related": [],
+      "chunks": [
+        114
+      ],
+      "auxiliaryChunks": [],
+      "isOverSizeLimit": false
+    },
+    {
+      "type": "asset",
+      "name": "runtime.bundle.js",
+      "size": 5592,
+      "emitted": true,
+      "comparedForEmit": false,
+      "cached": false,
+      "info": {
+        "javascriptModule": false,
+        "size": 5592
+      },
+      "chunkNames": [
+        "runtime"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "related": [],
+      "chunks": [
+        121
+      ],
+      "auxiliaryChunks": [],
+      "isOverSizeLimit": false
+    }
+  ],
+  "chunks": [
+    {
+      "rendered": true,
+      "initial": true,
+      "entry": false,
+      "recorded": false,
+      "size": 9975,
+      "sizes": {
+        "javascript": 9975
+      },
+      "names": [
+        "core"
+      ],
+      "idHints": [],
+      "runtime": [
+        "runtime"
+      ],
+      "files": [
+        "core.bundle.js"
+      ],
+      "auxiliaryFiles": [],
+      "hash": "a54a14396fee887a18c1",
+      "childrenByOrder": {},
+      "id": 114,
+      "siblings": [
+        121
+      ],
+      "parents": [],
+      "children": [
+        792
+      ],
+      "modules": [
+        {
+          "type": "module",
+          "moduleType": "javascript/dynamic",
+          "layer": null,
+          "size": 1292,
+          "sizes": {
+            "javascript": 1292
+          },
+          "built": true,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\core\\theme-handler.js",
+          "name": "./static/js/core/theme-handler.js",
+          "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\core\\theme-handler.js",
+          "index": 0,
+          "preOrderIndex": 0,
+          "index2": 0,
+          "postOrderIndex": 0,
+          "cacheable": true,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "issuer": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": 971,
+          "issuerId": null,
+          "chunks": [
+            114
+          ],
+          "assets": [],
+          "reasons": [
+            {
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "resolvedModuleIdentifier": null,
+              "resolvedModule": null,
+              "type": "entry",
+              "active": true,
+              "explanation": "",
+              "userRequest": "./static/js/core/theme-handler.js",
+              "loc": "core",
+              "moduleId": null,
+              "resolvedModuleId": null
+            }
+          ],
+          "usedExports": [],
+          "providedExports": null,
+          "optimizationBailout": [
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        },
+        {
+          "type": "module",
+          "moduleType": "javascript/dynamic",
+          "layer": null,
+          "size": 8683,
+          "sizes": {
+            "javascript": 8683
+          },
+          "built": true,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\ui-shell.js",
+          "name": "./static/js/ui-shell.js",
+          "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\ui-shell.js",
+          "index": 1,
+          "preOrderIndex": 1,
+          "index2": 1,
+          "postOrderIndex": 1,
+          "cacheable": true,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "issuer": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": 58,
+          "issuerId": null,
+          "chunks": [
+            114
+          ],
+          "assets": [],
+          "reasons": [
+            {
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "resolvedModuleIdentifier": null,
+              "resolvedModule": null,
+              "type": "entry",
+              "active": true,
+              "explanation": "",
+              "userRequest": "./static/js/ui-shell.js",
+              "loc": "core",
+              "moduleId": null,
+              "resolvedModuleId": null
+            }
+          ],
+          "usedExports": [],
+          "providedExports": null,
+          "optimizationBailout": [
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        }
+      ],
+      "origins": [
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "core",
+          "request": "./static/js/core/theme-handler.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "core",
+          "request": "./static/js/ui-shell.js"
+        }
+      ]
+    },
+    {
+      "rendered": true,
+      "initial": true,
+      "entry": true,
+      "recorded": false,
+      "size": 2520,
+      "sizes": {
+        "runtime": 2520
+      },
+      "names": [
+        "runtime"
+      ],
+      "idHints": [],
+      "runtime": [
+        "runtime"
+      ],
+      "files": [
+        "runtime.bundle.js"
+      ],
+      "auxiliaryFiles": [],
+      "hash": "2ade7e369b45ffd6b810",
+      "childrenByOrder": {},
+      "id": 121,
+      "siblings": [
+        114,
+        153,
+        179,
+        974
+      ],
+      "parents": [],
+      "children": [
+        792
+      ],
+      "modules": [
+        {
+          "type": "module",
+          "moduleType": "runtime",
+          "layer": null,
+          "size": 886,
+          "sizes": {
+            "runtime": 886
+          },
+          "built": false,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "webpack/runtime/chunk loaded",
+          "name": "webpack/runtime/chunk loaded",
+          "nameForCondition": null,
+          "index": null,
+          "preOrderIndex": null,
+          "index2": null,
+          "postOrderIndex": null,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": "",
+          "chunks": [
+            121
+          ],
+          "assets": [],
+          "reasons": [],
+          "usedExports": null,
+          "providedExports": [],
+          "optimizationBailout": [],
+          "depth": null
+        },
+        {
+          "type": "module",
+          "moduleType": "runtime",
+          "layer": null,
+          "size": 88,
+          "sizes": {
+            "runtime": 88
+          },
+          "built": false,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "webpack/runtime/hasOwnProperty shorthand",
+          "name": "webpack/runtime/hasOwnProperty shorthand",
+          "nameForCondition": null,
+          "index": null,
+          "preOrderIndex": null,
+          "index2": null,
+          "postOrderIndex": null,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": "",
+          "chunks": [
+            121
+          ],
+          "assets": [],
+          "reasons": [],
+          "usedExports": null,
+          "providedExports": [],
+          "optimizationBailout": [],
+          "depth": null
+        },
+        {
+          "type": "module",
+          "moduleType": "runtime",
+          "layer": null,
+          "size": 1546,
+          "sizes": {
+            "runtime": 1546
+          },
+          "built": false,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "webpack/runtime/jsonp chunk loading",
+          "name": "webpack/runtime/jsonp chunk loading",
+          "nameForCondition": null,
+          "index": null,
+          "preOrderIndex": null,
+          "index2": null,
+          "postOrderIndex": null,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": "",
+          "chunks": [
+            121
+          ],
+          "assets": [],
+          "reasons": [],
+          "usedExports": null,
+          "providedExports": [],
+          "optimizationBailout": [],
+          "depth": null
+        }
+      ],
+      "origins": [
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "analytics",
+          "request": "./static/js/analytics.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "analytics",
+          "request": "./static/js/performance.min.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "animations",
+          "request": "./static/js/modules/animations.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "animations",
+          "request": "./static/js/modules/cursor.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "animations",
+          "request": "./static/js/modules/parallax.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "animations",
+          "request": "./static/js/modules/scroll-animations.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "components",
+          "request": "./static/js/components/privacy-settings.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "components",
+          "request": "./static/js/components/pwa.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "components",
+          "request": "./static/js/search-autocomplete.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "core",
+          "request": "./static/js/core/theme-handler.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "core",
+          "request": "./static/js/ui-shell.js"
+        }
+      ]
+    },
+    {
+      "rendered": true,
+      "initial": true,
+      "entry": false,
+      "recorded": false,
+      "size": 32895,
+      "sizes": {
+        "javascript": 32895
+      },
+      "names": [
+        "analytics"
+      ],
+      "idHints": [],
+      "runtime": [
+        "runtime"
+      ],
+      "files": [
+        "analytics.bundle.js"
+      ],
+      "auxiliaryFiles": [],
+      "hash": "6456cd4a83471902d79e",
+      "childrenByOrder": {},
+      "id": 153,
+      "siblings": [
+        121
+      ],
+      "parents": [],
+      "children": [],
+      "modules": [
+        {
+          "type": "module",
+          "moduleType": "javascript/dynamic",
+          "layer": null,
+          "size": 14182,
+          "sizes": {
+            "javascript": 14182
+          },
+          "built": true,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\analytics.js",
+          "name": "./static/js/analytics.js",
+          "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\analytics.js",
+          "index": 2,
+          "preOrderIndex": 2,
+          "index2": 2,
+          "postOrderIndex": 2,
+          "cacheable": true,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "issuer": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": 271,
+          "issuerId": null,
+          "chunks": [
+            153
+          ],
+          "assets": [],
+          "reasons": [
+            {
+              "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\analytics.js",
+              "module": "./static/js/analytics.js",
+              "moduleName": "./static/js/analytics.js",
+              "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\analytics.js",
+              "resolvedModule": "./static/js/analytics.js",
+              "type": "cjs self exports reference",
+              "active": true,
+              "explanation": "",
+              "userRequest": null,
+              "loc": "476:37-51",
+              "moduleId": 271,
+              "resolvedModuleId": 271
+            },
+            {
+              "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\analytics.js",
+              "module": "./static/js/analytics.js",
+              "moduleName": "./static/js/analytics.js",
+              "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\analytics.js",
+              "resolvedModule": "./static/js/analytics.js",
+              "type": "cjs self exports reference",
+              "active": true,
+              "explanation": "",
+              "userRequest": null,
+              "loc": "477:2-16",
+              "moduleId": 271,
+              "resolvedModuleId": 271
+            },
+            {
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "resolvedModuleIdentifier": null,
+              "resolvedModule": null,
+              "type": "entry",
+              "active": true,
+              "explanation": "",
+              "userRequest": "./static/js/analytics.js",
+              "loc": "analytics",
+              "moduleId": null,
+              "resolvedModuleId": null
+            }
+          ],
+          "usedExports": null,
+          "providedExports": null,
+          "optimizationBailout": [
+            "CommonJS bailout: module.exports is used directly at 476:37-51",
+            "CommonJS bailout: module.exports is used directly at 477:2-16",
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        },
+        {
+          "type": "module",
+          "moduleType": "javascript/dynamic",
+          "layer": null,
+          "size": 18713,
+          "sizes": {
+            "javascript": 18713
+          },
+          "built": true,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\performance.min.js",
+          "name": "./static/js/performance.min.js",
+          "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\performance.min.js",
+          "index": 3,
+          "preOrderIndex": 3,
+          "index2": 3,
+          "postOrderIndex": 3,
+          "cacheable": true,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "issuer": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": 779,
+          "issuerId": null,
+          "chunks": [
+            153
+          ],
+          "assets": [],
+          "reasons": [
+            {
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "resolvedModuleIdentifier": null,
+              "resolvedModule": null,
+              "type": "entry",
+              "active": true,
+              "explanation": "",
+              "userRequest": "./static/js/performance.min.js",
+              "loc": "analytics",
+              "moduleId": null,
+              "resolvedModuleId": null
+            }
+          ],
+          "usedExports": [],
+          "providedExports": null,
+          "optimizationBailout": [
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        }
+      ],
+      "origins": [
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "analytics",
+          "request": "./static/js/analytics.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "analytics",
+          "request": "./static/js/performance.min.js"
+        }
+      ]
+    },
+    {
+      "rendered": true,
+      "initial": true,
+      "entry": false,
+      "recorded": false,
+      "size": 29169,
+      "sizes": {
+        "javascript": 29169
+      },
+      "names": [
+        "components"
+      ],
+      "idHints": [],
+      "runtime": [
+        "runtime"
+      ],
+      "files": [
+        "components.bundle.js"
+      ],
+      "auxiliaryFiles": [],
+      "hash": "399acd8e6e51dc517b27",
+      "childrenByOrder": {},
+      "id": 179,
+      "siblings": [
+        121
+      ],
+      "parents": [],
+      "children": [],
+      "modules": [
+        {
+          "type": "module",
+          "moduleType": "javascript/dynamic",
+          "layer": null,
+          "size": 10927,
+          "sizes": {
+            "javascript": 10927
+          },
+          "built": true,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\components\\privacy-settings.js",
+          "name": "./static/js/components/privacy-settings.js",
+          "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\components\\privacy-settings.js",
+          "index": 8,
+          "preOrderIndex": 8,
+          "index2": 8,
+          "postOrderIndex": 8,
+          "cacheable": true,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "issuer": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": 916,
+          "issuerId": null,
+          "chunks": [
+            179
+          ],
+          "assets": [],
+          "reasons": [
+            {
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "resolvedModuleIdentifier": null,
+              "resolvedModule": null,
+              "type": "entry",
+              "active": true,
+              "explanation": "",
+              "userRequest": "./static/js/components/privacy-settings.js",
+              "loc": "components",
+              "moduleId": null,
+              "resolvedModuleId": null
+            }
+          ],
+          "usedExports": [],
+          "providedExports": null,
+          "optimizationBailout": [
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        },
+        {
+          "type": "module",
+          "moduleType": "javascript/dynamic",
+          "layer": null,
+          "size": 7652,
+          "sizes": {
+            "javascript": 7652
+          },
+          "built": true,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\components\\pwa.js",
+          "name": "./static/js/components/pwa.js",
+          "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\components\\pwa.js",
+          "index": 9,
+          "preOrderIndex": 9,
+          "index2": 9,
+          "postOrderIndex": 9,
+          "cacheable": true,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "issuer": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": 804,
+          "issuerId": null,
+          "chunks": [
+            179
+          ],
+          "assets": [],
+          "reasons": [
+            {
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "resolvedModuleIdentifier": null,
+              "resolvedModule": null,
+              "type": "entry",
+              "active": true,
+              "explanation": "",
+              "userRequest": "./static/js/components/pwa.js",
+              "loc": "components",
+              "moduleId": null,
+              "resolvedModuleId": null
+            }
+          ],
+          "usedExports": [],
+          "providedExports": null,
+          "optimizationBailout": [
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        },
+        {
+          "type": "module",
+          "moduleType": "javascript/dynamic",
+          "layer": null,
+          "size": 10590,
+          "sizes": {
+            "javascript": 10590
+          },
+          "built": true,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\search-autocomplete.js",
+          "name": "./static/js/search-autocomplete.js",
+          "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\search-autocomplete.js",
+          "index": 10,
+          "preOrderIndex": 10,
+          "index2": 10,
+          "postOrderIndex": 10,
+          "cacheable": true,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "issuer": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": 20,
+          "issuerId": null,
+          "chunks": [
+            179
+          ],
+          "assets": [],
+          "reasons": [
+            {
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "resolvedModuleIdentifier": null,
+              "resolvedModule": null,
+              "type": "entry",
+              "active": true,
+              "explanation": "",
+              "userRequest": "./static/js/search-autocomplete.js",
+              "loc": "components",
+              "moduleId": null,
+              "resolvedModuleId": null
+            }
+          ],
+          "usedExports": [],
+          "providedExports": null,
+          "optimizationBailout": [
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        }
+      ],
+      "origins": [
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "components",
+          "request": "./static/js/components/privacy-settings.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "components",
+          "request": "./static/js/components/pwa.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "components",
+          "request": "./static/js/search-autocomplete.js"
+        }
+      ]
+    },
+    {
+      "rendered": true,
+      "initial": true,
+      "entry": false,
+      "recorded": false,
+      "size": 34945,
+      "sizes": {
+        "javascript": 34945
+      },
+      "names": [
+        "main"
+      ],
+      "idHints": [],
+      "runtime": [
+        "runtime"
+      ],
+      "files": [
+        "main.bundle.js"
+      ],
+      "auxiliaryFiles": [],
+      "hash": "8383d36d4d415e4c1f57",
+      "childrenByOrder": {},
+      "id": 792,
+      "siblings": [],
+      "parents": [
+        114,
+        121
+      ],
+      "children": [],
+      "modules": [
+        {
+          "type": "module",
+          "moduleType": "javascript/dynamic",
+          "layer": null,
+          "size": 34945,
+          "sizes": {
+            "javascript": 34945
+          },
+          "built": true,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\ui-enhancements.js",
+          "name": "./static/js/ui-enhancements.js",
+          "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\ui-enhancements.js",
+          "index": 11,
+          "preOrderIndex": 11,
+          "index2": 11,
+          "postOrderIndex": 11,
+          "cacheable": true,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "issuer": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": 497,
+          "issuerId": null,
+          "chunks": [
+            792
+          ],
+          "assets": [],
+          "reasons": [
+            {
+              "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\ui-enhancements.js",
+              "module": "./static/js/ui-enhancements.js",
+              "moduleName": "./static/js/ui-enhancements.js",
+              "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\ui-enhancements.js",
+              "resolvedModule": "./static/js/ui-enhancements.js",
+              "type": "cjs self exports reference",
+              "active": true,
+              "explanation": "",
+              "userRequest": null,
+              "loc": "1091:37-51",
+              "moduleId": 497,
+              "resolvedModuleId": 497
+            },
+            {
+              "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\ui-enhancements.js",
+              "module": "./static/js/ui-enhancements.js",
+              "moduleName": "./static/js/ui-enhancements.js",
+              "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\ui-enhancements.js",
+              "resolvedModule": "./static/js/ui-enhancements.js",
+              "type": "cjs self exports reference",
+              "active": true,
+              "explanation": "",
+              "userRequest": null,
+              "loc": "1092:2-16",
+              "moduleId": 497,
+              "resolvedModuleId": 497
+            },
+            {
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "resolvedModuleIdentifier": null,
+              "resolvedModule": null,
+              "type": "entry",
+              "active": true,
+              "explanation": "",
+              "userRequest": "./static/js/ui-enhancements.js",
+              "loc": "main",
+              "moduleId": null,
+              "resolvedModuleId": null
+            }
+          ],
+          "usedExports": null,
+          "providedExports": null,
+          "optimizationBailout": [
+            "CommonJS bailout: module.exports is used directly at 1091:37-51",
+            "CommonJS bailout: module.exports is used directly at 1092:2-16",
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        }
+      ],
+      "origins": [
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "main",
+          "request": "./static/js/ui-enhancements.js"
+        }
+      ]
+    },
+    {
+      "rendered": true,
+      "initial": true,
+      "entry": false,
+      "recorded": false,
+      "size": 38123,
+      "sizes": {
+        "javascript": 38123
+      },
+      "names": [
+        "animations"
+      ],
+      "idHints": [],
+      "runtime": [
+        "runtime"
+      ],
+      "files": [
+        "animations.bundle.js"
+      ],
+      "auxiliaryFiles": [],
+      "hash": "814250d640653da8ec96",
+      "childrenByOrder": {},
+      "id": 974,
+      "siblings": [
+        121
+      ],
+      "parents": [],
+      "children": [],
+      "modules": [
+        {
+          "type": "module",
+          "moduleType": "javascript/dynamic",
+          "layer": null,
+          "size": 11476,
+          "sizes": {
+            "javascript": 11476
+          },
+          "built": true,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\animations.js",
+          "name": "./static/js/modules/animations.js",
+          "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\modules\\animations.js",
+          "index": 4,
+          "preOrderIndex": 4,
+          "index2": 4,
+          "postOrderIndex": 4,
+          "cacheable": true,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "issuer": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": 786,
+          "issuerId": null,
+          "chunks": [
+            974
+          ],
+          "assets": [],
+          "reasons": [
+            {
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "resolvedModuleIdentifier": null,
+              "resolvedModule": null,
+              "type": "entry",
+              "active": true,
+              "explanation": "",
+              "userRequest": "./static/js/modules/animations.js",
+              "loc": "animations",
+              "moduleId": null,
+              "resolvedModuleId": null
+            }
+          ],
+          "usedExports": [],
+          "providedExports": null,
+          "optimizationBailout": [
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        },
+        {
+          "type": "module",
+          "moduleType": "javascript/dynamic",
+          "layer": null,
+          "size": 11909,
+          "sizes": {
+            "javascript": 11909
+          },
+          "built": true,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\cursor.js",
+          "name": "./static/js/modules/cursor.js",
+          "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\modules\\cursor.js",
+          "index": 7,
+          "preOrderIndex": 7,
+          "index2": 7,
+          "postOrderIndex": 7,
+          "cacheable": true,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "issuer": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": 279,
+          "issuerId": null,
+          "chunks": [
+            974
+          ],
+          "assets": [],
+          "reasons": [
+            {
+              "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\cursor.js",
+              "module": "./static/js/modules/cursor.js",
+              "moduleName": "./static/js/modules/cursor.js",
+              "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\cursor.js",
+              "resolvedModule": "./static/js/modules/cursor.js",
+              "type": "cjs self exports reference",
+              "active": true,
+              "explanation": "",
+              "userRequest": null,
+              "loc": "387:37-51",
+              "moduleId": 279,
+              "resolvedModuleId": 279
+            },
+            {
+              "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\cursor.js",
+              "module": "./static/js/modules/cursor.js",
+              "moduleName": "./static/js/modules/cursor.js",
+              "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\cursor.js",
+              "resolvedModule": "./static/js/modules/cursor.js",
+              "type": "cjs self exports reference",
+              "active": true,
+              "explanation": "",
+              "userRequest": null,
+              "loc": "388:2-16",
+              "moduleId": 279,
+              "resolvedModuleId": 279
+            },
+            {
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "resolvedModuleIdentifier": null,
+              "resolvedModule": null,
+              "type": "entry",
+              "active": true,
+              "explanation": "",
+              "userRequest": "./static/js/modules/cursor.js",
+              "loc": "animations",
+              "moduleId": null,
+              "resolvedModuleId": null
+            }
+          ],
+          "usedExports": null,
+          "providedExports": null,
+          "optimizationBailout": [
+            "CommonJS bailout: module.exports is used directly at 387:37-51",
+            "CommonJS bailout: module.exports is used directly at 388:2-16",
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        },
+        {
+          "type": "module",
+          "moduleType": "javascript/dynamic",
+          "layer": null,
+          "size": 6193,
+          "sizes": {
+            "javascript": 6193
+          },
+          "built": true,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\parallax.js",
+          "name": "./static/js/modules/parallax.js",
+          "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\modules\\parallax.js",
+          "index": 6,
+          "preOrderIndex": 6,
+          "index2": 6,
+          "postOrderIndex": 6,
+          "cacheable": true,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "issuer": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": 374,
+          "issuerId": null,
+          "chunks": [
+            974
+          ],
+          "assets": [],
+          "reasons": [
+            {
+              "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\parallax.js",
+              "module": "./static/js/modules/parallax.js",
+              "moduleName": "./static/js/modules/parallax.js",
+              "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\parallax.js",
+              "resolvedModule": "./static/js/modules/parallax.js",
+              "type": "cjs self exports reference",
+              "active": true,
+              "explanation": "",
+              "userRequest": null,
+              "loc": "176:37-51",
+              "moduleId": 374,
+              "resolvedModuleId": 374
+            },
+            {
+              "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\parallax.js",
+              "module": "./static/js/modules/parallax.js",
+              "moduleName": "./static/js/modules/parallax.js",
+              "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\parallax.js",
+              "resolvedModule": "./static/js/modules/parallax.js",
+              "type": "cjs self exports reference",
+              "active": true,
+              "explanation": "",
+              "userRequest": null,
+              "loc": "177:2-16",
+              "moduleId": 374,
+              "resolvedModuleId": 374
+            },
+            {
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "resolvedModuleIdentifier": null,
+              "resolvedModule": null,
+              "type": "entry",
+              "active": true,
+              "explanation": "",
+              "userRequest": "./static/js/modules/parallax.js",
+              "loc": "animations",
+              "moduleId": null,
+              "resolvedModuleId": null
+            }
+          ],
+          "usedExports": null,
+          "providedExports": null,
+          "optimizationBailout": [
+            "CommonJS bailout: module.exports is used directly at 176:37-51",
+            "CommonJS bailout: module.exports is used directly at 177:2-16",
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        },
+        {
+          "type": "module",
+          "moduleType": "javascript/dynamic",
+          "layer": null,
+          "size": 8545,
+          "sizes": {
+            "javascript": 8545
+          },
+          "built": true,
+          "codeGenerated": true,
+          "buildTimeExecuted": false,
+          "cached": false,
+          "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\scroll-animations.js",
+          "name": "./static/js/modules/scroll-animations.js",
+          "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\modules\\scroll-animations.js",
+          "index": 5,
+          "preOrderIndex": 5,
+          "index2": 5,
+          "postOrderIndex": 5,
+          "cacheable": true,
+          "optional": false,
+          "orphan": false,
+          "dependent": false,
+          "issuer": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "id": 146,
+          "issuerId": null,
+          "chunks": [
+            974
+          ],
+          "assets": [],
+          "reasons": [
+            {
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "resolvedModuleIdentifier": null,
+              "resolvedModule": null,
+              "type": "entry",
+              "active": true,
+              "explanation": "",
+              "userRequest": "./static/js/modules/scroll-animations.js",
+              "loc": "animations",
+              "moduleId": null,
+              "resolvedModuleId": null
+            }
+          ],
+          "usedExports": [],
+          "providedExports": null,
+          "optimizationBailout": [
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        }
+      ],
+      "origins": [
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "animations",
+          "request": "./static/js/modules/animations.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "animations",
+          "request": "./static/js/modules/cursor.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "animations",
+          "request": "./static/js/modules/parallax.js"
+        },
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "animations",
+          "request": "./static/js/modules/scroll-animations.js"
+        }
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "type": "module",
+      "moduleType": "javascript/dynamic",
+      "layer": null,
+      "size": 1292,
+      "sizes": {
+        "javascript": 1292
+      },
+      "built": true,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\core\\theme-handler.js",
+      "name": "./static/js/core/theme-handler.js",
+      "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\core\\theme-handler.js",
+      "index": 0,
+      "preOrderIndex": 0,
+      "index2": 0,
+      "postOrderIndex": 0,
+      "cacheable": true,
+      "optional": false,
+      "orphan": false,
+      "issuer": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": 971,
+      "issuerId": null,
+      "chunks": [
+        114
+      ],
+      "assets": [],
+      "reasons": [
+        {
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "resolvedModuleIdentifier": null,
+          "resolvedModule": null,
+          "type": "entry",
+          "active": true,
+          "explanation": "",
+          "userRequest": "./static/js/core/theme-handler.js",
+          "loc": "core",
+          "moduleId": null,
+          "resolvedModuleId": null
+        }
+      ],
+      "usedExports": [],
+      "providedExports": null,
+      "optimizationBailout": [
+        "ModuleConcatenation bailout: Module is not an ECMAScript module"
+      ],
+      "depth": 0
+    },
+    {
+      "type": "module",
+      "moduleType": "javascript/dynamic",
+      "layer": null,
+      "size": 8683,
+      "sizes": {
+        "javascript": 8683
+      },
+      "built": true,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\ui-shell.js",
+      "name": "./static/js/ui-shell.js",
+      "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\ui-shell.js",
+      "index": 1,
+      "preOrderIndex": 1,
+      "index2": 1,
+      "postOrderIndex": 1,
+      "cacheable": true,
+      "optional": false,
+      "orphan": false,
+      "issuer": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": 58,
+      "issuerId": null,
+      "chunks": [
+        114
+      ],
+      "assets": [],
+      "reasons": [
+        {
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "resolvedModuleIdentifier": null,
+          "resolvedModule": null,
+          "type": "entry",
+          "active": true,
+          "explanation": "",
+          "userRequest": "./static/js/ui-shell.js",
+          "loc": "core",
+          "moduleId": null,
+          "resolvedModuleId": null
+        }
+      ],
+      "usedExports": [],
+      "providedExports": null,
+      "optimizationBailout": [
+        "ModuleConcatenation bailout: Module is not an ECMAScript module"
+      ],
+      "depth": 0
+    },
+    {
+      "type": "module",
+      "moduleType": "javascript/dynamic",
+      "layer": null,
+      "size": 14182,
+      "sizes": {
+        "javascript": 14182
+      },
+      "built": true,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\analytics.js",
+      "name": "./static/js/analytics.js",
+      "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\analytics.js",
+      "index": 2,
+      "preOrderIndex": 2,
+      "index2": 2,
+      "postOrderIndex": 2,
+      "cacheable": true,
+      "optional": false,
+      "orphan": false,
+      "issuer": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": 271,
+      "issuerId": null,
+      "chunks": [
+        153
+      ],
+      "assets": [],
+      "reasons": [
+        {
+          "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\analytics.js",
+          "module": "./static/js/analytics.js",
+          "moduleName": "./static/js/analytics.js",
+          "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\analytics.js",
+          "resolvedModule": "./static/js/analytics.js",
+          "type": "cjs self exports reference",
+          "active": true,
+          "explanation": "",
+          "userRequest": null,
+          "loc": "476:37-51",
+          "moduleId": 271,
+          "resolvedModuleId": 271
+        },
+        {
+          "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\analytics.js",
+          "module": "./static/js/analytics.js",
+          "moduleName": "./static/js/analytics.js",
+          "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\analytics.js",
+          "resolvedModule": "./static/js/analytics.js",
+          "type": "cjs self exports reference",
+          "active": true,
+          "explanation": "",
+          "userRequest": null,
+          "loc": "477:2-16",
+          "moduleId": 271,
+          "resolvedModuleId": 271
+        },
+        {
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "resolvedModuleIdentifier": null,
+          "resolvedModule": null,
+          "type": "entry",
+          "active": true,
+          "explanation": "",
+          "userRequest": "./static/js/analytics.js",
+          "loc": "analytics",
+          "moduleId": null,
+          "resolvedModuleId": null
+        }
+      ],
+      "usedExports": null,
+      "providedExports": null,
+      "optimizationBailout": [
+        "CommonJS bailout: module.exports is used directly at 476:37-51",
+        "CommonJS bailout: module.exports is used directly at 477:2-16",
+        "ModuleConcatenation bailout: Module is not an ECMAScript module"
+      ],
+      "depth": 0
+    },
+    {
+      "type": "module",
+      "moduleType": "javascript/dynamic",
+      "layer": null,
+      "size": 18713,
+      "sizes": {
+        "javascript": 18713
+      },
+      "built": true,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\performance.min.js",
+      "name": "./static/js/performance.min.js",
+      "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\performance.min.js",
+      "index": 3,
+      "preOrderIndex": 3,
+      "index2": 3,
+      "postOrderIndex": 3,
+      "cacheable": true,
+      "optional": false,
+      "orphan": false,
+      "issuer": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": 779,
+      "issuerId": null,
+      "chunks": [
+        153
+      ],
+      "assets": [],
+      "reasons": [
+        {
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "resolvedModuleIdentifier": null,
+          "resolvedModule": null,
+          "type": "entry",
+          "active": true,
+          "explanation": "",
+          "userRequest": "./static/js/performance.min.js",
+          "loc": "analytics",
+          "moduleId": null,
+          "resolvedModuleId": null
+        }
+      ],
+      "usedExports": [],
+      "providedExports": null,
+      "optimizationBailout": [
+        "ModuleConcatenation bailout: Module is not an ECMAScript module"
+      ],
+      "depth": 0
+    },
+    {
+      "type": "module",
+      "moduleType": "javascript/dynamic",
+      "layer": null,
+      "size": 11476,
+      "sizes": {
+        "javascript": 11476
+      },
+      "built": true,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\animations.js",
+      "name": "./static/js/modules/animations.js",
+      "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\modules\\animations.js",
+      "index": 4,
+      "preOrderIndex": 4,
+      "index2": 4,
+      "postOrderIndex": 4,
+      "cacheable": true,
+      "optional": false,
+      "orphan": false,
+      "issuer": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": 786,
+      "issuerId": null,
+      "chunks": [
+        974
+      ],
+      "assets": [],
+      "reasons": [
+        {
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "resolvedModuleIdentifier": null,
+          "resolvedModule": null,
+          "type": "entry",
+          "active": true,
+          "explanation": "",
+          "userRequest": "./static/js/modules/animations.js",
+          "loc": "animations",
+          "moduleId": null,
+          "resolvedModuleId": null
+        }
+      ],
+      "usedExports": [],
+      "providedExports": null,
+      "optimizationBailout": [
+        "ModuleConcatenation bailout: Module is not an ECMAScript module"
+      ],
+      "depth": 0
+    },
+    {
+      "type": "module",
+      "moduleType": "javascript/dynamic",
+      "layer": null,
+      "size": 8545,
+      "sizes": {
+        "javascript": 8545
+      },
+      "built": true,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\scroll-animations.js",
+      "name": "./static/js/modules/scroll-animations.js",
+      "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\modules\\scroll-animations.js",
+      "index": 5,
+      "preOrderIndex": 5,
+      "index2": 5,
+      "postOrderIndex": 5,
+      "cacheable": true,
+      "optional": false,
+      "orphan": false,
+      "issuer": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": 146,
+      "issuerId": null,
+      "chunks": [
+        974
+      ],
+      "assets": [],
+      "reasons": [
+        {
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "resolvedModuleIdentifier": null,
+          "resolvedModule": null,
+          "type": "entry",
+          "active": true,
+          "explanation": "",
+          "userRequest": "./static/js/modules/scroll-animations.js",
+          "loc": "animations",
+          "moduleId": null,
+          "resolvedModuleId": null
+        }
+      ],
+      "usedExports": [],
+      "providedExports": null,
+      "optimizationBailout": [
+        "ModuleConcatenation bailout: Module is not an ECMAScript module"
+      ],
+      "depth": 0
+    },
+    {
+      "type": "module",
+      "moduleType": "javascript/dynamic",
+      "layer": null,
+      "size": 6193,
+      "sizes": {
+        "javascript": 6193
+      },
+      "built": true,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\parallax.js",
+      "name": "./static/js/modules/parallax.js",
+      "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\modules\\parallax.js",
+      "index": 6,
+      "preOrderIndex": 6,
+      "index2": 6,
+      "postOrderIndex": 6,
+      "cacheable": true,
+      "optional": false,
+      "orphan": false,
+      "issuer": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": 374,
+      "issuerId": null,
+      "chunks": [
+        974
+      ],
+      "assets": [],
+      "reasons": [
+        {
+          "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\parallax.js",
+          "module": "./static/js/modules/parallax.js",
+          "moduleName": "./static/js/modules/parallax.js",
+          "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\parallax.js",
+          "resolvedModule": "./static/js/modules/parallax.js",
+          "type": "cjs self exports reference",
+          "active": true,
+          "explanation": "",
+          "userRequest": null,
+          "loc": "176:37-51",
+          "moduleId": 374,
+          "resolvedModuleId": 374
+        },
+        {
+          "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\parallax.js",
+          "module": "./static/js/modules/parallax.js",
+          "moduleName": "./static/js/modules/parallax.js",
+          "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\parallax.js",
+          "resolvedModule": "./static/js/modules/parallax.js",
+          "type": "cjs self exports reference",
+          "active": true,
+          "explanation": "",
+          "userRequest": null,
+          "loc": "177:2-16",
+          "moduleId": 374,
+          "resolvedModuleId": 374
+        },
+        {
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "resolvedModuleIdentifier": null,
+          "resolvedModule": null,
+          "type": "entry",
+          "active": true,
+          "explanation": "",
+          "userRequest": "./static/js/modules/parallax.js",
+          "loc": "animations",
+          "moduleId": null,
+          "resolvedModuleId": null
+        }
+      ],
+      "usedExports": null,
+      "providedExports": null,
+      "optimizationBailout": [
+        "CommonJS bailout: module.exports is used directly at 176:37-51",
+        "CommonJS bailout: module.exports is used directly at 177:2-16",
+        "ModuleConcatenation bailout: Module is not an ECMAScript module"
+      ],
+      "depth": 0
+    },
+    {
+      "type": "module",
+      "moduleType": "javascript/dynamic",
+      "layer": null,
+      "size": 11909,
+      "sizes": {
+        "javascript": 11909
+      },
+      "built": true,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\cursor.js",
+      "name": "./static/js/modules/cursor.js",
+      "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\modules\\cursor.js",
+      "index": 7,
+      "preOrderIndex": 7,
+      "index2": 7,
+      "postOrderIndex": 7,
+      "cacheable": true,
+      "optional": false,
+      "orphan": false,
+      "issuer": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": 279,
+      "issuerId": null,
+      "chunks": [
+        974
+      ],
+      "assets": [],
+      "reasons": [
+        {
+          "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\cursor.js",
+          "module": "./static/js/modules/cursor.js",
+          "moduleName": "./static/js/modules/cursor.js",
+          "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\cursor.js",
+          "resolvedModule": "./static/js/modules/cursor.js",
+          "type": "cjs self exports reference",
+          "active": true,
+          "explanation": "",
+          "userRequest": null,
+          "loc": "387:37-51",
+          "moduleId": 279,
+          "resolvedModuleId": 279
+        },
+        {
+          "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\cursor.js",
+          "module": "./static/js/modules/cursor.js",
+          "moduleName": "./static/js/modules/cursor.js",
+          "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\modules\\cursor.js",
+          "resolvedModule": "./static/js/modules/cursor.js",
+          "type": "cjs self exports reference",
+          "active": true,
+          "explanation": "",
+          "userRequest": null,
+          "loc": "388:2-16",
+          "moduleId": 279,
+          "resolvedModuleId": 279
+        },
+        {
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "resolvedModuleIdentifier": null,
+          "resolvedModule": null,
+          "type": "entry",
+          "active": true,
+          "explanation": "",
+          "userRequest": "./static/js/modules/cursor.js",
+          "loc": "animations",
+          "moduleId": null,
+          "resolvedModuleId": null
+        }
+      ],
+      "usedExports": null,
+      "providedExports": null,
+      "optimizationBailout": [
+        "CommonJS bailout: module.exports is used directly at 387:37-51",
+        "CommonJS bailout: module.exports is used directly at 388:2-16",
+        "ModuleConcatenation bailout: Module is not an ECMAScript module"
+      ],
+      "depth": 0
+    },
+    {
+      "type": "module",
+      "moduleType": "javascript/dynamic",
+      "layer": null,
+      "size": 10927,
+      "sizes": {
+        "javascript": 10927
+      },
+      "built": true,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\components\\privacy-settings.js",
+      "name": "./static/js/components/privacy-settings.js",
+      "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\components\\privacy-settings.js",
+      "index": 8,
+      "preOrderIndex": 8,
+      "index2": 8,
+      "postOrderIndex": 8,
+      "cacheable": true,
+      "optional": false,
+      "orphan": false,
+      "issuer": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": 916,
+      "issuerId": null,
+      "chunks": [
+        179
+      ],
+      "assets": [],
+      "reasons": [
+        {
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "resolvedModuleIdentifier": null,
+          "resolvedModule": null,
+          "type": "entry",
+          "active": true,
+          "explanation": "",
+          "userRequest": "./static/js/components/privacy-settings.js",
+          "loc": "components",
+          "moduleId": null,
+          "resolvedModuleId": null
+        }
+      ],
+      "usedExports": [],
+      "providedExports": null,
+      "optimizationBailout": [
+        "ModuleConcatenation bailout: Module is not an ECMAScript module"
+      ],
+      "depth": 0
+    },
+    {
+      "type": "module",
+      "moduleType": "javascript/dynamic",
+      "layer": null,
+      "size": 7652,
+      "sizes": {
+        "javascript": 7652
+      },
+      "built": true,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\components\\pwa.js",
+      "name": "./static/js/components/pwa.js",
+      "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\components\\pwa.js",
+      "index": 9,
+      "preOrderIndex": 9,
+      "index2": 9,
+      "postOrderIndex": 9,
+      "cacheable": true,
+      "optional": false,
+      "orphan": false,
+      "issuer": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": 804,
+      "issuerId": null,
+      "chunks": [
+        179
+      ],
+      "assets": [],
+      "reasons": [
+        {
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "resolvedModuleIdentifier": null,
+          "resolvedModule": null,
+          "type": "entry",
+          "active": true,
+          "explanation": "",
+          "userRequest": "./static/js/components/pwa.js",
+          "loc": "components",
+          "moduleId": null,
+          "resolvedModuleId": null
+        }
+      ],
+      "usedExports": [],
+      "providedExports": null,
+      "optimizationBailout": [
+        "ModuleConcatenation bailout: Module is not an ECMAScript module"
+      ],
+      "depth": 0
+    },
+    {
+      "type": "module",
+      "moduleType": "javascript/dynamic",
+      "layer": null,
+      "size": 10590,
+      "sizes": {
+        "javascript": 10590
+      },
+      "built": true,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\search-autocomplete.js",
+      "name": "./static/js/search-autocomplete.js",
+      "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\search-autocomplete.js",
+      "index": 10,
+      "preOrderIndex": 10,
+      "index2": 10,
+      "postOrderIndex": 10,
+      "cacheable": true,
+      "optional": false,
+      "orphan": false,
+      "issuer": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": 20,
+      "issuerId": null,
+      "chunks": [
+        179
+      ],
+      "assets": [],
+      "reasons": [
+        {
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "resolvedModuleIdentifier": null,
+          "resolvedModule": null,
+          "type": "entry",
+          "active": true,
+          "explanation": "",
+          "userRequest": "./static/js/search-autocomplete.js",
+          "loc": "components",
+          "moduleId": null,
+          "resolvedModuleId": null
+        }
+      ],
+      "usedExports": [],
+      "providedExports": null,
+      "optimizationBailout": [
+        "ModuleConcatenation bailout: Module is not an ECMAScript module"
+      ],
+      "depth": 0
+    },
+    {
+      "type": "module",
+      "moduleType": "javascript/dynamic",
+      "layer": null,
+      "size": 34945,
+      "sizes": {
+        "javascript": 34945
+      },
+      "built": true,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\ui-enhancements.js",
+      "name": "./static/js/ui-enhancements.js",
+      "nameForCondition": "C:\\Users\\HP\\AAA\\static\\js\\ui-enhancements.js",
+      "index": 11,
+      "preOrderIndex": 11,
+      "index2": 11,
+      "postOrderIndex": 11,
+      "cacheable": true,
+      "optional": false,
+      "orphan": false,
+      "issuer": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": 497,
+      "issuerId": null,
+      "chunks": [
+        792
+      ],
+      "assets": [],
+      "reasons": [
+        {
+          "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\ui-enhancements.js",
+          "module": "./static/js/ui-enhancements.js",
+          "moduleName": "./static/js/ui-enhancements.js",
+          "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\ui-enhancements.js",
+          "resolvedModule": "./static/js/ui-enhancements.js",
+          "type": "cjs self exports reference",
+          "active": true,
+          "explanation": "",
+          "userRequest": null,
+          "loc": "1091:37-51",
+          "moduleId": 497,
+          "resolvedModuleId": 497
+        },
+        {
+          "moduleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\ui-enhancements.js",
+          "module": "./static/js/ui-enhancements.js",
+          "moduleName": "./static/js/ui-enhancements.js",
+          "resolvedModuleIdentifier": "javascript/dynamic|C:\\Users\\HP\\AAA\\node_modules\\babel-loader\\lib\\index.js??ruleSet[1].rules[0].use!C:\\Users\\HP\\AAA\\static\\js\\ui-enhancements.js",
+          "resolvedModule": "./static/js/ui-enhancements.js",
+          "type": "cjs self exports reference",
+          "active": true,
+          "explanation": "",
+          "userRequest": null,
+          "loc": "1092:2-16",
+          "moduleId": 497,
+          "resolvedModuleId": 497
+        },
+        {
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "resolvedModuleIdentifier": null,
+          "resolvedModule": null,
+          "type": "entry",
+          "active": true,
+          "explanation": "",
+          "userRequest": "./static/js/ui-enhancements.js",
+          "loc": "main",
+          "moduleId": null,
+          "resolvedModuleId": null
+        }
+      ],
+      "usedExports": null,
+      "providedExports": null,
+      "optimizationBailout": [
+        "CommonJS bailout: module.exports is used directly at 1091:37-51",
+        "CommonJS bailout: module.exports is used directly at 1092:2-16",
+        "ModuleConcatenation bailout: Module is not an ECMAScript module"
+      ],
+      "depth": 0
+    },
+    {
+      "type": "module",
+      "moduleType": "runtime",
+      "layer": null,
+      "size": 886,
+      "sizes": {
+        "runtime": 886
+      },
+      "built": false,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "webpack/runtime/chunk loaded",
+      "name": "webpack/runtime/chunk loaded",
+      "nameForCondition": null,
+      "index": null,
+      "preOrderIndex": null,
+      "index2": null,
+      "postOrderIndex": null,
+      "optional": false,
+      "orphan": false,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": "",
+      "chunks": [
+        121
+      ],
+      "assets": [],
+      "reasons": [],
+      "usedExports": null,
+      "providedExports": [],
+      "optimizationBailout": [],
+      "depth": null
+    },
+    {
+      "type": "module",
+      "moduleType": "runtime",
+      "layer": null,
+      "size": 88,
+      "sizes": {
+        "runtime": 88
+      },
+      "built": false,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "webpack/runtime/hasOwnProperty shorthand",
+      "name": "webpack/runtime/hasOwnProperty shorthand",
+      "nameForCondition": null,
+      "index": null,
+      "preOrderIndex": null,
+      "index2": null,
+      "postOrderIndex": null,
+      "optional": false,
+      "orphan": false,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": "",
+      "chunks": [
+        121
+      ],
+      "assets": [],
+      "reasons": [],
+      "usedExports": null,
+      "providedExports": [],
+      "optimizationBailout": [],
+      "depth": null
+    },
+    {
+      "type": "module",
+      "moduleType": "runtime",
+      "layer": null,
+      "size": 1546,
+      "sizes": {
+        "runtime": 1546
+      },
+      "built": false,
+      "codeGenerated": true,
+      "buildTimeExecuted": false,
+      "cached": false,
+      "identifier": "webpack/runtime/jsonp chunk loading",
+      "name": "webpack/runtime/jsonp chunk loading",
+      "nameForCondition": null,
+      "index": null,
+      "preOrderIndex": null,
+      "index2": null,
+      "postOrderIndex": null,
+      "optional": false,
+      "orphan": false,
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "id": "",
+      "chunks": [
+        121
+      ],
+      "assets": [],
+      "reasons": [],
+      "usedExports": null,
+      "providedExports": [],
+      "optimizationBailout": [],
+      "depth": null
+    }
+  ],
+  "entrypoints": {
+    "core": {
+      "name": "core",
+      "chunks": [
+        121,
+        114
+      ],
+      "assets": [
+        {
+          "name": "runtime.bundle.js",
+          "size": 5592
+        },
+        {
+          "name": "core.bundle.js",
+          "size": 44025
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": 49617,
+      "auxiliaryAssets": [],
+      "filteredAuxiliaryAssets": 0,
+      "auxiliaryAssetsSize": 0,
+      "children": {},
+      "childAssets": {},
+      "isOverSizeLimit": false
+    },
+    "main": {
+      "name": "main",
+      "chunks": [
+        792
+      ],
+      "assets": [
+        {
+          "name": "main.bundle.js",
+          "size": 146371
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": 146371,
+      "auxiliaryAssets": [],
+      "filteredAuxiliaryAssets": 0,
+      "auxiliaryAssetsSize": 0,
+      "children": {},
+      "childAssets": {},
+      "isOverSizeLimit": false
+    },
+    "analytics": {
+      "name": "analytics",
+      "chunks": [
+        121,
+        153
+      ],
+      "assets": [
+        {
+          "name": "runtime.bundle.js",
+          "size": 5592
+        },
+        {
+          "name": "analytics.bundle.js",
+          "size": 106656
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": 112248,
+      "auxiliaryAssets": [],
+      "filteredAuxiliaryAssets": 0,
+      "auxiliaryAssetsSize": 0,
+      "children": {},
+      "childAssets": {},
+      "isOverSizeLimit": false
+    },
+    "animations": {
+      "name": "animations",
+      "chunks": [
+        121,
+        974
+      ],
+      "assets": [
+        {
+          "name": "runtime.bundle.js",
+          "size": 5592
+        },
+        {
+          "name": "animations.bundle.js",
+          "size": 155142
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": 160734,
+      "auxiliaryAssets": [],
+      "filteredAuxiliaryAssets": 0,
+      "auxiliaryAssetsSize": 0,
+      "children": {},
+      "childAssets": {},
+      "isOverSizeLimit": false
+    },
+    "components": {
+      "name": "components",
+      "chunks": [
+        121,
+        179
+      ],
+      "assets": [
+        {
+          "name": "runtime.bundle.js",
+          "size": 5592
+        },
+        {
+          "name": "components.bundle.js",
+          "size": 110451
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": 116043,
+      "auxiliaryAssets": [],
+      "filteredAuxiliaryAssets": 0,
+      "auxiliaryAssetsSize": 0,
+      "children": {},
+      "childAssets": {},
+      "isOverSizeLimit": false
+    }
+  },
+  "namedChunkGroups": {
+    "core": {
+      "name": "core",
+      "chunks": [
+        121,
+        114
+      ],
+      "assets": [
+        {
+          "name": "runtime.bundle.js",
+          "size": 5592
+        },
+        {
+          "name": "core.bundle.js",
+          "size": 44025
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": 49617,
+      "auxiliaryAssets": [],
+      "filteredAuxiliaryAssets": 0,
+      "auxiliaryAssetsSize": 0,
+      "children": {},
+      "childAssets": {},
+      "isOverSizeLimit": false
+    },
+    "main": {
+      "name": "main",
+      "chunks": [
+        792
+      ],
+      "assets": [
+        {
+          "name": "main.bundle.js",
+          "size": 146371
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": 146371,
+      "auxiliaryAssets": [],
+      "filteredAuxiliaryAssets": 0,
+      "auxiliaryAssetsSize": 0,
+      "children": {},
+      "childAssets": {},
+      "isOverSizeLimit": false
+    },
+    "analytics": {
+      "name": "analytics",
+      "chunks": [
+        121,
+        153
+      ],
+      "assets": [
+        {
+          "name": "runtime.bundle.js",
+          "size": 5592
+        },
+        {
+          "name": "analytics.bundle.js",
+          "size": 106656
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": 112248,
+      "auxiliaryAssets": [],
+      "filteredAuxiliaryAssets": 0,
+      "auxiliaryAssetsSize": 0,
+      "children": {},
+      "childAssets": {},
+      "isOverSizeLimit": false
+    },
+    "animations": {
+      "name": "animations",
+      "chunks": [
+        121,
+        974
+      ],
+      "assets": [
+        {
+          "name": "runtime.bundle.js",
+          "size": 5592
+        },
+        {
+          "name": "animations.bundle.js",
+          "size": 155142
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": 160734,
+      "auxiliaryAssets": [],
+      "filteredAuxiliaryAssets": 0,
+      "auxiliaryAssetsSize": 0,
+      "children": {},
+      "childAssets": {},
+      "isOverSizeLimit": false
+    },
+    "components": {
+      "name": "components",
+      "chunks": [
+        121,
+        179
+      ],
+      "assets": [
+        {
+          "name": "runtime.bundle.js",
+          "size": 5592
+        },
+        {
+          "name": "components.bundle.js",
+          "size": 110451
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": 116043,
+      "auxiliaryAssets": [],
+      "filteredAuxiliaryAssets": 0,
+      "auxiliaryAssetsSize": 0,
+      "children": {},
+      "childAssets": {},
+      "isOverSizeLimit": false
+    }
+  },
+  "errors": [],
+  "errorsCount": 0,
+  "warnings": [],
+  "warningsCount": 0,
+  "children": []
+}

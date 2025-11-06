@@ -7,6 +7,7 @@ This module provides centralized search index management with:
 - Bulk indexing operations
 - Index configuration management
 - Error handling and logging
+- Progress tracking for long-running operations
 
 Usage:
     from apps.main.search_index import search_index_manager
@@ -31,6 +32,7 @@ from django.db.models import Model
 from django.urls import NoReverseMatch, reverse
 
 import meilisearch
+from tqdm import tqdm
 
 # Import sanitizer
 from .sanitizer import ContentSanitizer
@@ -375,9 +377,7 @@ class SearchIndexManager:
 
         return fields
 
-    def _build_document_metadata(
-        self, obj: Model, config: Dict
-    ) -> Dict[str, Any]:
+    def _build_document_metadata(self, obj: Model, config: Dict) -> Dict[str, Any]:
         """
         Extract and process metadata fields from model instance.
 
@@ -573,14 +573,18 @@ class SearchIndexManager:
             return False
 
     def bulk_index(
-        self, objects: List[Model], batch_size: Optional[int] = None
+        self,
+        objects: List[Model],
+        batch_size: Optional[int] = None,
+        show_progress: bool = False,
     ) -> Dict[str, int]:
         """
-        Bulk index multiple documents.
+        Bulk index multiple documents with optional progress tracking.
 
         Args:
             objects: List of Django model instances
             batch_size: Number of documents per batch (default: self.batch_size)
+            show_progress: Display progress bar using tqdm
 
         Returns:
             Dict with counts: {'indexed': N, 'skipped': M, 'failed': K}
@@ -590,7 +594,13 @@ class SearchIndexManager:
 
         # Build all documents
         documents = []
-        for obj in objects:
+        objects_iter = (
+            tqdm(objects, desc="Building documents", disable=not show_progress)
+            if show_progress
+            else objects
+        )
+
+        for obj in objects_iter:
             try:
                 document = self.build_document(obj)
                 if document:
@@ -609,7 +619,19 @@ class SearchIndexManager:
             return results
 
         # Index in batches
-        for i in range(0, len(documents), batch_size):
+        num_batches = (len(documents) + batch_size - 1) // batch_size
+        batch_iter = (
+            tqdm(
+                range(0, len(documents), batch_size),
+                total=num_batches,
+                desc="Indexing batches",
+                disable=not show_progress,
+            )
+            if show_progress
+            else range(0, len(documents), batch_size)
+        )
+
+        for i in batch_iter:
             batch = documents[i : i + batch_size]
             try:
                 task = self.index.add_documents(batch, primary_key="id")
@@ -623,12 +645,15 @@ class SearchIndexManager:
 
         return results
 
-    def reindex_model(self, model_name: str) -> Dict[str, int]:
+    def reindex_model(
+        self, model_name: str, show_progress: bool = False
+    ) -> Dict[str, int]:
         """
         Reindex all objects of a specific model.
 
         Args:
             model_name: Model class name (e.g., 'BlogPost')
+            show_progress: Display progress bar during indexing
 
         Returns:
             Dict with indexing results
@@ -642,7 +667,7 @@ class SearchIndexManager:
         objects = model_class.objects.all()
 
         logger.info(f"Reindexing {model_name}: {objects.count()} objects")
-        return self.bulk_index(list(objects))
+        return self.bulk_index(list(objects), show_progress=show_progress)
 
     def reindex_all(self) -> Dict[str, Dict[str, int]]:
         """

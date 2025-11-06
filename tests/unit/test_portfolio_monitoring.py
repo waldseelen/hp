@@ -11,18 +11,19 @@ Tests cover:
 Target: 22 comprehensive tests for monitoring systems.
 """
 
-import pytest
-from django.utils import timezone
 from datetime import timedelta
 
+from django.utils import timezone
+
+import pytest
+
 from apps.portfolio.models import (
+    AnalyticsEvent,
+    ErrorLog,
+    NotificationLog,
     PerformanceMetric,
     WebPushSubscription,
-    NotificationLog,
-    ErrorLog,
-    AnalyticsEvent,
 )
-
 
 # ============================================================================
 # PERFORMANCEMETRIC MODEL TESTS (Core Web Vitals)
@@ -239,9 +240,16 @@ class TestErrorLogModel:
     def test_errorlog_all_types(self):
         """Test all error types."""
         types = [
-            "javascript", "python", "http", "database",
-            "validation", "permission", "network", "performance",
-            "security", "other"
+            "javascript",
+            "python",
+            "http",
+            "database",
+            "validation",
+            "permission",
+            "network",
+            "performance",
+            "security",
+            "other",
         ]
         for err_type in types:
             error = ErrorLog.objects.create(

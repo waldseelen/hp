@@ -9,20 +9,21 @@ Tests cover:
 - Success/error messages
 - IP address handling
 """
+
 import hashlib
 from unittest.mock import Mock, patch
 
-import pytest
 from django.contrib.messages import get_messages
 from django.core import mail
 from django.core.cache import cache
 from django.test import RequestFactory
 from django.urls import reverse
 
+import pytest
+
 from apps.contact.forms import ContactForm
 from apps.contact.models import ContactMessage
 from apps.contact.views import contact_form, get_client_ip
-
 
 # Disable DEBUG to avoid template rendering issues with Python 3.14
 pytestmark = pytest.mark.django_db
@@ -154,16 +155,13 @@ class TestContactFormPOSTValid:
         assert ContactMessage.objects.count() == 1
 
     @patch("apps.contact.views.analytics")
-    def test_valid_post_tracks_analytics(
-        self, mock_analytics, client, valid_form_data
-    ):
+    def test_valid_post_tracks_analytics(self, mock_analytics, client, valid_form_data):
         """Test valid POST tracks analytics events"""
         response = client.post(reverse("contact:form"), data=valid_form_data)
 
         # Should track submission attempt, conversion, and success
         assert mock_analytics.track_event.call_count >= 2
         mock_analytics.track_conversion.assert_called_once()
-
 
 
 class TestContactFormPOSTInvalid:
@@ -209,9 +207,7 @@ class TestContactFormPOSTInvalid:
         assert len(messages) > 0
 
     @patch("apps.contact.views.analytics")
-    def test_invalid_post_tracks_validation_failure(
-        self, mock_analytics, client
-    ):
+    def test_invalid_post_tracks_validation_failure(self, mock_analytics, client):
         """Test invalid POST tracks validation failure in analytics"""
         invalid_data = {
             "name": "A",
@@ -225,7 +221,6 @@ class TestContactFormPOSTInvalid:
         mock_analytics.track_event.assert_called()
         call_args = [call[0] for call in mock_analytics.track_event.call_args_list]
         assert any("validation_failed" in str(arg) for arg in call_args)
-
 
 
 class TestRateLimiting:
@@ -267,9 +262,7 @@ class TestRateLimiting:
         pass
 
     @patch("apps.contact.views.analytics")
-    def test_rate_limit_tracks_event(
-        self, mock_analytics, client, valid_form_data
-    ):
+    def test_rate_limit_tracks_event(self, mock_analytics, client, valid_form_data):
         """Test rate limiting tracks analytics event"""
         # Hit rate limit
         for i in range(6):
@@ -284,7 +277,6 @@ class TestRateLimiting:
         cache.clear()
 
 
-
 class TestContactSuccess:
     """Tests for success page"""
 
@@ -294,7 +286,6 @@ class TestContactSuccess:
 
         assert response.status_code == 200
         assert "pages/contact/success.html" in [t.name for t in response.templates]
-
 
 
 class TestSecurityFeatures:
@@ -353,7 +344,6 @@ class TestSecurityFeatures:
         # The fact that our other POST tests pass with client confirms CSRF works
 
 
-
 class TestEmailNotification:
     """Tests for email notification functionality"""
 
@@ -399,7 +389,6 @@ class TestEmailNotification:
 
         assert len(mail.outbox) == 1
         assert "admin@testsite.com" in mail.outbox[0].to
-
 
 
 class TestEdgeCases:

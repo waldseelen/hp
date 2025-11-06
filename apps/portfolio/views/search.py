@@ -10,6 +10,7 @@ from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 
 from apps.main.search import search_engine
+from apps.main.tag_collectors import get_tag_registry
 
 
 class SearchView(TemplateView):
@@ -169,71 +170,13 @@ class TagCloudView(TemplateView):
         return context
 
     def _collect_all_tags(self):  # noqa: C901
-        """Collect tags from all models"""
-        from apps.blog.models import Post
-        from apps.main.models import AITool
-        from apps.tools.models import Tool
+        """
+        Collect tags from all models.
 
-        tag_data = {}
-
-        # Blog posts
-        try:
-            posts = Post.objects.filter(status="published", tags__isnull=False)
-            for post in posts:
-                if post.tags:
-                    for tag in post.tags:
-                        if tag.strip():
-                            self._add_tag(tag_data, tag.strip(), "blog", post)
-        except Exception:
-            pass
-
-        # Projects - disabled (no Project model)
-        # Projects functionality will be added in a future phase
-
-        # Tools
-        try:
-            tools = Tool.objects.filter(is_visible=True)
-            for tool in tools:
-                if hasattr(tool, "tags") and tool.tags:
-                    tags = (
-                        tool.tags.split(",")
-                        if isinstance(tool.tags, str)
-                        else tool.tags
-                    )
-                    for tag in tags:
-                        if tag.strip():
-                            self._add_tag(tag_data, tag.strip(), "tool", tool)
-        except Exception:
-            pass
-
-        # AI Tools
-        try:
-            ai_tools = AITool.objects.filter(is_visible=True)
-            for ai_tool in ai_tools:
-                if ai_tool.tags:
-                    tags = ai_tool.tags.split(",")
-                    for tag in tags:
-                        if tag.strip():
-                            self._add_tag(tag_data, tag.strip(), "ai", ai_tool)
-        except Exception:
-            pass
-
-        return tag_data
-
-    def _add_tag(self, tag_data, tag, category, obj):
-        """Add tag to tag data structure"""
-        tag_lower = tag.lower()
-        if tag_lower not in tag_data:
-            tag_data[tag_lower] = {
-                "name": tag,
-                "count": 0,
-                "categories": set(),
-                "items": [],
-            }
-
-        tag_data[tag_lower]["count"] += 1
-        tag_data[tag_lower]["categories"].add(category)
-        tag_data[tag_lower]["items"].append({"type": category, "object": obj})
+        Refactored to use collector registry pattern.
+        Complexity: C=2 (was 25)
+        """
+        return get_tag_registry().collect_all_tags()
 
     def _generate_tag_cloud(self, tag_data):
         """Generate tag cloud with size classes"""

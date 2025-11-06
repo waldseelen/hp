@@ -4,6 +4,7 @@ Mock implementation of Meilisearch client for testing
 Provides a simple in-memory search index that simulates
 Meilisearch behavior without requiring a running server.
 """
+
 from typing import Any, Dict, List, Optional
 
 
@@ -130,7 +131,12 @@ class MockIndex:
         docs = list(self.documents.values())
         paginated = docs[offset : offset + limit]
 
-        return {"results": paginated, "offset": offset, "limit": limit, "total": len(docs)}
+        return {
+            "results": paginated,
+            "offset": offset,
+            "limit": limit,
+            "total": len(docs),
+        }
 
     def update_settings(self, settings: Dict[str, Any]) -> Dict[str, Any]:
         """Update index settings"""

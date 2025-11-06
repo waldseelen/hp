@@ -1,4 +1,4 @@
-/**
+    /**
  * CDN and Asset Performance Monitoring System
  * Tracks:
  * - Time to First Byte (TTFB) for assets
@@ -152,6 +152,7 @@ class CDNPerformanceMonitor {
         if (ttfb > 200) {
             console.warn(`High TTFB detected: ${ttfb.toFixed(2)}ms`);
         }
+    }
 
     /**
      * Get asset type from URL
@@ -186,6 +187,7 @@ class CDNPerformanceMonitor {
             if (entry.transferSize === 0) {
                 console.log(`CDN cache hit: ${entry.name}`);
             }
+        }
     }
 
     /**
@@ -196,6 +198,7 @@ class CDNPerformanceMonitor {
             'cdn.', 'assets.', 'static.',
             'cloudflare', 'cloudfront', 'fastly',
             'jsdelivr', 'unpkg', 'cdnjs'
+        ];
 
         return cdnPatterns.some(pattern => hostname.includes(pattern));
     }
@@ -332,10 +335,10 @@ class CDNPerformanceMonitor {
             if ('navigator' in window && 'sendBeacon' in navigator) {
                 const sent = navigator.sendBeacon(endpoint, payload);
                 if (!sent && window.fetch) {
-                    fetch(endpoint, { method: 'POST', body: payload, keepalive: true, headers: { 'Content-Type': 'application/json' } }).catch(() => {});
+                    fetch(endpoint, { method: 'POST', body: payload, keepalive: true, headers: { 'Content-Type': 'application/json' } }).catch(() => { });
                 }
             } else if (window.fetch) {
-                fetch(endpoint, { method: 'POST', body: payload, keepalive: true, headers: { 'Content-Type': 'application/json' } }).catch(() => {});
+                fetch(endpoint, { method: 'POST', body: payload, keepalive: true, headers: { 'Content-Type': 'application/json' } }).catch(() => { });
             }
         } else {
             console.debug('CDN performance endpoint disabled; metrics logging only.');

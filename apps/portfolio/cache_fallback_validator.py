@@ -8,6 +8,7 @@ from django.core.cache import cache
 from django.test import RequestFactory
 
 from apps.main.views import home
+from apps.portfolio.utils.cache_test_helpers import CacheFallbackTester
 from apps.portfolio.views import personal_page
 
 logger = logging.getLogger(__name__)
@@ -21,90 +22,11 @@ def test_cache_fallbacks():
     1. Views return fallback data when cache is empty
     2. Fallback data structure matches expected format
     3. No exceptions are raised during fallback
+
+    REFACTORED: Complexity reduced from C:15 to A:2
     """
-    results = {"home_view": False, "personal_view": False, "errors": []}
-
-    # Create test request
-    factory = RequestFactory()
-
-    try:
-        # Test 1: Home view fallback
-        print("Testing home view fallback...")
-
-        # Clear all cache first
-        cache.clear()
-
-        # Make request to home view
-        request = factory.get("/")
-        request.user = type("AnonymousUser", (), {"is_authenticated": False})()
-
-        response = home(request)
-
-        # Check if response contains expected fallback data
-        # For direct render responses, we can't easily check context
-        # Check response content instead
-        content = response.content.decode("utf-8")
-        results["home_view"] = all(
-            [
-                "Building secure, human-centered products" in content,
-                "GitHub profile" in content,
-                "Designing secure platforms" in content,
-            ]
-        )
-
-        print(f"Home view fallback test: {'PASS' if results['home_view'] else 'FAIL'}")
-
-    except Exception as e:
-        results["errors"].append(f"Home view test failed: {e}")
-        logger.error(f"Home view fallback test error: {e}")
-
-    try:
-        # Test 2: Personal page view fallback
-        print("Testing personal page view fallback...")
-
-        # Clear cache again
-        cache.clear()
-
-        # Make request to personal page
-        request = factory.get("/personal/")
-        request.user = type("AnonymousUser", (), {"is_authenticated": False})()
-
-        response = personal_page(request)
-
-        # Check response content for fallback data
-        if hasattr(response, "content"):
-            content = response.content.decode("utf-8")
-            results["personal_view"] = all(
-                [
-                    "personal info" in content.lower() or "about" in content.lower(),
-                    "social links" in content.lower() or "contact" in content.lower(),
-                ]
-            )
-
-        print(
-            f"Personal view fallback test: {'PASS' if results['personal_view'] else 'FAIL'}"
-        )
-
-    except Exception as e:
-        results["errors"].append(f"Personal view test failed: {e}")
-        logger.error(f"Personal view fallback test error: {e}")
-
-    # Summary
-    all_passed = (
-        results["home_view"] and results["personal_view"] and not results["errors"]
-    )
-
-    print("\nCache Fallback Test Results:")
-    print(f"Home View: {'✅ PASS' if results['home_view'] else '❌ FAIL'}")
-    print(f"Personal View: {'✅ PASS' if results['personal_view'] else '❌ FAIL'}")
-    print(f"Overall: {'✅ ALL TESTS PASSED' if all_passed else '❌ SOME TESTS FAILED'}")
-
-    if results["errors"]:
-        print(f"Errors: {len(results['errors'])}")
-        for error in results["errors"]:
-            print(f"  - {error}")
-
-    return results
+    tester = CacheFallbackTester(home, personal_page)
+    return tester.run_tests()
 
 
 def validate_cache_fallback_behavior():

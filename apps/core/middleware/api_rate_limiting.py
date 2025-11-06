@@ -27,33 +27,33 @@ class APIRateLimitMiddleware:
 
     # API-specific rate limits (more restrictive than web)
     RATE_LIMITS = {
-        'authenticated': {
-            'requests': 60,
-            'window': 60,  # 60 requests per minute
+        "authenticated": {
+            "requests": 60,
+            "window": 60,  # 60 requests per minute
         },
-        'anonymous': {
-            'requests': 20,
-            'window': 60,  # 20 requests per minute
+        "anonymous": {
+            "requests": 20,
+            "window": 60,  # 20 requests per minute
         },
-        'api_key': {
-            'requests': 1000,
-            'window': 3600,  # 1000 requests per hour
+        "api_key": {
+            "requests": 1000,
+            "window": 3600,  # 1000 requests per hour
         },
     }
 
     # Per-endpoint rate limits
     ENDPOINT_LIMITS = {
-        '/api/v1/search/': {'requests': 30, 'window': 60},  # 30/min
-        '/api/v1/analytics/': {'requests': 100, 'window': 60},  # 100/min
-        '/api/v1/performance/': {'requests': 120, 'window': 60},  # 120/min
-        '/api/v1/auth/token/': {'requests': 5, 'window': 300},  # 5 per 5min
-        '/api/v1/auth/refresh/': {'requests': 10, 'window': 300},  # 10 per 5min
+        "/api/v1/search/": {"requests": 30, "window": 60},  # 30/min
+        "/api/v1/analytics/": {"requests": 100, "window": 60},  # 100/min
+        "/api/v1/performance/": {"requests": 120, "window": 60},  # 120/min
+        "/api/v1/auth/token/": {"requests": 5, "window": 300},  # 5 per 5min
+        "/api/v1/auth/refresh/": {"requests": 10, "window": 300},  # 10 per 5min
     }
 
     # Exempt endpoints (no rate limiting)
     EXEMPT_ENDPOINTS = [
-        '/api/v1/health/',
-        '/api/v1/status/',
+        "/api/v1/health/",
+        "/api/v1/status/",
     ]
 
     def __init__(self, get_response):
@@ -79,16 +79,16 @@ class APIRateLimitMiddleware:
 
             response = JsonResponse(
                 {
-                    'error': 'Rate limit exceeded',
-                    'message': 'Too many requests. Please try again later.',
-                    'retry_after': retry_after,
+                    "error": "Rate limit exceeded",
+                    "message": "Too many requests. Please try again later.",
+                    "retry_after": retry_after,
                 },
-                status=429
+                status=429,
             )
-            response['Retry-After'] = retry_after
-            response['X-RateLimit-Limit'] = self._get_limit_for_request(request)[0]
-            response['X-RateLimit-Remaining'] = 0
-            response['X-RateLimit-Reset'] = int(time.time() + retry_after)
+            response["Retry-After"] = retry_after
+            response["X-RateLimit-Limit"] = self._get_limit_for_request(request)[0]
+            response["X-RateLimit-Remaining"] = 0
+            response["X-RateLimit-Reset"] = int(time.time() + retry_after)
 
             return response
 
@@ -102,7 +102,7 @@ class APIRateLimitMiddleware:
         """
         Check if path is an API endpoint
         """
-        return path.startswith('/api/')
+        return path.startswith("/api/")
 
     def _is_exempt_endpoint(self, path: str) -> bool:
         """
@@ -148,27 +148,27 @@ class APIRateLimitMiddleware:
         # Check endpoint-specific limits first
         for endpoint, limit_config in self.ENDPOINT_LIMITS.items():
             if request.path.startswith(endpoint):
-                return (limit_config['requests'], limit_config['window'])
+                return (limit_config["requests"], limit_config["window"])
 
         # Check if request uses API key
-        if hasattr(request, 'auth') and hasattr(request.auth, 'rate_limit_per_hour'):
+        if hasattr(request, "auth") and hasattr(request.auth, "rate_limit_per_hour"):
             # API key with custom rate limit
             return (request.auth.rate_limit_per_hour, 3600)
 
         # Default limits based on authentication
         if request.user and request.user.is_authenticated:
-            config = self.RATE_LIMITS['authenticated']
+            config = self.RATE_LIMITS["authenticated"]
         else:
-            config = self.RATE_LIMITS['anonymous']
+            config = self.RATE_LIMITS["anonymous"]
 
-        return (config['requests'], config['window'])
+        return (config["requests"], config["window"])
 
     def _get_cache_key(self, request) -> str:
         """
         Generate cache key for rate limiting
         """
         # Use API key if available
-        if hasattr(request, 'auth') and hasattr(request.auth, 'key_hash'):
+        if hasattr(request, "auth") and hasattr(request.auth, "key_hash"):
             identifier = f"api_key:{request.auth.key_hash}"
         # Use user ID if authenticated
         elif request.user and request.user.is_authenticated:
@@ -179,7 +179,7 @@ class APIRateLimitMiddleware:
             identifier = f"ip:{ip_address}"
 
         # Include endpoint in key for endpoint-specific limits
-        endpoint_key = request.path.split('?')[0]  # Remove query params
+        endpoint_key = request.path.split("?")[0]  # Remove query params
 
         return f"api_rate_limit:{identifier}:{endpoint_key}"
 
@@ -187,11 +187,11 @@ class APIRateLimitMiddleware:
         """
         Get client IP address
         """
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
         if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
+            ip = x_forwarded_for.split(",")[0]
         else:
-            ip = request.META.get('REMOTE_ADDR', 'unknown')
+            ip = request.META.get("REMOTE_ADDR", "unknown")
         return ip
 
     def _add_rate_limit_headers(self, response, request) -> None:
@@ -203,9 +203,9 @@ class APIRateLimitMiddleware:
         current_count = cache.get(cache_key, 0)
         remaining = max(0, limit - current_count)
 
-        response['X-RateLimit-Limit'] = limit
-        response['X-RateLimit-Remaining'] = remaining
-        response['X-RateLimit-Reset'] = int(time.time() + window)
+        response["X-RateLimit-Limit"] = limit
+        response["X-RateLimit-Remaining"] = remaining
+        response["X-RateLimit-Reset"] = int(time.time() + window)
 
 
 class DDoSProtectionMiddleware:
@@ -223,7 +223,7 @@ class DDoSProtectionMiddleware:
 
     def __call__(self, request):
         # Only check API endpoints
-        if not request.path.startswith('/api/'):
+        if not request.path.startswith("/api/"):
             return self.get_response(request)
 
         ip_address = self._get_client_ip(request)
@@ -233,10 +233,10 @@ class DDoSProtectionMiddleware:
             logger.warning(f"Blocked DDoS attempt from {ip_address}")
             return JsonResponse(
                 {
-                    'error': 'Access denied',
-                    'message': 'Your IP has been temporarily blocked due to suspicious activity.',
+                    "error": "Access denied",
+                    "message": "Your IP has been temporarily blocked due to suspicious activity.",
                 },
-                status=403
+                status=403,
             )
 
         # Check if IP exceeds DDoS threshold
@@ -245,10 +245,10 @@ class DDoSProtectionMiddleware:
             logger.error(f"DDoS detected from {ip_address} - IP blocked")
             return JsonResponse(
                 {
-                    'error': 'Too many requests',
-                    'message': 'Excessive request rate detected. Your IP has been temporarily blocked.',
+                    "error": "Too many requests",
+                    "message": "Excessive request rate detected. Your IP has been temporarily blocked.",
                 },
-                status=429
+                status=429,
             )
 
         return self.get_response(request)
@@ -257,11 +257,11 @@ class DDoSProtectionMiddleware:
         """
         Get client IP address
         """
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
         if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
+            ip = x_forwarded_for.split(",")[0]
         else:
-            ip = request.META.get('REMOTE_ADDR', 'unknown')
+            ip = request.META.get("REMOTE_ADDR", "unknown")
         return ip
 
     def _is_blocked(self, ip_address: str) -> bool:

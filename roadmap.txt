@@ -1,0 +1,358 @@
+
+
+
+
+
+
+
+
+
+# GÖREVLER LİSTESİ (KATEGORİZE EDİLMİŞ)
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 🔧 KOD KALİTESİ & REFACTORING
+
+### Validation Functions Consolidation
+- [x] Consolidate 6 validation functions (Inventory complete)
+- [x] Target Complexity: 15-16 → ≤7 per function (Plan created)
+- [ ] Create validation framework (BaseValidator + Registry)
+- [ ] All validators work identically
+- [ ] No false negatives/positives
+- [ ] Performance improved
+
+### View Logic & Middleware Refactoring
+- [x] Refactor api_caching middleware (4 improvements)
+- [x] Refactor 17 view/middleware functions (Inventory complete - C: 11-14 range)
+- [ ] Apply design patterns (Strategy, Template, Helper extraction)
+- [ ] Extract helper methods (refactor_helpers.py)
+- [ ] All views work identically
+- [ ] Middleware behavior unchanged
+- [ ] Performance maintained
+
+### Logging & JSON Formatting Refactoring
+- [ ] Extract _extract_user_context(record) → user info
+- [ ] Extract _extract_request_context(record) → request info
+- [ ] Extract JSON formatting logic
+- [ ] Create context extractors
+- [ ] Log output format consistent
+- [ ] JSON parsing still works
+- [ ] Performance impact minimal
+
+### CI/CD Complexity Monitoring Integration
+- [ ] Update .github/workflows/code-quality.yml
+- [ ] Add complexity check step: flake8 --select=C901 --max-complexity=10
+- [ ] Add cognitive complexity check: radon cc . -a -nb
+- [ ] Fail build if any function >10 complexity
+- [ ] Add pre-commit hook for complexity
+- [ ] Create complexity monitoring dashboard (optional)
+- [ ] Update docs/development/code-quality-standards.md
+- [ ] CI/CD complexity checks active
+- [ ] Pre-commit hooks updated
+- [ ] Quality standards documented
+
+### Code Review & Documentation Finalization
+- [ ] Schedule comprehensive code review sessions
+- [ ] Address all review feedback
+- [ ] Update docs/development/technical-debt-complexity.md
+- [ ] Create docs/development/refactoring-patterns.md
+- [ ] Update docs/architecture/code-organization.md
+- [ ] Git housekeeping
+- [ ] All code reviews approved
+- [ ] Documentation fully updated
+- [ ] Release tagged
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 👥 EKİP & ONBOARDING
+
+### Developer Onboarding: Day 1 Environment Setup
+- [ ] Homepage loads at http://localhost:8000
+- [ ] Admin panel accessible at /admin
+- [ ] No console errors in browser
+- [ ] Static files (CSS/JS) loading properly
+- [ ] Database queries working (check debug toolbar)
+
+### Developer Onboarding: Day 2 Code Quality Setup
+- [x] Pre-commit hooks installed and running
+- [x] Black/isort format code automatically
+- [x] Flake8/mypy catch code issues
+- [ ] Tests pass (exit code 0)
+- [ ] Coverage report generated
+
+### Resources & Support
+- [ ] Read: AGENTS.md - Project contribution guidelines
+- [ ] Read: memory-bank/projectbrief.md - Project overview
+- [ ] Read: memory-bank/systemPatterns.md - Architecture patterns
+- [ ] Read: memory-bank/techContext.md - Tech stack details
+- [ ] Review: This roadmap (Phase 16-22)
+
+### Immediate Action Items (This Week)
+- [ ] Read complete roadmap (this document)
+- [ ] Choose execution approach (Option 1/2/3)
+- [ ] Set up project tracking (GitHub Projects, Jira, etc.)
+- [ ] Assign team members to Developer/Production tracks
+
+
+
+
+
+
+
+
+
+## 🧪 TEST & KALİTE
+
+### Comprehensive Test Coverage
+- [ ] Write tests for all refactored modules
+- [ ] Achieve ≥90% coverage for refactored modules
+- [ ] Test edge cases and error scenarios
+- [ ] Integration tests for all refactorings
+- [ ] Coverage reports ≥90%
+- [ ] All tests passing
+- [ ] No regressions detected
+
+### Phase 16 Completion Gate
+- [ ] Flake8: 0 violations in apps/
+- [ ] Mypy: ≥90% type coverage, 0 errors
+- [ ] Bandit: 0 high/critical security issues
+- [ ] Pre-commit hooks: 100% passing
+
+### Phase 22 Completion Gate
+- [ ] Unit test coverage: ≥85%
+- [ ] Integration tests: All critical journeys covered
+- [ ] E2E tests: All smoke tests passing
+- [ ] Performance: All pages <2s load
+
+### Week 4 Completion Checklist
+- [ ] Test coverage ≥90% for refactored modules
+- [ ] Zero performance regressions confirmed
+- [ ] CI/CD complexity monitoring active
+- [ ] All code reviews completed and approved
+- [ ] Documentation finalized
+- [ ] Final Phase 23 Review Meeting: Celebrate success, retrospective
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 🚢 DEPLOYMENT & INFRASTRUCTURE
+
+### Production Deployment
+- [ ] Infrastructure Setup
+- [ ] Database Migration
+- [ ] SSL & Domain Configuration
+- [ ] Monitoring & Alerting Setup
+- [ ] Backup & Disaster Recovery
+- [ ] Deployment Checklist
+
+### Infrastructure Gate
+- [ ] Production database provisioned
+- [ ] Redis cache configured
+- [ ] Email/SMTP configured
+- [ ] DNS and domain configured
+- [ ] SSL certificate installed and renewed
+- [ ] Backup and disaster recovery tested
+- [ ] Log aggregation working
+
+### Pre-Deployment Backup Checklist
+- [ ] Database Snapshot
+- [ ] Git Release Tag
+- [ ] Static Files Backup
+- [ ] Environment Variables
+- [ ] Dependencies Snapshot
+
+### Deployment Day: Pre-Deployment Tasks
+- [ ] Final code freeze on main branch
+- [ ] Database backup taken
+- [ ] Rollback plan documented
+- [ ] Team communication channels open
+- [ ] Monitoring dashboards prepared
+
+### Deployment Day: Deployment Steps
+- [ ] Deploy code to production
+- [ ] Run database migrations
+- [ ] Collect static files
+- [ ] Warm cache with critical pages
+- [ ] Verify all health checks pass
+- [ ] Monitor error rates and performance
+
+### Deployment Day: Post-Deployment Verification
+- [ ] All pages load correctly
+- [ ] Forms submit successfully
+- [ ] APIs respond properly
+- [ ] Database queries performant
+- [ ] No errors in Sentry
+- [ ] Monitoring alerts all green
+- [ ] User acceptance testing passed
+
+### Rollback Procedure Steps
+- [ ] Check homepage loads
+- [ ] Check API health
+- [ ] Check error rate in Sentry: Should drop to <0.1%
+- [ ] Check logs: No new errors
+
+### Post-Rollback Procedures (Within 1 Hour)
+- [ ] Create incident report
+- [ ] Document what went wrong
+- [ ] Document what worked (rollback process)
+- [ ] Identify root cause (initial assessment)
+
+### Post-Rollback Procedures (Within 24 Hours)
+- [ ] Conduct post-mortem meeting
+- [ ] Create action items to prevent recurrence
+- [ ] Fix issue in development/staging
+- [ ] Write regression test for the bug
+- [ ] Update rollback procedures if needed
+
+### Before Next Deployment
+- [ ] Verify fix in staging environment
+- [ ] Run full test suite including new regression test
+- [ ] Review deployment checklist
+- [ ] Communicate re-deployment plan to team
+- [ ] Schedule deployment for low-traffic window
+
+### Post-Deployment (Week 3+): Monitoring & Operations
+- [ ] Daily error log review
+- [ ] Weekly performance reports
+- [ ] Regular dependency updates
+- [ ] Continuous security patches
+
+### Post-Deployment: Optimization & Improvement
+- [ ] Analyze user behavior metrics
+- [ ] Optimize based on real-world usage
+- [ ] Implement user feedback
+- [ ] Plan future feature releases
+- [ ] Document lessons learned
+
+### Production Deployment Gate
+- [ ] All quality gates above passed
+- [ ] Lighthouse: ≥90 score (all categories)
+- [ ] Load test: 1000 concurrent users handled
+- [ ] Rollback: Tested and <5 min
+- [ ] Monitoring: All alerts configured
+
+---

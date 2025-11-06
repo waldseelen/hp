@@ -9,8 +9,8 @@ best practices for secure database operations.
 OWASP A03: Injection protection
 """
 
-from typing import Any, Dict, List, Optional
 import re
+from typing import Any, Dict, List, Optional
 
 
 class SQLInjectionProtection:
@@ -23,23 +23,39 @@ class SQLInjectionProtection:
 
     # Suspicious SQL keywords that might indicate injection attempts
     SUSPICIOUS_SQL_KEYWORDS = [
-        'DROP', 'DELETE', 'TRUNCATE', 'ALTER', 'CREATE',
-        'EXEC', 'EXECUTE', 'UNION', 'INSERT', 'UPDATE',
-        '--', '/*', '*/', 'xp_', 'sp_', 'SLEEP', 'BENCHMARK',
+        "DROP",
+        "DELETE",
+        "TRUNCATE",
+        "ALTER",
+        "CREATE",
+        "EXEC",
+        "EXECUTE",
+        "UNION",
+        "INSERT",
+        "UPDATE",
+        "--",
+        "/*",
+        "*/",
+        "xp_",
+        "sp_",
+        "SLEEP",
+        "BENCHMARK",
     ]
 
     # SQL comment patterns
     SQL_COMMENT_PATTERNS = [
-        r'--',
-        r'/\*',
-        r'\*/',
-        r'#',
+        r"--",
+        r"/\*",
+        r"\*/",
+        r"#",
     ]
 
     @classmethod
     def is_suspicious_input(cls, input_string: str) -> bool:
         """
         Check if input contains suspicious SQL patterns.
+
+        Complexity reduced from 8 to 4 through helper extraction.
 
         This is a defense-in-depth measure. Django ORM parameterization
         is the primary defense.
@@ -53,23 +69,73 @@ class SQLInjectionProtection:
         if not isinstance(input_string, str):
             return False
 
-        # Check for SQL keywords (case-insensitive)
+        # Check all pattern types
+        if cls._check_sql_keywords(input_string):
+            return True
+
+        if cls._check_comment_patterns(input_string):
+            return True
+
+        if cls._check_injection_patterns(input_string):
+            return True
+
+        return False
+
+    @classmethod
+    def _check_sql_keywords(cls, input_string: str) -> bool:
+        """
+        Check for suspicious SQL keywords.
+
+        Complexity: 2
+
+        Args:
+            input_string: Input to check
+
+        Returns:
+            True if keywords found
+        """
         upper_input = input_string.upper()
         for keyword in cls.SUSPICIOUS_SQL_KEYWORDS:
             if keyword in upper_input:
                 return True
+        return False
 
-        # Check for SQL comment patterns
+    @classmethod
+    def _check_comment_patterns(cls, input_string: str) -> bool:
+        """
+        Check for SQL comment patterns.
+
+        Complexity: 2
+
+        Args:
+            input_string: Input to check
+
+        Returns:
+            True if comment patterns found
+        """
         for pattern in cls.SQL_COMMENT_PATTERNS:
             if re.search(pattern, input_string):
                 return True
+        return False
 
-        # Check for common injection patterns
+    @staticmethod
+    def _check_injection_patterns(input_string: str) -> bool:
+        """
+        Check for common SQL injection patterns.
+
+        Complexity: 2
+
+        Args:
+            input_string: Input to check
+
+        Returns:
+            True if injection patterns found
+        """
         injection_patterns = [
             r"'\s*OR\s+'1'\s*=\s*'1",  # ' OR '1'='1
-            r"'\s*OR\s+1\s*=\s*1",      # ' OR 1=1
-            r"'\s*;",                    # '; followed by anything
-            r"'\s*--",                   # ' -- (SQL comment)
+            r"'\s*OR\s+1\s*=\s*1",  # ' OR 1=1
+            r"'\s*;",  # '; followed by anything
+            r"'\s*--",  # ' -- (SQL comment)
         ]
 
         for pattern in injection_patterns:
@@ -96,12 +162,12 @@ class SQLInjectionProtection:
             return ""
 
         # Remove null bytes
-        search_term = search_term.replace('\x00', '')
+        search_term = search_term.replace("\x00", "")
 
         # Remove SQL wildcards that might be misused
         # (Let application explicitly add wildcards if needed)
-        search_term = search_term.replace('%', '')
-        search_term = search_term.replace('_', '')
+        search_term = search_term.replace("%", "")
+        search_term = search_term.replace("_", "")
 
         # Trim whitespace
         search_term = search_term.strip()
@@ -114,8 +180,7 @@ class SQLInjectionProtection:
 
     @staticmethod
     def build_safe_filter_dict(
-        allowed_fields: List[str],
-        user_filters: Dict[str, Any]
+        allowed_fields: List[str], user_filters: Dict[str, Any]
     ) -> Dict[str, Any]:
         """
         Build safe filter dictionary for ORM queries.
@@ -133,7 +198,7 @@ class SQLInjectionProtection:
 
         for field, value in user_filters.items():
             # Strip ORM lookup suffixes for validation
-            base_field = field.split('__')[0]
+            base_field = field.split("__")[0]
 
             if base_field in allowed_fields:
                 safe_filters[field] = value
@@ -153,12 +218,12 @@ class SQLInjectionProtection:
             Validated field name or None if invalid
         """
         # Handle descending sort prefix
-        if field.startswith('-'):
+        if field.startswith("-"):
             base_field = field[1:]
-            prefix = '-'
+            prefix = "-"
         else:
             base_field = field
-            prefix = ''
+            prefix = ""
 
         # Validate against whitelist
         if base_field not in allowed_fields:
@@ -186,19 +251,16 @@ class SafeRawQueryBuilder:
             Escaped identifier
         """
         # Remove any characters that aren't alphanumeric or underscore
-        clean_identifier = re.sub(r'[^a-zA-Z0-9_]', '', identifier)
+        clean_identifier = re.sub(r"[^a-zA-Z0-9_]", "", identifier)
 
         # Ensure it doesn't start with a number
         if clean_identifier and clean_identifier[0].isdigit():
-            clean_identifier = '_' + clean_identifier
+            clean_identifier = "_" + clean_identifier
 
         return clean_identifier
 
     @staticmethod
-    def build_parameterized_query(
-        base_query: str,
-        params: List[Any]
-    ) -> tuple:
+    def build_parameterized_query(base_query: str, params: List[Any]) -> tuple:
         """
         Helper to ensure parameterized queries are used correctly.
 
@@ -210,7 +272,7 @@ class SafeRawQueryBuilder:
             Tuple of (query, params) for use with cursor.execute()
         """
         # Count placeholders
-        placeholder_count = base_query.count('%s')
+        placeholder_count = base_query.count("%s")
 
         if placeholder_count != len(params):
             raise ValueError(
@@ -228,12 +290,12 @@ class DatabaseQueryValidator:
 
     @staticmethod
     def validate_limit_offset(
-        limit: Optional[int] = None,
-        offset: Optional[int] = None,
-        max_limit: int = 1000
+        limit: Optional[int] = None, offset: Optional[int] = None, max_limit: int = 1000
     ) -> tuple:
         """
         Validate and sanitize LIMIT and OFFSET values.
+
+        Complexity reduced from 8 to 3 through helper extraction.
 
         Args:
             limit: LIMIT value
@@ -243,37 +305,50 @@ class DatabaseQueryValidator:
         Returns:
             Tuple of (validated_limit, validated_offset)
         """
-        # Validate limit
-        if limit is not None:
-            try:
-                limit = int(limit)
-                if limit < 0:
-                    limit = max_limit
-                elif limit > max_limit:
-                    limit = max_limit
-            except (ValueError, TypeError):
-                limit = max_limit
-        else:
-            limit = max_limit
-
-        # Validate offset
-        if offset is not None:
-            try:
-                offset = int(offset)
-                if offset < 0:
-                    offset = 0
-            except (ValueError, TypeError):
-                offset = 0
-        else:
-            offset = 0
-
-        return (limit, offset)
+        validated_limit = DatabaseQueryValidator._coerce_to_int(
+            limit, default=max_limit, min_val=0, max_val=max_limit
+        )
+        validated_offset = DatabaseQueryValidator._coerce_to_int(
+            offset, default=0, min_val=0, max_val=None
+        )
+        return (validated_limit, validated_offset)
 
     @staticmethod
-    def validate_id_list(
-        id_list: List[Any],
-        max_items: int = 100
-    ) -> List[int]:
+    def _coerce_to_int(
+        value: Optional[int], default: int, min_val: int, max_val: Optional[int]
+    ) -> int:
+        """
+        Coerce value to integer with bounds checking.
+
+        Complexity: 4
+
+        Args:
+            value: Value to coerce
+            default: Default if value is None or invalid
+            min_val: Minimum allowed value
+            max_val: Maximum allowed value (None = no limit)
+
+        Returns:
+            Validated integer
+        """
+        if value is None:
+            return default
+
+        try:
+            value = int(value)
+        except (ValueError, TypeError):
+            return default
+
+        if value < min_val:
+            return default
+
+        if max_val is not None and value > max_val:
+            return max_val
+
+        return value
+
+    @staticmethod
+    def validate_id_list(id_list: List[Any], max_items: int = 100) -> List[int]:
         """
         Validate list of IDs for IN queries.
 

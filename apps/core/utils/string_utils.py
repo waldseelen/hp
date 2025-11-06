@@ -9,7 +9,6 @@ from typing import Optional
 
 from django.utils.text import slugify as django_slugify
 
-
 __all__ = [
     "slugify",
     "strip_whitespace",

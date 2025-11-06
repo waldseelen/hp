@@ -12,14 +12,16 @@ Tests cover:
 Target: Comprehensive authentication and authorization testing.
 """
 
-import pytest
-from django.urls import reverse
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
-from rest_framework.test import APIClient
+from django.urls import reverse
+from django.utils import timezone
+
+import pytest
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from datetime import timedelta
-from django.utils import timezone
+from rest_framework.test import APIClient
 
 User = get_user_model()
 
@@ -37,9 +39,7 @@ class TestSessionAuthentication:
         """Set up test client and user."""
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username="testuser",
-            email="test@example.com",
-            password="testpass123"
+            username="testuser", email="test@example.com", password="testpass123"
         )
 
     def test_login_creates_session(self):
@@ -83,15 +83,13 @@ class TestTokenAuthentication:
         """Set up test client and user with token."""
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username="testuser",
-            email="test@example.com",
-            password="testpass123"
+            username="testuser", email="test@example.com", password="testpass123"
         )
         self.token = Token.objects.create(user=self.user)
 
     def test_token_authentication_works(self):
         """Test token authentication allows API access."""
-        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
 
         url = reverse("portfolio:personal_info_list")
         response = self.client.get(url)
@@ -100,7 +98,7 @@ class TestTokenAuthentication:
 
     def test_invalid_token_rejected(self):
         """Test invalid token is rejected."""
-        self.client.credentials(HTTP_AUTHORIZATION='Token invalid_token_123')
+        self.client.credentials(HTTP_AUTHORIZATION="Token invalid_token_123")
 
         # Try accessing an endpoint that requires authentication
         # (Adjust URL if needed)
@@ -133,20 +131,16 @@ class TestAPIPermissions:
         """Set up test client and users."""
         self.client = APIClient()
         self.regular_user = User.objects.create_user(
-            username="regular",
-            email="regular@example.com",
-            password="pass123"
+            username="regular", email="regular@example.com", password="pass123"
         )
         self.admin_user = User.objects.create_superuser(
-            username="admin",
-            email="admin@example.com",
-            password="adminpass123"
+            username="admin", email="admin@example.com", password="adminpass123"
         )
         self.staff_user = User.objects.create_user(
             username="staff",
             email="staff@example.com",
             password="staffpass123",
-            is_staff=True
+            is_staff=True,
         )
 
     def test_public_endpoint_accessible_by_all(self):
@@ -175,12 +169,19 @@ class TestAPIPermissions:
 
         # Unauthenticated - should fail
         response = self.client.get(url)
-        assert response.status_code in [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND]
+        assert response.status_code in [
+            status.HTTP_401_UNAUTHORIZED,
+            status.HTTP_403_FORBIDDEN,
+            status.HTTP_404_NOT_FOUND,
+        ]
 
         # Regular user - should fail
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(url)
-        assert response.status_code in [status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND]
+        assert response.status_code in [
+            status.HTTP_403_FORBIDDEN,
+            status.HTTP_404_NOT_FOUND,
+        ]
 
         # Admin user - should succeed
         self.client.force_authenticate(user=self.admin_user)
@@ -207,14 +208,10 @@ class TestCustomPermissions:
         """Set up test client and users."""
         self.client = APIClient()
         self.user1 = User.objects.create_user(
-            username="user1",
-            email="user1@example.com",
-            password="pass123"
+            username="user1", email="user1@example.com", password="pass123"
         )
         self.user2 = User.objects.create_user(
-            username="user2",
-            email="user2@example.com",
-            password="pass123"
+            username="user2", email="user2@example.com", password="pass123"
         )
 
     def test_owner_only_permission(self):
@@ -263,7 +260,7 @@ class TestCORSHeaders:
         response = self.client.options(
             url,
             HTTP_ORIGIN="https://example.com",
-            HTTP_ACCESS_CONTROL_REQUEST_METHOD="GET"
+            HTTP_ACCESS_CONTROL_REQUEST_METHOD="GET",
         )
 
         # Should return 200 OK for preflight
@@ -283,9 +280,7 @@ class TestAPIKeyAuthentication:
         """Set up test client."""
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username="apiuser",
-            email="api@example.com",
-            password="pass123"
+            username="apiuser", email="api@example.com", password="pass123"
         )
 
     @pytest.mark.skip("API key authentication implementation dependent")
@@ -326,9 +321,7 @@ class TestJWTAuthentication:
         """Set up test client and user."""
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username="jwtuser",
-            email="jwt@example.com",
-            password="pass123"
+            username="jwtuser", email="jwt@example.com", password="pass123"
         )
 
     @pytest.mark.skip("JWT implementation dependent")
@@ -336,10 +329,7 @@ class TestJWTAuthentication:
         """Test obtaining JWT token via login endpoint."""
         url = reverse("token_obtain_pair")  # Adjust based on actual URL
 
-        response = self.client.post(url, {
-            "username": "jwtuser",
-            "password": "pass123"
-        })
+        response = self.client.post(url, {"username": "jwtuser", "password": "pass123"})
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -351,15 +341,14 @@ class TestJWTAuthentication:
         """Test JWT token allows API access."""
         # First, obtain token
         token_url = reverse("token_obtain_pair")
-        response = self.client.post(token_url, {
-            "username": "jwtuser",
-            "password": "pass123"
-        })
+        response = self.client.post(
+            token_url, {"username": "jwtuser", "password": "pass123"}
+        )
 
         access_token = response.json()["access"]
 
         # Use token to access API
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access_token}")
 
         url = reverse("portfolio:personal_info_list")
         response = self.client.get(url)
@@ -371,18 +360,15 @@ class TestJWTAuthentication:
         """Test JWT refresh token can obtain new access token."""
         # Obtain initial tokens
         token_url = reverse("token_obtain_pair")
-        response = self.client.post(token_url, {
-            "username": "jwtuser",
-            "password": "pass123"
-        })
+        response = self.client.post(
+            token_url, {"username": "jwtuser", "password": "pass123"}
+        )
 
         refresh_token = response.json()["refresh"]
 
         # Use refresh token to get new access token
         refresh_url = reverse("token_refresh")
-        response = self.client.post(refresh_url, {
-            "refresh": refresh_token
-        })
+        response = self.client.post(refresh_url, {"refresh": refresh_token})
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -409,9 +395,7 @@ class TestAPIThrottling:
         """Set up test client and user."""
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username="throttleuser",
-            email="throttle@example.com",
-            password="pass123"
+            username="throttleuser", email="throttle@example.com", password="pass123"
         )
 
     @pytest.mark.skip("Throttling configuration dependent")

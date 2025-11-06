@@ -8,14 +8,15 @@ Tests cover:
 Target: 95%+ coverage for critical business logic.
 """
 
-import pytest
+from unittest.mock import MagicMock, patch
+
 from django.core.exceptions import ValidationError
 from django.test import RequestFactory
-from unittest.mock import patch, MagicMock
+
+import pytest
 
 from apps.contact.forms import ContactForm
 from apps.contact.models import ContactMessage
-
 
 # ============================================================================
 # CONTACTFORM VALIDATION TESTS (XSS Prevention, Spam Detection)

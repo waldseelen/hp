@@ -10,13 +10,14 @@ Tests cover (with mocking):
 Target: 75%+ coverage for advanced features with external dependencies mocked.
 """
 
-import pytest
+from unittest.mock import MagicMock, Mock, patch
+
 from django.core.exceptions import ValidationError
-from unittest.mock import patch, MagicMock, Mock
 from django.utils import timezone
 
-from apps.tools.models import Tool, ToolManager
+import pytest
 
+from apps.tools.models import Tool, ToolManager
 
 # ============================================================================
 # TOOL MODEL & MANAGER TESTS
@@ -43,9 +44,20 @@ class TestToolModel:
     def test_tool_all_categories(self):
         """Test all tool categories."""
         categories = [
-            "Development", "Design", "Framework", "Database",
-            "DevOps", "Testing", "Security", "Productivity",
-            "API", "Cloud", "Mobile", "AI/ML", "Analytics", "Other"
+            "Development",
+            "Design",
+            "Framework",
+            "Database",
+            "DevOps",
+            "Testing",
+            "Security",
+            "Productivity",
+            "API",
+            "Cloud",
+            "Mobile",
+            "AI/ML",
+            "Analytics",
+            "Other",
         ]
         for cat in categories:
             tool = Tool.objects.create(
@@ -196,7 +208,7 @@ class TestToolModel:
 class TestAIOptimizerCeleryTasks:
     """Test AI Optimizer with mocked Celery tasks."""
 
-    @patch('apps.ai_optimizer.tasks.optimize_content.delay')
+    @patch("apps.ai_optimizer.tasks.optimize_content.delay")
     def test_optimization_task_triggered(self, mock_delay):
         """Test optimization task is triggered (mocked)."""
         # Simulate triggering an optimization task
@@ -207,7 +219,7 @@ class TestAIOptimizerCeleryTasks:
         assert result.id == "test-task-id"
         mock_delay.assert_called_once_with("test content")
 
-    @patch('apps.ai_optimizer.models.OptimizationJob.objects.create')
+    @patch("apps.ai_optimizer.models.OptimizationJob.objects.create")
     def test_optimization_job_creation(self, mock_create):
         """Test OptimizationJob creation (mocked)."""
         mock_job = MagicMock()
@@ -216,9 +228,7 @@ class TestAIOptimizerCeleryTasks:
         mock_create.return_value = mock_job
 
         job = mock_create(
-            content="test content",
-            optimization_type="seo",
-            status="pending"
+            content="test content", optimization_type="seo", status="pending"
         )
 
         assert job.id == 1
@@ -234,27 +244,27 @@ class TestAIOptimizerCeleryTasks:
 class TestSearchIndexMocked:
     """Test search functionality with mocked Meilisearch."""
 
-    @patch('apps.main.search_index.SearchIndexManager.index_document')
+    @patch("apps.main.search_index.SearchIndexManager.index_document")
     def test_document_indexing(self, mock_index):
         """Test document indexing (mocked)."""
         mock_index.return_value = {"taskUid": 123}
 
-        result = mock_index({
-            "id": "doc_1",
-            "title": "Test Document",
-            "content": "Test content",
-        })
+        result = mock_index(
+            {
+                "id": "doc_1",
+                "title": "Test Document",
+                "content": "Test content",
+            }
+        )
 
         assert result["taskUid"] == 123
         mock_index.assert_called_once()
 
-    @patch('apps.main.search_index.SearchIndexManager.search')
+    @patch("apps.main.search_index.SearchIndexManager.search")
     def test_search_query(self, mock_search):
         """Test search query execution (mocked)."""
         mock_search.return_value = {
-            "hits": [
-                {"id": "doc_1", "title": "Test Result"}
-            ],
+            "hits": [{"id": "doc_1", "title": "Test Result"}],
             "estimatedTotalHits": 1,
         }
 
@@ -263,7 +273,7 @@ class TestSearchIndexMocked:
         assert len(results["hits"]) == 1
         assert results["hits"][0]["title"] == "Test Result"
 
-    @patch('apps.main.search_index.SearchIndexManager.delete_document')
+    @patch("apps.main.search_index.SearchIndexManager.delete_document")
     def test_document_deletion(self, mock_delete):
         """Test document deletion from index (mocked)."""
         mock_delete.return_value = {"taskUid": 456}
@@ -273,15 +283,17 @@ class TestSearchIndexMocked:
         assert result["taskUid"] == 456
         mock_delete.assert_called_once_with("doc_1")
 
-    @patch('apps.main.search_index.SearchIndexManager.update_settings')
+    @patch("apps.main.search_index.SearchIndexManager.update_settings")
     def test_index_settings_update(self, mock_update):
         """Test index settings update (mocked)."""
         mock_update.return_value = {"taskUid": 789}
 
-        result = mock_update({
-            "searchableAttributes": ["title", "content"],
-            "filterableAttributes": ["category"],
-        })
+        result = mock_update(
+            {
+                "searchableAttributes": ["title", "content"],
+                "filterableAttributes": ["category"],
+            }
+        )
 
         assert result["taskUid"] == 789
 
@@ -294,7 +306,7 @@ class TestSearchIndexMocked:
 class TestChatConsumerMocked:
     """Test WebSocket chat consumer with mocked Channels."""
 
-    @patch('channels.layers.get_channel_layer')
+    @patch("channels.layers.get_channel_layer")
     def test_websocket_connect(self, mock_channel_layer):
         """Test WebSocket connection (mocked)."""
         mock_layer = MagicMock()
@@ -307,7 +319,7 @@ class TestChatConsumerMocked:
 
         mock_consumer.connect.assert_called_once()
 
-    @patch('channels.layers.get_channel_layer')
+    @patch("channels.layers.get_channel_layer")
     def test_websocket_message_send(self, mock_channel_layer):
         """Test sending WebSocket message (mocked)."""
         mock_layer = MagicMock()
@@ -320,7 +332,7 @@ class TestChatConsumerMocked:
 
         mock_consumer.send.assert_called_once()
 
-    @patch('channels.layers.get_channel_layer')
+    @patch("channels.layers.get_channel_layer")
     def test_websocket_disconnect(self, mock_channel_layer):
         """Test WebSocket disconnection (mocked)."""
         mock_layer = MagicMock()
@@ -333,7 +345,7 @@ class TestChatConsumerMocked:
 
         mock_consumer.disconnect.assert_called_once_with(1000)
 
-    @patch('channels.layers.get_channel_layer')
+    @patch("channels.layers.get_channel_layer")
     def test_websocket_group_send(self, mock_channel_layer):
         """Test sending message to WebSocket group (mocked)."""
         mock_layer = MagicMock()
@@ -342,10 +354,7 @@ class TestChatConsumerMocked:
 
         # Simulate group send
         group_name = "chat_room_1"
-        message = {
-            "type": "chat_message",
-            "message": "Hello group"
-        }
+        message = {"type": "chat_message", "message": "Hello group"}
 
         mock_layer.group_send(group_name, message)
 
@@ -361,7 +370,7 @@ class TestChatConsumerMocked:
 class TestAdvancedFeaturesIntegration:
     """Test integration between advanced features (mocked)."""
 
-    @patch('apps.main.search_index.SearchIndexManager.index_document')
+    @patch("apps.main.search_index.SearchIndexManager.index_document")
     def test_tool_indexed_on_creation(self, mock_index):
         """Test tool is indexed in search when created (mocked)."""
         tool = Tool.objects.create(
@@ -373,16 +382,18 @@ class TestAdvancedFeaturesIntegration:
 
         # In real implementation, signal would trigger indexing
         # Here we just verify the mock can be called
-        mock_index({
-            "id": f"tool_{tool.id}",
-            "title": tool.title,
-            "description": tool.description,
-        })
+        mock_index(
+            {
+                "id": f"tool_{tool.id}",
+                "title": tool.title,
+                "description": tool.description,
+            }
+        )
 
         mock_index.assert_called_once()
 
-    @patch('apps.ai_optimizer.tasks.optimize_content.delay')
-    @patch('apps.main.search_index.SearchIndexManager.index_document')
+    @patch("apps.ai_optimizer.tasks.optimize_content.delay")
+    @patch("apps.main.search_index.SearchIndexManager.index_document")
     def test_tool_optimization_and_indexing(self, mock_index, mock_optimize):
         """Test tool optimization triggers re-indexing (mocked)."""
         tool = Tool.objects.create(
@@ -397,11 +408,13 @@ class TestAdvancedFeaturesIntegration:
         optimization_task = mock_optimize(tool.description)
 
         # After optimization, re-index
-        mock_index({
-            "id": f"tool_{tool.id}",
-            "title": tool.title,
-            "description": "Optimized description",
-        })
+        mock_index(
+            {
+                "id": f"tool_{tool.id}",
+                "title": tool.title,
+                "description": "Optimized description",
+            }
+        )
 
         mock_optimize.assert_called_once()
         mock_index.assert_called_once()

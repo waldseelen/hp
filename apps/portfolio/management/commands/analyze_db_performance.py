@@ -254,64 +254,15 @@ class Command(BaseCommand):
         self.show_performance_summary(query_results)
 
     def show_performance_summary(self, results):
-        """Show performance summary."""
-        self.stdout.write("\n" + "=" * 40)
-        self.stdout.write("PERFORMANCE SUMMARY")
-        self.stdout.write("=" * 40)
+        """
+        Show performance summary
 
-        successful_results = [r for r in results if r["status"] == "SUCCESS"]
+        REFACTORED: Complexity reduced from D:22 to A:2
+        """
+        from .utils import PerformanceSummaryGenerator
 
-        if not successful_results:
-            self.stdout.write(self.style.ERROR("No successful queries to analyze"))
-            return
-
-        total_queries = len(successful_results)
-        avg_time = sum(r["execution_time"] for r in successful_results) / total_queries
-        max_time = max(r["execution_time"] for r in successful_results)
-        min_time = min(r["execution_time"] for r in successful_results)
-
-        fast_queries = len([r for r in successful_results if r["execution_time"] < 100])
-        slow_queries = len([r for r in successful_results if r["execution_time"] > 500])
-
-        self.stdout.write(f"Total Queries Tested: {total_queries}")
-        self.stdout.write(f"Average Execution Time: {avg_time:.2f}ms")
-        self.stdout.write(f"Fastest Query: {min_time:.2f}ms")
-        self.stdout.write(f"Slowest Query: {max_time:.2f}ms")
-        self.stdout.write(f"Fast Queries (<100ms): {fast_queries}")
-        self.stdout.write(f"Slow Queries (>500ms): {slow_queries}")
-
-        # Performance grade
-        if avg_time < 50 and slow_queries == 0:
-            grade = "A+ (Excellent)"
-            color = self.style.SUCCESS
-        elif avg_time < 100 and slow_queries <= 1:
-            grade = "A (Very Good)"
-            color = self.style.SUCCESS
-        elif avg_time < 200 and slow_queries <= 2:
-            grade = "B (Good)"
-            color = self.style.WARNING
-        elif avg_time < 500:
-            grade = "C (Acceptable)"
-            color = self.style.WARNING
-        else:
-            grade = "D (Needs Optimization)"
-            color = self.style.ERROR
-
-        self.stdout.write("Performance Grade: " + color(grade))
-
-        # Recommendations
-        self.stdout.write("\nRECOMMENDATIONS:")
-        if slow_queries > 0:
-            self.stdout.write(
-                "- Consider adding more specific indexes for slow queries"
-            )
-        if avg_time > 100:
-            self.stdout.write("- Review query patterns and add composite indexes")
-        if any(r["query_count"] > 5 for r in successful_results):
-            self.stdout.write("- Check for N+1 query issues in complex views")
-
-        self.stdout.write("- Enable query optimization in production")
-        self.stdout.write("- Monitor query performance with APM tools")
+        generator = PerformanceSummaryGenerator(self)
+        generator.show_summary(results)
 
     def analyze_model_queries(self):
         """Analyze common query patterns for models."""

@@ -426,6 +426,58 @@ class TestManagementCommand(TestCase):
         error_output = err.getvalue()
         assert "error" in error_output.lower() or "fail" in error_output.lower()
 
+    @patch("apps.main.management.commands.reindex_search.search_index_manager")
+    def test_validate_config_no_options(self, mock_manager):
+        """Test validation fails when no --all or --model specified"""
+        from django.core.management.base import CommandError
+
+        mock_manager.model_registry = {"BlogPost": {}, "AITool": {}}
+
+        with pytest.raises(CommandError) as exc_info:
+            call_command("reindex_search")
+
+        error_msg = str(exc_info.value)
+        assert "all" in error_msg.lower() or "model" in error_msg.lower()
+
+    @patch("apps.main.management.commands.reindex_search.search_index_manager")
+    def test_validate_config_invalid_batch_size_zero(self, mock_manager):
+        """Test validation fails for batch size = 0"""
+        from django.core.management.base import CommandError
+
+        mock_manager.model_registry = {"BlogPost": {}, "AITool": {}}
+
+        with pytest.raises(CommandError) as exc_info:
+            call_command("reindex_search", "--all", "--batch-size", "0")
+
+        error_msg = str(exc_info.value)
+        assert "batch" in error_msg.lower() or "1" in error_msg
+
+    @patch("apps.main.management.commands.reindex_search.search_index_manager")
+    def test_validate_config_invalid_batch_size_too_large(self, mock_manager):
+        """Test validation fails for batch size > 10000"""
+        from django.core.management.base import CommandError
+
+        mock_manager.model_registry = {"BlogPost": {}, "AITool": {}}
+
+        with pytest.raises(CommandError) as exc_info:
+            call_command("reindex_search", "--all", "--batch-size", "10001")
+
+        error_msg = str(exc_info.value)
+        assert "batch" in error_msg.lower() or "10000" in error_msg
+
+    @patch("apps.main.management.commands.reindex_search.search_index_manager")
+    def test_validate_config_invalid_model_name(self, mock_manager):
+        """Test validation fails for invalid model name"""
+        from django.core.management.base import CommandError
+
+        mock_manager.model_registry = {"BlogPost": {}, "AITool": {}}
+
+        with pytest.raises(CommandError) as exc_info:
+            call_command("reindex_search", "--model", "InvalidModel")
+
+        error_msg = str(exc_info.value)
+        assert "Invalid" in error_msg or "invalid" in error_msg
+
 
 @pytest.mark.integration
 @pytest.mark.admin

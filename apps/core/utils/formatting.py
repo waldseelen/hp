@@ -8,7 +8,6 @@ from typing import Optional
 
 from django.utils import timezone
 
-
 __all__ = [
     "format_date",
     "format_datetime",

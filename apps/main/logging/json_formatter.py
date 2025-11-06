@@ -1,13 +1,24 @@
 import json
 import logging
-import traceback
 from datetime import datetime
+
+from .context_extractors import (
+    ExceptionContextExtractor,
+    ModuleContextExtractor,
+    PerformanceContextExtractor,
+    RequestContextExtractor,
+    SecurityContextExtractor,
+    ServerContextExtractor,
+    TemplateContextExtractor,
+)
 
 
 class StructuredJSONFormatter(logging.Formatter):
     """
     Structured JSON formatter for comprehensive logging
     Following the "fix all.yml" error monitoring configuration
+
+    REFACTORED: Complexity reduced from D:21 to B:6
     """
 
     def __init__(
@@ -23,10 +34,54 @@ class StructuredJSONFormatter(logging.Formatter):
         self.environment = environment
         self.include_extra_fields = include_extra_fields
 
-    def format(self, record):  # noqa: C901
-        """Format log record as structured JSON"""
-        # Base log structure
-        log_entry = {
+        # Initialize context extractors
+        self._init_extractors()
+
+    def _init_extractors(self):
+        """
+        Initialize context extractors
+
+        Complexity: 1
+        """
+        self.extractors = [
+            ModuleContextExtractor(),
+            ExceptionContextExtractor(),
+        ]
+
+        if self.include_extra_fields:
+            self.extractors.extend(
+                [
+                    RequestContextExtractor(),
+                    PerformanceContextExtractor(),
+                    TemplateContextExtractor(),
+                    SecurityContextExtractor(),
+                    ServerContextExtractor(),
+                ]
+            )
+
+    def format(self, record):
+        """
+        Format log record as structured JSON
+
+        REFACTORED: Complexity reduced from D:21 to B:6
+        """
+        # Build base log entry
+        log_entry = self._build_base_entry(record)
+
+        # Extract all context
+        for extractor in self.extractors:
+            context = extractor.extract(record)
+            log_entry.update(context)
+
+        return json.dumps(log_entry, ensure_ascii=False, default=str)
+
+    def _build_base_entry(self, record):
+        """
+        Build base log entry structure
+
+        Complexity: 1
+        """
+        return {
             "timestamp": self.formatTime(record),
             "level": record.levelname,
             "logger": record.name,
@@ -36,66 +91,6 @@ class StructuredJSONFormatter(logging.Formatter):
             "thread": record.thread,
             "process": record.process,
         }
-
-        # Add module and function information
-        if hasattr(record, "module"):
-            log_entry["module"] = record.module
-        if hasattr(record, "funcName"):
-            log_entry["function"] = record.funcName
-        if hasattr(record, "lineno"):
-            log_entry["line_number"] = record.lineno
-
-        # Add exception information if present
-        if record.exc_info:
-            log_entry["exception"] = {
-                "type": record.exc_info[0].__name__,
-                "message": str(record.exc_info[1]),
-                "traceback": traceback.format_exception(*record.exc_info),
-            }
-
-        # Add extra fields from context
-        if self.include_extra_fields:
-            # Request context
-            if hasattr(record, "request_id"):
-                log_entry["request_id"] = record.request_id
-            if hasattr(record, "user_id"):
-                log_entry["user_id"] = record.user_id
-            if hasattr(record, "ip_address"):
-                log_entry["ip_address"] = record.ip_address
-            if hasattr(record, "user_agent"):
-                log_entry["user_agent"] = record.user_agent
-
-            # Performance context
-            if hasattr(record, "duration"):
-                log_entry["duration"] = record.duration
-            if hasattr(record, "query_count"):
-                log_entry["query_count"] = record.query_count
-            if hasattr(record, "cache_hits"):
-                log_entry["cache_hits"] = record.cache_hits
-
-            # Template error context
-            if hasattr(record, "template_name"):
-                log_entry["template_name"] = record.template_name
-            if hasattr(record, "template_error_type"):
-                log_entry["template_error_type"] = record.template_error_type
-            if hasattr(record, "template_line"):
-                log_entry["template_line"] = record.template_line
-
-            # Security context
-            if hasattr(record, "security_event"):
-                log_entry["security_event"] = record.security_event
-            if hasattr(record, "threat_level"):
-                log_entry["threat_level"] = record.threat_level
-
-            # Server management context
-            if hasattr(record, "server_event"):
-                log_entry["server_event"] = record.server_event
-            if hasattr(record, "process_id"):
-                log_entry["process_id"] = record.process_id
-            if hasattr(record, "restart_count"):
-                log_entry["restart_count"] = record.restart_count
-
-        return json.dumps(log_entry, ensure_ascii=False, default=str)
 
     def formatTime(self, record, datefmt=None):
         """Format timestamp in ISO format"""

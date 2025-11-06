@@ -11,18 +11,22 @@ Tests cover:
 Target: Verify all database relationships behave correctly.
 """
 
-import pytest
-from django.db import IntegrityError
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError
 
-from apps.portfolio.models import (
-    Admin, UserSession, DataExportRequest, AccountDeletionRequest,
-    BlogPost as PortfolioBlogPost, BlogCategory,
-    NotificationLog, WebPushSubscription,
-    PersonalInfo
-)
+import pytest
+
 from apps.main.models import BlogPost as MainBlogPost
 from apps.playground.models import CodeSnippet, ProgrammingLanguage
+from apps.portfolio.models import AccountDeletionRequest, Admin, BlogCategory
+from apps.portfolio.models import BlogPost as PortfolioBlogPost
+from apps.portfolio.models import (
+    DataExportRequest,
+    NotificationLog,
+    PersonalInfo,
+    UserSession,
+    WebPushSubscription,
+)
 
 User = get_user_model()
 
@@ -38,10 +42,7 @@ class TestForeignKeyCascade:
 
     def test_admin_delete_cascades_to_user_sessions(self):
         """Test deleting Admin deletes all related UserSessions."""
-        admin = Admin.objects.create(
-            username="testadmin",
-            email="admin@example.com"
-        )
+        admin = Admin.objects.create(username="testadmin", email="admin@example.com")
         admin.set_password("testpass123")
         admin.save()
 
@@ -50,13 +51,13 @@ class TestForeignKeyCascade:
             user=admin,
             session_key="session_key_1",
             ip_address="192.168.1.1",
-            user_agent="Mozilla/5.0"
+            user_agent="Mozilla/5.0",
         )
         session2 = UserSession.objects.create(
             user=admin,
             session_key="session_key_2",
             ip_address="192.168.1.2",
-            user_agent="Chrome"
+            user_agent="Chrome",
         )
 
         session_ids = [session1.id, session2.id]
@@ -69,18 +70,12 @@ class TestForeignKeyCascade:
 
     def test_admin_delete_cascades_to_export_requests(self):
         """Test deleting Admin deletes all related DataExportRequests."""
-        admin = Admin.objects.create(
-            username="testadmin",
-            email="admin@example.com"
-        )
+        admin = Admin.objects.create(username="testadmin", email="admin@example.com")
         admin.set_password("testpass123")
         admin.save()
 
         # Create export request
-        export_request = DataExportRequest.objects.create(
-            user=admin,
-            status="pending"
-        )
+        export_request = DataExportRequest.objects.create(user=admin, status="pending")
 
         request_id = export_request.id
 
@@ -92,17 +87,13 @@ class TestForeignKeyCascade:
 
     def test_admin_delete_cascades_to_deletion_requests(self):
         """Test deleting Admin deletes all related AccountDeletionRequests."""
-        admin = Admin.objects.create(
-            username="testadmin",
-            email="admin@example.com"
-        )
+        admin = Admin.objects.create(username="testadmin", email="admin@example.com")
         admin.set_password("testpass123")
         admin.save()
 
         # Create deletion request
         deletion_request = AccountDeletionRequest.objects.create(
-            user=admin,
-            reason="Testing"
+            user=admin, reason="Testing"
         )
 
         request_id = deletion_request.id
@@ -115,15 +106,9 @@ class TestForeignKeyCascade:
 
     def test_category_delete_cascades_to_blog_posts(self):
         """Test deleting BlogCategory deletes all related BlogPosts."""
-        category = BlogCategory.objects.create(
-            name="Tech",
-            slug="tech"
-        )
+        category = BlogCategory.objects.create(name="Tech", slug="tech")
 
-        admin = Admin.objects.create(
-            username="author",
-            email="author@example.com"
-        )
+        admin = Admin.objects.create(username="author", email="author@example.com")
         admin.set_password("pass123")
         admin.save()
 
@@ -134,7 +119,7 @@ class TestForeignKeyCascade:
             content="Content 1",
             category=category,
             author=admin,
-            status="published"
+            status="published",
         )
         post2 = PortfolioBlogPost.objects.create(
             title="Post 2",
@@ -142,7 +127,7 @@ class TestForeignKeyCascade:
             content="Content 2",
             category=category,
             author=admin,
-            status="draft"
+            status="draft",
         )
 
         post_ids = [post1.id, post2.id]
@@ -158,7 +143,7 @@ class TestForeignKeyCascade:
         subscription = WebPushSubscription.objects.create(
             endpoint="https://push.example.com/subscription1",
             p256dh="test_p256dh_key",
-            auth="test_auth_key"
+            auth="test_auth_key",
         )
 
         # Create notification logs
@@ -166,13 +151,13 @@ class TestForeignKeyCascade:
             subscription=subscription,
             title="Test Notification 1",
             message="Message 1",
-            status="sent"
+            status="sent",
         )
         log2 = NotificationLog.objects.create(
             subscription=subscription,
             title="Test Notification 2",
             message="Message 2",
-            status="pending"
+            status="pending",
         )
 
         log_ids = [log1.id, log2.id]
@@ -231,10 +216,7 @@ class TestManyToManyRelationships:
         """Test Admin can be added to multiple groups."""
         from django.contrib.auth.models import Group
 
-        admin = Admin.objects.create(
-            username="testadmin",
-            email="admin@example.com"
-        )
+        admin = Admin.objects.create(username="testadmin", email="admin@example.com")
         admin.set_password("pass123")
         admin.save()
 
@@ -253,10 +235,7 @@ class TestManyToManyRelationships:
         """Test removing Admin from groups."""
         from django.contrib.auth.models import Group
 
-        admin = Admin.objects.create(
-            username="testadmin",
-            email="admin@example.com"
-        )
+        admin = Admin.objects.create(username="testadmin", email="admin@example.com")
         admin.set_password("pass123")
         admin.save()
 
@@ -273,10 +252,7 @@ class TestManyToManyRelationships:
         from django.contrib.auth.models import Permission
         from django.contrib.contenttypes.models import ContentType
 
-        admin = Admin.objects.create(
-            username="testadmin",
-            email="admin@example.com"
-        )
+        admin = Admin.objects.create(username="testadmin", email="admin@example.com")
         admin.set_password("pass123")
         admin.save()
 
@@ -293,10 +269,7 @@ class TestManyToManyRelationships:
         """Test deleting Group removes M2M relations but not Admin."""
         from django.contrib.auth.models import Group
 
-        admin = Admin.objects.create(
-            username="testadmin",
-            email="admin@example.com"
-        )
+        admin = Admin.objects.create(username="testadmin", email="admin@example.com")
         admin.set_password("pass123")
         admin.save()
 
@@ -328,25 +301,18 @@ class TestDatabaseConstraints:
     def test_unique_constraint_prevents_duplicates(self):
         """Test unique constraint prevents duplicate values."""
         # Example: Admin username must be unique
-        Admin.objects.create(
-            username="testuser",
-            email="test1@example.com"
-        )
+        Admin.objects.create(username="testuser", email="test1@example.com")
 
         # Try creating another with same username
         with pytest.raises(IntegrityError):
             Admin.objects.create(
-                username="testuser",  # Duplicate!
-                email="test2@example.com"
+                username="testuser", email="test2@example.com"  # Duplicate!
             )
 
     def test_unique_together_constraint(self):
         """Test unique_together constraint."""
         # Example: UserSession (user, session_key) unique_together
-        admin = Admin.objects.create(
-            username="testadmin",
-            email="admin@example.com"
-        )
+        admin = Admin.objects.create(username="testadmin", email="admin@example.com")
         admin.set_password("pass123")
         admin.save()
 
@@ -354,7 +320,7 @@ class TestDatabaseConstraints:
             user=admin,
             session_key="unique_session_1",
             ip_address="192.168.1.1",
-            user_agent="Mozilla"
+            user_agent="Mozilla",
         )
 
         # Try creating another session with same user + session_key
@@ -364,17 +330,11 @@ class TestDatabaseConstraints:
     def test_null_constraint_enforcement(self):
         """Test null=False fields reject NULL values."""
         # Try creating BlogPost without required title
-        admin = Admin.objects.create(
-            username="author",
-            email="author@example.com"
-        )
+        admin = Admin.objects.create(username="author", email="author@example.com")
         admin.set_password("pass123")
         admin.save()
 
-        category = BlogCategory.objects.create(
-            name="Tech",
-            slug="tech"
-        )
+        category = BlogCategory.objects.create(name="Tech", slug="tech")
 
         with pytest.raises((IntegrityError, ValueError)):
             PortfolioBlogPost.objects.create(
@@ -382,7 +342,7 @@ class TestDatabaseConstraints:
                 slug="test-slug",
                 content="Test content",
                 category=category,
-                author=admin
+                author=admin,
             )
 
 
@@ -397,10 +357,7 @@ class TestOrphanCleanup:
 
     def test_no_orphan_sessions_after_admin_delete(self):
         """Test no orphan UserSessions exist after Admin deleted."""
-        admin = Admin.objects.create(
-            username="testadmin",
-            email="admin@example.com"
-        )
+        admin = Admin.objects.create(username="testadmin", email="admin@example.com")
         admin.set_password("pass123")
         admin.save()
 
@@ -410,7 +367,7 @@ class TestOrphanCleanup:
                 user=admin,
                 session_key=f"session_{i}",
                 ip_address=f"192.168.1.{i}",
-                user_agent="Mozilla"
+                user_agent="Mozilla",
             )
 
         admin_id = admin.id
@@ -424,15 +381,9 @@ class TestOrphanCleanup:
 
     def test_no_orphan_blog_posts_after_category_delete(self):
         """Test no orphan BlogPosts exist after BlogCategory deleted."""
-        category = BlogCategory.objects.create(
-            name="Tech",
-            slug="tech"
-        )
+        category = BlogCategory.objects.create(name="Tech", slug="tech")
 
-        admin = Admin.objects.create(
-            username="author",
-            email="author@example.com"
-        )
+        admin = Admin.objects.create(username="author", email="author@example.com")
         admin.set_password("pass123")
         admin.save()
 
@@ -444,7 +395,7 @@ class TestOrphanCleanup:
                 content=f"Content {i}",
                 category=category,
                 author=admin,
-                status="published"
+                status="published",
             )
 
         category_id = category.id
@@ -473,15 +424,12 @@ class TestReferentialIntegrity:
                 user_id=99999,  # Nonexistent admin ID
                 session_key="invalid_session",
                 ip_address="192.168.1.1",
-                user_agent="Mozilla"
+                user_agent="Mozilla",
             )
 
     def test_cannot_create_blog_post_with_nonexistent_category(self):
         """Test cannot create BlogPost with nonexistent Category."""
-        admin = Admin.objects.create(
-            username="author",
-            email="author@example.com"
-        )
+        admin = Admin.objects.create(username="author", email="author@example.com")
         admin.set_password("pass123")
         admin.save()
 
@@ -492,23 +440,17 @@ class TestReferentialIntegrity:
                 content="Content",
                 category_id=99999,  # Nonexistent category ID
                 author=admin,
-                status="published"
+                status="published",
             )
 
     def test_foreign_key_validation(self):
         """Test ForeignKey validation prevents invalid references."""
         # Try assigning invalid object to ForeignKey
-        admin = Admin.objects.create(
-            username="author",
-            email="author@example.com"
-        )
+        admin = Admin.objects.create(username="author", email="author@example.com")
         admin.set_password("pass123")
         admin.save()
 
-        category = BlogCategory.objects.create(
-            name="Tech",
-            slug="tech"
-        )
+        category = BlogCategory.objects.create(name="Tech", slug="tech")
 
         post = PortfolioBlogPost(
             title="Test Post",
@@ -516,7 +458,7 @@ class TestReferentialIntegrity:
             content="Content",
             category=category,
             author=admin,
-            status="published"
+            status="published",
         )
 
         # Try assigning wrong type to author
@@ -538,10 +480,7 @@ class TestBulkDatabaseOperations:
         """Test bulk_create creates multiple records efficiently."""
         personal_infos = [
             PersonalInfo(
-                key=f"key_{i}",
-                value=f"value_{i}",
-                type="text",
-                display_order=i
+                key=f"key_{i}", value=f"value_{i}", type="text", display_order=i
             )
             for i in range(100)
         ]
@@ -567,7 +506,7 @@ class TestBulkDatabaseOperations:
                 content=f"Content {i}",
                 category=category,
                 author=admin,
-                status="draft"
+                status="draft",
             )
             posts.append(post)
 
@@ -593,7 +532,7 @@ class TestBulkDatabaseOperations:
                 user=admin,
                 session_key=f"session_{i}",
                 ip_address=f"192.168.1.{i % 255}",
-                user_agent="Mozilla"
+                user_agent="Mozilla",
             )
 
         # Bulk delete

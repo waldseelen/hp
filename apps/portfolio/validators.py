@@ -351,7 +351,9 @@ def _validate_field_type(field, value, rules):
         try:
             return expected_type(value)
         except (ValueError, TypeError):
-            raise ValidationError(f"Field {field} must be of type {expected_type.__name__}")
+            raise ValidationError(
+                f"Field {field} must be of type {expected_type.__name__}"
+            )
     return value
 
 

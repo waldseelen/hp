@@ -228,7 +228,15 @@ class Command(BaseCommand):
             end_tag_matches = re.findall(r"{%\s*end(\w+)", line)
 
             for tag in tag_matches:
-                if tag in ["if", "for", "block", "with", "comment", "autoescape", "verbatim"]:
+                if tag in [
+                    "if",
+                    "for",
+                    "block",
+                    "with",
+                    "comment",
+                    "autoescape",
+                    "verbatim",
+                ]:
                     tag_stack.append((tag, i))
 
             for end_tag in end_tag_matches:
@@ -248,9 +256,13 @@ class Command(BaseCommand):
 
         if "{% extends" in content:
             if not re.search(r'{%\s*extends\s+["\'][^"\']+["\']\s*%}', lines[0]):
-                first_non_empty = next((i for i, line in enumerate(lines) if line.strip()), 0)
+                first_non_empty = next(
+                    (i for i, line in enumerate(lines) if line.strip()), 0
+                )
                 if first_non_empty > 0:
-                    errors.append("{% extends %} should be the first line in the template")
+                    errors.append(
+                        "{% extends %} should be the first line in the template"
+                    )
 
         return errors
 

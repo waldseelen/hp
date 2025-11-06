@@ -11,18 +11,24 @@ Tests cover:
 Target: Verify all model signals fire correctly and perform intended actions.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
-from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
+from unittest.mock import MagicMock, patch
+
 from django.core.cache import cache
-
-from apps.portfolio.models import (
-    Admin, BlogPost as PortfolioBlogPost, BlogCategory,
-    PersonalInfo, UserSession
+from django.db.models.signals import (
+    m2m_changed,
+    post_delete,
+    post_save,
+    pre_delete,
+    pre_save,
 )
-from apps.main.models import BlogPost as MainBlogPost
-from apps.tools.models import Tool
 
+import pytest
+
+from apps.main.models import BlogPost as MainBlogPost
+from apps.portfolio.models import Admin, BlogCategory
+from apps.portfolio.models import BlogPost as PortfolioBlogPost
+from apps.portfolio.models import PersonalInfo, UserSession
+from apps.tools.models import Tool
 
 # ============================================================================
 # POST_SAVE SIGNAL TESTS (Cache Invalidation)
@@ -55,7 +61,7 @@ class TestPostSaveCacheInvalidation:
             content="Content",
             category=category,
             author=admin,
-            status="published"
+            status="published",
         )
 
         # Check if cache was invalidated (depends on actual signal implementation)
@@ -63,7 +69,7 @@ class TestPostSaveCacheInvalidation:
         # then these keys should be None
         # This is a simplified check - actual keys depend on implementation
 
-    @patch('apps.core.cache_signals.cache.delete_many')
+    @patch("apps.core.cache_signals.cache.delete_many")
     def test_blog_post_save_calls_cache_delete(self, mock_delete):
         """Test BlogPost save calls cache.delete_many (mocked)."""
         category = BlogCategory.objects.create(name="Tech", slug="tech")
@@ -78,7 +84,7 @@ class TestPostSaveCacheInvalidation:
             content="Content",
             category=category,
             author=admin,
-            status="published"
+            status="published",
         )
 
         # Signal should have called cache.delete_many
@@ -93,7 +99,7 @@ class TestPostSaveCacheInvalidation:
             title="Django",
             description="Web framework",
             url="https://djangoproject.com",
-            category="Framework"
+            category="Framework",
         )
 
         # Cache should be invalidated
@@ -104,10 +110,7 @@ class TestPostSaveCacheInvalidation:
 
         # Create/update PersonalInfo (should trigger post_save signal)
         info = PersonalInfo.objects.create(
-            key="name",
-            value="John Doe",
-            type="text",
-            display_order=1
+            key="name", value="John Doe", type="text", display_order=1
         )
 
         # Cache should be invalidated
@@ -139,7 +142,7 @@ class TestPostDeleteCacheInvalidation:
             content="Content",
             category=category,
             author=admin,
-            status="published"
+            status="published",
         )
 
         # Set cache
@@ -156,7 +159,7 @@ class TestPostDeleteCacheInvalidation:
             title="Django",
             description="Web framework",
             url="https://djangoproject.com",
-            category="Framework"
+            category="Framework",
         )
 
         cache.set("tools_list", "cached_tools", 3600)
@@ -189,7 +192,7 @@ class TestPreSaveSignals:
             content="Content",
             category=category,
             author=admin,
-            status="draft"
+            status="draft",
         )
 
         # Check if slug was auto-generated (if pre_save signal exists)
@@ -198,7 +201,7 @@ class TestPreSaveSignals:
             # If no signal, slug might be required - this test is informational
             pass
 
-    @patch('apps.portfolio.models.timezone.now')
+    @patch("apps.portfolio.models.timezone.now")
     def test_timestamp_auto_set_on_save(self, mock_now):
         """Test timestamps are auto-set on save (pre_save signal)."""
         from django.utils import timezone
@@ -217,7 +220,7 @@ class TestPreSaveSignals:
             content="Content",
             category=category,
             author=admin,
-            status="draft"
+            status="draft",
         )
 
         # created_at should be set automatically
@@ -233,7 +236,7 @@ class TestPreSaveSignals:
 class TestSearchIndexingSignals:
     """Test post_save signals trigger search indexing."""
 
-    @patch('apps.main.search_index.SearchIndexManager.index_document')
+    @patch("apps.main.search_index.SearchIndexManager.index_document")
     def test_blog_post_indexed_on_create(self, mock_index):
         """Test BlogPost is indexed in search on creation (mocked)."""
         mock_index.return_value = {"taskUid": 123}
@@ -250,13 +253,13 @@ class TestSearchIndexingSignals:
             content="Searchable content",
             category=category,
             author=admin,
-            status="published"
+            status="published",
         )
 
         # Signal should have called search indexing
         # (Actual assertion depends on signal implementation)
 
-    @patch('apps.main.search_index.SearchIndexManager.index_document')
+    @patch("apps.main.search_index.SearchIndexManager.index_document")
     def test_tool_indexed_on_create(self, mock_index):
         """Test Tool is indexed in search on creation (mocked)."""
         mock_index.return_value = {"taskUid": 456}
@@ -266,7 +269,7 @@ class TestSearchIndexingSignals:
             title="Django",
             description="Web framework for Python",
             url="https://djangoproject.com",
-            category="Framework"
+            category="Framework",
         )
 
         # Signal should have called search indexing
@@ -281,7 +284,7 @@ class TestSearchIndexingSignals:
 class TestPreDeleteSignals:
     """Test pre_delete signals for cleanup and backup."""
 
-    @patch('apps.portfolio.models.logger.info')
+    @patch("apps.portfolio.models.logger.info")
     def test_admin_delete_logs_audit_trail(self, mock_logger):
         """Test deleting Admin logs audit trail (pre_delete signal)."""
         admin = Admin.objects.create(username="testadmin", email="admin@example.com")
@@ -308,7 +311,7 @@ class TestPreDeleteSignals:
             content="Critical content",
             category=category,
             author=admin,
-            status="published"
+            status="published",
         )
 
         # Delete post (should trigger pre_delete signal -> backup)
@@ -372,8 +375,8 @@ class TestM2MChangedSignals:
 class TestSignalExecutionOrder:
     """Test signals fire in correct order."""
 
-    @patch('apps.core.cache_signals.cache.delete_many')
-    @patch('apps.main.search_index.SearchIndexManager.index_document')
+    @patch("apps.core.cache_signals.cache.delete_many")
+    @patch("apps.main.search_index.SearchIndexManager.index_document")
     def test_post_save_signals_fire_in_order(self, mock_index, mock_cache):
         """Test post_save signals fire in correct order."""
         category = BlogCategory.objects.create(name="Tech", slug="tech")
@@ -388,7 +391,7 @@ class TestSignalExecutionOrder:
             content="Content",
             category=category,
             author=admin,
-            status="published"
+            status="published",
         )
 
         # Both signals should have been called
@@ -413,6 +416,7 @@ class TestSignalDisconnection:
 
         # Disconnect post_save signal
         from apps.core.cache_signals import invalidate_blog_cache
+
         post_save.disconnect(invalidate_blog_cache, sender=PortfolioBlogPost)
 
         try:
@@ -423,7 +427,7 @@ class TestSignalDisconnection:
                 content="Content",
                 category=category,
                 author=admin,
-                status="published"
+                status="published",
             )
 
             # Post should be created but cache signal didn't fire
@@ -442,7 +446,7 @@ class TestSignalDisconnection:
 class TestSignalErrorHandling:
     """Test signal error handling."""
 
-    @patch('apps.main.search_index.SearchIndexManager.index_document')
+    @patch("apps.main.search_index.SearchIndexManager.index_document")
     def test_save_succeeds_even_if_signal_fails(self, mock_index):
         """Test object save succeeds even if post_save signal fails."""
         # Make signal raise exception
@@ -460,7 +464,7 @@ class TestSignalErrorHandling:
             content="Content",
             category=category,
             author=admin,
-            status="published"
+            status="published",
         )
 
         # Post should be saved successfully
@@ -491,7 +495,7 @@ class TestConditionalSignals:
             content="Draft content",
             category=category,
             author=admin,
-            status="draft"
+            status="draft",
         )
 
         # Create published post - signal should fire
@@ -501,7 +505,7 @@ class TestConditionalSignals:
             content="Published content",
             category=category,
             author=admin,
-            status="published"
+            status="published",
         )
 
         # Depending on signal implementation, only published post might trigger indexing
@@ -535,7 +539,7 @@ class TestSignalPerformance:
                 content=f"Content {i}",
                 category=category,
                 author=admin,
-                status="published"
+                status="published",
             )
 
         elapsed_time = time.time() - start_time

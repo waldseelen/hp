@@ -10,7 +10,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 
-
 __all__ = [
     "generate_unique_slug",
     "auto_set_published_at",

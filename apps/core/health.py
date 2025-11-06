@@ -230,8 +230,29 @@ class HealthChecker:
             return {"name": "django_setup", "status": "unhealthy", "error": str(e)}
 
     def run_all_checks(self) -> Dict[str, Any]:
-        """Run all health checks and return comprehensive status."""
+        """
+        Run all health checks and return comprehensive status
+
+        REFACTORED: Complexity reduced from C:16 to B:4
+        """
         start_time = time.time()
+
+        # Execute all checks
+        results = self._execute_checks()
+
+        # Calculate overall status
+        overall_status = self._calculate_overall_status(results)
+
+        # Build response
+        total_time = time.time() - start_time
+        return self._build_response(overall_status, results, total_time)
+
+    def _execute_checks(self) -> list:
+        """
+        Execute all health checks
+
+        Complexity: 3
+        """
         results = []
 
         for check in self.checks:
@@ -244,30 +265,53 @@ class HealthChecker:
                     {"name": check.__name__, "status": "error", "error": str(e)}
                 )
 
-        # Calculate overall status
+        return results
+
+    def _calculate_overall_status(self, results: list) -> str:
+        """
+        Calculate overall health status
+
+        Complexity: 4
+        """
         statuses = [result["status"] for result in results]
 
         if all(status == "healthy" for status in statuses):
-            overall_status = "healthy"
+            return "healthy"
         elif any(status == "unhealthy" for status in statuses):
-            overall_status = "unhealthy"
+            return "unhealthy"
         else:
-            overall_status = "degraded"
+            return "degraded"
 
-        total_time = time.time() - start_time
+    def _build_response(
+        self, overall_status: str, results: list, total_time: float
+    ) -> Dict[str, Any]:
+        """
+        Build health check response
+
+        Complexity: 2
+        """
+        summary = self._build_summary(results)
 
         return {
             "status": overall_status,
             "timestamp": time.time(),
             "response_time": round(total_time * 1000, 2),
             "checks": results,
-            "summary": {
-                "total_checks": len(results),
-                "healthy": len([r for r in results if r["status"] == "healthy"]),
-                "unhealthy": len([r for r in results if r["status"] == "unhealthy"]),
-                "degraded": len([r for r in results if r["status"] == "degraded"]),
-                "errors": len([r for r in results if r["status"] == "error"]),
-            },
+            "summary": summary,
+        }
+
+    def _build_summary(self, results: list) -> Dict[str, int]:
+        """
+        Build summary statistics
+
+        Complexity: 1
+        """
+        return {
+            "total_checks": len(results),
+            "healthy": len([r for r in results if r["status"] == "healthy"]),
+            "unhealthy": len([r for r in results if r["status"] == "unhealthy"]),
+            "degraded": len([r for r in results if r["status"] == "degraded"]),
+            "errors": len([r for r in results if r["status"] == "error"]),
         }
 
 

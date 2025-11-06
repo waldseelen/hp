@@ -12,6 +12,8 @@ import time
 
 from django.core.management.base import BaseCommand, CommandError
 
+from tqdm import tqdm
+
 from apps.main.search_index import search_index_manager
 
 
@@ -74,6 +76,50 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f"✗ Configuration error: {e}"))
             raise CommandError(f"Failed to configure index: {e}")
 
+    def _validate_config(self, options):
+        """
+        Validate command options and configuration.
+
+        Checks:
+        - At least one of --all or --model is specified
+        - Specified models exist in registry
+        - Batch size is valid (1-10000)
+
+        Args:
+            options: Command options dict
+
+        Raises:
+            CommandError: If validation fails
+        """
+        # Check that either --all or --model is specified
+        if not options["all"] and not options["model"]:
+            available = ", ".join(search_index_manager.model_registry.keys())
+            raise CommandError(
+                "Please specify --all or --model <ModelName>.\n"
+                f"Available models: {available}"
+            )
+
+        # Validate batch size
+        batch_size = options["batch_size"]
+        if batch_size < 1 or batch_size > 10000:
+            raise CommandError(
+                f"Batch size must be between 1 and 10000, got: {batch_size}"
+            )
+
+        # Validate model names if specified
+        if options["model"]:
+            invalid_models = [
+                m
+                for m in options["model"]
+                if m not in search_index_manager.model_registry
+            ]
+            if invalid_models:
+                available = ", ".join(search_index_manager.model_registry.keys())
+                raise CommandError(
+                    f"Invalid model(s): {', '.join(invalid_models)}.\n"
+                    f"Available models: {available}"
+                )
+
     def _get_models_to_reindex(self, options):
         """
         Determine which models to reindex based on command options.
@@ -83,46 +129,21 @@ class Command(BaseCommand):
 
         Returns:
             List of model names to reindex
-
-        Raises:
-            CommandError: If no valid models specified
         """
-        models_to_index = []
-
         if options["all"]:
             models_to_index = list(search_index_manager.model_registry.keys())
             self.stdout.write(
                 f"\n🔄 Reindexing ALL models ({len(models_to_index)} models)..."
             )
-        elif options["model"]:
-            # Validate model names
-            invalid_models = []
-            for model_name in options["model"]:
-                if model_name not in search_index_manager.model_registry:
-                    invalid_models.append(model_name)
-                else:
-                    models_to_index.append(model_name)
-
-            if invalid_models:
-                available = ", ".join(search_index_manager.model_registry.keys())
-                raise CommandError(
-                    f"Invalid model(s): {', '.join(invalid_models)}.\n"
-                    f"Available models: {available}"
-                )
-
-            self.stdout.write(f"\n🔄 Reindexing {len(models_to_index)} model(s)...")
         else:
-            raise CommandError(
-                "Please specify --all or --model <ModelName>.\n"
-                "Available models: "
-                + ", ".join(search_index_manager.model_registry.keys())
-            )
+            models_to_index = options["model"]
+            self.stdout.write(f"\n🔄 Reindexing {len(models_to_index)} model(s)...")
 
         return models_to_index
 
     def _reindex_single_model(self, model_name, options):
         """
-        Reindex a single model with progress reporting.
+        Reindex a single model with progress reporting and optional progress bar.
 
         Args:
             model_name: Name of model to reindex
@@ -145,9 +166,12 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING("   ⚠ No objects found, skipping"))
                 return {"indexed": 0, "skipped": 0, "failed": 0}
 
-            # Reindex
+            # Reindex with optional progress bar
             model_start = time.time()
-            results = search_index_manager.reindex_model(model_name)
+            show_progress = options.get("verbose", False)
+            results = search_index_manager.reindex_model(
+                model_name, show_progress=show_progress
+            )
             model_duration = time.time() - model_start
 
             # Show results
@@ -160,9 +184,7 @@ class Command(BaseCommand):
                     self.style.WARNING(f'   ⚠ Skipped: {results["skipped"]}')
                 )
             if results["failed"] > 0:
-                self.stdout.write(
-                    self.style.ERROR(f'   ✗ Failed: {results["failed"]}')
-                )
+                self.stdout.write(self.style.ERROR(f'   ✗ Failed: {results["failed"]}'))
 
             # Performance info
             if options["verbose"] and results["indexed"] > 0:
@@ -242,7 +264,7 @@ class Command(BaseCommand):
         Main command handler orchestrating the reindexing workflow.
 
         Refactored to reduce complexity: C:26 → C:7
-        Uses orchestrator pattern: configure → validate → reindex → summarize
+        Uses orchestrator pattern: validate → configure → reindex → summarize
         """
         start_time = time.time()
 
@@ -250,7 +272,10 @@ class Command(BaseCommand):
         self.stdout.write(self.style.WARNING("MeiliSearch Reindex Command"))
         self.stdout.write(self.style.WARNING("=" * 70))
 
-        # Step 1: Configure index if requested
+        # Step 1: Validate configuration
+        self._validate_config(options)
+
+        # Step 2: Configure index if requested
         if options["configure_only"] or options["all"]:
             self._configure_index(options)
 
@@ -259,10 +284,10 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("\n✓ Configuration complete"))
             return
 
-        # Step 2: Determine which models to reindex
+        # Step 3: Determine which models to reindex
         models_to_index = self._get_models_to_reindex(options)
 
-        # Step 3: Reindex each model
+        # Step 4: Reindex each model
         total_results = {"indexed": 0, "skipped": 0, "failed": 0}
 
         for model_name in models_to_index:
@@ -271,6 +296,6 @@ class Command(BaseCommand):
             total_results["skipped"] += results["skipped"]
             total_results["failed"] += results["failed"]
 
-        # Step 4: Display summary
+        # Step 5: Display summary
         total_duration = time.time() - start_time
         self._display_summary(total_results, total_duration)

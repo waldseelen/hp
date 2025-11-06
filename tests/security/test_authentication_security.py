@@ -8,11 +8,12 @@ Tests for OWASP Top 10 compliance and authentication security.
 import time
 from unittest.mock import Mock, patch
 
-import pytest
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
+
+import pytest
 
 from apps.core.middleware.rate_limiting import (
     AuthenticationRateLimiter,
@@ -366,6 +367,7 @@ class TestAuthenticationBackendSecurity:
 
         # Should be blocked or show error
         # (Exact behavior depends on middleware implementation)
-        assert response.status_code in [403, 429] or "too many" in str(
-            response.content
-        ).lower()
+        assert (
+            response.status_code in [403, 429]
+            or "too many" in str(response.content).lower()
+        )

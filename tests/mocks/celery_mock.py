@@ -4,6 +4,7 @@ Mock implementation of Celery for testing
 Provides a mock Celery app that executes tasks synchronously
 without requiring a running broker or worker.
 """
+
 from typing import Any, Callable, Dict, Optional
 from unittest.mock import MagicMock
 
@@ -65,7 +66,9 @@ class MockTask:
 
         try:
             result = self.func(*args, **kwargs)
-            return MockAsyncResult(task_id=f"mock-task-{self._call_count}", result=result)
+            return MockAsyncResult(
+                task_id=f"mock-task-{self._call_count}", result=result
+            )
         except Exception as e:
             return MockAsyncResult(
                 task_id=f"mock-task-{self._call_count}", result=e, state="FAILURE"

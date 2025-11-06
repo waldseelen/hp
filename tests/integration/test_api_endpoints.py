@@ -11,18 +11,24 @@ Target: Comprehensive API integration testing with real HTTP requests.
 """
 
 import json
-import pytest
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-from rest_framework.test import APIClient
-from rest_framework import status
 from unittest.mock import patch
 
+from django.contrib.auth import get_user_model
+from django.urls import reverse
+
+import pytest
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from apps.blog.models import BlogCategory, BlogPost
 from apps.portfolio.models import (
-    PersonalInfo, SocialLink, AITool, CybersecurityResource,
-    UsefulResource, Admin
+    Admin,
+    AITool,
+    CybersecurityResource,
+    PersonalInfo,
+    SocialLink,
+    UsefulResource,
 )
-from apps.blog.models import BlogPost, BlogCategory
 
 User = get_user_model()
 
@@ -40,16 +46,10 @@ class TestPersonalInfoAPI:
         """Set up test client and test data."""
         self.client = APIClient()
         PersonalInfo.objects.create(
-            key="name",
-            value="John Doe",
-            type="text",
-            display_order=1
+            key="name", value="John Doe", type="text", display_order=1
         )
         PersonalInfo.objects.create(
-            key="email",
-            value="john@example.com",
-            type="email",
-            display_order=2
+            key="email", value="john@example.com", type="email", display_order=2
         )
 
     def test_personalinfo_list_api_returns_200(self):
@@ -93,13 +93,13 @@ class TestSocialLinkAPI:
             platform="GitHub",
             url="https://github.com/testuser",
             display_order=1,
-            is_active=True
+            is_active=True,
         )
         SocialLink.objects.create(
             platform="LinkedIn",
             url="https://linkedin.com/in/testuser",
             display_order=2,
-            is_active=True
+            is_active=True,
         )
 
     def test_sociallink_list_api_returns_200(self):
@@ -116,7 +116,7 @@ class TestSocialLinkAPI:
             platform="Twitter",
             url="https://twitter.com/testuser",
             display_order=3,
-            is_active=False
+            is_active=False,
         )
 
         url = reverse("portfolio:social_link_list")
@@ -142,14 +142,14 @@ class TestAIToolAPI:
             description="AI chatbot",
             url="https://chat.openai.com",
             category="AI/ML",
-            is_visible=True
+            is_visible=True,
         )
         Tool.objects.create(
             title="GitHub Copilot",
             description="AI pair programmer",
             url="https://github.com/features/copilot",
             category="Development",
-            is_visible=True
+            is_visible=True,
         )
 
     def test_aitool_list_api_returns_200(self):
@@ -187,15 +187,13 @@ class TestSearchAPI:
         """Set up test client."""
         self.client = APIClient()
 
-    @patch('apps.main.search_index.SearchIndexManager.search')
+    @patch("apps.main.search_index.SearchIndexManager.search")
     def test_search_api_returns_200(self, mock_search):
         """Test search API returns 200 OK."""
         mock_search.return_value = {
-            "hits": [
-                {"id": "post_1", "title": "Test Post", "content": "Test content"}
-            ],
+            "hits": [{"id": "post_1", "title": "Test Post", "content": "Test content"}],
             "estimatedTotalHits": 1,
-            "processingTimeMs": 10
+            "processingTimeMs": 10,
         }
 
         url = reverse("main:search_api")
@@ -203,7 +201,7 @@ class TestSearchAPI:
 
         assert response.status_code == status.HTTP_200_OK
 
-    @patch('apps.main.search_index.SearchIndexManager.search')
+    @patch("apps.main.search_index.SearchIndexManager.search")
     def test_search_api_requires_query_param(self, mock_search):
         """Test search API requires 'q' query parameter."""
         url = reverse("main:search_api")
@@ -212,14 +210,12 @@ class TestSearchAPI:
         # Should return 400 Bad Request or handle gracefully
         assert response.status_code in [status.HTTP_400_BAD_REQUEST, status.HTTP_200_OK]
 
-    @patch('apps.main.search_index.SearchIndexManager.search')
+    @patch("apps.main.search_index.SearchIndexManager.search")
     def test_search_api_returns_json_structure(self, mock_search):
         """Test search API returns expected JSON structure."""
         mock_search.return_value = {
-            "hits": [
-                {"id": "post_1", "title": "Test Post"}
-            ],
-            "estimatedTotalHits": 1
+            "hits": [{"id": "post_1", "title": "Test Post"}],
+            "estimatedTotalHits": 1,
         }
 
         url = reverse("main:search_api")
@@ -228,7 +224,7 @@ class TestSearchAPI:
         data = response.json()
         assert "hits" in data or "results" in data  # Either key might be used
 
-    @patch('apps.main.search_index.SearchIndexManager.search_suggest')
+    @patch("apps.main.search_index.SearchIndexManager.search_suggest")
     def test_search_suggest_api(self, mock_suggest):
         """Test search suggest/autocomplete API."""
         mock_suggest.return_value = ["test post", "test article", "test guide"]
@@ -240,20 +236,24 @@ class TestSearchAPI:
         data = response.json()
         assert isinstance(data, (list, dict))
 
-    @patch('apps.main.search_index.SearchIndexManager.get_stats')
+    @patch("apps.main.search_index.SearchIndexManager.get_stats")
     def test_search_stats_api(self, mock_stats):
         """Test search statistics API."""
         mock_stats.return_value = {
             "total_documents": 100,
             "total_queries": 500,
-            "avg_response_time": 15
+            "avg_response_time": 15,
         }
 
         url = reverse("main:search_stats")
         response = self.client.get(url)
 
         # May require authentication
-        assert response.status_code in [status.HTTP_200_OK, status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN]
+        assert response.status_code in [
+            status.HTTP_200_OK,
+            status.HTTP_401_UNAUTHORIZED,
+            status.HTTP_403_FORBIDDEN,
+        ]
 
 
 # ============================================================================
@@ -269,7 +269,7 @@ class TestPlaygroundAPI:
         """Set up test client."""
         self.client = APIClient()
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_execute_code_api_requires_post(self, mock_run):
         """Test execute code API requires POST method."""
         url = reverse("playground:execute_code")
@@ -278,7 +278,7 @@ class TestPlaygroundAPI:
         response = self.client.get(url)
         assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_execute_code_api_with_valid_code(self, mock_run):
         """Test execute code API with valid Python code."""
         from unittest.mock import MagicMock
@@ -293,11 +293,15 @@ class TestPlaygroundAPI:
         response = self.client.post(
             url,
             data=json.dumps({"code": "print('Hello, World!')"}),
-            content_type="application/json"
+            content_type="application/json",
         )
 
         # Should return 200 or require authentication
-        assert response.status_code in [status.HTTP_200_OK, status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN]
+        assert response.status_code in [
+            status.HTTP_200_OK,
+            status.HTTP_401_UNAUTHORIZED,
+            status.HTTP_403_FORBIDDEN,
+        ]
 
     def test_save_snippet_api_requires_post(self):
         """Test save snippet API requires POST method."""
@@ -329,9 +333,7 @@ class TestAPIAuthentication:
         """Set up test client and user."""
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username="testuser",
-            email="test@example.com",
-            password="testpass123"
+            username="testuser", email="test@example.com", password="testpass123"
         )
 
     def test_unauthenticated_access_to_public_api(self):
@@ -356,9 +358,7 @@ class TestAPIAuthentication:
         # Create regular user and admin
         regular_user = self.user
         admin_user = User.objects.create_superuser(
-            username="admin",
-            email="admin@example.com",
-            password="adminpass123"
+            username="admin", email="admin@example.com", password="adminpass123"
         )
 
         # Try accessing admin endpoint as regular user
@@ -367,7 +367,10 @@ class TestAPIAuthentication:
         response = self.client.get(url)
 
         # Should be forbidden
-        assert response.status_code in [status.HTTP_403_FORBIDDEN, status.HTTP_401_UNAUTHORIZED]
+        assert response.status_code in [
+            status.HTTP_403_FORBIDDEN,
+            status.HTTP_401_UNAUTHORIZED,
+        ]
 
         # Try accessing as admin
         self.client.force_authenticate(user=admin_user)
@@ -438,13 +441,14 @@ class TestAPIErrorHandling:
         url = reverse("playground:execute_code")
 
         response = self.client.post(
-            url,
-            data="invalid json {",
-            content_type="application/json"
+            url, data="invalid json {", content_type="application/json"
         )
 
         # Should return 400 Bad Request or 500 Internal Server Error
-        assert response.status_code in [status.HTTP_400_BAD_REQUEST, status.HTTP_500_INTERNAL_SERVER_ERROR]
+        assert response.status_code in [
+            status.HTTP_400_BAD_REQUEST,
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        ]
 
 
 # ============================================================================
@@ -463,10 +467,7 @@ class TestAPIPagination:
         # Create 50 PersonalInfo records
         for i in range(50):
             PersonalInfo.objects.create(
-                key=f"key_{i}",
-                value=f"value_{i}",
-                type="text",
-                display_order=i
+                key=f"key_{i}", value=f"value_{i}", type="text", display_order=i
             )
 
     def test_api_pagination_page_1(self):

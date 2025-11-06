@@ -28,6 +28,7 @@ except ImportError:
     WebPushException = Exception
 
 from ..models import NotificationLog, WebPushSubscription
+from .push_helpers import NotificationSender, PayloadBuilder, SubscriptionValidator
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +48,14 @@ class PushNotificationService:
         )
         self.vapid_subject = getattr(settings, "WEBPUSH_SETTINGS", {}).get(
             "VAPID_SUBJECT", "mailto:admin@localhost"
+        )
+
+        # Initialize notification sender
+        self._sender = NotificationSender(
+            webpush_func=webpush,
+            vapid_private_key=self.vapid_private_key,
+            vapid_subject=self.vapid_subject,
+            notification_log_model=NotificationLog,
         )
 
         if not self.vapid_private_key:
@@ -88,133 +97,39 @@ class PushNotificationService:
 
         Returns:
             Dict with success status and details
+
+        REFACTORED: Complexity reduced from C:16 to A:2
         """
-        if not webpush:
-            return {
-                "success": False,
-                "error": "pywebpush not installed",
-                "subscription_id": subscription.id,
-            }
+        # Validate subscription
+        is_valid, error_msg, error_response = SubscriptionValidator.validate(
+            subscription, webpush is not None
+        )
+        if not is_valid:
+            return error_response
 
-        if not subscription.enabled:
-            return {
-                "success": False,
-                "error": "Subscription disabled",
-                "subscription_id": subscription.id,
-            }
+        # Build payload
+        payload = PayloadBuilder.build(
+            title=title,
+            body=body,
+            icon=icon,
+            image=image,
+            badge=badge,
+            url=url,
+            tag=tag,
+            actions=actions,
+            notification_type=notification_type,
+            additional_data=additional_data,
+        )
 
-        # Prepare notification payload
-        payload = {
-            "title": title,
-            "body": body,
-            "icon": icon or "/static/icons/icon-192x192.png",
-            "badge": badge or "/static/icons/badge-72x72.png",
-            "data": {
-                "url": url or "/",
-                "type": notification_type,
-                "timestamp": timezone.now().isoformat(),
-                **(additional_data or {}),
-            },
-        }
-
-        if image:
-            payload["image"] = image
-        if tag:
-            payload["tag"] = tag
-        if actions:
-            payload["actions"] = actions
-
-        # Prepare subscription data for pywebpush
-        subscription_data = {
-            "endpoint": subscription.endpoint,
-            "keys": {"p256dh": subscription.p256dh, "auth": subscription.auth},
-        }
-
-        # VAPID configuration
-        vapid_claims = {"sub": self.vapid_subject}
-
-        try:
-            # Send the notification
-            response = webpush(
-                subscription_info=subscription_data,
-                data=json.dumps(payload),
-                vapid_private_key=self.vapid_private_key,
-                vapid_claims=vapid_claims,
-                ttl=ttl,
-            )
-
-            # Update subscription last used timestamp
-            subscription.last_used = timezone.now()
-            subscription.save(update_fields=["last_used"])
-
-            # Log successful notification
-            NotificationLog.objects.create(
-                subscription=subscription,
-                title=title,
-                body=body,
-                notification_type=notification_type,
-                status="sent",
-                response_code=(
-                    response.status_code if hasattr(response, "status_code") else 200
-                ),
-                sent_at=timezone.now(),
-            )
-
-            return {
-                "success": True,
-                "subscription_id": subscription.id,
-                "response_code": (
-                    response.status_code if hasattr(response, "status_code") else 200
-                ),
-            }
-
-        except WebPushException as e:
-            error_message = str(e)
-
-            # Log failed notification
-            NotificationLog.objects.create(
-                subscription=subscription,
-                title=title,
-                body=body,
-                notification_type=notification_type,
-                status="failed",
-                error_message=error_message,
-                sent_at=timezone.now(),
-            )
-
-            # Handle specific error cases
-            if "410" in error_message or "Expired" in error_message:
-                # Subscription expired, disable it
-                subscription.enabled = False
-                subscription.save(update_fields=["enabled"])
-                logger.info(f"Disabled expired subscription: {subscription.id}")
-
-            return {
-                "success": False,
-                "error": error_message,
-                "subscription_id": subscription.id,
-            }
-
-        except Exception as e:
-            error_message = str(e)
-            logger.error(f"Unexpected error sending push notification: {error_message}")
-
-            # Log error
-            NotificationLog.objects.create(
-                subscription=subscription,
-                title=title,
-                body=body,
-                notification_type=notification_type,
-                status="error",
-                error_message=error_message,
-                sent_at=timezone.now(),
-            )
-
-            return {
-                "success": False,
-                "error": error_message,
-                "subscription_id": subscription.id,
-            }
+        # Send notification
+        return self._sender.send(
+            subscription=subscription,
+            payload=payload,
+            ttl=ttl,
+            title=title,
+            body=body,
+            notification_type=notification_type,
+        )
 
     def send_notification_to_subscriptions(
         self,

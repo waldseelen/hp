@@ -9,27 +9,30 @@ Coverage targets:
 - Utilities: ShortURL, NotificationLog, WebPushSubscription
 """
 
-import pytest
 from datetime import timedelta
-from django.utils import timezone
-from django.core.exceptions import ValidationError
+
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+
+import pytest
+
 from apps.portfolio.models import (
-    Admin,
-    UserSession,
-    CookieConsent,
-    DataExportRequest,
     AccountDeletionRequest,
-    PersonalInfo,
-    SocialLink,
+    Admin,
     AITool,
-    CybersecurityResource,
-    PerformanceMetric,
-    ErrorLog,
     AnalyticsEvent,
-    ShortURL,
-    WebPushSubscription,
+    CookieConsent,
+    CybersecurityResource,
+    DataExportRequest,
+    ErrorLog,
     NotificationLog,
+    PerformanceMetric,
+    PersonalInfo,
+    ShortURL,
+    SocialLink,
+    UserSession,
+    WebPushSubscription,
 )
 
 User = get_user_model()
@@ -38,6 +41,7 @@ User = get_user_model()
 # ============================================================================
 # FIXTURES
 # ============================================================================
+
 
 @pytest.fixture
 def admin_user(db):
@@ -76,6 +80,7 @@ def user_session(db, admin_user):
 # ============================================================================
 # PHASE 1: SECURITY & AUTH TESTS (Admin, UserSession)
 # ============================================================================
+
 
 class TestAdminModel:
     """Test Admin model with 2FA and account locking features."""
@@ -127,6 +132,7 @@ class TestAdminModel:
     def test_verify_totp_valid(self, admin_with_2fa):
         """Test TOTP verification with valid token."""
         import pyotp
+
         totp = pyotp.TOTP(admin_with_2fa.totp_secret)
         valid_token = totp.now()
         assert admin_with_2fa.verify_totp(valid_token) is True
@@ -271,6 +277,7 @@ class TestUserSession:
 # PHASE 2: GDPR COMPLIANCE TESTS
 # ============================================================================
 
+
 class TestCookieConsent:
     """Test CookieConsent model for GDPR compliance."""
 
@@ -386,7 +393,9 @@ class TestAccountDeletionRequest:
         request = AccountDeletionRequest.objects.create(user=admin_user)
         expected_deletion = timezone.now() + timedelta(days=30)
         # Allow 1 minute tolerance
-        assert abs((request.scheduled_deletion - expected_deletion).total_seconds()) < 60
+        assert (
+            abs((request.scheduled_deletion - expected_deletion).total_seconds()) < 60
+        )
 
     def test_generate_confirmation_token(self, db, admin_user):
         """Test confirmation token generation."""
@@ -436,6 +445,7 @@ class TestAccountDeletionRequest:
 # PHASE 3: CONTENT MANAGEMENT TESTS
 # ============================================================================
 
+
 class TestPersonalInfo:
     """Test PersonalInfo model for key-value content storage."""
 
@@ -454,6 +464,7 @@ class TestPersonalInfo:
     def test_personal_info_json_valid(self, db):
         """Test creating JSON-type personal info with valid JSON."""
         import json
+
         json_data = json.dumps({"skills": ["Python", "Django", "React"]})
         info = PersonalInfo.objects.create(
             key="skills",
@@ -597,7 +608,10 @@ class TestSocialLink:
         )
         with pytest.raises(ValidationError) as exc_info:
             link.clean()
-        assert "twitter.com" in str(exc_info.value).lower() or "x.com" in str(exc_info.value).lower()
+        assert (
+            "twitter.com" in str(exc_info.value).lower()
+            or "x.com" in str(exc_info.value).lower()
+        )
 
     def test_primary_link_enforcement(self, db, admin_user):
         """Test only one link can be primary."""
@@ -617,7 +631,9 @@ class TestSocialLink:
         # Re-fetch link1 to check if it was updated
         link1.refresh_from_db()
         # Only one should remain primary (the latest one)
-        primary_count = SocialLink.objects.filter(user=admin_user, is_primary=True).count()
+        primary_count = SocialLink.objects.filter(
+            user=admin_user, is_primary=True
+        ).count()
         assert primary_count == 1
 
 
@@ -720,6 +736,7 @@ class TestCybersecurityResource:
 # ============================================================================
 # PHASE 4: MONITORING & ANALYTICS TESTS
 # ============================================================================
+
 
 class TestPerformanceMetric:
     """Test PerformanceMetric model for Core Web Vitals tracking."""
@@ -891,6 +908,7 @@ class TestAnalyticsEvent:
 # ============================================================================
 # PHASE 5: NOTIFICATION & UTILITY TESTS
 # ============================================================================
+
 
 class TestWebPushSubscription:
     """Test WebPushSubscription model for push notifications."""

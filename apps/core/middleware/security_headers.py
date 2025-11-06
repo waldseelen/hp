@@ -15,12 +15,13 @@ OWASP Coverage: A05, A06
 """
 
 import hashlib
+import logging
 import secrets
 from typing import Callable, Optional
-from django.http import HttpRequest, HttpResponse
+
 from django.conf import settings
+from django.http import HttpRequest, HttpResponse
 from django.utils.deprecation import MiddlewareMixin
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -47,15 +48,12 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
         self.get_response = get_response
 
         # Load settings with defaults
-        self.x_frame_options = getattr(
-            settings, 'X_FRAME_OPTIONS', 'DENY'
-        )
+        self.x_frame_options = getattr(settings, "X_FRAME_OPTIONS", "DENY")
         self.referrer_policy = getattr(
-            settings, 'REFERRER_POLICY',
-            'strict-origin-when-cross-origin'
+            settings, "REFERRER_POLICY", "strict-origin-when-cross-origin"
         )
         self.permissions_policy = getattr(
-            settings, 'PERMISSIONS_POLICY', self._default_permissions_policy()
+            settings, "PERMISSIONS_POLICY", self._default_permissions_policy()
         )
 
         logger.info("SecurityHeadersMiddleware initialized")
@@ -74,35 +72,31 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
         )
 
     def process_response(
-        self,
-        request: HttpRequest,
-        response: HttpResponse
+        self, request: HttpRequest, response: HttpResponse
     ) -> HttpResponse:
         """Add security headers to response."""
 
         # X-Content-Type-Options: Prevent MIME sniffing
-        if 'X-Content-Type-Options' not in response:
-            response['X-Content-Type-Options'] = 'nosniff'
+        if "X-Content-Type-Options" not in response:
+            response["X-Content-Type-Options"] = "nosniff"
 
         # X-Frame-Options: Clickjacking protection
-        if 'X-Frame-Options' not in response:
+        if "X-Frame-Options" not in response:
             # Check for view-specific override
-            x_frame_options = getattr(
-                request, 'x_frame_options', self.x_frame_options
-            )
-            response['X-Frame-Options'] = x_frame_options
+            x_frame_options = getattr(request, "x_frame_options", self.x_frame_options)
+            response["X-Frame-Options"] = x_frame_options
 
         # Referrer-Policy: Control referrer information
-        if 'Referrer-Policy' not in response:
-            response['Referrer-Policy'] = self.referrer_policy
+        if "Referrer-Policy" not in response:
+            response["Referrer-Policy"] = self.referrer_policy
 
         # Permissions-Policy: Restrict browser features
-        if 'Permissions-Policy' not in response:
-            response['Permissions-Policy'] = self.permissions_policy
+        if "Permissions-Policy" not in response:
+            response["Permissions-Policy"] = self.permissions_policy
 
         # X-XSS-Protection: Legacy XSS protection (for older browsers)
-        if 'X-XSS-Protection' not in response:
-            response['X-XSS-Protection'] = '1; mode=block'
+        if "X-XSS-Protection" not in response:
+            response["X-XSS-Protection"] = "1; mode=block"
 
         return response
 
@@ -126,15 +120,9 @@ class HSTSMiddleware(MiddlewareMixin):
         self.get_response = get_response
 
         # Load HSTS settings
-        self.max_age = getattr(
-            settings, 'HSTS_MAX_AGE', 31536000  # 1 year
-        )
-        self.include_subdomains = getattr(
-            settings, 'HSTS_INCLUDE_SUBDOMAINS', True
-        )
-        self.preload = getattr(
-            settings, 'HSTS_PRELOAD', False
-        )
+        self.max_age = getattr(settings, "HSTS_MAX_AGE", 31536000)  # 1 year
+        self.include_subdomains = getattr(settings, "HSTS_INCLUDE_SUBDOMAINS", True)
+        self.preload = getattr(settings, "HSTS_PRELOAD", False)
 
         # Build HSTS header value
         self.hsts_value = self._build_hsts_header()
@@ -147,27 +135,25 @@ class HSTSMiddleware(MiddlewareMixin):
 
     def _build_hsts_header(self) -> str:
         """Build HSTS header value from settings."""
-        parts = [f'max-age={self.max_age}']
+        parts = [f"max-age={self.max_age}"]
 
         if self.include_subdomains:
-            parts.append('includeSubDomains')
+            parts.append("includeSubDomains")
 
         if self.preload:
-            parts.append('preload')
+            parts.append("preload")
 
-        return '; '.join(parts)
+        return "; ".join(parts)
 
     def process_response(
-        self,
-        request: HttpRequest,
-        response: HttpResponse
+        self, request: HttpRequest, response: HttpResponse
     ) -> HttpResponse:
         """Add HSTS header to HTTPS responses."""
 
         # Only add HSTS header for HTTPS connections
         if request.is_secure():
-            if 'Strict-Transport-Security' not in response:
-                response['Strict-Transport-Security'] = self.hsts_value
+            if "Strict-Transport-Security" not in response:
+                response["Strict-Transport-Security"] = self.hsts_value
 
         return response
 
@@ -195,14 +181,10 @@ class ContentSecurityPolicyMiddleware(MiddlewareMixin):
         self.get_response = get_response
 
         # CSP settings
-        self.report_only = getattr(
-            settings, 'CSP_REPORT_ONLY', False
-        )
-        self.report_uri = getattr(
-            settings, 'CSP_REPORT_URI', None
-        )
+        self.report_only = getattr(settings, "CSP_REPORT_ONLY", False)
+        self.report_uri = getattr(settings, "CSP_REPORT_URI", None)
         self.directives = getattr(
-            settings, 'CSP_DIRECTIVES', self._default_directives()
+            settings, "CSP_DIRECTIVES", self._default_directives()
         )
 
         logger.info(
@@ -213,16 +195,16 @@ class ContentSecurityPolicyMiddleware(MiddlewareMixin):
     def _default_directives(self) -> dict:
         """Get default CSP directives."""
         return {
-            'default-src': ["'self'"],
-            'script-src': ["'self'"],
-            'style-src': ["'self'"],
-            'img-src': ["'self'", "data:", "https:"],
-            'font-src': ["'self'", "data:"],
-            'connect-src': ["'self'"],
-            'frame-ancestors': ["'none'"],
-            'base-uri': ["'self'"],
-            'form-action': ["'self'"],
-            'upgrade-insecure-requests': [],
+            "default-src": ["'self'"],
+            "script-src": ["'self'"],
+            "style-src": ["'self'"],
+            "img-src": ["'self'", "data:", "https:"],
+            "font-src": ["'self'", "data:"],
+            "connect-src": ["'self'"],
+            "frame-ancestors": ["'none'"],
+            "base-uri": ["'self'"],
+            "form-action": ["'self'"],
+            "upgrade-insecure-requests": [],
         }
 
     def _generate_nonce(self) -> str:
@@ -239,17 +221,17 @@ class ContentSecurityPolicyMiddleware(MiddlewareMixin):
                 directives.append(directive)
             else:
                 # Add nonce to script-src and style-src
-                if directive in ['script-src', 'style-src']:
+                if directive in ["script-src", "style-src"]:
                     values = list(values) + [f"'nonce-{nonce}'"]
 
-                values_str = ' '.join(values)
-                directives.append(f'{directive} {values_str}')
+                values_str = " ".join(values)
+                directives.append(f"{directive} {values_str}")
 
         # Add report-uri if configured
         if self.report_uri:
-            directives.append(f'report-uri {self.report_uri}')
+            directives.append(f"report-uri {self.report_uri}")
 
-        return '; '.join(directives)
+        return "; ".join(directives)
 
     def process_request(self, request: HttpRequest) -> None:
         """Generate and attach nonce to request."""
@@ -257,23 +239,21 @@ class ContentSecurityPolicyMiddleware(MiddlewareMixin):
         request.csp_nonce = nonce
 
     def process_response(
-        self,
-        request: HttpRequest,
-        response: HttpResponse
+        self, request: HttpRequest, response: HttpResponse
     ) -> HttpResponse:
         """Add CSP header to response."""
 
         # Get nonce from request
-        nonce = getattr(request, 'csp_nonce', self._generate_nonce())
+        nonce = getattr(request, "csp_nonce", self._generate_nonce())
 
         # Build CSP header
         csp_header = self._build_csp_header(nonce)
 
         # Choose header name based on report-only mode
         header_name = (
-            'Content-Security-Policy-Report-Only'
+            "Content-Security-Policy-Report-Only"
             if self.report_only
-            else 'Content-Security-Policy'
+            else "Content-Security-Policy"
         )
 
         # Add header if not already present
@@ -299,14 +279,14 @@ class SubresourceIntegrityHelper:
         # Use in template: <script src="..." integrity="{{ integrity }}" crossorigin="anonymous">
     """
 
-    def __init__(self, algorithm: str = 'sha384'):
+    def __init__(self, algorithm: str = "sha384"):
         """
         Initialize SRI helper.
 
         Args:
             algorithm: Hash algorithm ('sha256', 'sha384', or 'sha512')
         """
-        if algorithm not in ['sha256', 'sha384', 'sha512']:
+        if algorithm not in ["sha256", "sha384", "sha512"]:
             raise ValueError(
                 f"Invalid algorithm: {algorithm}. "
                 f"Must be 'sha256', 'sha384', or 'sha512'."
@@ -336,36 +316,37 @@ class SubresourceIntegrityHelper:
 
         # Resolve file path
         from django.contrib.staticfiles import finders
+
         absolute_path = finders.find(file_path)
 
         if not absolute_path:
             # Try as absolute path
             import os
+
             if os.path.exists(file_path):
                 absolute_path = file_path
             else:
-                raise FileNotFoundError(
-                    f"Static file not found: {file_path}"
-                )
+                raise FileNotFoundError(f"Static file not found: {file_path}")
 
         # Read file and generate hash
-        with open(absolute_path, 'rb') as f:
+        with open(absolute_path, "rb") as f:
             file_content = f.read()
 
         # Generate hash
-        if self.algorithm == 'sha256':
+        if self.algorithm == "sha256":
             hash_obj = hashlib.sha256(file_content)
-        elif self.algorithm == 'sha384':
+        elif self.algorithm == "sha384":
             hash_obj = hashlib.sha384(file_content)
         else:  # sha512
             hash_obj = hashlib.sha512(file_content)
 
         # Base64 encode
         import base64
-        hash_base64 = base64.b64encode(hash_obj.digest()).decode('utf-8')
+
+        hash_base64 = base64.b64encode(hash_obj.digest()).decode("utf-8")
 
         # Build integrity value
-        integrity = f'{self.algorithm}-{hash_base64}'
+        integrity = f"{self.algorithm}-{hash_base64}"
 
         # Cache result
         self._hash_cache[file_path] = integrity
@@ -403,6 +384,7 @@ class SubresourceIntegrityHelper:
 
 # Helper functions for use in views/templates
 
+
 def get_csp_nonce(request: HttpRequest) -> Optional[str]:
     """
     Get CSP nonce from request.
@@ -411,7 +393,7 @@ def get_csp_nonce(request: HttpRequest) -> Optional[str]:
         nonce = get_csp_nonce(request)
         return render(request, 'template.html', {'nonce': nonce})
     """
-    return getattr(request, 'csp_nonce', None)
+    return getattr(request, "csp_nonce", None)
 
 
 def set_frame_options(request: HttpRequest, value: str):
@@ -423,7 +405,7 @@ def set_frame_options(request: HttpRequest, value: str):
             set_frame_options(request, 'SAMEORIGIN')
             return render(request, 'template.html')
     """
-    if value not in ['DENY', 'SAMEORIGIN', 'ALLOW-FROM']:
+    if value not in ["DENY", "SAMEORIGIN", "ALLOW-FROM"]:
         raise ValueError(
             f"Invalid X-Frame-Options value: {value}. "
             f"Must be 'DENY', 'SAMEORIGIN', or 'ALLOW-FROM'."

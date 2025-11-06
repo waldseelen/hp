@@ -7,14 +7,15 @@ and related posts functionality.
 Coverage target: 85%+
 """
 
-import pytest
+from datetime import timedelta
+
 from django.urls import reverse
 from django.utils import timezone
-from datetime import timedelta
+
+import pytest
 
 from apps.blog.models import Post
 from apps.main.models import Admin
-
 
 # ============================================================================
 # Fixtures
@@ -81,7 +82,9 @@ class TestPostListView:
 
         assert "pages/blog/list.html" in [t.name for t in response.templates]
 
-    def test_post_list_view_shows_published_posts(self, client, published_posts, draft_post):
+    def test_post_list_view_shows_published_posts(
+        self, client, published_posts, draft_post
+    ):
         """Should show only published posts"""
         response = client.get(reverse("blog:list"))
 
@@ -327,7 +330,9 @@ class TestPostDetailView:
 
     def test_post_detail_view_invalid_slug_404(self, client):
         """Should return 404 for invalid slug"""
-        response = client.get(reverse("blog:detail", kwargs={"slug": "non-existent-slug"}))
+        response = client.get(
+            reverse("blog:detail", kwargs={"slug": "non-existent-slug"})
+        )
 
         assert response.status_code == 404
 

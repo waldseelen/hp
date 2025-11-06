@@ -10,17 +10,19 @@ Advanced GDPR scenarios including:
 Target: 18-20 comprehensive GDPR compliance tests.
 """
 
-import pytest
+from datetime import timedelta
+from unittest.mock import MagicMock, patch
+
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from datetime import timedelta
-from unittest.mock import patch, MagicMock
+
+import pytest
 
 from apps.portfolio.models import (
+    AccountDeletionRequest,
     Admin,
     CookieConsent,
     DataExportRequest,
-    AccountDeletionRequest,
 )
 
 
@@ -374,9 +376,7 @@ class TestGDPRDataRetentionPolicies:
         expired_consent.save()
 
         # Query expired consents
-        expired = CookieConsent.objects.filter(
-            expires_at__lt=timezone.now()
-        )
+        expired = CookieConsent.objects.filter(expires_at__lt=timezone.now())
         assert expired.count() == 1
         assert expired.first() == expired_consent
 
@@ -399,7 +399,6 @@ class TestGDPRDataRetentionPolicies:
 
         # Query expired pending requests
         expired_pending = AccountDeletionRequest.objects.filter(
-            status="pending",
-            request_date__lt=timezone.now() - timedelta(hours=72)
+            status="pending", request_date__lt=timezone.now() - timedelta(hours=72)
         )
         assert expired_pending.count() == 1
