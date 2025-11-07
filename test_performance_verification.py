@@ -14,8 +14,9 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 django.setup()
 
-from django.conf import settings
-from django.core.cache import caches
+# Django imports must come after django.setup()
+from django.conf import settings  # noqa: E402
+from django.core.cache import caches  # noqa: E402
 
 print("\n" + "=" * 80)
 print("🔍 PERFORMANS OPTİMİZASYONU - TAM KONTROL RAPORU")

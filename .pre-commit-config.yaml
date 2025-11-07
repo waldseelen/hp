@@ -86,6 +86,7 @@ repos:
     hooks:
       - id: bandit
         exclude: tests/
+        args: ['-f', 'txt']  # Use plain text format to avoid encoding issues
 
   # Documentation (Disabled - docstring style non-critical)
   # - repo: https://github.com/pycqa/pydocstyle

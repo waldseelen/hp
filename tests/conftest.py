@@ -16,9 +16,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings.simple")
 django.setup()
 
 # Now we can import Django modules
-from django.contrib.auth import get_user_model
-from django.test import Client
-from django.utils import timezone
+from django.contrib.auth import get_user_model  # noqa: E402
+from django.test import Client  # noqa: E402
+from django.utils import timezone  # noqa: E402
 
 
 @pytest.fixture(scope="session")
