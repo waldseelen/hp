@@ -28,8 +28,8 @@ class BundleAnalyzer {
             staticDir: 'static',
             outputDir: 'reports',
             thresholds: {
-                large_file: 100 * 1024,      // 100KB
-                huge_file: 500 * 1024,       // 500KB
+                large_file: 100 * 1024, // 100KB
+                huge_file: 500 * 1024, // 500KB
                 total_bundle: 2 * 1024 * 1024 // 2MB
             }
         };
@@ -300,9 +300,7 @@ class BundleAnalyzer {
 
         // Duplicate files recommendations
         if (this.analysis.duplicates.length > 0) {
-            const totalDuplicateSize = this.analysis.duplicates.reduce((sum, group) => {
-                return sum + (group.length - 1) * group[0].size;
-            }, 0);
+            const totalDuplicateSize = this.analysis.duplicates.reduce((sum, group) => sum + (group.length - 1) * group[0].size, 0);
 
             recommendations.push({
                 type: 'duplicates',
@@ -465,9 +463,9 @@ class BundleAnalyzer {
             <h2>Largest Files</h2>
             <div class="file-list">
                 ${data.files
-                    .sort((a, b) => b.size - a.size)
-                    .slice(0, 20)
-                    .map(file => `
+        .sort((a, b) => b.size - a.size)
+        .slice(0, 20)
+        .map(file => `
                         <div class="file-item">
                             <span>${file.relativePath}</span>
                             <span class="size">${this.formatBytes(file.size)}</span>
@@ -503,11 +501,11 @@ class BundleAnalyzer {
     }
 
     formatBytes(bytes) {
-        if (bytes === 0) return '0 B';
+        if (bytes === 0) { return '0 B'; }
         const k = 1024;
         const sizes = ['B', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
     }
 
     async run() {

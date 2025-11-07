@@ -130,7 +130,7 @@ def revoke_consent(request):
 
 @login_required
 @require_http_methods(["GET", "POST"])
-def privacy_preferences(request):
+def privacy_preferences(request):  # noqa: C901
     """
     Manage privacy preferences.
 
@@ -138,35 +138,25 @@ def privacy_preferences(request):
     POST: Update preferences
     """
     if request.method == "GET":
-        # Get or create preferences
-        prefs, _ = PrivacyPreferences.objects.get_or_create(user=request.user)
+        return _get_privacy_preferences(request)
 
-        return render(request, "gdpr/privacy_preferences.html", {"preferences": prefs})
+    return _update_privacy_preferences(request)
 
-    # POST: Update preferences
+
+def _get_privacy_preferences(request):
+    """Handle GET request for privacy preferences."""
+    prefs, _ = PrivacyPreferences.objects.get_or_create(user=request.user)
+    return render(request, "gdpr/privacy_preferences.html", {"preferences": prefs})
+
+
+def _update_privacy_preferences(request):
+    """Handle POST request to update privacy preferences."""
     try:
         data = json.loads(request.body)
-
         prefs, _ = PrivacyPreferences.objects.get_or_create(user=request.user)
 
-        # Update fields
-        if "data_retention_period" in data:
-            period = int(data["data_retention_period"])
-            if 30 <= period <= 3650:  # 30 days to 10 years
-                prefs.data_retention_period = period
-
-        if "allow_profiling" in data:
-            prefs.allow_profiling = bool(data["allow_profiling"])
-
-        if "allow_third_party" in data:
-            prefs.allow_third_party = bool(data["allow_third_party"])
-
-        if "allow_analytics" in data:
-            prefs.allow_analytics = bool(data["allow_analytics"])
-
-        if "communication_preferences" in data:
-            prefs.communication_preferences = data["communication_preferences"]
-
+        # Update all preference fields
+        _update_preference_fields(prefs, data)
         prefs.save()
 
         # Invalidate cache
@@ -183,6 +173,26 @@ def privacy_preferences(request):
         return JsonResponse(
             {"success": False, "error": "Failed to update preferences"}, status=500
         )
+
+
+def _update_preference_fields(prefs, data):
+    """Update privacy preference fields from data."""
+    if "data_retention_period" in data:
+        period = int(data["data_retention_period"])
+        if 30 <= period <= 3650:  # 30 days to 10 years
+            prefs.data_retention_period = period
+
+    if "allow_profiling" in data:
+        prefs.allow_profiling = bool(data["allow_profiling"])
+
+    if "allow_third_party" in data:
+        prefs.allow_third_party = bool(data["allow_third_party"])
+
+    if "allow_analytics" in data:
+        prefs.allow_analytics = bool(data["allow_analytics"])
+
+    if "communication_preferences" in data:
+        prefs.communication_preferences = data["communication_preferences"]
 
 
 # ============================================================================

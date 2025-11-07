@@ -52,7 +52,7 @@
         if (!trimmed) {
             return;
         }
-        const recent = getRecentSearches().filter((item) => item.toLowerCase() !== trimmed.toLowerCase());
+        const recent = getRecentSearches().filter(item => item.toLowerCase() !== trimmed.toLowerCase());
         recent.unshift(trimmed);
         const limited = recent.slice(0, 10);
         try {
@@ -80,7 +80,7 @@
             return;
         }
         recentSection.hidden = false;
-        recent.forEach((term) => {
+        recent.forEach(term => {
             const button = document.createElement('button');
             button.type = 'button';
             button.className = 'search-modal__suggestion';
@@ -203,7 +203,7 @@
             result.appendChild(icon);
             result.appendChild(body);
 
-            result.addEventListener('mousedown', (event) => {
+            result.addEventListener('mousedown', event => {
                 event.preventDefault();
                 selectResult(index);
             });
@@ -216,7 +216,7 @@
 
     function updateSelection(nextIndex) {
         const resultElements = resultsContainer.querySelectorAll('.search-modal__result');
-        resultElements.forEach((element) => element.classList.remove('selected'));
+        resultElements.forEach(element => element.classList.remove('selected'));
 
         if (!resultElements.length) {
             selectedIndex = -1;
@@ -311,7 +311,7 @@
         }
     });
 
-    input.addEventListener('keydown', (event) => {
+    input.addEventListener('keydown', event => {
         const key = event.key;
         switch (key) {
             case 'ArrowDown':
@@ -345,7 +345,7 @@
 
     clearRecentButton?.addEventListener('click', () => clearRecentSearches());
 
-    suggestionButtons.forEach((button) => {
+    suggestionButtons.forEach(button => {
         button.addEventListener('click', () => {
             const term = button.getAttribute('data-suggestion');
             if (!term) {
@@ -361,7 +361,7 @@
         input.value = '';
         clearResults();
         clearEmpty();
-        setLoading(false);  // Hide loading indicator on reset
+        setLoading(false); // Hide loading indicator on reset
         renderRecentSearches();
     }
 

@@ -38,7 +38,7 @@ class PWAManager {
 
     setupEventListeners() {
         // Install prompt event
-        window.addEventListener('beforeinstallprompt', (event) => {
+        window.addEventListener('beforeinstallprompt', event => {
             event.preventDefault();
             this.installPrompt = event;
             this.showInstallButton();
@@ -114,7 +114,7 @@ class PWAManager {
     }
 
     setupMessageChannel() {
-        navigator.serviceWorker.addEventListener('message', (event) => {
+        navigator.serviceWorker.addEventListener('message', event => {
             const { data } = event;
 
             switch (data.type) {
@@ -189,7 +189,7 @@ class PWAManager {
     }
 
     async promptInstall() {
-        if (!this.installPrompt) return;
+        if (!this.installPrompt) { return; }
 
         const result = await this.installPrompt.prompt();
         console.log('📱 Install prompt result:', result.outcome);
@@ -568,9 +568,9 @@ class PWAManager {
     // Public API
     async getCacheInfo() {
         if (this.registration && this.registration.active) {
-            return new Promise((resolve) => {
+            return new Promise(resolve => {
                 const messageChannel = new MessageChannel();
-                messageChannel.port1.onmessage = (event) => {
+                messageChannel.port1.onmessage = event => {
                     resolve(event.data.cacheInfo);
                 };
 
@@ -585,9 +585,9 @@ class PWAManager {
 
     async clearCache() {
         if (this.registration && this.registration.active) {
-            return new Promise((resolve) => {
+            return new Promise(resolve => {
                 const messageChannel = new MessageChannel();
-                messageChannel.port1.onmessage = (event) => {
+                messageChannel.port1.onmessage = event => {
                     resolve(event.data.cleared);
                 };
 

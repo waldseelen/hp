@@ -200,7 +200,7 @@ class UnusedFileCleaner {
 
         return this.config.whitelist.some(pattern => {
             // Convert glob pattern to regex
-            const regex = new RegExp('^' + pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*') + '$');
+            const regex = new RegExp(`^${pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*')}$`);
             return regex.test(relativePath) || regex.test(filePath);
         });
     }
@@ -239,7 +239,7 @@ class UnusedFileCleaner {
                             break;
                         }
                     }
-                    if (foundReference) break;
+                    if (foundReference) { break; }
                 }
 
                 if (!foundReference) {
@@ -290,11 +290,11 @@ class UnusedFileCleaner {
     }
 
     formatBytes(bytes) {
-        if (bytes === 0) return '0 B';
+        if (bytes === 0) { return '0 B'; }
         const k = 1024;
         const sizes = ['B', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
     }
 
     async run() {

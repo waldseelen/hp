@@ -153,16 +153,16 @@ class CustomCursorController {
 
     handleBasicMouseMove(e) {
         if (this.cursor) {
-            this.cursor.style.left = e.clientX + 'px';
-            this.cursor.style.top = e.clientY + 'px';
+            this.cursor.style.left = `${e.clientX}px`;
+            this.cursor.style.top = `${e.clientY}px`;
         }
     }
 
     updateCursorPosition(x, y) {
         if (this.cursor) {
             requestAnimationFrame(() => {
-                this.cursor.style.left = x + 'px';
-                this.cursor.style.top = y + 'px';
+                this.cursor.style.left = `${x}px`;
+                this.cursor.style.top = `${y}px`;
             });
         }
     }
@@ -170,8 +170,8 @@ class CustomCursorController {
     updateTrails(x, y) {
         this.trails.forEach((trail, index) => {
             requestAnimationFrame(() => {
-                trail.style.left = x + 'px';
-                trail.style.top = y + 'px';
+                trail.style.left = `${x}px`;
+                trail.style.top = `${y}px`;
                 trail.style.opacity = this.isMoving ? '1' : '0';
             });
         });
@@ -278,8 +278,8 @@ class CustomCursorController {
     createParticle(x, y) {
         const particle = document.createElement('div');
         particle.className = 'cursor-particle';
-        particle.style.left = x + 'px';
-        particle.style.top = y + 'px';
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
         particle.setAttribute('aria-hidden', 'true');
 
         // Random offset

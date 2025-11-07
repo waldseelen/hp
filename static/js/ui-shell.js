@@ -40,12 +40,12 @@
     function initRevealAnimations() {
         const elements = doc.querySelectorAll('[data-animate], [data-animate-card], .scroll-reveal, .scroll-reveal-left, .scroll-reveal-right');
         if (!elements.length || !('IntersectionObserver' in window)) {
-            elements.forEach((el) => el.classList.add('is-visible'));
+            elements.forEach(el => el.classList.add('is-visible'));
             return;
         }
 
         const observer = new IntersectionObserver((entries, obs) => {
-            entries.forEach((entry) => {
+            entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('is-visible');
                     obs.unobserve(entry.target);
@@ -56,7 +56,7 @@
             threshold: 0.15,
         });
 
-        elements.forEach((el) => observer.observe(el));
+        elements.forEach(el => observer.observe(el));
     }
 
     function initStarfield() {
@@ -97,7 +97,7 @@
             cursor.style.transform = `translate(${clientX}px, ${clientY}px) scale(1)`;
 
             if (!prefersReducedMotion) {
-                stars.forEach((star) => {
+                stars.forEach(star => {
                     const rect = star.getBoundingClientRect();
                     const starX = rect.left + rect.width / 2;
                     const starY = rect.top + rect.height / 2;
@@ -112,7 +112,7 @@
             rafId = null;
         };
 
-        const scheduleUpdate = (event) => {
+        const scheduleUpdate = event => {
             latestPointerEvent = event;
             if (rafId === null) {
                 rafId = window.requestAnimationFrame(update);
@@ -134,13 +134,13 @@
 
         searchModalInput = searchModal.querySelector('.search-modal__input');
 
-        searchModal.addEventListener('mousedown', (event) => {
+        searchModal.addEventListener('mousedown', event => {
             if (event.target === searchModal) {
                 closeSearchModal();
             }
         });
 
-        doc.addEventListener('keydown', (event) => {
+        doc.addEventListener('keydown', event => {
             const key = event.key.toLowerCase();
             if ((event.ctrlKey || event.metaKey) && key === 'k') {
                 const active = doc.activeElement;
@@ -159,7 +159,7 @@
         });
 
         const suggestions = searchModal.querySelectorAll('[data-suggestion]');
-        suggestions.forEach((button) => {
+        suggestions.forEach(button => {
             button.addEventListener('click', () => {
                 if (!searchModalInput) {
                     return;

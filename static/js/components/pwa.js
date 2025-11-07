@@ -43,7 +43,7 @@ class PWAManager {
     handleInstallPrompt() {
         let deferredPrompt;
 
-        window.addEventListener('beforeinstallprompt', (e) => {
+        window.addEventListener('beforeinstallprompt', e => {
             // Prevent the mini-infobar from appearing on mobile
             e.preventDefault();
             // Stash the event so it can be triggered later.
@@ -200,7 +200,7 @@ class PWAManager {
     }
 
     handleNetworkStatus() {
-        const updateNetworkStatus = (isOnline) => {
+        const updateNetworkStatus = isOnline => {
             const statusBar = document.querySelector('.network-status') || document.createElement('div');
             statusBar.className = 'network-status';
 
@@ -216,9 +216,9 @@ class PWAManager {
                 z-index: 1002;
                 transition: transform 0.3s ease;
                 ${isOnline
-                    ? 'background: #10b981; color: white; transform: translateY(-100%);'
-                    : 'background: #ef4444; color: white; transform: translateY(0);'
-                }
+        ? 'background: #10b981; color: white; transform: translateY(-100%);'
+        : 'background: #ef4444; color: white; transform: translateY(0);'
+}
             `;
 
             statusBar.textContent = isOnline

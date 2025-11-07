@@ -43,9 +43,7 @@ test.describe('Smoke Tests @smoke', () => {
         await page.goto(BASE_URL);
 
         // Check for service worker registration
-        const swRegistration = await page.evaluate(() => {
-            return 'serviceWorker' in navigator;
-        });
+        const swRegistration = await page.evaluate(() => 'serviceWorker' in navigator);
         expect(swRegistration).toBe(true);
 
         // Check for PWA manifest

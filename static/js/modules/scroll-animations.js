@@ -1,5 +1,5 @@
 // Enhanced Scroll Animations with Intersection Observer
-(function() {
+(function () {
     'use strict';
 
     // Configuration
@@ -22,7 +22,7 @@
             return;
         }
 
-        const observer = new IntersectionObserver((entries) => {
+        const observer = new IntersectionObserver(entries => {
             entries.forEach((entry, index) => {
                 if (entry.isIntersecting) {
                     const element = entry.target;
@@ -65,7 +65,7 @@
             element.style.opacity = '0';
 
             // Add stagger index as data attribute
-            if (element.classList.contains('stagger-' + (index + 1))) {
+            if (element.classList.contains(`stagger-${index + 1}`)) {
                 element.dataset.stagger = index;
             }
 
@@ -79,22 +79,22 @@
 
         cards.forEach(card => {
             // Mouse enter effect
-            card.addEventListener('mouseenter', function(e) {
-                this.style.setProperty('--mouse-x', e.clientX - this.offsetLeft + 'px');
-                this.style.setProperty('--mouse-y', e.clientY - this.offsetTop + 'px');
+            card.addEventListener('mouseenter', function (e) {
+                this.style.setProperty('--mouse-x', `${e.clientX - this.offsetLeft}px`);
+                this.style.setProperty('--mouse-y', `${e.clientY - this.offsetTop}px`);
 
                 // Add ripple effect
                 createRippleEffect(this, e);
             });
 
             // Mouse move effect for gradient following
-            card.addEventListener('mousemove', function(e) {
+            card.addEventListener('mousemove', function (e) {
                 const rect = this.getBoundingClientRect();
                 const x = ((e.clientX - rect.left) / rect.width) * 100;
                 const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-                this.style.setProperty('--mouse-x-percent', x + '%');
-                this.style.setProperty('--mouse-y-percent', y + '%');
+                this.style.setProperty('--mouse-x-percent', `${x}%`);
+                this.style.setProperty('--mouse-y-percent', `${y}%`);
             });
         });
     }
@@ -151,7 +151,7 @@
     // Smooth scroll for anchor links
     function initSmoothScroll() {
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
+            anchor.addEventListener('click', function (e) {
                 const targetId = this.getAttribute('href').substring(1);
                 const targetElement = document.getElementById(targetId);
 
@@ -164,7 +164,7 @@
                     });
 
                     // Update URL without scrolling
-                    history.pushState(null, null, '#' + targetId);
+                    history.pushState(null, null, `#${targetId}`);
                 }
             });
         });
@@ -174,7 +174,7 @@
     function initParallaxEffect() {
         const parallaxElements = document.querySelectorAll('.scroll-parallax');
 
-        if (parallaxElements.length === 0) return;
+        if (parallaxElements.length === 0) { return; }
 
         let ticking = false;
 
@@ -216,7 +216,7 @@
 
     // Performance optimization: Use ResizeObserver for responsive animations
     function initResponsiveAnimations() {
-        if (!window.ResizeObserver) return;
+        if (!window.ResizeObserver) { return; }
 
         const resizeObserver = new ResizeObserver(entries => {
             entries.forEach(entry => {

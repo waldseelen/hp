@@ -139,49 +139,86 @@ def global_context(request):
     }
 
 
-def breadcrumbs(request):
-    try:
-        match = getattr(request, "resolver_match", None) or resolve(request.path_info)
-    except Resolver404:
+def breadcrumbs(request):  # noqa: C901
+    """Generate breadcrumb navigation items."""
+    match = _resolve_request_match(request)
+    if not match:
         return {"breadcrumbs": []}
 
+    # Start with home breadcrumb
+    breadcrumb_items = [_create_home_breadcrumb()]
+
+    # Get tail items (override > configured > fallback)
+    tail = _get_breadcrumb_tail(request, match)
+
+    # Add extra items if provided
+    tail = _add_extra_breadcrumbs(request, tail)
+
+    # Combine and mark active
+    if tail:
+        breadcrumb_items.extend(tail)
+
+    _mark_last_as_active(breadcrumb_items)
+
+    return {"breadcrumbs": breadcrumb_items}
+
+
+def _resolve_request_match(request):
+    """Resolve URL match for request."""
+    try:
+        return getattr(request, "resolver_match", None) or resolve(request.path_info)
+    except Resolver404:
+        return None
+
+
+def _create_home_breadcrumb():
+    """Create home breadcrumb item."""
     try:
         home_url = reverse("home")
     except NoReverseMatch:
         home_url = "/"
 
-    breadcrumb_items: List[Dict[str, Any]] = [
-        {
-            "name": _("Home"),
-            "url": home_url,
-            "active": False,
-        }
-    ]
+    return {
+        "name": _("Home"),
+        "url": home_url,
+        "active": False,
+    }
 
+
+def _get_breadcrumb_tail(request, match):
+    """Get breadcrumb tail items based on override, config, or fallback."""
+    # Check for override
     override_items = _normalize_items(getattr(request, "breadcrumbs_override", None))
     if override_items:
-        tail = override_items
-    else:
-        identifier = ":".join(filter(None, [match.namespace, match.url_name]))
-        tail = _configured_items(identifier)
-        if not tail and match.url_name:
-            tail = _configured_items(match.url_name)
-        if not tail:
-            tail = _path_fallback(request.path)
+        return override_items
 
+    # Try configured items
+    identifier = ":".join(filter(None, [match.namespace, match.url_name]))
+    tail = _configured_items(identifier)
+    if not tail and match.url_name:
+        tail = _configured_items(match.url_name)
+
+    # Fallback to path-based breadcrumbs
+    if not tail:
+        tail = _path_fallback(request.path)
+
+    return tail
+
+
+def _add_extra_breadcrumbs(request, tail):
+    """Add extra breadcrumb items if provided."""
     extra_items = _normalize_items(getattr(request, "breadcrumbs_extra", None))
     if extra_items:
         tail.extend(extra_items)
+    return tail
 
-    if tail:
-        breadcrumb_items.extend(tail)
 
+def _mark_last_as_active(breadcrumb_items):
+    """Mark the last breadcrumb item as active."""
     if breadcrumb_items:
         for crumb in breadcrumb_items:
             crumb["active"] = False
         breadcrumb_items[-1]["active"] = True
-
-    return {"breadcrumbs": breadcrumb_items}
 
 
 def language_context(request):

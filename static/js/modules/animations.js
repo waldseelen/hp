@@ -77,7 +77,7 @@ class AnimationController {
                 return;
             }
 
-            link.addEventListener('click', (e) => {
+            link.addEventListener('click', e => {
                 const main = document.querySelector('main') || document.body;
 
                 // Add transition out effect
@@ -98,7 +98,7 @@ class AnimationController {
     initScrollReveal() {
         // Create intersection observer for scroll reveals
         const revealObserver = new IntersectionObserver(
-            (entries) => {
+            entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('revealed');
@@ -150,7 +150,7 @@ class AnimationController {
             button.classList.add('btn-micro', 'click-animation', 'gpu-accelerated');
 
             // Click feedback
-            button.addEventListener('click', (e) => {
+            button.addEventListener('click', e => {
                 // Create ripple effect at click position
                 this.createRipple(e, button);
 
@@ -293,7 +293,7 @@ class AnimationController {
      * Add subtle parallax effect to cards
      */
     initCardParallax(card) {
-        card.addEventListener('mousemove', (e) => {
+        card.addEventListener('mousemove', e => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -317,7 +317,7 @@ class AnimationController {
      */
     initCardGridAnimations(card) {
         const cardGrid = card.closest('.card-grid');
-        if (!cardGrid) return;
+        if (!cardGrid) { return; }
 
         const cards = Array.from(cardGrid.children);
         const index = cards.indexOf(card);

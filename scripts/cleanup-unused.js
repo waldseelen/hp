@@ -57,7 +57,7 @@ async function searchFileForReferences(filePath, referencedFiles) {
             if (matches) {
                 matches.forEach(match => {
                     // Extract the file path
-                    let staticPath = match.replace(/['"`]/g, '').replace('{% static ', '').replace(' %}', '');
+                    const staticPath = match.replace(/['"`]/g, '').replace('{% static ', '').replace(' %}', '');
                     if (staticPath.startsWith('static/')) {
                         referencedFiles.add(staticPath);
                     }
@@ -98,11 +98,11 @@ async function findAllFiles(dir, allFiles) {
 }
 
 function formatBytes(bytes) {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) { return '0 B'; }
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
 
 async function main() {

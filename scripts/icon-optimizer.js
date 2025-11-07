@@ -9,162 +9,162 @@ const fs = require('fs').promises;
 const path = require('path');
 
 class IconOptimizer {
-  constructor() {
-    this.config = {
-      inputDir: 'static/images/icons',
-      outputDir: 'static/icons',
-      formats: ['svg', 'sprite', 'font'],
-      sizes: [16, 24, 32, 48, 64, 128, 256],
-      optimization: {
-        removeUselessDefs: true,
-        removeEditorsNSData: true,
-        removeEmptyAttrs: true,
-        removeHiddenElems: true,
-        removeEmptyText: true,
-        removeEmptyContainers: true,
-        cleanupNumericValues: true,
-        convertColors: true,
-        minifyStyles: true
-      }
-    };
+    constructor() {
+        this.config = {
+            inputDir: 'static/images/icons',
+            outputDir: 'static/icons',
+            formats: ['svg', 'sprite', 'font'],
+            sizes: [16, 24, 32, 48, 64, 128, 256],
+            optimization: {
+                removeUselessDefs: true,
+                removeEditorsNSData: true,
+                removeEmptyAttrs: true,
+                removeHiddenElems: true,
+                removeEmptyText: true,
+                removeEmptyContainers: true,
+                cleanupNumericValues: true,
+                convertColors: true,
+                minifyStyles: true
+            }
+        };
 
-    this.icons = new Map();
-  }
-
-  async init() {
-    console.log('🎨 Starting icon optimization...');
-
-    // Ensure directories exist
-    await this.ensureDirectories();
-
-    // Scan for icon files
-    await this.scanIcons();
-
-    // Generate optimized outputs
-    await this.generateSVGSprite();
-    await this.generateIconFont();
-    await this.generateIconCSS();
-    await this.generateIconComponents();
-
-    console.log('✅ Icon optimization completed!');
-  }
-
-  async ensureDirectories() {
-    const dirs = [
-      this.config.outputDir,
-      path.join(this.config.outputDir, 'sprites'),
-      path.join(this.config.outputDir, 'fonts'),
-      path.join(this.config.outputDir, 'optimized')
-    ];
-
-    for (const dir of dirs) {
-      await fs.mkdir(dir, { recursive: true });
+        this.icons = new Map();
     }
-  }
 
-  async scanIcons() {
-    console.log('🔍 Scanning for icon files...');
+    async init() {
+        console.log('🎨 Starting icon optimization...');
 
-    try {
-      await fs.access(this.config.inputDir);
-      const files = await fs.readdir(this.config.inputDir);
+        // Ensure directories exist
+        await this.ensureDirectories();
 
-      for (const file of files) {
-        if (path.extname(file).toLowerCase() === '.svg') {
-          const iconName = path.basename(file, '.svg');
-          const iconPath = path.join(this.config.inputDir, file);
-          const content = await fs.readFile(iconPath, 'utf8');
+        // Scan for icon files
+        await this.scanIcons();
 
-          this.icons.set(iconName, {
-            name: iconName,
-            path: iconPath,
-            content: content,
-            optimized: this.optimizeSVG(content)
-          });
+        // Generate optimized outputs
+        await this.generateSVGSprite();
+        await this.generateIconFont();
+        await this.generateIconCSS();
+        await this.generateIconComponents();
+
+        console.log('✅ Icon optimization completed!');
+    }
+
+    async ensureDirectories() {
+        const dirs = [
+            this.config.outputDir,
+            path.join(this.config.outputDir, 'sprites'),
+            path.join(this.config.outputDir, 'fonts'),
+            path.join(this.config.outputDir, 'optimized')
+        ];
+
+        for (const dir of dirs) {
+            await fs.mkdir(dir, { recursive: true });
         }
-      }
-
-      console.log(`📦 Found ${this.icons.size} icons to process`);
-    } catch (error) {
-      console.log('ℹ️  No icons directory found, creating default icons...');
-      await this.createDefaultIcons();
     }
-  }
 
-  optimizeSVG(content) {
+    async scanIcons() {
+        console.log('🔍 Scanning for icon files...');
+
+        try {
+            await fs.access(this.config.inputDir);
+            const files = await fs.readdir(this.config.inputDir);
+
+            for (const file of files) {
+                if (path.extname(file).toLowerCase() === '.svg') {
+                    const iconName = path.basename(file, '.svg');
+                    const iconPath = path.join(this.config.inputDir, file);
+                    const content = await fs.readFile(iconPath, 'utf8');
+
+                    this.icons.set(iconName, {
+                        name: iconName,
+                        path: iconPath,
+                        content: content,
+                        optimized: this.optimizeSVG(content)
+                    });
+                }
+            }
+
+            console.log(`📦 Found ${this.icons.size} icons to process`);
+        } catch (error) {
+            console.log('ℹ️  No icons directory found, creating default icons...');
+            await this.createDefaultIcons();
+        }
+    }
+
+    optimizeSVG(content) {
     // Basic SVG optimization
-    let optimized = content
-      // Remove comments
-      .replace(/<!--[\s\S]*?-->/g, '')
-      // Remove unnecessary attributes
-      .replace(/\s*(xmlns:.*?=".*?")/g, '')
-      .replace(/\s*id=".*?"/g, '')
-      .replace(/\s*class=".*?"/g, '')
-      // Normalize whitespace
-      .replace(/\s+/g, ' ')
-      .trim();
+        const optimized = content
+        // Remove comments
+            .replace(/<!--[\s\S]*?-->/g, '')
+        // Remove unnecessary attributes
+            .replace(/\s*(xmlns:.*?=".*?")/g, '')
+            .replace(/\s*id=".*?"/g, '')
+            .replace(/\s*class=".*?"/g, '')
+        // Normalize whitespace
+            .replace(/\s+/g, ' ')
+            .trim();
 
-    return optimized;
-  }
-
-  async createDefaultIcons() {
-    const defaultIcons = {
-      'home': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>',
-      'search': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>',
-      'menu': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>',
-      'close': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>',
-      'arrow-up': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>',
-      'check': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
-    };
-
-    // Ensure icons directory exists
-    await fs.mkdir(this.config.inputDir, { recursive: true });
-
-    for (const [name, svg] of Object.entries(defaultIcons)) {
-      const iconPath = path.join(this.config.inputDir, `${name}.svg`);
-      await fs.writeFile(iconPath, svg);
-
-      this.icons.set(name, {
-        name: name,
-        path: iconPath,
-        content: svg,
-        optimized: this.optimizeSVG(svg)
-      });
+        return optimized;
     }
 
-    console.log('✅ Created default icon set');
-  }
+    async createDefaultIcons() {
+        const defaultIcons = {
+            'home': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>',
+            'search': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>',
+            'menu': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>',
+            'close': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>',
+            'arrow-up': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>',
+            'check': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
+        };
 
-  async generateSVGSprite() {
-    console.log('🎯 Generating SVG sprite...');
+        // Ensure icons directory exists
+        await fs.mkdir(this.config.inputDir, { recursive: true });
 
-    let sprite = '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">\n';
+        for (const [name, svg] of Object.entries(defaultIcons)) {
+            const iconPath = path.join(this.config.inputDir, `${name}.svg`);
+            await fs.writeFile(iconPath, svg);
 
-    for (const [name, icon] of this.icons) {
-      // Extract viewBox and paths from optimized SVG
-      const viewBoxMatch = icon.optimized.match(/viewBox="([^"]*)"/);
-      const contentMatch = icon.optimized.match(/<svg[^>]*>(.*)<\/svg>/s);
+            this.icons.set(name, {
+                name: name,
+                path: iconPath,
+                content: svg,
+                optimized: this.optimizeSVG(svg)
+            });
+        }
 
-      if (viewBoxMatch && contentMatch) {
-        sprite += `  <symbol id="icon-${name}" viewBox="${viewBoxMatch[1]}">\n`;
-        sprite += `    ${contentMatch[1].trim()}\n`;
-        sprite += `  </symbol>\n`;
-      }
+        console.log('✅ Created default icon set');
     }
 
-    sprite += '</svg>';
+    async generateSVGSprite() {
+        console.log('🎯 Generating SVG sprite...');
 
-    const spritePath = path.join(this.config.outputDir, 'sprites', 'icons.svg');
-    await fs.writeFile(spritePath, sprite);
+        let sprite = '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">\n';
 
-    console.log(`✅ SVG sprite generated: ${spritePath}`);
-  }
+        for (const [name, icon] of this.icons) {
+            // Extract viewBox and paths from optimized SVG
+            const viewBoxMatch = icon.optimized.match(/viewBox="([^"]*)"/);
+            const contentMatch = icon.optimized.match(/<svg[^>]*>(.*)<\/svg>/s);
 
-  async generateIconFont() {
-    console.log('🔤 Generating icon font CSS...');
+            if (viewBoxMatch && contentMatch) {
+                sprite += `  <symbol id="icon-${name}" viewBox="${viewBoxMatch[1]}">\n`;
+                sprite += `    ${contentMatch[1].trim()}\n`;
+                sprite += `  </symbol>\n`;
+            }
+        }
 
-    // Create a simple CSS-based icon system using existing SVGs
-    let fontCSS = `/* Icon Font System */
+        sprite += '</svg>';
+
+        const spritePath = path.join(this.config.outputDir, 'sprites', 'icons.svg');
+        await fs.writeFile(spritePath, sprite);
+
+        console.log(`✅ SVG sprite generated: ${spritePath}`);
+    }
+
+    async generateIconFont() {
+        console.log('🔤 Generating icon font CSS...');
+
+        // Create a simple CSS-based icon system using existing SVGs
+        let fontCSS = `/* Icon Font System */
 .icon {
   display: inline-block;
   width: 1em;
@@ -181,8 +181,8 @@ class IconOptimizer {
 /* Icon Classes */
 `;
 
-    for (const [name] of this.icons) {
-      fontCSS += `.icon-${name}::before {
+        for (const [name] of this.icons) {
+            fontCSS += `.icon-${name}::before {
   content: '';
   background-image: url('/static/icons/optimized/${name}.svg');
   background-size: contain;
@@ -194,18 +194,18 @@ class IconOptimizer {
 }
 
 `;
+        }
+
+        const fontPath = path.join(this.config.outputDir, 'icons.css');
+        await fs.writeFile(fontPath, fontCSS);
+
+        console.log(`✅ Icon font CSS generated: ${fontPath}`);
     }
 
-    const fontPath = path.join(this.config.outputDir, 'icons.css');
-    await fs.writeFile(fontPath, fontCSS);
+    async generateIconCSS() {
+        console.log('📄 Generating icon utility CSS...');
 
-    console.log(`✅ Icon font CSS generated: ${fontPath}`);
-  }
-
-  async generateIconCSS() {
-    console.log('📄 Generating icon utility CSS...');
-
-    let css = `/* Icon Utility Classes */
+        const css = `/* Icon Utility Classes */
 .icon-sprite {
   display: inline-block;
   width: 1em;
@@ -265,23 +265,23 @@ class IconOptimizer {
 }
 `;
 
-    const cssPath = path.join(this.config.outputDir, 'icon-utilities.css');
-    await fs.writeFile(cssPath, css);
+        const cssPath = path.join(this.config.outputDir, 'icon-utilities.css');
+        await fs.writeFile(cssPath, css);
 
-    // Save individual optimized SVGs
-    for (const [name, icon] of this.icons) {
-      const svgPath = path.join(this.config.outputDir, 'optimized', `${name}.svg`);
-      await fs.writeFile(svgPath, icon.optimized);
+        // Save individual optimized SVGs
+        for (const [name, icon] of this.icons) {
+            const svgPath = path.join(this.config.outputDir, 'optimized', `${name}.svg`);
+            await fs.writeFile(svgPath, icon.optimized);
+        }
+
+        console.log(`✅ Icon utilities CSS generated: ${cssPath}`);
     }
 
-    console.log(`✅ Icon utilities CSS generated: ${cssPath}`);
-  }
+    async generateIconComponents() {
+        console.log('🧩 Generating icon components...');
 
-  async generateIconComponents() {
-    console.log('🧩 Generating icon components...');
-
-    // Generate Django template tags for icons
-    const templateTags = `{% comment %}
+        // Generate Django template tags for icons
+        const templateTags = `{% comment %}
 Icon Template Tags
 Usage: {% icon "home" size="md" class="icon-primary" %}
 {% endcomment %}
@@ -294,12 +294,12 @@ Usage: {% icon "home" size="md" class="icon-primary" %}
 </svg>
 {% endif %}`;
 
-    const templateTagsPath = path.join(__dirname, '..', 'templates', 'partials', 'icon.html');
-    await fs.mkdir(path.dirname(templateTagsPath), { recursive: true });
-    await fs.writeFile(templateTagsPath, templateTags);
+        const templateTagsPath = path.join(__dirname, '..', 'templates', 'partials', 'icon.html');
+        await fs.mkdir(path.dirname(templateTagsPath), { recursive: true });
+        await fs.writeFile(templateTagsPath, templateTags);
 
-    // Generate JavaScript icon loader
-    const iconLoader = `/**
+        // Generate JavaScript icon loader
+        const iconLoader = `/**
  * Icon Loader Utility
  * Dynamically load and manage icons
  */
@@ -378,14 +378,14 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = IconLoader;
 }`;
 
-    const jsPath = path.join(this.config.outputDir, 'icon-loader.js');
-    await fs.writeFile(jsPath, iconLoader);
+        const jsPath = path.join(this.config.outputDir, 'icon-loader.js');
+        await fs.writeFile(jsPath, iconLoader);
 
-    console.log(`✅ Icon components generated`);
-  }
+        console.log(`✅ Icon components generated`);
+    }
 
-  async generateOptimizationSummary() {
-    const summary = `# Icon Optimization Summary
+    async generateOptimizationSummary() {
+        const summary = `# Icon Optimization Summary
 
 ## Generated Assets
 
@@ -446,25 +446,25 @@ document.body.appendChild(homeIcon);
 ${Array.from(this.icons.keys()).map(name => `- ${name}`).join('\n')}
 `;
 
-    const summaryPath = path.join(__dirname, '..', 'ICON_OPTIMIZATION_SUMMARY.md');
-    await fs.writeFile(summaryPath, summary);
+        const summaryPath = path.join(__dirname, '..', 'ICON_OPTIMIZATION_SUMMARY.md');
+        await fs.writeFile(summaryPath, summary);
 
-    console.log(`📄 Icon optimization summary: ${summaryPath}`);
-  }
+        console.log(`📄 Icon optimization summary: ${summaryPath}`);
+    }
 
-  async optimize() {
-    await this.init();
-    await this.generateOptimizationSummary();
-  }
+    async optimize() {
+        await this.init();
+        await this.generateOptimizationSummary();
+    }
 }
 
 // Run if called directly
 if (require.main === module) {
-  const optimizer = new IconOptimizer();
-  optimizer.optimize().catch(error => {
-    console.error('💥 Icon optimization failed:', error);
-    process.exit(1);
-  });
+    const optimizer = new IconOptimizer();
+    optimizer.optimize().catch(error => {
+        console.error('💥 Icon optimization failed:', error);
+        process.exit(1);
+    });
 }
 
 module.exports = { IconOptimizer };

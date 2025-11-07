@@ -19,9 +19,9 @@ class AccessibilityAuditor {
 
         // WCAG 2.1 AA contrast ratios
         this.contrastRequirements = {
-            normal: 4.5,    // Normal text
-            large: 3.0,     // Large text (18pt+ or 14pt+ bold)
-            ui: 3.0         // UI components
+            normal: 4.5, // Normal text
+            large: 3.0, // Large text (18pt+ or 14pt+ bold)
+            ui: 3.0 // UI components
         };
 
         // Color definitions to test
@@ -146,9 +146,9 @@ class AccessibilityAuditor {
     }
 
     getContrastGrade(ratio) {
-        if (ratio >= 7) return 'AAA';
-        if (ratio >= 4.5) return 'AA';
-        if (ratio >= 3) return 'AA Large';
+        if (ratio >= 7) { return 'AAA'; }
+        if (ratio >= 4.5) { return 'AA'; }
+        if (ratio >= 3) { return 'AA Large'; }
         return 'FAIL';
     }
 
@@ -578,9 +578,9 @@ ${this.auditResults.colorContrast.map(result => `
 ${this.auditResults.failedChecks > 0 ? `
 ### Critical Issues
 ${this.auditResults.colorContrast
-    .filter(r => !r.passes)
-    .map(r => `- **${r.context}**: Increase contrast from ${r.contrastRatio}:1 to at least ${r.required}:1`)
-    .join('\n')}
+        .filter(r => !r.passes)
+        .map(r => `- **${r.context}**: Increase contrast from ${r.contrastRatio}:1 to at least ${r.required}:1`)
+        .join('\n')}
 
 ### Fixes Applied
 - Enhanced color palette with WCAG AA compliance

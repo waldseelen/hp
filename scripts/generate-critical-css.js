@@ -8,39 +8,39 @@ const path = require('path');
 
 // Critical CSS extraction function
 async function generateCriticalCSS() {
-  try {
-    console.log('🚀 Starting Critical CSS generation...');
+    try {
+        console.log('🚀 Starting Critical CSS generation...');
 
-    // Define critical pages for CSS extraction
-    const criticalPages = [
-      {
-        name: 'home',
-        url: 'http://127.0.0.1:8000/',
-        template: 'templates/main/home.html',
-        output: 'static/css/critical/home.css'
-      },
-      {
-        name: 'blog',
-        url: 'http://127.0.0.1:8000/blog/',
-        template: 'templates/blog/list.html',
-        output: 'static/css/critical/blog.css'
-      },
-      {
-        name: 'contact',
-        url: 'http://127.0.0.1:8000/contact/',
-        template: 'templates/contact/form.html',
-        output: 'static/css/critical/contact.css'
-      }
-    ];
+        // Define critical pages for CSS extraction
+        const criticalPages = [
+            {
+                name: 'home',
+                url: 'http://127.0.0.1:8000/',
+                template: 'templates/main/home.html',
+                output: 'static/css/critical/home.css'
+            },
+            {
+                name: 'blog',
+                url: 'http://127.0.0.1:8000/blog/',
+                template: 'templates/blog/list.html',
+                output: 'static/css/critical/blog.css'
+            },
+            {
+                name: 'contact',
+                url: 'http://127.0.0.1:8000/contact/',
+                template: 'templates/contact/form.html',
+                output: 'static/css/critical/contact.css'
+            }
+        ];
 
-    // Create critical CSS directory
-    const criticalDir = path.join(__dirname, '..', 'static', 'css', 'critical');
-    if (!fs.existsSync(criticalDir)) {
-      fs.mkdirSync(criticalDir, { recursive: true });
-    }
+        // Create critical CSS directory
+        const criticalDir = path.join(__dirname, '..', 'static', 'css', 'critical');
+        if (!fs.existsSync(criticalDir)) {
+            fs.mkdirSync(criticalDir, { recursive: true });
+        }
 
-    // Manual critical CSS rules for above-the-fold content
-    const baseCriticalCSS = `
+        // Manual critical CSS rules for above-the-fold content
+        const baseCriticalCSS = `
 /* Critical CSS - Above the fold styles */
 /* Base styles for immediate render */
 body {
@@ -168,14 +168,14 @@ nav {
 }
 `;
 
-    // Write base critical CSS
-    fs.writeFileSync(
-      path.join(criticalDir, 'base.css'),
-      baseCriticalCSS.trim()
-    );
+        // Write base critical CSS
+        fs.writeFileSync(
+            path.join(criticalDir, 'base.css'),
+            baseCriticalCSS.trim()
+        );
 
-    // Page-specific critical CSS
-    const homeCriticalCSS = `
+        // Page-specific critical CSS
+        const homeCriticalCSS = `
 /* Home page critical styles */
 .hero-section {
   min-height: 60vh;
@@ -202,13 +202,13 @@ nav {
 }
 `;
 
-    fs.writeFileSync(
-      path.join(criticalDir, 'home.css'),
-      (baseCriticalCSS + homeCriticalCSS).trim()
-    );
+        fs.writeFileSync(
+            path.join(criticalDir, 'home.css'),
+            (baseCriticalCSS + homeCriticalCSS).trim()
+        );
 
-    // Blog critical CSS
-    const blogCriticalCSS = `
+        // Blog critical CSS
+        const blogCriticalCSS = `
 /* Blog page critical styles */
 .blog-header {
   padding: 2rem 0;
@@ -241,13 +241,13 @@ nav {
 }
 `;
 
-    fs.writeFileSync(
-      path.join(criticalDir, 'blog.css'),
-      (baseCriticalCSS + blogCriticalCSS).trim()
-    );
+        fs.writeFileSync(
+            path.join(criticalDir, 'blog.css'),
+            (baseCriticalCSS + blogCriticalCSS).trim()
+        );
 
-    // Contact critical CSS
-    const contactCriticalCSS = `
+        // Contact critical CSS
+        const contactCriticalCSS = `
 /* Contact page critical styles */
 .contact-form {
   background-color: rgba(30, 41, 59, 0.5);
@@ -278,20 +278,20 @@ nav {
 }
 `;
 
-    fs.writeFileSync(
-      path.join(criticalDir, 'contact.css'),
-      (baseCriticalCSS + contactCriticalCSS).trim()
-    );
+        fs.writeFileSync(
+            path.join(criticalDir, 'contact.css'),
+            (baseCriticalCSS + contactCriticalCSS).trim()
+        );
 
-    console.log('✅ Critical CSS files generated successfully!');
-    console.log('📁 Files created:');
-    console.log('   - static/css/critical/base.css');
-    console.log('   - static/css/critical/home.css');
-    console.log('   - static/css/critical/blog.css');
-    console.log('   - static/css/critical/contact.css');
+        console.log('✅ Critical CSS files generated successfully!');
+        console.log('📁 Files created:');
+        console.log('   - static/css/critical/base.css');
+        console.log('   - static/css/critical/home.css');
+        console.log('   - static/css/critical/blog.css');
+        console.log('   - static/css/critical/contact.css');
 
-    // Generate usage instructions
-    const usageInstructions = `
+        // Generate usage instructions
+        const usageInstructions = `
 <!-- Critical CSS Usage in Django Templates -->
 
 <!-- Base template (templates/base.html) -->
@@ -325,22 +325,22 @@ nav {
 <noscript><link rel="stylesheet" href="{% static 'css/output.css' %}"></noscript>
 `;
 
-    fs.writeFileSync(
-      path.join(criticalDir, 'USAGE.md'),
-      usageInstructions.trim()
-    );
+        fs.writeFileSync(
+            path.join(criticalDir, 'USAGE.md'),
+            usageInstructions.trim()
+        );
 
-    console.log('   - static/css/critical/USAGE.md (implementation guide)');
+        console.log('   - static/css/critical/USAGE.md (implementation guide)');
 
-  } catch (error) {
-    console.error('❌ Error generating critical CSS:', error);
-    process.exit(1);
-  }
+    } catch (error) {
+        console.error('❌ Error generating critical CSS:', error);
+        process.exit(1);
+    }
 }
 
 // Run if called directly
 if (require.main === module) {
-  generateCriticalCSS();
+    generateCriticalCSS();
 }
 
 module.exports = { generateCriticalCSS };

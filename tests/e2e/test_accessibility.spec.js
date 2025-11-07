@@ -359,9 +359,7 @@ test.describe('Navigation Accessibility', () => {
         const focusedLink = page.locator(':focus').first();
 
         // Check if focus is visible (should have focus outline or custom styling)
-        const outlineStyle = await focusedLink.evaluate((el) => {
-            return window.getComputedStyle(el).outline;
-        });
+        const outlineStyle = await focusedLink.evaluate(el => window.getComputedStyle(el).outline);
 
         // Focus should be visible (not 'none')
         expect(outlineStyle !== 'none' || outlineStyle.includes('px')).toBeTruthy();
@@ -609,9 +607,7 @@ test.describe('Focus Management', () => {
             await element.focus();
 
             // Check if element has focus styling
-            const outline = await element.evaluate(el => {
-                return window.getComputedStyle(el).outline;
-            });
+            const outline = await element.evaluate(el => window.getComputedStyle(el).outline);
 
             // Should have some focus indicator
             expect(outline !== 'none' || outline !== '0px').toBeTruthy();

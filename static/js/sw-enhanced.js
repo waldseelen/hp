@@ -35,16 +35,16 @@ const CRITICAL_PAGES = [
 
 // Cache expiration policies
 const CACHE_EXPIRY = {
-    static: 30 * 24 * 60 * 60 * 1000,      // 30 days
-    dynamic: 7 * 24 * 60 * 60 * 1000,      // 7 days
-    images: 30 * 24 * 60 * 60 * 1000,      // 30 days
-    fonts: 365 * 24 * 60 * 60 * 1000,      // 1 year
-    api: 5 * 60 * 1000                     // 5 minutes
+    static: 30 * 24 * 60 * 60 * 1000, // 30 days
+    dynamic: 7 * 24 * 60 * 60 * 1000, // 7 days
+    images: 30 * 24 * 60 * 60 * 1000, // 30 days
+    fonts: 365 * 24 * 60 * 60 * 1000, // 1 year
+    api: 5 * 60 * 1000 // 5 minutes
 };
 
 // Install event - precache critical assets
 self.addEventListener('install', event => {
-    console.log('🔧 Service Worker: Installing v' + CACHE_VERSION);
+    console.log(`🔧 Service Worker: Installing v${CACHE_VERSION}`);
 
     event.waitUntil(
         Promise.all([
@@ -81,7 +81,7 @@ async function precacheCriticalPages() {
 
 // Activate event - cleanup old caches and take control
 self.addEventListener('activate', event => {
-    console.log('🚀 Service Worker: Activating v' + CACHE_VERSION);
+    console.log(`🚀 Service Worker: Activating v${CACHE_VERSION}`);
 
     event.waitUntil(
         Promise.all([
@@ -218,7 +218,7 @@ function getRequestType(request) {
 // Cache-first strategy for static assets
 async function cacheFirst(request, cacheName) {
     const cache = await caches.open(cacheName);
-    let cached = await cache.match(request);
+    const cached = await cache.match(request);
 
     // Check if cached version is still valid
     if (cached && !isCacheExpired(cached, CACHE_EXPIRY.static)) {
@@ -324,7 +324,7 @@ async function storeOfflineRequest(request) {
 
 function isCacheExpired(response, maxAge) {
     const cachedTime = response.headers.get('sw-cached');
-    if (!cachedTime) return false;
+    if (!cachedTime) { return false; }
 
     return Date.now() - parseInt(cachedTime) > maxAge;
 }

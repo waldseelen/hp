@@ -77,7 +77,7 @@ class UIEnhancements {
                 this.scrollAnimationFrame = null;
             });
         }
-    }
+    };
 
     onVisibilityChange() {
         if (document.hidden) {
@@ -95,9 +95,9 @@ class UIEnhancements {
 
     setupBackToTop() {
         const backToTopBtn = document.getElementById('back-to-top');
-        if (!backToTopBtn) return;
+        if (!backToTopBtn) { return; }
 
-        backToTopBtn.addEventListener('click', (e) => {
+        backToTopBtn.addEventListener('click', e => {
             e.preventDefault();
             this.scrollManager.scrollToTop();
         });
@@ -187,15 +187,15 @@ class UIEnhancements {
             input.addEventListener('input', () => this.clearValidationErrors(input));
         });
 
-        form.addEventListener('submit', (e) => this.handleFormSubmit(e, form));
+        form.addEventListener('submit', e => this.handleFormSubmit(e, form));
     }
 
     addFloatingLabel(input) {
         const container = input.closest('.form-group');
-        if (!container) return;
+        if (!container) { return; }
 
         const label = container.querySelector('label');
-        if (!label) return;
+        if (!label) { return; }
 
         input.addEventListener('focus', () => label.classList.add('focused'));
         input.addEventListener('blur', () => {
@@ -258,7 +258,7 @@ class UIEnhancements {
 
         cards.forEach(card => {
             // Mouse move effect for cards
-            card.addEventListener('mousemove', (e) => {
+            card.addEventListener('mousemove', e => {
                 const { clientX, clientY } = e;
                 const { left, top } = card.getBoundingClientRect();
                 const x = clientX - left;
@@ -269,7 +269,7 @@ class UIEnhancements {
             });
 
             // Click ripple effect
-            card.addEventListener('click', (e) => {
+            card.addEventListener('click', e => {
                 this.createRippleEffect(e, card);
             });
         });
@@ -323,7 +323,7 @@ class UIEnhancements {
 
     setupNavigationEnhancements() {
         // Smooth scroll for anchor links
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', e => {
             const link = e.target.closest('a[href^="#"]');
             if (link && link.getAttribute('href') !== '#') {
                 e.preventDefault();
@@ -351,7 +351,7 @@ class UIEnhancements {
 
     setupAccessibilityFeatures() {
         // Focus management
-        document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', e => {
             if (e.key === 'Tab') {
                 document.body.classList.add('keyboard-navigation');
             }
@@ -364,7 +364,7 @@ class UIEnhancements {
         // Skip links
         const skipLinks = document.querySelectorAll('.skip-link');
         skipLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
+            link.addEventListener('click', e => {
                 e.preventDefault();
                 const target = document.querySelector(link.getAttribute('href'));
                 if (target) {
@@ -417,11 +417,11 @@ class ToastManager {
         }
 
         return id;
-    }
+    };
 
     createToast(id, message, type, options) {
         const template = document.getElementById('toast-template');
-        if (!template) return null;
+        if (!template) { return null; }
 
         const toast = template.content.cloneNode(true).querySelector('.toast-notification');
         toast.setAttribute('data-toast-id', id);
@@ -432,9 +432,9 @@ class ToastManager {
         const messageEl = toast.querySelector('.toast-message');
         const iconEl = toast.querySelector('.toast-icon');
 
-        if (titleEl) titleEl.textContent = options.title || this.getDefaultTitle(type);
-        if (messageEl) messageEl.textContent = message;
-        if (iconEl) this.setToastIcon(iconEl, type);
+        if (titleEl) { titleEl.textContent = options.title || this.getDefaultTitle(type); }
+        if (messageEl) { messageEl.textContent = message; }
+        if (iconEl) { this.setToastIcon(iconEl, type); }
 
         // Setup close button
         const closeBtn = toast.querySelector('.toast-close');
@@ -466,7 +466,7 @@ class ToastManager {
 
     setupToastActions(toast, actions, toastId) {
         const actionsContainer = toast.querySelector('.toast-actions');
-        if (!actionsContainer || !actions.length) return;
+        if (!actionsContainer || !actions.length) { return; }
 
         actionsContainer.classList.remove('hidden');
 
@@ -545,7 +545,7 @@ class ModalManager {
 
     open(modalId) {
         const modal = document.getElementById(modalId);
-        if (!modal) return;
+        if (!modal) { return; }
 
         this.previousFocus = document.activeElement;
         this.activeModal = modal;
@@ -571,7 +571,7 @@ class ModalManager {
 
     close(modalId) {
         const modal = document.getElementById(modalId);
-        if (!modal) return;
+        if (!modal) { return; }
 
         modal.classList.remove('modal-open');
         modal.setAttribute('aria-hidden', 'true');
@@ -591,11 +591,11 @@ class ModalManager {
         this.previousFocus = null;
     }
 
-    handleModalEscape = (e) => {
+    handleModalEscape = e => {
         if (e.key === 'Escape' && this.activeModal) {
             this.close(this.activeModal.id);
         }
-    }
+    };
 }
 
 // Scroll Manager Class
@@ -623,7 +623,7 @@ class ScrollManager {
     }
 
     updateScrollProgress() {
-        if (!this.progressBar) return;
+        if (!this.progressBar) { return; }
 
         const scrollTop = window.pageYOffset;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -633,7 +633,7 @@ class ScrollManager {
     }
 
     updateBackToTopButton() {
-        if (!this.backToTopBtn) return;
+        if (!this.backToTopBtn) { return; }
 
         const shouldShow = window.pageYOffset > this.scrollThreshold;
         this.backToTopBtn.classList.toggle('visible', shouldShow);
@@ -669,11 +669,11 @@ class LoadingManager {
     }
 
     show(message) {
-        if (!this.overlay) return;
+        if (!this.overlay) { return; }
 
         if (message) {
             const messageEl = document.getElementById('loading-message');
-            if (messageEl) messageEl.textContent = message;
+            if (messageEl) { messageEl.textContent = message; }
         }
 
         this.overlay.classList.add('show');
@@ -681,7 +681,7 @@ class LoadingManager {
     }
 
     hide() {
-        if (!this.overlay) return;
+        if (!this.overlay) { return; }
 
         this.overlay.classList.remove('show');
     }
@@ -739,22 +739,22 @@ class SearchManager {
     }
 
     initialize() {
-        if (!this.modal || !this.input) return;
+        if (!this.modal || !this.input) { return; }
 
         // Setup event listeners
-        this.input.addEventListener('input', this.debounce((e) => this.handleInput(e.target.value), 300));
-        this.input.addEventListener('keydown', (e) => this.handleKeydown(e));
+        this.input.addEventListener('input', this.debounce(e => this.handleInput(e.target.value), 300));
+        this.input.addEventListener('keydown', e => this.handleKeydown(e));
 
         // Setup filter buttons
         const filters = this.modal.querySelectorAll('.search-filter');
         filters.forEach(filter => {
-            filter.addEventListener('click', (e) => this.handleFilterClick(e.target));
+            filter.addEventListener('click', e => this.handleFilterClick(e.target));
         });
 
         // Setup suggestions
         const suggestions = this.modal.querySelectorAll('.search-suggestion');
         suggestions.forEach(suggestion => {
-            suggestion.addEventListener('click', (e) => {
+            suggestion.addEventListener('click', e => {
                 this.input.value = e.target.textContent;
                 this.handleInput(e.target.textContent);
             });
@@ -762,7 +762,7 @@ class SearchManager {
     }
 
     open() {
-        if (!this.modal) return;
+        if (!this.modal) { return; }
 
         this.modal.classList.add('search-modal-open');
         this.modal.style.opacity = '1';
@@ -777,7 +777,7 @@ class SearchManager {
     }
 
     close() {
-        if (!this.modal) return;
+        if (!this.modal) { return; }
 
         this.modal.classList.remove('search-modal-open');
         this.modal.style.opacity = '0';
@@ -876,19 +876,19 @@ class SearchManager {
 
     showLoading() {
         const loading = document.getElementById('search-loading');
-        if (loading) loading.classList.remove('hidden');
+        if (loading) { loading.classList.remove('hidden'); }
 
         const recent = document.getElementById('search-recent');
-        if (recent) recent.style.display = 'none';
+        if (recent) { recent.style.display = 'none'; }
     }
 
     hideLoading() {
         const loading = document.getElementById('search-loading');
-        if (loading) loading.classList.add('hidden');
+        if (loading) { loading.classList.add('hidden'); }
     }
 
     displayResults(results) {
-        if (!this.resultsContainer) return;
+        if (!this.resultsContainer) { return; }
 
         this.resultsContainer.innerHTML = '';
 
@@ -905,13 +905,13 @@ class SearchManager {
         // Hide other sections
         const recent = document.getElementById('search-recent');
         const noResults = document.getElementById('search-no-results');
-        if (recent) recent.style.display = 'none';
-        if (noResults) noResults.classList.add('hidden');
+        if (recent) { recent.style.display = 'none'; }
+        if (noResults) { noResults.classList.add('hidden'); }
     }
 
     createResultElement(result, index) {
         const template = document.getElementById('search-result-template');
-        if (!template) return document.createElement('div');
+        if (!template) { return document.createElement('div'); }
 
         const element = template.content.cloneNode(true).querySelector('.search-result');
         element.dataset.index = index;
@@ -923,11 +923,11 @@ class SearchManager {
         const date = element.querySelector('.result-date');
         const icon = element.querySelector('.result-icon');
 
-        if (title) title.textContent = result.title;
-        if (description) description.textContent = result.description;
-        if (category) category.textContent = result.category;
-        if (date) date.textContent = result.date;
-        if (icon) this.setResultIcon(icon, result.type);
+        if (title) { title.textContent = result.title; }
+        if (description) { description.textContent = result.description; }
+        if (category) { category.textContent = result.category; }
+        if (date) { date.textContent = result.date; }
+        if (icon) { this.setResultIcon(icon, result.type); }
 
         // Click handler
         element.addEventListener('click', () => this.selectResult(index));
@@ -960,7 +960,7 @@ class SearchManager {
 
     showNoResults() {
         const noResults = document.getElementById('search-no-results');
-        if (noResults) noResults.classList.remove('hidden');
+        if (noResults) { noResults.classList.remove('hidden'); }
     }
 
     showError(message) {
@@ -970,7 +970,7 @@ class SearchManager {
 
     showRecentSearches() {
         const recent = document.getElementById('search-recent');
-        if (recent) recent.style.display = 'block';
+        if (recent) { recent.style.display = 'block'; }
 
         // Load and display recent searches from localStorage
         const recentSearches = this.getRecentSearches();
@@ -1022,7 +1022,7 @@ class AnimationManager {
     }
 
     setupIntersectionObserver() {
-        if (!('IntersectionObserver' in window)) return;
+        if (!('IntersectionObserver' in window)) { return; }
 
         const options = {
             root: null,
@@ -1030,7 +1030,7 @@ class AnimationManager {
             threshold: 0.1
         };
 
-        this.scrollObserver = new IntersectionObserver((entries) => {
+        this.scrollObserver = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     this.triggerAnimation(entry.target);
@@ -1124,7 +1124,7 @@ class KeyboardManager {
     }
 
     setupEventListeners() {
-        document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', e => {
             const key = this.getKeyString(e);
             const handler = this.shortcuts.get(key);
 
@@ -1148,9 +1148,9 @@ class KeyboardManager {
     getKeyString(e) {
         let key = e.key.toLowerCase();
 
-        if (e.ctrlKey) key = `ctrl+${key}`;
-        if (e.altKey) key = `alt+${key}`;
-        if (e.shiftKey && key.length > 1) key = `shift+${key}`;
+        if (e.ctrlKey) { key = `ctrl+${key}`; }
+        if (e.altKey) { key = `alt+${key}`; }
+        if (e.shiftKey && key.length > 1) { key = `shift+${key}`; }
 
         return key;
     }
@@ -1194,7 +1194,7 @@ class ThemeManager {
 
 // Global Functions
 window.toggleSearchModal = () => {
-    if (!window.uiEnhancements) return;
+    if (!window.uiEnhancements) { return; }
 
     const searchManager = window.uiEnhancements.searchManager;
     const isOpen = searchManager.modal?.classList.contains('search-modal-open');

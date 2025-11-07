@@ -137,7 +137,7 @@ class Command(BaseCommand):
                 "   Cache is operational but stats unavailable (may be using local memory cache)"
             )
 
-    def warm_cache(self, cache_backend):
+    def warm_cache(self, cache_backend):  # noqa: C901
         """Warm cache with frequently accessed data"""
         self.stdout.write(
             self.style.SUCCESS("🔥 Warming cache with frequently accessed data...")

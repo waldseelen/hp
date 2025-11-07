@@ -29,7 +29,7 @@ async function minifyFile(inputPath, outputPath) {
         await fs.writeFile(outputPath, result.css);
 
         if (result.map) {
-            await fs.writeFile(outputPath + '.map', result.map.toString());
+            await fs.writeFile(`${outputPath}.map`, result.map.toString());
         }
 
         const originalSize = (await fs.stat(inputPath)).size;

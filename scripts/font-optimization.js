@@ -9,80 +9,80 @@ const fs = require('fs').promises;
 const path = require('path');
 
 class FontOptimizer {
-  constructor() {
-    this.fontConfig = {
-      // Critical fonts that should be preloaded
-      critical: [
-        {
-          family: 'Inter',
-          weights: [400, 500, 600, 700],
-          styles: ['normal'],
-          display: 'swap',
-          source: 'google'
-        }
-      ],
+    constructor() {
+        this.fontConfig = {
+            // Critical fonts that should be preloaded
+            critical: [
+                {
+                    family: 'Inter',
+                    weights: [400, 500, 600, 700],
+                    styles: ['normal'],
+                    display: 'swap',
+                    source: 'google'
+                }
+            ],
 
-      // Non-critical fonts for lazy loading
-      nonCritical: [
-        {
-          family: 'JetBrains Mono',
-          weights: [400, 500],
-          styles: ['normal'],
-          display: 'optional',
-          source: 'google'
-        }
-      ],
+            // Non-critical fonts for lazy loading
+            nonCritical: [
+                {
+                    family: 'JetBrains Mono',
+                    weights: [400, 500],
+                    styles: ['normal'],
+                    display: 'optional',
+                    source: 'google'
+                }
+            ],
 
-      // Font loading strategy
-      strategy: {
-        preload: true,
-        prefetch: true,
-        fallbacks: {
-          'Inter': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-          'JetBrains Mono': 'SFMono-Regular, Monaco, Consolas, monospace'
-        }
-      }
-    };
-  }
-
-  async generateFontCSS() {
-    console.log('🔤 Generating optimized font CSS...');
-
-    let css = '/* Font Loading Optimization */\n\n';
-
-    // Generate font-face declarations
-    for (const font of [...this.fontConfig.critical, ...this.fontConfig.nonCritical]) {
-      for (const weight of font.weights) {
-        for (const style of font.styles) {
-          if (font.source === 'google') {
-            css += this.generateGoogleFontFace(font, weight, style);
-          }
-        }
-      }
+            // Font loading strategy
+            strategy: {
+                preload: true,
+                prefetch: true,
+                fallbacks: {
+                    'Inter': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    'JetBrains Mono': 'SFMono-Regular, Monaco, Consolas, monospace'
+                }
+            }
+        };
     }
 
-    // Add font fallbacks
-    css += '\n/* Font Fallbacks */\n';
-    css += ':root {\n';
-    Object.entries(this.fontConfig.strategy.fallbacks).forEach(([fontFamily, fallback]) => {
-      css += `  --font-${fontFamily.toLowerCase().replace(/\s+/g, '-')}: "${fontFamily}", ${fallback};\n`;
-    });
-    css += '}\n\n';
+    async generateFontCSS() {
+        console.log('🔤 Generating optimized font CSS...');
 
-    // Add utility classes
-    css += this.generateUtilityClasses();
+        let css = '/* Font Loading Optimization */\n\n';
 
-    // Write to file
-    const outputPath = path.join(__dirname, '..', 'static', 'css', 'fonts-optimized.css');
-    await fs.writeFile(outputPath, css);
+        // Generate font-face declarations
+        for (const font of [...this.fontConfig.critical, ...this.fontConfig.nonCritical]) {
+            for (const weight of font.weights) {
+                for (const style of font.styles) {
+                    if (font.source === 'google') {
+                        css += this.generateGoogleFontFace(font, weight, style);
+                    }
+                }
+            }
+        }
 
-    console.log(`✅ Font CSS generated: ${outputPath}`);
-  }
+        // Add font fallbacks
+        css += '\n/* Font Fallbacks */\n';
+        css += ':root {\n';
+        Object.entries(this.fontConfig.strategy.fallbacks).forEach(([fontFamily, fallback]) => {
+            css += `  --font-${fontFamily.toLowerCase().replace(/\s+/g, '-')}: "${fontFamily}", ${fallback};\n`;
+        });
+        css += '}\n\n';
 
-  generateGoogleFontFace(font, weight, style) {
-    const fontUrl = this.generateGoogleFontURL(font, weight, style);
+        // Add utility classes
+        css += this.generateUtilityClasses();
 
-    return `@font-face {
+        // Write to file
+        const outputPath = path.join(__dirname, '..', 'static', 'css', 'fonts-optimized.css');
+        await fs.writeFile(outputPath, css);
+
+        console.log(`✅ Font CSS generated: ${outputPath}`);
+    }
+
+    generateGoogleFontFace(font, weight, style) {
+        const fontUrl = this.generateGoogleFontURL(font, weight, style);
+
+        return `@font-face {
   font-family: '${font.family}';
   font-style: ${style};
   font-weight: ${weight};
@@ -91,16 +91,16 @@ class FontOptimizer {
 }
 
 `;
-  }
+    }
 
-  generateGoogleFontURL(font, weight, style) {
+    generateGoogleFontURL(font, weight, style) {
     // Simplified Google Fonts URL generation
-    const family = font.family.replace(/\s+/g, '+');
-    return `https://fonts.gstatic.com/s/${family.toLowerCase()}/${style}/${weight}/font.woff2`;
-  }
+        const family = font.family.replace(/\s+/g, '+');
+        return `https://fonts.gstatic.com/s/${family.toLowerCase()}/${style}/${weight}/font.woff2`;
+    }
 
-  generateUtilityClasses() {
-    return `/* Font Utility Classes */
+    generateUtilityClasses() {
+        return `/* Font Utility Classes */
 .font-primary {
   font-family: var(--font-inter);
 }
@@ -130,38 +130,38 @@ class FontOptimizer {
   }
 }
 `;
-  }
-
-  async generatePreloadHTML() {
-    console.log('📦 Generating font preload HTML...');
-
-    let html = '<!-- Font Preloading -->\n';
-
-    // Generate preload links for critical fonts
-    for (const font of this.fontConfig.critical) {
-      for (const weight of font.weights.slice(0, 2)) { // Limit preloads
-        const fontUrl = this.generateGoogleFontURL(font, weight, 'normal');
-        html += `<link rel="preload" href="${fontUrl}" as="font" type="font/woff2" crossorigin>\n`;
-      }
     }
 
-    // Add DNS prefetch
-    html += '\n<!-- DNS Prefetch for Font Sources -->\n';
-    html += '<link rel="dns-prefetch" href="//fonts.googleapis.com">\n';
-    html += '<link rel="dns-prefetch" href="//fonts.gstatic.com">\n';
+    async generatePreloadHTML() {
+        console.log('📦 Generating font preload HTML...');
 
-    // Write to partial template
-    const outputPath = path.join(__dirname, '..', 'templates', 'partials', 'font-preloads.html');
-    await fs.mkdir(path.dirname(outputPath), { recursive: true });
-    await fs.writeFile(outputPath, html);
+        let html = '<!-- Font Preloading -->\n';
 
-    console.log(`✅ Font preload template generated: ${outputPath}`);
-  }
+        // Generate preload links for critical fonts
+        for (const font of this.fontConfig.critical) {
+            for (const weight of font.weights.slice(0, 2)) { // Limit preloads
+                const fontUrl = this.generateGoogleFontURL(font, weight, 'normal');
+                html += `<link rel="preload" href="${fontUrl}" as="font" type="font/woff2" crossorigin>\n`;
+            }
+        }
 
-  async generateFontLoadingJS() {
-    console.log('⚡ Generating font loading JavaScript...');
+        // Add DNS prefetch
+        html += '\n<!-- DNS Prefetch for Font Sources -->\n';
+        html += '<link rel="dns-prefetch" href="//fonts.googleapis.com">\n';
+        html += '<link rel="dns-prefetch" href="//fonts.gstatic.com">\n';
 
-    const js = `/**
+        // Write to partial template
+        const outputPath = path.join(__dirname, '..', 'templates', 'partials', 'font-preloads.html');
+        await fs.mkdir(path.dirname(outputPath), { recursive: true });
+        await fs.writeFile(outputPath, html);
+
+        console.log(`✅ Font preload template generated: ${outputPath}`);
+    }
+
+    async generateFontLoadingJS() {
+        console.log('⚡ Generating font loading JavaScript...');
+
+        const js = `/**
  * Font Loading Optimization
  * Handles progressive font loading and fallbacks
  */
@@ -283,14 +283,14 @@ if (typeof window !== 'undefined') {
   new FontLoader();
 }`;
 
-    const outputPath = path.join(__dirname, '..', 'static', 'js', 'font-loader.js');
-    await fs.writeFile(outputPath, js);
+        const outputPath = path.join(__dirname, '..', 'static', 'js', 'font-loader.js');
+        await fs.writeFile(outputPath, js);
 
-    console.log(`✅ Font loading script generated: ${outputPath}`);
-  }
+        console.log(`✅ Font loading script generated: ${outputPath}`);
+    }
 
-  async generateFontOptimizationSummary() {
-    const summary = `# Font Loading Optimization Summary
+    async generateFontOptimizationSummary() {
+        const summary = `# Font Loading Optimization Summary
 
 ## Implemented Optimizations
 
@@ -347,31 +347,31 @@ if (typeof window !== 'undefined') {
 - **Bandwidth Efficient**: Only required font weights loaded
 `;
 
-    const outputPath = path.join(__dirname, '..', 'FONT_OPTIMIZATION_SUMMARY.md');
-    await fs.writeFile(outputPath, summary);
+        const outputPath = path.join(__dirname, '..', 'FONT_OPTIMIZATION_SUMMARY.md');
+        await fs.writeFile(outputPath, summary);
 
-    console.log(`📄 Font optimization summary generated: ${outputPath}`);
-  }
+        console.log(`📄 Font optimization summary generated: ${outputPath}`);
+    }
 
-  async optimize() {
-    console.log('🚀 Starting font optimization...');
+    async optimize() {
+        console.log('🚀 Starting font optimization...');
 
-    await this.generateFontCSS();
-    await this.generatePreloadHTML();
-    await this.generateFontLoadingJS();
-    await this.generateFontOptimizationSummary();
+        await this.generateFontCSS();
+        await this.generatePreloadHTML();
+        await this.generateFontLoadingJS();
+        await this.generateFontOptimizationSummary();
 
-    console.log('✅ Font optimization completed successfully!');
-  }
+        console.log('✅ Font optimization completed successfully!');
+    }
 }
 
 // Run if called directly
 if (require.main === module) {
-  const optimizer = new FontOptimizer();
-  optimizer.optimize().catch(error => {
-    console.error('💥 Font optimization failed:', error);
-    process.exit(1);
-  });
+    const optimizer = new FontOptimizer();
+    optimizer.optimize().catch(error => {
+        console.error('💥 Font optimization failed:', error);
+        process.exit(1);
+    });
 }
 
 module.exports = { FontOptimizer };

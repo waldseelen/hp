@@ -1,11 +1,11 @@
 // Theme Handler - CSP-compliant dark mode management
-(function() {
+(function () {
     'use strict';
 
     // Initialize theme management
     function initTheme() {
         const body = document.getElementById('app-body');
-        if (!body) return;
+        if (!body) { return; }
 
         // Get saved theme or default to dark
         const savedTheme = localStorage.getItem('darkMode');
@@ -18,7 +18,7 @@
         // Store the theme state for Alpine.js components
         window.themeState = {
             darkMode: isDarkMode,
-            toggle: function() {
+            toggle: function () {
                 this.darkMode = !this.darkMode;
                 localStorage.setItem('darkMode', this.darkMode);
                 document.documentElement.classList.toggle('dark', this.darkMode);

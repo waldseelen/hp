@@ -50,7 +50,7 @@ class ImageOptimizer {
      * Setup Intersection Observer for lazy loading
      */
     setupIntersectionObserver() {
-        this.observer = new IntersectionObserver((entries) => {
+        this.observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     this.loadImage(entry.target);
@@ -79,7 +79,7 @@ class ImageOptimizer {
         const src = img.dataset.src || img.src;
         const srcset = img.dataset.srcset;
 
-        if (!src) return;
+        if (!src) { return; }
 
         // Create new image element for loading
         const imageLoader = new Image();
@@ -234,8 +234,8 @@ class ImageOptimizer {
      */
     monitorPerformance() {
         if ('PerformanceObserver' in window) {
-            const perfObserver = new PerformanceObserver((list) => {
-                list.getEntries().forEach((entry) => {
+            const perfObserver = new PerformanceObserver(list => {
+                list.getEntries().forEach(entry => {
                     if (entry.initiatorType === 'img') {
                         console.log(`Image load performance: ${entry.name} - ${entry.duration.toFixed(2)}ms`);
                     }
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Add fade-in animation for loaded images
-    document.addEventListener('imageLoaded', (e) => {
+    document.addEventListener('imageLoaded', e => {
         const img = e.target;
         img.style.opacity = '0';
         img.style.transition = 'opacity 0.3s ease-in-out';

@@ -10,7 +10,7 @@ async function minifyFile(inputPath, outputPath) {
         const result = await minify(code, {
             sourceMap: {
                 filename: path.basename(outputPath),
-                url: path.basename(outputPath) + '.map'
+                url: `${path.basename(outputPath)}.map`
             },
             compress: {
                 drop_console: false,
@@ -28,7 +28,7 @@ async function minifyFile(inputPath, outputPath) {
         await fs.writeFile(outputPath, result.code);
 
         if (result.map) {
-            await fs.writeFile(outputPath + '.map', result.map);
+            await fs.writeFile(`${outputPath}.map`, result.map);
         }
 
         const originalSize = (await fs.stat(inputPath)).size;

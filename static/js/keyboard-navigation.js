@@ -47,14 +47,14 @@ class KeyboardNavigationManager {
         document.body.insertBefore(skipNav, document.body.firstChild);
 
         // Ensure main content has id
-        let mainContent = document.querySelector('main');
+        const mainContent = document.querySelector('main');
         if (mainContent && !mainContent.id) {
             mainContent.id = 'main-content';
             mainContent.setAttribute('tabindex', '-1');
         }
 
         // Handle skip link click
-        skipNav.addEventListener('click', (e) => {
+        skipNav.addEventListener('click', e => {
             e.preventDefault();
             const target = document.querySelector(skipNav.getAttribute('href'));
             if (target) {
@@ -68,17 +68,17 @@ class KeyboardNavigationManager {
         // Track focus for debugging
         let lastFocused = null;
 
-        document.addEventListener('focusin', (e) => {
+        document.addEventListener('focusin', e => {
             lastFocused = e.target;
             this.handleFocusIn(e.target);
         });
 
-        document.addEventListener('focusout', (e) => {
+        document.addEventListener('focusout', e => {
             this.handleFocusOut(e.target);
         });
 
         // Handle focus restoration when modals close
-        document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
                 this.handleEscapeKey(e);
             }
@@ -129,7 +129,7 @@ class KeyboardNavigationManager {
     }
 
     setupKeyboardShortcuts() {
-        document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', e => {
             // Skip if user is typing in input
             if (this.isTyping(e.target)) {
                 return;
@@ -305,7 +305,7 @@ class KeyboardNavigationManager {
     setupMenuNavigation(menu) {
         const items = menu.querySelectorAll('[role="menuitem"]');
 
-        menu.addEventListener('keydown', (e) => {
+        menu.addEventListener('keydown', e => {
             const currentIndex = Array.from(items).indexOf(e.target);
 
             switch (e.key) {
@@ -339,7 +339,7 @@ class KeyboardNavigationManager {
     setupTabNavigation(tablist) {
         const tabs = tablist.querySelectorAll('[role="tab"]');
 
-        tablist.addEventListener('keydown', (e) => {
+        tablist.addEventListener('keydown', e => {
             const currentIndex = Array.from(tabs).indexOf(e.target);
 
             switch (e.key) {
@@ -383,9 +383,7 @@ class KeyboardNavigationManager {
             const url = link.href;
             let platform = 'social media';
 
-            if (url.includes('github')) platform = 'GitHub';
-            else if (url.includes('linkedin')) platform = 'LinkedIn';
-            else if (url.includes('twitter')) platform = 'Twitter';
+            if (url.includes('github')) { platform = 'GitHub'; } else if (url.includes('linkedin')) { platform = 'LinkedIn'; } else if (url.includes('twitter')) { platform = 'Twitter'; }
 
             if (!link.getAttribute('aria-label')) {
                 link.setAttribute('aria-label', `Visit ${platform} profile`);
@@ -402,7 +400,7 @@ class KeyboardNavigationManager {
 
     setupFocusTrap() {
         // Focus trap for modals and dialogs
-        document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', e => {
             if (e.key === 'Tab') {
                 const modal = document.querySelector('[role="dialog"]:not([aria-hidden="true"])');
                 if (modal) {

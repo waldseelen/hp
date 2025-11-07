@@ -1,4 +1,4 @@
-    /**
+/**
  * CDN and Asset Performance Monitoring System
  * Tracks:
  * - Time to First Byte (TTFB) for assets
@@ -52,7 +52,7 @@ class CDNPerformanceMonitor {
      */
     setupPerformanceObserver() {
         // Monitor resource timing
-        this.observer = new PerformanceObserver((list) => {
+        this.observer = new PerformanceObserver(list => {
             list.getEntries().forEach(entry => {
                 if (this.isStaticAsset(entry.name)) {
                     this.processAssetMetrics(entry);
@@ -63,7 +63,7 @@ class CDNPerformanceMonitor {
         this.observer.observe({ entryTypes: ['resource'] });
 
         // Monitor navigation timing for TTFB
-        const navObserver = new PerformanceObserver((list) => {
+        const navObserver = new PerformanceObserver(list => {
             list.getEntries().forEach(entry => {
                 this.processNavigationMetrics(entry);
             });
@@ -158,10 +158,10 @@ class CDNPerformanceMonitor {
      * Get asset type from URL
      */
     getAssetType(url) {
-        if (url.includes('.css')) return 'CSS';
-        if (url.includes('.js')) return 'JavaScript';
-        if (url.match(/\.(png|jpg|jpeg|gif|svg|webp|avif)$/i)) return 'Image';
-        if (url.match(/\.(woff|woff2|ttf|otf)$/i)) return 'Font';
+        if (url.includes('.css')) { return 'CSS'; }
+        if (url.includes('.js')) { return 'JavaScript'; }
+        if (url.match(/\.(png|jpg|jpeg|gif|svg|webp|avif)$/i)) { return 'Image'; }
+        if (url.match(/\.(woff|woff2|ttf|otf)$/i)) { return 'Font'; }
         return 'Other';
     }
 
@@ -289,7 +289,7 @@ class CDNPerformanceMonitor {
      * Get average TTFB
      */
     getAverageTTFB() {
-        if (this.metrics.ttfb.length === 0) return 0;
+        if (this.metrics.ttfb.length === 0) { return 0; }
 
         const total = this.metrics.ttfb.reduce((sum, entry) => sum + entry.ttfb, 0);
         return total / this.metrics.ttfb.length;
@@ -376,7 +376,7 @@ class CDNPerformanceMonitor {
     checkCDNStatus() {
         const cdnUrl = window.CDN_DOMAIN || null;
 
-        if (!cdnUrl) return Promise.resolve({ status: 'No CDN configured' });
+        if (!cdnUrl) { return Promise.resolve({ status: 'No CDN configured' }); }
 
         const startTime = performance.now();
 
@@ -415,13 +415,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.cdnMonitor = new CDNPerformanceMonitor();
 
     // Expose global function for manual checks
-    window.checkCDNPerformance = () => {
-        return window.cdnMonitor.getPerformanceSummary();
-    };
+    window.checkCDNPerformance = () => window.cdnMonitor.getPerformanceSummary();
 
-    window.checkCDNStatus = () => {
-        return window.cdnMonitor.checkCDNStatus();
-    };
+    window.checkCDNStatus = () => window.cdnMonitor.checkCDNStatus();
 
     console.log('CDN Performance Monitor initialized');
 });

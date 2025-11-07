@@ -242,7 +242,7 @@ class CookieConsent {
 
     bindEvents() {
         // Settings button to manage preferences
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', e => {
             if (e.target.classList.contains('cookie-settings-btn')) {
                 this.showPreferencesModal();
             }

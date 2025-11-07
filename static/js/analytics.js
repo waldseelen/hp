@@ -49,7 +49,7 @@ class PrivacyAnalytics {
 
         if (!sessionId) {
             // Generate anonymous session ID
-            sessionId = 'anon_' + this.generateRandomId();
+            sessionId = `anon_${this.generateRandomId()}`;
             sessionStorage.setItem('analytics_session_id', sessionId);
         }
 
@@ -114,7 +114,7 @@ class PrivacyAnalytics {
     // ====================
 
     trackPageView(path = null, title = null) {
-        if (this.isOptedOut) return;
+        if (this.isOptedOut) { return; }
 
         const data = {
             path: path || window.location.pathname,
@@ -130,7 +130,7 @@ class PrivacyAnalytics {
     }
 
     trackEvent(eventName, eventData = {}) {
-        if (this.isOptedOut) return;
+        if (this.isOptedOut) { return; }
 
         // Sanitize event data
         const sanitizedData = this.sanitizeEventData(eventData);
@@ -146,7 +146,7 @@ class PrivacyAnalytics {
     }
 
     trackConversion(conversionType, conversionValue = null) {
-        if (this.isOptedOut) return;
+        if (this.isOptedOut) { return; }
 
         this.sendToAPI('/api/analytics/track-conversion/', {
             conversion_type: conversionType,
@@ -158,7 +158,7 @@ class PrivacyAnalytics {
     // ====================
 
     startJourney(journeyType) {
-        if (this.isOptedOut) return;
+        if (this.isOptedOut) { return; }
 
         this.sendToAPI('/api/analytics/track-journey/', {
             step_name: `journey_start_${journeyType}`,
@@ -171,7 +171,7 @@ class PrivacyAnalytics {
     }
 
     trackJourneyStep(stepName) {
-        if (this.isOptedOut) return;
+        if (this.isOptedOut) { return; }
 
         this.sendToAPI('/api/analytics/track-journey/', {
             step_name: stepName,
@@ -183,7 +183,7 @@ class PrivacyAnalytics {
     // =========================
 
     trackFunnelStep(funnelName, stepName, stepOrder) {
-        if (this.isOptedOut) return;
+        if (this.isOptedOut) { return; }
 
         this.sendToAPI('/api/analytics/track-funnel/', {
             funnel_name: funnelName,
@@ -240,7 +240,7 @@ class PrivacyAnalytics {
     }
 
     trackABTestConversion(testName, conversionType = 'conversion') {
-        if (this.isOptedOut) return;
+        if (this.isOptedOut) { return; }
 
         this.sendToAPI('/api/analytics/track-ab-conversion/', {
             test_name: testName,
@@ -257,7 +257,7 @@ class PrivacyAnalytics {
             const ctaButtons = document.querySelectorAll('.cta-button, .btn-primary');
 
             ctaButtons.forEach(button => {
-                switch(variant) {
+                switch (variant) {
                     case 'bright':
                         button.classList.add('cta-variant-bright');
                         break;
@@ -292,7 +292,7 @@ class PrivacyAnalytics {
 
     setupEventListeners() {
         // Track form interactions
-        document.addEventListener('focusin', (e) => {
+        document.addEventListener('focusin', e => {
             if (e.target.matches('input, textarea, select')) {
                 this.trackEvent('form_field_focus', {
                     field_type: e.target.type || e.target.tagName.toLowerCase(),
@@ -303,7 +303,7 @@ class PrivacyAnalytics {
         });
 
         // Track form submissions
-        document.addEventListener('submit', (e) => {
+        document.addEventListener('submit', e => {
             const form = e.target;
             if (form.tagName === 'FORM') {
                 this.trackEvent('form_submission', {
@@ -320,7 +320,7 @@ class PrivacyAnalytics {
         });
 
         // Track important link clicks
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', e => {
             const link = e.target.closest('a');
             if (link) {
                 this.trackEvent('link_click', {
@@ -388,11 +388,11 @@ class PrivacyAnalytics {
     getSanitizedReferrer() {
         const referrer = document.referrer;
 
-        if (!referrer) return 'direct';
+        if (!referrer) { return 'direct'; }
 
-        if (referrer.includes('google.com')) return 'search';
-        if (referrer.includes('facebook.com') || referrer.includes('twitter.com')) return 'social';
-        if (referrer.startsWith(window.location.origin)) return 'internal';
+        if (referrer.includes('google.com')) { return 'search'; }
+        if (referrer.includes('facebook.com') || referrer.includes('twitter.com')) { return 'social'; }
+        if (referrer.startsWith(window.location.origin)) { return 'internal'; }
 
         return 'external';
     }
@@ -409,7 +409,7 @@ class PrivacyAnalytics {
 
             // Truncate long strings
             if (typeof value === 'string' && value.length > 200) {
-                sanitized[key] = value.substring(0, 200) + '...';
+                sanitized[key] = `${value.substring(0, 200)}...`;
             } else {
                 sanitized[key] = value;
             }
@@ -430,7 +430,7 @@ class PrivacyAnalytics {
 
     throttle(func, limit) {
         let inThrottle;
-        return function() {
+        return function () {
             const args = arguments;
             const context = this;
             if (!inThrottle) {
@@ -499,7 +499,7 @@ window.privacyAnalytics = new PrivacyAnalytics();
 // Expose GDPR compliance methods globally
 window.analyticsOptOut = () => window.privacyAnalytics.optOut();
 window.analyticsOptIn = () => window.privacyAnalytics.optIn();
-window.setAnalyticsGDPRConsent = (consent) => window.privacyAnalytics.setGDPRConsent(consent);
+window.setAnalyticsGDPRConsent = consent => window.privacyAnalytics.setGDPRConsent(consent);
 window.getAnalyticsPrivacyInfo = () => window.privacyAnalytics.getPrivacyInfo();
 
 // Initialize A/B tests

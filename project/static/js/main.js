@@ -1,6 +1,6 @@
 // Main JavaScript for Portfolio Site
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize main functionality
     initSmoothScrolling();
     initFormValidation();
@@ -36,7 +36,7 @@ function initDarkMode() {
 // Smooth Scrolling for Anchor Links
 function initSmoothScrolling() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+        anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
@@ -62,7 +62,7 @@ function initFormValidation() {
             input.addEventListener('input', () => clearFieldError(input));
         });
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             e.preventDefault();
 
             let isValid = true;
@@ -154,7 +154,7 @@ function initLoadingStates() {
     const loadingButtons = document.querySelectorAll('[data-loading]');
 
     loadingButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             if (!this.classList.contains('btn-loading')) {
                 showLoadingState(this);
             }
@@ -163,7 +163,7 @@ function initLoadingStates() {
 }
 
 function showLoadingState(button) {
-    if (!button || button.classList.contains('btn-loading')) return;
+    if (!button || button.classList.contains('btn-loading')) { return; }
 
     const originalHtml = button.innerHTML;
     const loadingText = button.getAttribute('data-loading') || 'Loading...';
@@ -186,7 +186,7 @@ function showLoadingState(button) {
 }
 
 function hideLoadingState(button) {
-    if (!button) return;
+    if (!button) { return; }
 
     const originalHtml = button.getAttribute('data-original-html');
 
@@ -208,7 +208,7 @@ function initMobileMenu() {
     const mobileMenuButtons = document.querySelectorAll('[data-mobile-menu]');
 
     mobileMenuButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const menu = document.querySelector(this.getAttribute('data-mobile-menu'));
             if (menu) {
                 menu.classList.toggle('hidden');
@@ -221,7 +221,7 @@ function initMobileMenu() {
     });
 
     // Close mobile menu when clicking outside
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         const mobileMenus = document.querySelectorAll('[data-mobile-menu-content]');
         const menuButtons = document.querySelectorAll('[data-mobile-menu]');
 
@@ -246,7 +246,7 @@ function initPerformanceOptimizations() {
 
     // Debounce scroll events
     let scrollTimeout;
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', function () {
         if (scrollTimeout) {
             clearTimeout(scrollTimeout);
         }
@@ -293,7 +293,7 @@ function debounce(func, wait) {
 
 function throttle(func, limit) {
     let inThrottle;
-    return function() {
+    return function () {
         const args = arguments;
         const context = this;
         if (!inThrottle) {
@@ -301,11 +301,11 @@ function throttle(func, limit) {
             inThrottle = true;
             setTimeout(() => inThrottle = false, limit);
         }
-    }
+    };
 }
 
 // External link handling
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const link = e.target.closest('a[href^="http"]');
     if (link && !link.hasAttribute('target')) {
         link.setAttribute('target', '_blank');
@@ -315,7 +315,7 @@ document.addEventListener('click', function(e) {
 
 // Show loading for external links
 document.querySelectorAll('a[href^="http"]').forEach(link => {
-    link.addEventListener('click', function() {
+    link.addEventListener('click', function () {
         const icon = this.querySelector('.external-link-icon');
         if (icon) {
             icon.classList.add('animate-spin');
@@ -361,7 +361,7 @@ function hideTooltip() {
 document.addEventListener('DOMContentLoaded', initTooltips);
 
 // Error handling for failed resource loads
-window.addEventListener('error', function(e) {
+window.addEventListener('error', function (e) {
     if (e.target.tagName === 'IMG') {
         e.target.src = '/static/images/placeholder.png';
         e.target.alt = 'Image not available';

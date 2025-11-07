@@ -90,9 +90,17 @@ class Tool(models.Model):
             models.Index(fields=["is_visible", "category"]),
         ]
 
-    def clean(self):
-        # Validate URL
+    def clean(self):  # noqa: C901
+        """Validate model fields."""
+        self._validate_url_fields()
+        self._validate_rating()
+        self._validate_tags()
+
+    def _validate_url_fields(self):
+        """Validate URL and icon_url fields."""
         validator = URLValidator()
+
+        # Validate main URL
         try:
             validator(self.url)
         except ValidationError:
@@ -105,20 +113,24 @@ class Tool(models.Model):
             except ValidationError:
                 raise ValidationError({"icon_url": "Please enter a valid icon URL"})
 
-        # Validate rating range
+    def _validate_rating(self):
+        """Validate rating is within valid range."""
         if self.rating is not None and (self.rating < 1 or self.rating > 5):
             raise ValidationError({"rating": "Rating must be between 1 and 5"})
 
-        # Validate tags format
-        if self.tags:
-            if not isinstance(self.tags, list):
-                raise ValidationError({"tags": "Tags must be a list of strings"})
+    def _validate_tags(self):
+        """Validate tags format and content."""
+        if not self.tags:
+            return
 
-            for tag in self.tags:
-                if not isinstance(tag, str) or not tag.strip():
-                    raise ValidationError(
-                        {"tags": "Each tag must be a non-empty string"}
-                    )
+        if not isinstance(self.tags, list):
+            raise ValidationError({"tags": "Tags must be a list of strings"})
+
+        for tag in self.tags:
+            if not isinstance(tag, str) or not tag.strip():
+                raise ValidationError(
+                    {"tags": "Each tag must be a non-empty string"}
+                )
 
     def save(self, *args, **kwargs):
         # Clean tags list

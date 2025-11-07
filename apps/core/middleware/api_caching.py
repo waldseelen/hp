@@ -39,52 +39,89 @@ class APICachingMiddleware:
         self.api_version = getattr(settings, "API_VERSION", "v1")
         self.cache_timeout = 900  # 15 minutes default
 
-    def __call__(self, request):
+    def __call__(self, request):  # noqa: C901
         # Only cache API endpoints
         if not self._is_api_request(request):
             return self.get_response(request)
 
-        # Only cache GET requests
+        # Handle non-GET requests
         if request.method != "GET":
-            response = self.get_response(request)
-            # Invalidate cache on mutations
-            if request.method in ["POST", "PUT", "PATCH", "DELETE"]:
-                self._invalidate_related_cache(request)
-            return response
+            return self._handle_mutation_request(request)
 
-        # Check for cached response
+        # Try to return cached response
         cache_key = self._generate_cache_key(request)
+        cached_response = self._try_cached_response(request, cache_key)
+        if cached_response:
+            return cached_response
+
+        # Get and cache fresh response
+        return self._get_and_cache_response(request, cache_key)
+
+    def _handle_mutation_request(self, request):
+        """Handle POST/PUT/PATCH/DELETE requests and invalidate cache."""
+        response = self.get_response(request)
+        if request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            self._invalidate_related_cache(request)
+        return response
+
+    def _try_cached_response(self, request, cache_key):
+        """Try to return cached response if available and valid."""
         cached_data = self.cache.get(cache_key)
+        if not cached_data:
+            return None
 
-        if cached_data:
-            # Check If-None-Match (ETag)
-            if "etag" in cached_data:
-                if_none_match = request.META.get("HTTP_IF_NONE_MATCH")
-                if if_none_match == cached_data["etag"]:
-                    return self._not_modified_response(cached_data["etag"])
+        # Check conditional request headers
+        conditional_response = self._check_conditional_headers(request, cached_data)
+        if conditional_response:
+            return conditional_response
 
-            # Check If-Modified-Since
-            if "last_modified" in cached_data:
-                if_modified_since = request.META.get("HTTP_IF_MODIFIED_SINCE")
-                if if_modified_since:
-                    try:
-                        if_modified_since_time = parse_http_date(if_modified_since)
-                        if cached_data["last_modified"] <= if_modified_since_time:
-                            return self._not_modified_response(
-                                cached_data.get("etag"), cached_data["last_modified"]
-                            )
-                    except (ValueError, TypeError):
-                        pass
+        # Return cached response
+        return self._build_cached_response(cached_data)
 
-            # Return cached response
-            response = JsonResponse(cached_data["content"], safe=False)
-            self._add_cache_headers(
-                response, cached_data.get("etag"), cached_data.get("last_modified")
-            )
-            response["X-Cache-Status"] = "HIT"
-            return response
+    def _check_conditional_headers(self, request, cached_data):
+        """Check If-None-Match and If-Modified-Since headers."""
+        # Check ETag
+        if "etag" in cached_data:
+            if_none_match = request.META.get("HTTP_IF_NONE_MATCH")
+            if if_none_match == cached_data["etag"]:
+                return self._not_modified_response(cached_data["etag"])
 
-        # Get fresh response
+        # Check Last-Modified
+        if "last_modified" in cached_data:
+            not_modified = self._check_if_modified_since(request, cached_data)
+            if not_modified:
+                return not_modified
+
+        return None
+
+    def _check_if_modified_since(self, request, cached_data):
+        """Check If-Modified-Since header against cached last_modified."""
+        if_modified_since = request.META.get("HTTP_IF_MODIFIED_SINCE")
+        if not if_modified_since:
+            return None
+
+        try:
+            if_modified_since_time = parse_http_date(if_modified_since)
+            if cached_data["last_modified"] <= if_modified_since_time:
+                return self._not_modified_response(
+                    cached_data.get("etag"), cached_data["last_modified"]
+                )
+        except (ValueError, TypeError):
+            pass
+
+        return None
+
+    def _build_cached_response(self, cached_data):
+        """Build response from cached data."""
+        response = JsonResponse(cached_data["content"], safe=False)
+        self._add_cache_headers(
+            response, cached_data.get("etag"), cached_data.get("last_modified")
+        )
+        response["X-Cache-Status"] = "HIT"
+        return response
+
+    def _get_and_cache_response(self, request, cache_key):
+        """Get fresh response and cache if appropriate."""
         response = self.get_response(request)
 
         # Only cache successful JSON responses

@@ -30,7 +30,7 @@ describe('Testing Infrastructure', () => {
 
 describe('Utility Functions', () => {
     it('should validate email format', () => {
-        const isValidEmail = (email) => {
+        const isValidEmail = email => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return emailRegex.test(email);
         };
@@ -42,8 +42,8 @@ describe('Utility Functions', () => {
 
     it('should format performance metrics', () => {
         const formatMetric = (value, unit = 'ms') => {
-            if (typeof value !== 'number') return 'N/A';
-            if (value < 1000) return `${value.toFixed(0)}${unit}`;
+            if (typeof value !== 'number') { return 'N/A'; }
+            if (value < 1000) { return `${value.toFixed(0)}${unit}`; }
             return `${(value / 1000).toFixed(2)}s`;
         };
 
@@ -54,7 +54,7 @@ describe('Utility Functions', () => {
 
     it('should handle localStorage operations safely', () => {
         const safeLocalStorage = {
-            getItem: (key) => {
+            getItem: key => {
                 try {
                     return window.localStorage.getItem(key);
                 } catch {

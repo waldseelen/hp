@@ -1,8 +1,9 @@
+import json
+from pathlib import Path
+
 from django import template
 from django.apps import apps
 from django.conf import settings
-from pathlib import Path
-import json
 
 register = template.Library()
 
@@ -51,7 +52,9 @@ def performance_summary():
             "p50_ms": latest.get("response_time", {}).get("p50_ms", 0),
             "p95_ms": latest.get("response_time", {}).get("p95_ms", 0),
             "db_query_count": latest.get("database", {}).get("query_count", 0),
-            "cache_status": {k: v.get("status") for k, v in latest.get("cache", {}).items()},
+            "cache_status": {
+                k: v.get("status") for k, v in latest.get("cache", {}).items()
+            },
             "cpu_percent": latest.get("system", {}).get("cpu_percent"),
             "memory_percent": latest.get("system", {}).get("memory_percent"),
         }

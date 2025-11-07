@@ -146,20 +146,20 @@ ${generateRecommendations(metrics)}
 }
 
 function getFCPStatus(fcp) {
-    if (fcp < 1800) return '✅ Good';
-    if (fcp < 3000) return '⚠️ Needs Improvement';
+    if (fcp < 1800) { return '✅ Good'; }
+    if (fcp < 3000) { return '⚠️ Needs Improvement'; }
     return '❌ Poor';
 }
 
 function getLCPStatus(lcp) {
-    if (lcp < 2500) return '✅ Good';
-    if (lcp < 4000) return '⚠️ Needs Improvement';
+    if (lcp < 2500) { return '✅ Good'; }
+    if (lcp < 4000) { return '⚠️ Needs Improvement'; }
     return '❌ Poor';
 }
 
 function getCLSStatus(cls) {
-    if (cls < 0.1) return '✅ Good';
-    if (cls < 0.25) return '⚠️ Needs Improvement';
+    if (cls < 0.1) { return '✅ Good'; }
+    if (cls < 0.25) { return '⚠️ Needs Improvement'; }
     return '❌ Poor';
 }
 

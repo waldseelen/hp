@@ -33,7 +33,7 @@ class Command(BaseCommand):
         )
 
     @override_settings(DEBUG=True)
-    def handle(self, *args, **options):
+    def handle(self, *args, **options):  # noqa: C901
         threshold = options["threshold"]
         verbose = options["verbose"]
 

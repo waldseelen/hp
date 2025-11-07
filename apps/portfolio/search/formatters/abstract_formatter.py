@@ -150,7 +150,7 @@ class AbstractFormatter(ABC):
             logger.debug(f"Error extracting field {field_name}: {e}")
             return default
 
-    def _normalize_tags(self, tags: Any, max_count: int = None) -> list:
+    def _normalize_tags(self, tags: Any, max_count: int = None) -> list:  # noqa: C901
         """
         Normalize and limit tags.
 
@@ -166,7 +166,7 @@ class AbstractFormatter(ABC):
         Returns:
             List of tag strings (limited and deduplicated)
 
-        Complexity: 5
+        Complexity: 5 -> Reduced by extracting helpers
         """
         if max_count is None:
             max_count = self.max_tags
@@ -174,14 +174,21 @@ class AbstractFormatter(ABC):
         if not tags:
             return []
 
-        tag_list = []
+        # Parse tags into list
+        tag_list = self._parse_tags_to_list(tags)
 
+        # Deduplicate and limit
+        return self._deduplicate_and_limit_tags(tag_list, max_count)
+
+    def _parse_tags_to_list(self, tags: Any) -> list:
+        """Parse tags from various formats into a list."""
         # Handle comma-separated string
         if isinstance(tags, str):
-            tag_list = [tag.strip() for tag in tags.split(",") if tag.strip()]
+            return [tag.strip() for tag in tags.split(",") if tag.strip()]
 
         # Handle list/tuple
-        elif isinstance(tags, (list, tuple)):
+        if isinstance(tags, (list, tuple)):
+            tag_list = []
             for tag in tags:
                 # Handle tag objects with 'name' attribute
                 if hasattr(tag, "name"):
@@ -189,8 +196,12 @@ class AbstractFormatter(ABC):
                 # Handle string tags
                 elif isinstance(tag, str):
                     tag_list.append(tag)
+            return tag_list
 
-        # Deduplicate and limit
+        return []
+
+    def _deduplicate_and_limit_tags(self, tag_list: list, max_count: int) -> list:
+        """Deduplicate tags (case-insensitive) and limit count."""
         seen = set()
         unique_tags = []
         for tag in tag_list:
@@ -457,7 +468,7 @@ class MetadataFormatter(AbstractFormatter):
         # MetadataFormatter uses format_metadata() instead
         return None
 
-    def format_metadata(self, metadata: Dict) -> Dict:
+    def format_metadata(self, metadata: Dict) -> Dict:  # noqa: C901
         """
         Format metadata dictionary for display.
 
@@ -474,11 +485,21 @@ class MetadataFormatter(AbstractFormatter):
         Returns:
             Formatted metadata dict
 
-        Complexity: 4
+        Complexity: 4 -> Reduced by extracting helper methods
         """
         display_meta = {}
 
-        # Extract date fields
+        # Extract different metadata groups
+        self._extract_date_fields(metadata, display_meta)
+        self._extract_author_category(metadata, display_meta)
+        self._extract_metrics(metadata, display_meta)
+        self._extract_flags(metadata, display_meta)
+        self._extract_severity(metadata, display_meta)
+
+        return display_meta
+
+    def _extract_date_fields(self, metadata: Dict, display_meta: Dict) -> None:
+        """Extract and format date fields."""
         if metadata.get("published_at"):
             try:
                 from datetime import datetime
@@ -488,13 +509,15 @@ class MetadataFormatter(AbstractFormatter):
             except (ValueError, TypeError, OSError):
                 pass
 
-        # Extract author and category
+    def _extract_author_category(self, metadata: Dict, display_meta: Dict) -> None:
+        """Extract author and category information."""
         if metadata.get("author"):
             display_meta["author"] = metadata.get("author_display", metadata["author"])
         if metadata.get("category_display"):
             display_meta["category"] = metadata["category_display"]
 
-        # Extract metrics
+    def _extract_metrics(self, metadata: Dict, display_meta: Dict) -> None:
+        """Extract metrics like rating, views, reading time."""
         if metadata.get("rating"):
             display_meta["rating"] = metadata["rating"]
         if metadata.get("view_count"):
@@ -502,7 +525,8 @@ class MetadataFormatter(AbstractFormatter):
         if metadata.get("reading_time"):
             display_meta["reading_time"] = f"{metadata['reading_time']} min"
 
-        # Extract flags
+    def _extract_flags(self, metadata: Dict, display_meta: Dict) -> None:
+        """Extract boolean flags like featured, free, difficulty."""
         if metadata.get("is_featured"):
             display_meta["featured"] = True
         if "is_free" in metadata:
@@ -510,14 +534,13 @@ class MetadataFormatter(AbstractFormatter):
         if metadata.get("difficulty"):
             display_meta["difficulty"] = metadata["difficulty"]
 
-        # Extract severity
+    def _extract_severity(self, metadata: Dict, display_meta: Dict) -> None:
+        """Extract and map severity level."""
         if metadata.get("severity_level"):
             severity_map = {1: "Low", 2: "Medium", 3: "High", 4: "Critical"}
             display_meta["severity"] = severity_map.get(
                 metadata["severity_level"], "Unknown"
             )
-
-        return display_meta
 
 
 # ============================================================================
