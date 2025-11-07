@@ -16,7 +16,7 @@ try:
     # List all attributes containing 'subscribe'
     subscribe_attrs = [a for a in dir(m) if "subscribe" in a.lower()]
     print(f"  Attributes containing 'subscribe': {subscribe_attrs}")
-except Exception as e:
+except Exception:  # noqa: F841
     print(f"✗ Import failed:")
     traceback.print_exc()
 
@@ -32,7 +32,7 @@ try:
         print(f"  Type: {type(getattr(m, 'subscribe_push_notifications'))}")
     subscribe_attrs = [a for a in dir(m) if "subscribe" in a.lower()]
     print(f"  Attributes containing 'subscribe': {subscribe_attrs}")
-except Exception as e:
+except Exception:  # noqa: F841
     print(f"✗ Import failed:")
     traceback.print_exc()
 
@@ -48,7 +48,7 @@ try:
         print(f"  Type: {type(getattr(m, 'subscribe_push_notifications'))}")
     subscribe_attrs = [a for a in dir(m) if "subscribe" in a.lower()]
     print(f"  Attributes containing 'subscribe': {subscribe_attrs}")
-except Exception as e:
+except Exception:  # noqa: F841
     print(f"✗ Import failed:")
     traceback.print_exc()
 
