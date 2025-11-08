@@ -2,4 +2,4 @@
 @tailwind components;
 @tailwind utilities;
 
-@import './components/app-components.css';
+@import url('./components/app-components.css');

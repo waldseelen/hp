@@ -57,16 +57,14 @@ self.addEventListener('activate', event => {
 
     event.waitUntil(
         caches.keys()
-            .then(cacheNames => {
-                return Promise.all(
-                    cacheNames.map(cacheName => {
-                        if (cacheName !== STATIC_CACHE_NAME && cacheName !== DYNAMIC_CACHE_NAME) {
-                            console.log('Service Worker: Deleting old cache', cacheName);
-                            return caches.delete(cacheName);
-                        }
-                    })
-                );
-            })
+            .then(cacheNames => Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheName !== STATIC_CACHE_NAME && cacheName !== DYNAMIC_CACHE_NAME) {
+                        console.log('Service Worker: Deleting old cache', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            ))
             .then(() => {
                 console.log('Service Worker: Activation complete');
                 return self.clients.claim();

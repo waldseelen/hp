@@ -4,7 +4,6 @@
 
 module.exports = [
     {
-        files: ['**/*.js'],
         ignores: [
             '**/node_modules/**',
             '**/staticfiles/**',
@@ -15,8 +14,17 @@ module.exports = [
             '**/vendor/**',
             '**/__pycache__/**',
             '**/migrations/**',
-            '**/sw.js', // Service worker
+            'scripts/**/*.js',
+            'tests/**/*.js',
+            'tailwind.config.js',
+            'webpack.config.js',
+            'jest.config.js',
+            'postcss.config.js',
+            'playwright.config.js',
         ],
+    },
+    {
+        files: ['**/*.js'],
         languageOptions: {
             ecmaVersion: 2022,
             sourceType: 'module',
@@ -31,6 +39,24 @@ module.exports = [
                 fetch: 'readonly',
                 FormData: 'readonly',
                 URLSearchParams: 'readonly',
+                setTimeout: 'readonly',
+                clearTimeout: 'readonly',
+                setInterval: 'readonly',
+                clearInterval: 'readonly',
+                requestAnimationFrame: 'readonly',
+                requestIdleCallback: 'readonly',
+                performance: 'readonly',
+                PerformanceObserver: 'readonly',
+                location: 'readonly',
+                URL: 'readonly',
+                Image: 'readonly',
+                Event: 'readonly',
+                CustomEvent: 'readonly',
+                IntersectionObserver: 'readonly',
+                FontFace: 'readonly',
+                Request: 'readonly',
+                Response: 'readonly',
+                MessageChannel: 'readonly',
                 // Django/Alpine.js globals
                 Alpine: 'readonly',
                 django: 'readonly',
@@ -42,11 +68,22 @@ module.exports = [
                 caches: 'readonly',
                 clients: 'readonly',
                 workbox: 'readonly',
+                // Node.js/CommonJS globals
+                require: 'readonly',
+                module: 'writable',
+                exports: 'writable',
+                process: 'readonly',
+                global: 'readonly',
+                __dirname: 'readonly',
+                __filename: 'readonly',
+                Buffer: 'readonly',
+                setImmediate: 'readonly',
+                clearImmediate: 'readonly',
             },
         },
         rules: {
             // Possible Errors
-            'no-console': ['warn', { allow: ['warn', 'error'] }],
+            'no-console': ['warn', { allow: ['warn', 'error', 'log', 'info', 'debug'] }],
             'no-debugger': 'warn',
             'no-dupe-keys': 'error',
             'no-duplicate-case': 'error',

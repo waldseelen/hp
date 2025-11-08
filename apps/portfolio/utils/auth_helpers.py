@@ -83,7 +83,7 @@ class PasswordValidator:
         Complexity: A:3
         """
         if not user.check_password(password):
-            user.record_failed_login()
+            user.record_failed_login()  # type: ignore[attr-defined]
             logger.warning(f"Failed password attempt for: {username}")
             return False
         return True
@@ -109,7 +109,7 @@ class TwoFactorValidator:
         if user.verify_totp(totp_token):
             return True, f"Successful 2FA login with TOTP: {username}"
         else:
-            user.record_failed_login()
+            user.record_failed_login()  # type: ignore[attr-defined]
             logger.warning(f"Invalid TOTP token for: {username}")
             return False, ""
 
@@ -128,7 +128,7 @@ class TwoFactorValidator:
         if user.use_backup_code(backup_code):
             return True, f"Successful 2FA login with backup code: {username}"
         else:
-            user.record_failed_login()
+            user.record_failed_login()  # type: ignore[attr-defined]
             logger.warning(f"Invalid backup code for: {username}")
             return False, ""
 

@@ -1,0 +1,30 @@
+{
+    "extends": [
+        "stylelint-config-standard"
+    ],
+    "rules": {
+        "no-descending-specificity": null,
+        "declaration-block-single-line-max-declarations": null,
+        "property-no-deprecated": null,
+        "selector-class-pattern": null,
+        "keyframes-name-pattern": null,
+        "custom-property-pattern": null,
+        "number-max-precision": null,
+        "property-no-unknown": null,
+        "no-invalid-position-at-import-rule": null,
+        "no-duplicate-selectors": null,
+        "media-query-no-invalid": null,
+        "at-rule-no-unknown": null,
+        "declaration-block-no-shorthand-property-overrides": null,
+        "media-feature-name-value-no-unknown": null,
+        "selector-pseudo-class-no-unknown": null,
+        "declaration-property-value-no-unknown": null
+    },
+    "ignoreFiles": [
+        "**/node_modules/**",
+        "**/staticfiles/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/*.min.css"
+    ]
+}

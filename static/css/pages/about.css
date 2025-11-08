@@ -40,11 +40,11 @@
 }
 
 .about-card {
-  background: rgba(9, 15, 28, 0.78);
+  background: rgb(9 15 28 / 78%);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(148, 163, 184, 0.14);
+  border: 1px solid rgb(148 163 184 / 14%);
   padding: clamp(var(--space-5), 4vw, calc(var(--space-6) * 1.1));
-  box-shadow: 0 20px 40px rgba(8, 12, 24, 0.25);
+  box-shadow: 0 20px 40px rgb(8 12 24 / 25%);
   backdrop-filter: blur(18px);
 }
 
@@ -69,7 +69,7 @@
 
 .about-timeline__item {
   padding-left: var(--space-4);
-  border-left: 3px solid rgba(230, 197, 71, 0.45);
+  border-left: 3px solid rgb(230 197 71 / 45%);
   display: grid;
   gap: var(--space-2);
 }
@@ -101,7 +101,7 @@
   align-items: baseline;
   gap: var(--space-4);
   padding-block: var(--space-2);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  border-bottom: 1px solid rgb(148 163 184 / 12%);
 }
 
 .about-fact:first-child {
@@ -138,7 +138,7 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-full);
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  border: 1px solid rgb(148 163 184 / 16%);
   color: var(--color-text);
   transition: border-color var(--motion-duration-sm) var(--motion-ease-standard),
               transform var(--motion-duration-sm) var(--motion-ease-emphasized),
@@ -147,8 +147,8 @@
 
 .about-links a:hover,
 .about-links a:focus-visible {
-  border-color: rgba(230, 197, 71, 0.4);
-  background: rgba(230, 197, 71, 0.1);
+  border-color: rgb(230 197 71 / 40%);
+  background: rgb(230 197 71 / 10%);
   transform: translateY(-1px);
 }
 

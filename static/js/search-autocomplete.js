@@ -1,3 +1,4 @@
+/* global closeSearchModal */
 (function () {
     const modal = document.getElementById('search-modal');
     if (!modal) {

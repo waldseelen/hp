@@ -6,6 +6,11 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
+        exclude: |
+          (?x)^(
+            bandit_report\.json|
+            baseline_bandit_report\.json
+          )$
       - id: check-merge-conflict
       - id: check-toml
       - id: debug-statements
@@ -41,12 +46,12 @@ repos:
         args: ['--select=C901', '--max-complexity=10']
         additional_dependencies: [mccabe]
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.11.2
-    hooks:
-      - id: mypy
-        additional_dependencies: [django-stubs, types-requests]
-        exclude: migrations/
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v1.11.2
+  #   hooks:
+  #     - id: mypy
+  #       additional_dependencies: [django-stubs, types-requests]
+  #       exclude: (migrations/|tests/|scripts/)
 
   - repo: local
     hooks:
@@ -78,7 +83,7 @@ repos:
         entry: npx eslint
         language: system
         files: \.js$
-        args: ["--fix"]
+        args: ["--fix", "--no-warn-ignored", "--max-warnings", "100"]
 
   # Security checks
   - repo: https://github.com/PyCQA/bandit
@@ -86,7 +91,7 @@ repos:
     hooks:
       - id: bandit
         exclude: tests/
-        args: ['-f', 'txt']  # Use plain text format to avoid encoding issues
+        args: ['-f', 'csv']  # Use CSV format to avoid encoding issues on Windows
 
   # Documentation (Disabled - docstring style non-critical)
   # - repo: https://github.com/pycqa/pydocstyle

@@ -41,7 +41,7 @@ const CACHE_STRATEGIES = {
     static: 'cache-first',
     api: 'network-first',
     pages: 'network-first',
-    documents: 'stale-while-revalidate',  // For feeds and sitemaps
+    documents: 'stale-while-revalidate', // For feeds and sitemaps
 };
 
 // Install event - cache static files
@@ -62,17 +62,15 @@ self.addEventListener('install', event => {
                 .then(cache => {
                     console.log('Service Worker: Warming cache for critical pages');
                     return Promise.all(
-                        CRITICAL_PAGES.map(url => {
-                            return fetch(url, { mode: 'no-cors' })
-                                .then(response => {
-                                    if (response.ok) {
-                                        return cache.put(url, response);
-                                    }
-                                })
-                                .catch(error => {
-                                    console.log(`Failed to warm cache for ${url}:`, error);
-                                });
-                        })
+                        CRITICAL_PAGES.map(url => fetch(url, { mode: 'no-cors' })
+                            .then(response => {
+                                if (response.ok) {
+                                    return cache.put(url, response);
+                                }
+                            })
+                            .catch(error => {
+                                console.log(`Failed to warm cache for ${url}:`, error);
+                            }))
                     );
                 })
         ])
@@ -92,16 +90,14 @@ self.addEventListener('activate', event => {
 
     event.waitUntil(
         caches.keys()
-            .then(cacheNames => {
-                return Promise.all(
-                    cacheNames.map(cacheName => {
-                        if (cacheName !== STATIC_CACHE_NAME && cacheName !== DYNAMIC_CACHE_NAME) {
-                            console.log('Service Worker: Deleting old cache', cacheName);
-                            return caches.delete(cacheName);
-                        }
-                    })
-                );
-            })
+            .then(cacheNames => Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheName !== STATIC_CACHE_NAME && cacheName !== DYNAMIC_CACHE_NAME) {
+                        console.log('Service Worker: Deleting old cache', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            ))
             .then(() => {
                 console.log('Service Worker: Activation complete');
                 return self.clients.claim();

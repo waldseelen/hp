@@ -21,12 +21,12 @@ body {
   line-height: var(--line-height-normal);
   color: var(--color-text);
   background-color: var(--color-bg);
-  background-image: radial-gradient(circle at 18% -8%, rgba(54, 83, 160, 0.24), transparent 58%),
-                    radial-gradient(circle at 82% 122%, rgba(12, 74, 110, 0.18), transparent 64%);
+  background-image: radial-gradient(circle at 18% -8%, rgb(54 83 160 / 24%), transparent 58%),
+                    radial-gradient(circle at 82% 122%, rgb(12 74 110 / 18%), transparent 64%);
   background-repeat: no-repeat;
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
 }
 
 body.no-scroll {

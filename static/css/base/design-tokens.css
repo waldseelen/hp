@@ -5,31 +5,30 @@
   --color-bg: #040a16;
   --color-surface: #0b1324;
   --color-surface-elevated: #131f36;
-  --color-border: rgba(148, 163, 184, 0.16);
-  --color-border-strong: rgba(148, 163, 184, 0.28);
+  --color-border: rgb(148 163 184 / 16%);
+  --color-border-strong: rgb(148 163 184 / 28%);
   --color-text: #e2e8f0;
   --color-text-muted: #94a3b8;
   --color-text-inverse: #0b1220;
   --color-primary: #e6c547;
   --color-primary-strong: #f5d85c;
-  --color-primary-muted: rgba(230, 197, 71, 0.16);
+  --color-primary-muted: rgb(230 197 71 / 16%);
   --color-accent: #60a5fa;
   --color-accent-strong: #3b82f6;
   --color-success: #34d399;
   --color-warning: #fbbf24;
   --color-error: #f87171;
   --color-info: #38bdf8;
-  --color-focus-ring: rgba(96, 165, 250, 0.65);
+  --color-focus-ring: rgb(96 165 250 / 65%);
 
   /* Gradient tokens */
-  --gradient-primary: linear-gradient(135deg, rgba(230, 197, 71, 0.92), rgba(245, 216, 92, 0.85));
-  --gradient-accent: linear-gradient(135deg, rgba(96, 165, 250, 0.85), rgba(139, 92, 246, 0.8));
+  --gradient-primary: linear-gradient(135deg, rgb(230 197 71 / 92%), rgb(245 216 92 / 85%));
+  --gradient-accent: linear-gradient(135deg, rgb(96 165 250 / 85%), rgb(139 92 246 / 80%));
 
   /* Typography tokens */
-  --font-family-base: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-family-heading: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace;
-
+  --font-family-base: 'Inter', system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
+  --font-family-heading: 'Inter', system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', consolas, monospace;
   --font-size-root: 16px;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
@@ -40,11 +39,9 @@
   --font-size-display-md: clamp(2.25rem, 4vw, 3rem);
   --font-size-display-lg: clamp(2.5rem, 5vw, 3.5rem);
   --font-size-display-xl: clamp(3rem, 6vw, 4.5rem);
-
   --line-height-tight: 1.2;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.7;
-
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -76,11 +73,11 @@
   --radius-full: 999px;
 
   /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.24);
-  --shadow-sm: 0 4px 10px rgba(15, 23, 42, 0.22);
-  --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.28);
-  --shadow-lg: 0 20px 45px rgba(15, 23, 42, 0.35);
-  --shadow-glow: 0 0 0 1px rgba(230, 197, 71, 0.35), 0 20px 60px rgba(230, 197, 71, 0.25);
+  --shadow-xs: 0 1px 2px rgb(15 23 42 / 24%);
+  --shadow-sm: 0 4px 10px rgb(15 23 42 / 22%);
+  --shadow-md: 0 10px 30px rgb(15 23 42 / 28%);
+  --shadow-lg: 0 20px 45px rgb(15 23 42 / 35%);
+  --shadow-glow: 0 0 0 1px rgb(230 197 71 / 35%), 0 20px 60px rgb(230 197 71 / 25%);
 
   /* Breakpoints */
   --breakpoint-xs: 22.5rem;  /* 360px */
@@ -101,24 +98,24 @@
   --color-bg: #040a16;
   --color-surface: #0b1324;
   --color-surface-elevated: #131f36;
-  --color-border: rgba(148, 163, 184, 0.16);
-  --color-border-strong: rgba(148, 163, 184, 0.28);
+  --color-border: rgb(148 163 184 / 16%);
+  --color-border-strong: rgb(148 163 184 / 28%);
   --color-text: #e2e8f0;
   --color-text-muted: #cbd5f5;
   --color-text-inverse: #0b1220;
-  --color-primary-muted: rgba(230, 197, 71, 0.16);
+  --color-primary-muted: rgb(230 197 71 / 16%);
 }
 
 [data-theme='light'] {
   --color-bg: #f8fafc;
-  --color-surface: #ffffff;
+  --color-surface: #fff;
   --color-surface-elevated: #f1f5f9;
-  --color-border: rgba(15, 23, 42, 0.1);
-  --color-border-strong: rgba(15, 23, 42, 0.14);
+  --color-border: rgb(15 23 42 / 10%);
+  --color-border-strong: rgb(15 23 42 / 14%);
   --color-text: #0b1220;
   --color-text-muted: #475569;
-  --color-text-inverse: #ffffff;
-  --color-primary-muted: rgba(230, 197, 71, 0.16);
+  --color-text-inverse: #fff;
+  --color-primary-muted: rgb(230 197 71 / 16%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -126,8 +123,8 @@
     --color-bg: #040a16;
     --color-surface: #0b1324;
     --color-surface-elevated: #131f36;
-    --color-border: rgba(148, 163, 184, 0.16);
-    --color-border-strong: rgba(148, 163, 184, 0.28);
+    --color-border: rgb(148 163 184 / 16%);
+    --color-border-strong: rgb(148 163 184 / 28%);
     --color-text: #f8fafc;
     --color-text-muted: #cbd5f5;
   }

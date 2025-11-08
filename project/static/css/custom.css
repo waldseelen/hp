@@ -12,31 +12,27 @@
     --primary-700: #8b7355;
     --primary-800: #6b705c;
     --primary-900: #4a4e3a;
-
     --secondary-800: #1f2937;
     --secondary-900: #111827;
-
     --text-primary: #f9fafb;
     --text-secondary: #d1d5db;
     --text-muted: #9ca3af;
-
     --bg-primary: #111827;
     --bg-secondary: #1f2937;
-    --bg-card: rgba(31, 41, 55, 0.5);
-
-    --border-primary: rgba(75, 85, 99, 0.5);
-    --border-secondary: rgba(107, 114, 128, 0.3);
+    --bg-card: rgb(31 41 55 / 50%);
+    --border-primary: rgb(75 85 99 / 50%);
+    --border-secondary: rgb(107 114 128 / 30%);
 }
 
 /* Optimized Starfield Animation */
 .starfield {
-    background: radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.8), transparent),
-                radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.6), transparent),
-                radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.9), transparent),
-                radial-gradient(1px 2px at 130px 80px, rgba(255, 255, 255, 0.4), transparent),
-                radial-gradient(2px 1px at 160px 30px, rgba(255, 255, 255, 0.7), transparent),
-                radial-gradient(1px 1px at 200px 20px, rgba(255, 255, 255, 0.5), transparent),
-                radial-gradient(2px 2px at 250px 90px, rgba(255, 255, 255, 0.6), transparent);
+    background: radial-gradient(2px 2px at 20px 30px, rgb(255 255 255 / 80%), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgb(255 255 255 / 60%), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgb(255 255 255 / 90%), transparent),
+                radial-gradient(1px 2px at 130px 80px, rgb(255 255 255 / 40%), transparent),
+                radial-gradient(2px 1px at 160px 30px, rgb(255 255 255 / 70%), transparent),
+                radial-gradient(1px 1px at 200px 20px, rgb(255 255 255 / 50%), transparent),
+                radial-gradient(2px 2px at 250px 90px, rgb(255 255 255 / 60%), transparent);
     background-repeat: repeat;
     background-size: 300px 150px;
     animation: starfield 25s linear infinite;
@@ -44,7 +40,7 @@
 }
 
 @keyframes starfield {
-    0% { transform: translateY(0px); }
+    0% { transform: translateY(0); }
     100% { transform: translateY(-150px); }
 }
 
@@ -61,7 +57,7 @@
     display: inline-flex;
     align-items: center;
     text-decoration: none;
-    border: 1px solid rgba(168, 149, 80, 0.6); /* Haki çerçeve */
+    border: 1px solid rgb(168 149 80 / 60%); /* Haki çerçeve */
     padding: 0.75rem 1.5rem;
     background-color: var(--primary-600);
     color: #1f2937;
@@ -82,7 +78,7 @@
 
 .btn-primary:focus-visible,
 .btn--primary:focus-visible {
-    box-shadow: 0 0 0 4px rgba(200, 181, 96, 0.5);
+    box-shadow: 0 0 0 4px rgb(200 181 96 / 50%);
     outline: none;
 }
 
@@ -104,12 +100,12 @@
 
 .btn-secondary:focus-visible,
 .btn--secondary:focus-visible {
-    box-shadow: 0 0 0 4px rgba(200, 181, 96, 0.5);
+    box-shadow: 0 0 0 4px rgb(200 181 96 / 50%);
     outline: none;
 }
 
 .btn--secondary:focus-visible {
-    box-shadow: 0 0 0 4px rgba(200, 181, 96, 0.5);
+    box-shadow: 0 0 0 4px rgb(200 181 96 / 50%);
     outline: none;
 }
 
@@ -119,7 +115,7 @@
     color: #d1d5db;
     padding: 0.5rem 1rem;
     background-color: transparent;
-    border: 1px solid rgba(107, 114, 128, 0.4); /* Haki çerçeve */
+    border: 1px solid rgb(107 114 128 / 40%); /* Haki çerçeve */
     border-radius: 0.5rem;
     transition: background-color 0.2s, border-color 0.2s, color 0.2s;
     display: inline-flex;
@@ -130,24 +126,24 @@
 .btn-ghost:hover,
 .btn--ghost:hover {
     color: var(--primary-400);
-    background-color: rgba(31, 41, 55, 0.5);
-    border-color: rgba(107, 114, 128, 0.7); /* Hover'da daha belirgin çerçeve */
+    background-color: rgb(31 41 55 / 50%);
+    border-color: rgb(107 114 128 / 70%); /* Hover'da daha belirgin çerçeve */
 }
 
 .btn-ghost:focus-visible,
 .btn--ghost:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(200, 181, 96, 0.5);
+    box-shadow: 0 0 0 2px rgb(200 181 96 / 50%);
 }
 
 /* Card Styles */
 .card,
 .card-interactive,
 .card--interactive {
-    background-color: rgba(31, 41, 55, 0.5);
+    background-color: rgb(31 41 55 / 50%);
     backdrop-filter: blur(4px);
     border-radius: 0.5rem;
-    border: 1px solid rgba(107, 114, 128, 0.4); /* Haki renkli ince çerçeve */
+    border: 1px solid rgb(107 114 128 / 40%); /* Haki renkli ince çerçeve */
     transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
     transform: translateY(0);
 }
@@ -155,16 +151,14 @@
 .card:hover,
 .card-interactive:hover,
 .card--interactive:hover {
-    border-color: rgba(107, 114, 128, 0.7); /* Hover'da daha belirgin haki */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 20px rgba(107, 114, 128, 0.3);
+    border-color: rgb(107 114 128 / 70%); /* Hover'da daha belirgin haki */
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 5%), 0 0 20px rgb(107 114 128 / 30%);
     transform: translateY(-4px);
 }
 
 /* Typography Enhancements */
 .text-gradient {
-    color: var(--text-primary);
     background: linear-gradient(to right, #f0e68c, #c8b560);
-    -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
@@ -175,7 +169,6 @@
     font-weight: 700;
     background: linear-gradient(to right, #f0e68c, #c8b560);
     background-clip: text;
-    -webkit-background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
     line-height: 1.25;
@@ -241,8 +234,8 @@
 .input {
     width: 100%;
     padding: 0.75rem 1rem;
-    background-color: rgba(55, 65, 81, 0.5);
-    border: 1px solid rgba(107, 114, 128, 0.4); /* Haki çerçeve */
+    background-color: rgb(55 65 81 / 50%);
+    border: 1px solid rgb(107 114 128 / 40%); /* Haki çerçeve */
     border-radius: 0.5rem;
     color: white;
     transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
@@ -255,9 +248,9 @@
 
 .form-input:focus {
     border-color: var(--primary-400);
-    box-shadow: 0 0 0 2px rgba(240, 230, 140, 0.5);
+    box-shadow: 0 0 0 2px rgb(240 230 140 / 50%);
     outline: none;
-    background-color: rgba(55, 65, 81, 0.7);
+    background-color: rgb(55 65 81 / 70%);
 }
 
 .form-label {
@@ -284,7 +277,7 @@
 .tag {
     display: inline-block;
     font-size: 0.75rem;
-    background-color: rgba(200, 181, 96, 0.2);
+    background-color: rgb(200 181 96 / 20%);
     color: var(--primary-400);
     padding: 0.25rem 0.5rem;
     border-radius: 9999px;
@@ -334,7 +327,7 @@
     height: 2.5rem;
     border-radius: 9999px;
     background-color: #1f2937;
-    border: 1px solid rgba(107, 114, 128, 0.4); /* Haki çerçeve */
+    border: 1px solid rgb(107 114 128 / 40%); /* Haki çerçeve */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -347,7 +340,7 @@
 .social-icon:hover {
     background-color: var(--primary-600);
     color: #1f2937;
-    border-color: rgba(168, 149, 80, 0.8); /* Hover'da primary renkte çerçeve */
+    border-color: rgb(168 149 80 / 80%); /* Hover'da primary renkte çerçeve */
     transform: scale(1.1);
 }
 
@@ -358,13 +351,13 @@
     grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
-@media (min-width: 640px) {
+@media (width >= 640px) {
     .grid-responsive {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-@media (min-width: 1024px) {
+@media (width >= 1024px) {
     .grid-responsive {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -376,7 +369,7 @@
     grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .grid-responsive-2 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -405,7 +398,7 @@
 
 /* Status Indicators */
 .status-published {
-    background-color: rgba(5, 150, 105, 0.2);
+    background-color: rgb(5 150 105 / 20%);
     color: #4ade80;
     padding: 0.25rem 0.5rem;
     border-radius: 9999px;
@@ -413,7 +406,7 @@
 }
 
 .status-draft {
-    background-color: rgba(217, 119, 6, 0.2);
+    background-color: rgb(217 119 6 / 20%);
     color: #fbbf24;
     padding: 0.25rem 0.5rem;
     border-radius: 9999px;
@@ -435,6 +428,7 @@
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -443,10 +437,11 @@
 
 @keyframes pulse-glow {
     0%, 100% {
-        box-shadow: 0 0 5px rgba(240, 230, 140, 0.5);
+        box-shadow: 0 0 5px rgb(240 230 140 / 50%);
     }
+
     50% {
-        box-shadow: 0 0 20px rgba(240, 230, 140, 0.8), 0 0 30px rgba(240, 230, 140, 0.6);
+        box-shadow: 0 0 20px rgb(240 230 140 / 80%), 0 0 30px rgb(240 230 140 / 60%);
     }
 }
 
@@ -468,14 +463,14 @@
 }
 
 .text-shadow {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 4px rgb(0 0 0 / 30%);
 }
 
 /* Gradient border effect with fallback for older browsers */
 .gradient-border {
     /* Fallback for browsers that don't support layered backgrounds */
     background-color: var(--bg-card);
-    border: 1px solid var(--primary-600);
+
     /* Gradient border effect for modern browsers */
     background: linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
                 linear-gradient(135deg, #f0e68c, #c8b560) border-box;
@@ -483,6 +478,7 @@
 }
 
 /* Scrollbar Styling */
+
 /* Firefox scrollbar fallback */
 html {
     scrollbar-width: thin;
@@ -514,7 +510,7 @@ html {
 
 .focus-ring:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(240, 230, 140, 0.5), 0 0 0 4px #111827;
+    box-shadow: 0 0 0 2px rgb(240 230 140 / 50%), 0 0 0 4px #111827;
 }
 
 /* Media Queries for Performance */
@@ -557,7 +553,7 @@ html {
 .input {
     width: 100%;
     padding: 0.75rem 1rem;
-    background-color: rgba(55, 65, 81, 0.5);
+    background-color: rgb(55 65 81 / 50%);
     border: 1px solid #4b5563;
     border-radius: 0.5rem;
     color: white;
@@ -571,9 +567,9 @@ html {
 
 .input:focus {
     border-color: var(--primary-400);
-    box-shadow: 0 0 0 2px rgba(240, 230, 140, 0.5);
+    box-shadow: 0 0 0 2px rgb(240 230 140 / 50%);
     outline: none;
-    background-color: rgba(55, 65, 81, 0.7);
+    background-color: rgb(55 65 81 / 70%);
 }
 
 /* Social icon small variant */
@@ -582,7 +578,7 @@ html {
     height: 2rem;
     border-radius: 9999px;
     background-color: #1f2937;
-    border: 1px solid rgba(107, 114, 128, 0.4); /* Haki çerçeve */
+    border: 1px solid rgb(107 114 128 / 40%); /* Haki çerçeve */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -595,7 +591,7 @@ html {
 .social-icon-small:hover {
     background-color: var(--primary-600);
     color: #1f2937;
-    border-color: rgba(168, 149, 80, 0.8); /* Hover'da primary renkte çerçeve */
+    border-color: rgb(168 149 80 / 80%); /* Hover'da primary renkte çerçeve */
     transform: scale(1.1);
 }
 
@@ -616,7 +612,7 @@ html {
     line-height: 1.625;
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
     .starfield {
         background-size: 200px 100px;
         animation-duration: 30s;

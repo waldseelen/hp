@@ -26,7 +26,7 @@ svg {
     padding-left: 1rem;
 }
 
-@media (min-width: 640px) {
+@media (width >= 640px) {
     .container {
         max-width: 640px;
         margin-left: auto;
@@ -34,25 +34,25 @@ svg {
     }
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .container {
         max-width: 768px;
     }
 }
 
-@media (min-width: 1024px) {
+@media (width >= 1024px) {
     .container {
         max-width: 1024px;
     }
 }
 
-@media (min-width: 1280px) {
+@media (width >= 1280px) {
     .container {
         max-width: 1280px;
     }
 }
 
-@media (min-width: 1536px) {
+@media (width >= 1536px) {
     .container {
         max-width: 1536px;
     }
@@ -74,7 +74,7 @@ nav .container > div:first-child {
 }
 
 /* Mobile menu fixes */
-@media (max-width: 767px) {
+@media (width <= 767px) {
     .mobile-nav-item,
     .mobile-nav-link {
         display: flex;
@@ -90,7 +90,7 @@ nav .container > div:first-child {
 }
 
 /* Desktop navigation fixes */
-@media (min-width: 768px) {
+@media (width >= 768px) {
     nav .container {
         flex-direction: row;
     }
@@ -107,7 +107,7 @@ footer .grid {
     gap: 2rem;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     footer .grid {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -192,7 +192,7 @@ img {
     padding: 1.5rem;
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
     .card,
     .glass-card,
     .card-interactive {
@@ -239,7 +239,7 @@ table {
 }
 
 /* Mobile responsiveness utilities */
-@media (max-width: 640px) {
+@media (width <= 640px) {
     .text-\[12rem\] {
         font-size: 4rem;
     }

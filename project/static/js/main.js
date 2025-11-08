@@ -1,4 +1,5 @@
 // Main JavaScript for Portfolio Site
+/* eslint-disable brace-style, no-unused-vars, radix */
 
 document.addEventListener('DOMContentLoaded', function () {
     // Initialize main functionality

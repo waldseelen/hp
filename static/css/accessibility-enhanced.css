@@ -3,20 +3,16 @@
   /* High contrast color palette */
   --color-text: #1a1a1a;
   --color-text-secondary: #4a4a4a;
-  --color-text-muted: #666666;
-
-  --color-bg: #ffffff;
+  --color-text-muted: #666;
+  --color-bg: #fff;
   --color-surface: #fafafa;
   --color-surface-elevated: #f5f5f5;
-
-  --color-primary: #0066cc;
+  --color-primary: #06c;
   --color-primary-hover: #0052a3;
   --color-primary-active: #003d7a;
-
   --color-success: #0d7f3e;
   --color-warning: #b8860b;
   --color-error: #c41e3a;
-
   --color-border: #d4d4d4;
   --color-border-strong: #a3a3a3;
 
@@ -32,22 +28,17 @@
     --color-text: #f0f0f0;
     --color-text-secondary: #d0d0d0;
     --color-text-muted: #a0a0a0;
-
     --color-bg: #121212;
     --color-surface: #1e1e1e;
     --color-surface-elevated: #2a2a2a;
-
     --color-primary: #66b3ff;
     --color-primary-hover: #4da6ff;
-    --color-primary-active: #3399ff;
-
+    --color-primary-active: #39f;
     --color-success: #4ade80;
     --color-warning: #fbbf24;
     --color-error: #f87171;
-
     --color-border: #404040;
-    --color-border-strong: #666666;
-
+    --color-border-strong: #666;
     --color-focus-ring: #66b3ff;
   }
 }
@@ -67,7 +58,7 @@ select:focus-visible,
 textarea:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus-ring);
   outline-offset: var(--focus-ring-offset);
-  box-shadow: 0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) rgba(0, 95, 204, 0.2);
+  box-shadow: 0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) rgb(0 95 204 / 20%);
 }
 
 /* Skip navigation link */
@@ -92,19 +83,19 @@ textarea:focus-visible {
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   :root {
-    --color-text: #000000;
-    --color-bg: #ffffff;
-    --color-primary: #0000ee;
-    --color-border: #000000;
+    --color-text: #000;
+    --color-bg: #fff;
+    --color-primary: #00e;
+    --color-border: #000;
     --focus-ring-width: 3px;
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --color-text: #ffffff;
-      --color-bg: #000000;
-      --color-primary: #ffff00;
-      --color-border: #ffffff;
+      --color-text: #fff;
+      --color-bg: #000;
+      --color-primary: #ff0;
+      --color-border: #fff;
     }
   }
 }
@@ -130,7 +121,7 @@ textarea:focus-visible {
 
 /* Color blindness support */
 .color-blind-safe {
-  --color-primary: #0066cc;
+  --color-primary: #06c;
   --color-success: #2d7a3e;
   --color-warning: #d97706;
   --color-error: #b91c1c;
@@ -221,7 +212,7 @@ th {
     text-decoration: underline;
   }
 
-  a[href]:after {
+  a[href]::after {
     content: " (" attr(href) ")";
   }
 }

@@ -148,7 +148,7 @@ class APICachingMiddleware:
             "auth" if request.user.is_authenticated else "anon",
         ]
         key_string = "|".join(key_parts)
-        key_hash = hashlib.md5(key_string.encode()).hexdigest()
+        key_hash = hashlib.md5(key_string.encode()).hexdigest()  # nosec
         return f"api_cache:{self.api_version}:{key_hash}"
 
     def _generate_etag(self, content):
@@ -161,7 +161,7 @@ class APICachingMiddleware:
         if isinstance(content, str):
             content = content.encode("utf-8")
 
-        return f'"{hashlib.md5(content).hexdigest()}"'
+        return f'"{hashlib.md5(content).hexdigest()}"'  # nosec
 
     def _cache_response(self, request, response, cache_key):
         """Cache the response with metadata."""

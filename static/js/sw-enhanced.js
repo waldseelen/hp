@@ -148,7 +148,7 @@ self.addEventListener('fetch', event => {
 function shouldHandleNonGet(request) {
     // Handle POST requests for background sync
     return request.method === 'POST' &&
-           (request.url.includes('/api/') || request.url.includes('/contact/'));
+        (request.url.includes('/api/') || request.url.includes('/contact/'));
 }
 
 async function handleFetchRequest(request) {
@@ -326,7 +326,7 @@ function isCacheExpired(response, maxAge) {
     const cachedTime = response.headers.get('sw-cached');
     if (!cachedTime) { return false; }
 
-    return Date.now() - parseInt(cachedTime) > maxAge;
+    return Date.now() - parseInt(cachedTime, 10) > maxAge;
 }
 
 // Enhanced offline response

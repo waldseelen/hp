@@ -1082,7 +1082,7 @@ class AnimationManager {
         // Trigger animations that should happen after page load
         const delayedElements = document.querySelectorAll('[data-animate-delay]');
         delayedElements.forEach(element => {
-            const delay = parseInt(element.dataset.animateDelay) || 0;
+            const delay = parseInt(element.dataset.animateDelay, 10) || 0;
             setTimeout(() => {
                 element.classList.add('animate-fade-in');
             }, delay);

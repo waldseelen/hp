@@ -128,9 +128,7 @@ class Tool(models.Model):
 
         for tag in self.tags:
             if not isinstance(tag, str) or not tag.strip():
-                raise ValidationError(
-                    {"tags": "Each tag must be a non-empty string"}
-                )
+                raise ValidationError({"tags": "Each tag must be a non-empty string"})
 
     def save(self, *args, **kwargs):
         # Clean tags list

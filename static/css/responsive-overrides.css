@@ -22,31 +22,31 @@ html, body {
     margin-left: auto;
 }
 
-@media (min-width: 576px) {
+@media (width >= 576px) {
     .container {
         max-width: 540px;
     }
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .container {
         max-width: 720px;
     }
 }
 
-@media (min-width: 992px) {
+@media (width >= 992px) {
     .container {
         max-width: 960px;
     }
 }
 
-@media (min-width: 1200px) {
+@media (width >= 1200px) {
     .container {
         max-width: 1140px;
     }
 }
 
-@media (min-width: 1400px) {
+@media (width >= 1400px) {
     .container {
         max-width: 1320px;
     }
@@ -60,7 +60,7 @@ nav {
 }
 
 /* Mobile Navigation */
-@media (max-width: 767px) {
+@media (width <= 767px) {
     .md\:hidden {
         display: block !important;
     }
@@ -85,7 +85,7 @@ nav {
 }
 
 /* Desktop Navigation */
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .md\:hidden {
         display: none !important;
     }
@@ -105,19 +105,19 @@ nav {
     width: 100%;
 }
 
-@media (max-width: 639px) {
+@media (width <= 639px) {
     .sm\:grid-cols-1 {
         grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 }
 
-@media (min-width: 640px) {
+@media (width >= 640px) {
     .sm\:grid-cols-2 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .md\:grid-cols-2 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -127,7 +127,7 @@ nav {
     }
 }
 
-@media (min-width: 1024px) {
+@media (width >= 1024px) {
     .lg\:grid-cols-3 {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -144,7 +144,7 @@ nav {
 }
 
 /* Typography Responsive */
-@media (max-width: 640px) {
+@media (width <= 640px) {
     h1, .heading-1 {
         font-size: 1.875rem !important;
         line-height: 2.25rem;
@@ -170,7 +170,7 @@ nav {
     }
 }
 
-@media (min-width: 641px) and (max-width: 1024px) {
+@media (width >= 641px) and (width <= 1024px) {
     h1, .heading-1 {
         font-size: 2.25rem !important;
     }
@@ -185,7 +185,7 @@ nav {
 }
 
 /* Spacing Utilities */
-@media (max-width: 640px) {
+@media (width <= 640px) {
     .py-12 {
         padding-top: 2rem !important;
         padding-bottom: 2rem !important;
@@ -216,7 +216,7 @@ nav {
     font-size: 0.875rem;
 }
 
-@media (min-width: 640px) {
+@media (width >= 640px) {
     .btn, .btn-primary, .btn-secondary, .btn-premium {
         padding: 0.75rem 1.5rem;
         font-size: 1rem;
@@ -230,7 +230,7 @@ img {
 }
 
 /* Table Responsive */
-@media (max-width: 768px) {
+@media (width <= 768px) {
     table {
         display: block;
         overflow-x: auto;
@@ -249,13 +249,13 @@ footer .grid {
     gap: 1.5rem;
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
     footer .grid {
         grid-template-columns: 1fr;
     }
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     footer .grid.md\:grid-cols-3 {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -329,13 +329,13 @@ footer .grid {
 }
 
 /* Display utilities */
-@media (max-width: 767px) {
+@media (width <= 767px) {
     .hidden-mobile {
         display: none !important;
     }
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .hidden-desktop {
         display: none !important;
     }
@@ -344,10 +344,7 @@ footer .grid {
 /* Starfield background positioning */
 .starfield {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     z-index: -10;

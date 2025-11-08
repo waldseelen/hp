@@ -19,14 +19,14 @@
   inset: auto 55% 30% -12%;
   width: 28rem;
   height: 28rem;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.45), transparent 70%);
+  background: radial-gradient(circle, rgb(59 130 246 / 45%), transparent 70%);
 }
 
 .contact-landing::after {
   inset: -25% -18% auto auto;
   width: 32rem;
   height: 32rem;
-  background: radial-gradient(circle, rgba(236, 201, 75, 0.45), transparent 70%);
+  background: radial-gradient(circle, rgb(236 201 75 / 45%), transparent 70%);
 }
 
 .contact-landing__inner {
@@ -48,8 +48,8 @@
   justify-content: center;
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-full);
-  background: rgba(59, 130, 246, 0.18);
-  color: rgba(191, 219, 254, 0.95);
+  background: rgb(59 130 246 / 18%);
+  color: rgb(191 219 254 / 95%);
   font-size: var(--font-size-sm);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -59,15 +59,14 @@
   font-size: clamp(2.75rem, 5vw, 3.75rem);
   line-height: var(--line-height-tight);
   margin: 0;
-  background: linear-gradient(135deg, rgba(236, 201, 75, 0.95), rgba(56, 189, 248, 0.85));
-  -webkit-background-clip: text;
+  background: linear-gradient(135deg, rgb(236 201 75 / 95%), rgb(56 189 248 / 85%));
   background-clip: text;
   color: transparent;
 }
 
 .hero-lead {
   font-size: clamp(1.1rem, 2.6vw, 1.45rem);
-  color: rgba(226, 232, 240, 0.85);
+  color: rgb(226 232 240 / 85%);
   margin: 0 auto;
 }
 
@@ -81,10 +80,10 @@
 .badge {
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-full);
-  border: 1px solid rgba(148, 197, 255, 0.35);
-  background: rgba(12, 74, 110, 0.2);
+  border: 1px solid rgb(148 197 255 / 35%);
+  background: rgb(12 74 110 / 20%);
   font-size: var(--font-size-sm);
-  color: rgba(191, 219, 254, 0.9);
+  color: rgb(191 219 254 / 90%);
 }
 
 .contact-grid {
@@ -100,10 +99,10 @@
 }
 
 .contact-card {
-  background: rgba(15, 23, 42, 0.78);
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgb(15 23 42 / 78%);
+  border: 1px solid rgb(148 163 184 / 18%);
   border-radius: var(--radius-xl);
-  box-shadow: 0 24px 46px rgba(8, 11, 22, 0.32);
+  box-shadow: 0 24px 46px rgb(8 11 22 / 32%);
   padding: clamp(var(--space-6), 4vw, var(--space-7));
   display: grid;
   gap: var(--space-5);
@@ -118,7 +117,7 @@
   width: 18rem;
   height: 18rem;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.22), transparent 70%);
+  background: radial-gradient(circle, rgb(59 130 246 / 22%), transparent 70%);
   opacity: 0.4;
   pointer-events: none;
 }
@@ -131,7 +130,7 @@
 
 .contact-card__header p {
   margin: var(--space-2) 0 0;
-  color: rgba(226, 232, 240, 0.7);
+  color: rgb(226 232 240 / 70%);
 }
 
 .contact-card--meta {
@@ -157,7 +156,7 @@
 .form-field {
   display: grid;
   gap: var(--space-2);
-  color: rgba(226, 232, 240, 0.8);
+  color: rgb(226 232 240 / 80%);
   font-size: var(--font-size-sm);
 }
 
@@ -166,8 +165,8 @@
 .form-field select {
   width: 100%;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(148, 163, 184, 0.28);
-  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgb(148 163 184 / 28%);
+  background: rgb(15 23 42 / 65%);
   color: #f8fafc;
   padding: var(--space-3) var(--space-4);
   font-size: var(--font-size-md);
@@ -180,9 +179,9 @@
 .form-field textarea:focus,
 .form-field select:focus {
   outline: none;
-  border-color: rgba(236, 201, 75, 0.6);
-  box-shadow: 0 0 0 3px rgba(236, 201, 75, 0.25);
-  background: rgba(15, 23, 42, 0.85);
+  border-color: rgb(236 201 75 / 60%);
+  box-shadow: 0 0 0 3px rgb(236 201 75 / 25%);
+  background: rgb(15 23 42 / 85%);
 }
 
 .form-footer {
@@ -201,7 +200,7 @@
 }
 
 .form-footer p {
-  color: rgba(148, 163, 184, 0.75);
+  color: rgb(148 163 184 / 75%);
   margin: 0;
 }
 
@@ -211,21 +210,21 @@
 }
 
 .contact-meta__list li {
-  background: rgba(15, 23, 42, 0.4);
+  background: rgb(15 23 42 / 40%);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
-  border: 1px solid rgba(71, 85, 105, 0.35);
+  border: 1px solid rgb(71 85 105 / 35%);
 }
 
 .contact-meta__list h3 {
   margin: 0 0 var(--space-2);
-  color: rgba(236, 252, 203, 0.9);
+  color: rgb(236 252 203 / 90%);
   font-size: 1.05rem;
 }
 
 .contact-meta__list p {
   margin: 0;
-  color: rgba(203, 213, 225, 0.75);
+  color: rgb(203 213 225 / 75%);
 }
 
 .contact-cta {
@@ -240,7 +239,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  color: rgba(190, 242, 100, 0.9);
+  color: rgb(190 242 100 / 90%);
   font-size: var(--font-size-sm);
 }
 
@@ -248,23 +247,23 @@
   width: 0.6rem;
   height: 0.6rem;
   border-radius: 50%;
-  background: currentColor;
+  background: currentcolor;
 }
 
 .dot--active {
-  box-shadow: 0 0 0 6px rgba(190, 242, 100, 0.18);
+  box-shadow: 0 0 0 6px rgb(190 242 100 / 18%);
 }
 
 .contact-links {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
-  color: rgba(148, 197, 255, 0.9);
+  color: rgb(148 197 255 / 90%);
   font-size: var(--font-size-sm);
 }
 
 .contact-links a:hover {
-  color: rgba(236, 201, 75, 0.9);
+  color: rgb(236 201 75 / 90%);
 }
 
 @media (max-width: var(--breakpoint-md)) {

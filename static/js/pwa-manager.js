@@ -16,8 +16,8 @@ class PWAManager {
     async init() {
         // Check if running as PWA
         this.isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
-                          window.navigator.standalone ||
-                          document.referrer.includes('android-app://');
+            window.navigator.standalone ||
+            document.referrer.includes('android-app://');
 
         // Set up event listeners
         this.setupEventListeners();
@@ -208,7 +208,7 @@ class PWAManager {
     maybeShowInstallBanner() {
         // Show install banner if conditions are met
         if (this.installPrompt && !this.isStandalone) {
-            const visits = parseInt(localStorage.getItem('pwa-visits') || '0') + 1;
+            const visits = parseInt(localStorage.getItem('pwa-visits') || '0', 10) + 1;
             localStorage.setItem('pwa-visits', visits.toString());
 
             // Show after 3 visits and user hasn't dismissed

@@ -86,14 +86,12 @@ p,
 
 .text-gradient-primary {
   background: var(--gradient-primary);
-  -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .text-gradient-accent {
   background: var(--gradient-accent);
-  -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
@@ -138,6 +136,7 @@ ol li + li {
     font-size: clamp(2rem, 10vw, 2.75rem);
   }
 }
+
 /* Legacy typography class support */
 .heading-1,
 .text-display-2xl {
@@ -181,8 +180,7 @@ ol li + li {
 .heading-premium {
   font-family: var(--font-family-heading);
   font-weight: var(--font-weight-bold);
-  background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(229, 231, 235, 0.7));
-  -webkit-background-clip: text;
+  background: linear-gradient(135deg, rgb(255 255 255 / 92%), rgb(229 231 235 / 70%));
   background-clip: text;
   color: transparent;
 }

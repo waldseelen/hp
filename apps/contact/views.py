@@ -38,7 +38,9 @@ def contact_form(request: HttpRequest) -> HttpResponse:
 
         # Rate limiting: 5 requests per minute per IP
         client_ip = get_client_ip(request)
-        cache_key = f"contact_rate_limit_{hashlib.md5(client_ip.encode()).hexdigest()}"
+        cache_key = (
+            f"contact_rate_limit_{hashlib.md5(client_ip.encode()).hexdigest()}"  # nosec
+        )
         request_count = cache.get(cache_key, 0)
 
         if request_count >= 5:
