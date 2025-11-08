@@ -28,7 +28,7 @@
                     const element = entry.target;
 
                     // Add stagger delay for multiple elements
-                    const staggerIndex = parseInt(element.dataset.stagger) || 0;
+                    const staggerIndex = parseInt(element.dataset.stagger, 10) || 0;
                     const delay = staggerIndex * config.staggerDelay;
 
                     setTimeout(() => {

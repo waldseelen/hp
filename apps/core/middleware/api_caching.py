@@ -250,7 +250,7 @@ class APICachingMiddleware:
                 # Clear the entire api_cache for simplicity
                 # In production, use more granular invalidation
                 self.cache.clear()
-            except Exception:
+            except Exception:  # nosec B110 - Cache clearing failure is non-critical
                 pass  # Fail silently if cache clearing fails
 
 
@@ -284,14 +284,14 @@ class CacheInvalidationMiddleware:
             # Invalidate API cache
             try:
                 self.api_cache.clear()
-            except Exception:
+            except Exception:  # nosec B110 - Cache clearing failure is non-critical
                 pass
 
         # Also invalidate query cache for database changes
         if request.method in ["POST", "PUT", "PATCH", "DELETE"]:
             try:
                 self.query_cache.clear()
-            except Exception:
+            except Exception:  # nosec B110 - Cache clearing failure is non-critical
                 pass
 
 

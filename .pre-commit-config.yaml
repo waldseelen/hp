@@ -91,7 +91,7 @@ repos:
     hooks:
       - id: bandit
         exclude: tests/
-        args: ['-f', 'csv']  # Use CSV format to avoid encoding issues on Windows
+        args: ['-c', '.bandit', '-f', 'csv']  # Use .bandit config file and CSV format
 
   # Documentation (Disabled - docstring style non-critical)
   # - repo: https://github.com/pycqa/pydocstyle

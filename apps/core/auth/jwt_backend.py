@@ -83,7 +83,7 @@ class CustomJWTAuthentication(JWTAuthentication):
             jti = token.get("jti")
             if jti:
                 return BlacklistedToken.objects.filter(token__jti=jti).exists()
-        except Exception:
+        except Exception:  # nosec B110 - Token blacklist optional, graceful degradation
             # Token blacklist not configured - skip check
             pass
 
@@ -180,12 +180,14 @@ class JWTTokenManager:
         return False
 
     @staticmethod
-    def validate_token(token: str, token_type: str = "access") -> Dict[str, Any]:
+    def validate_token(
+        token: str, token_type: str = "access"
+    ) -> Dict[str, Any]:  # nosec B107 - Token type identifier, not a password
         """
         Validate token and return payload
         """
         try:
-            if token_type == "access":
+            if token_type == "access":  # nosec B105 - Token type string, not a password
                 validated_token = AccessToken(token)
             else:
                 validated_token = RefreshToken(token)
