@@ -7,8 +7,11 @@
 
 
 
-# GÖREVLER LİSTESİ (KATEGORİZE EDİLMİŞ)
+# 📋 PORTFÖY / BLOG SİTESİ - ROADMAP
 
+**Hedef:** Profesyonel, temiz, hızlı portföy + blog sitesi
+
+**Durum:** Temizleme ve optimizasyon aşaması
 
 ---
 
@@ -34,124 +37,28 @@
 
 ## 🔧 KOD KALİTESİ & REFACTORING
 
-### Validation Functions Consolidation
+### Contact Form & Core Validation
+- [ ] Clean up contact form validation (forms.py)
+- [ ] Validate email, name, message fields
+- [ ] Add CSRF protection
+- [ ] Test form with edge cases
+- [ ] Validation working end-to-end
 
-- [ ] Create validation framework (BaseValidator + Registry)
-- [ ] All validators work identically
-- [ ] No false negatives/positives
-- [ ] Performance improved
+### Critical View Cleanup (Blog & Portfolio)
+- [ ] Refactor blog list view (clean, efficient queryset)
+- [ ] Refactor blog detail view (optimize queries)
+- [ ] Refactor portfolio list view
+- [ ] Remove dead code and unused imports
+- [ ] Views working without issues
 
-### View Logic & Middleware Refactoring
-
-- [ ] Apply design patterns (Strategy, Template, Helper extraction)
-- [ ] Extract helper methods (refactor_helpers.py)
-- [ ] All views work identically
-- [ ] Middleware behavior unchanged
-- [ ] Performance maintained
-
-### Logging & JSON Formatting Refactoring
-- [ ] Extract _extract_user_context(record) → user info
-- [ ] Extract _extract_request_context(record) → request info
-- [ ] Extract JSON formatting logic
-- [ ] Create context extractors
-- [ ] Log output format consistent
-- [ ] JSON parsing still works
-- [ ] Performance impact minimal
-
-### CI/CD Basic Quality Checks
-- [ ] Update .github/workflows/code-quality.yml
-- [ ] Add basic complexity check: flake8 --select=C901 --max-complexity=15
-- [ ] Update docs/development/code-quality-standards.md
-- [ ] CI/CD quality checks active
-
-### Code Review & Documentation
-- [ ] Address critical code review feedback
-- [ ] Update docs/architecture/code-organization.md
-- [ ] Git housekeeping
-- [ ] Release tagged
+### Code Quality Gates (Existing CI/CD)
+- [ ] Flake8: <10 violations in apps/
+- [ ] Bandit: 0 high/critical security issues
+- [ ] Mypy: ≥70% type coverage
+- [ ] Tests passing locally
+- [ ] Pre-commit hooks working
 
 ---
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -176,20 +83,26 @@
 
 ## 🧪 TEST & KALİTE
 
-### Test Coverage (Realistic Goals)
-- [ ] Write tests for critical modules (auth, forms, views)
-- [ ] Achieve ≥70% coverage for core functionality
-- [ ] Test edge cases and error scenarios
-- [ ] Integration tests for critical journeys
-- [ ] All tests passing
+### Core Module Tests
+- [ ] Write tests for contact form (submission, validation)
+- [ ] Write tests for blog views (list, detail, create)
+- [ ] Write tests for portfolio views
+- [ ] Test critical user journeys (read blog, contact, view portfolio)
+- [ ] All unit tests passing
+
+### Test Coverage & Quality
+- [ ] Achieve ≥70% coverage for critical modules
+- [ ] Test edge cases (empty forms, invalid data)
+- [ ] Integration tests for blog comment flow
+- [ ] All tests passing locally (pytest)
 - [ ] No regressions detected
 
-### Quality Gate (Simplified)
+### Quality Standards
 - [ ] Flake8: <10 violations in apps/
 - [ ] Mypy: ≥70% type coverage
 - [ ] Bandit: 0 high/critical security issues
-- [ ] E2E tests: All smoke tests passing
-- [ ] Performance: All pages <3s load
+- [ ] E2E tests: All smoke tests passing (Playwright)
+- [ ] Performance: All pages <3s load time
 
 ---
 
@@ -200,91 +113,62 @@
 
 
 
+## 🚢 DEPLOYMENT & LAUNCH
 
+### Pre-Launch Checklist
+- [ ] All tests passing locally (pytest -v)
+- [ ] Code quality gates met (Flake8, Bandit, Mypy)
+- [ ] E2E tests passing (Playwright)
+- [ ] Homepage loads correctly
+- [ ] Blog page functional
+- [ ] Contact form working
+- [ ] Admin panel accessible
 
+### Infrastructure Setup
+- [ ] Database ready (PostgreSQL or SQLite)
+- [ ] Environment variables configured
+- [ ] Secret key secure
+- [ ] ALLOWED_HOSTS configured
+- [ ] DEBUG = False in production
+- [ ] Static files collected
+- [ ] SSL certificate configured (HTTPS)
+- [ ] Domain configured
 
-
-
-
-
-
-
-
-
-
-## 🚢 DEPLOYMENT & INFRASTRUCTURE
-
-### Production Deployment
-- [ ] Infrastructure Setup
-- [ ] Database Migration
-- [ ] SSL & Domain Configuration
-- [ ] Monitoring & Alerting Setup
-- [ ] Backup & Disaster Recovery
-- [ ] Deployment Checklist
-
-### Infrastructure Essentials
-- [ ] Production database provisioned
-- [ ] Redis cache configured (optional)
-- [ ] DNS and domain configured
-- [ ] SSL certificate installed and renewed
-- [ ] Basic backup strategy in place
-- [ ] Error logging working (Sentry)
-
-### Pre-Deployment Backup Checklist
-- [ ] Database Snapshot
-- [ ] Git Release Tag
-- [ ] Static Files Backup
-- [ ] Environment Variables
-- [ ] Dependencies Snapshot
-
-### Deployment Day: Pre-Deployment Tasks
-- [ ] Final code freeze on main branch
+### Database & Migrations
+- [ ] All migrations applied
 - [ ] Database backup taken
-- [ ] Rollback plan documented
+- [ ] Migration rollback plan documented
+- [ ] Data integrity verified
 
-### Deployment Day: Deployment Steps
-- [ ] Deploy code to production
-- [ ] Run database migrations
+### Deployment Steps
+- [ ] Code pushed to main branch
+- [ ] Final local test run
+- [ ] Deploy to production
+- [ ] Run migrations on production
 - [ ] Collect static files
-- [ ] Warm cache with critical pages
-- [ ] Verify all health checks pass
-- [ ] Monitor error rates and performance
+- [ ] Verify homepage loads
+- [ ] Verify blog is accessible
+- [ ] Check for errors in logs
 
-### Deployment Day: Post-Deployment Verification
+### Post-Launch Verification
 - [ ] All pages load correctly
 - [ ] Forms submit successfully
-- [ ] APIs respond properly
-- [ ] Database queries performant
+- [ ] No 500 errors in logs
 - [ ] No errors in Sentry
-- [ ] Monitoring alerts all green
-- [ ] User acceptance testing passed
+- [ ] Performance acceptable (<3s)
+- [ ] Mobile version responsive
 
-### Rollback Procedure (Simplified)
-- [ ] Check homepage loads
-- [ ] Check API health
-- [ ] Check error logs
-- [ ] Document what went wrong
-- [ ] Fix issue in development
-- [ ] Write regression test for the bug
+### Rollback Plan
+- [ ] Previous version tagged in git
+- [ ] Rollback process documented (< 10 minutes)
+- [ ] Database backup available
+- [ ] Team knows rollback procedure
 
-### Post-Deployment (Week 3+): Monitoring & Operations
+### Monitoring & Operations
+- [ ] Error tracking active (Sentry)
 - [ ] Daily error log review
-- [ ] Weekly performance reports
-- [ ] Regular dependency updates
-- [ ] Continuous security patches
-
-### Post-Deployment: Optimization & Improvement
-- [ ] Analyze user behavior metrics
-- [ ] Optimize based on real-world usage
-- [ ] Implement user feedback
-- [ ] Plan future feature releases
-- [ ] Document lessons learned
-
-### Production Deployment Gate
-- [ ] All quality gates above passed
-- [ ] Lighthouse: ≥80 score (performance)
-- [ ] Basic smoke test: 10-20 concurrent users
-- [ ] Rollback: Manual process documented
-- [ ] Monitoring: Error logging active
+- [ ] Weekly performance check
+- [ ] Monthly dependency updates
+- [ ] Regular security patches
 
 ---
