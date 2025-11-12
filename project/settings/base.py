@@ -79,8 +79,6 @@ INSTALLED_APPS = [
 OPTIONAL_APPS = [
     "django_extensions",
     "channels",
-    "django_celery_beat",
-    "django_celery_results",
 ]
 
 for app in OPTIONAL_APPS:
@@ -178,44 +176,8 @@ CHANNEL_LAYERS = {
 # ASGI Application
 ASGI_APPLICATION = "project.asgi.application"
 
-# Celery Configuration
-CELERY_BROKER_URL = config("REDIS_URL", default="redis://localhost:6379/0")
-CELERY_RESULT_BACKEND = "django-db"
-CELERY_CACHE_BACKEND = "django-cache"
-
-# Celery Task Configuration
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_SERIALIZER = "json"
-CELERY_TIMEZONE = "UTC"
-CELERY_ENABLE_UTC = True
-
-# Celery Beat Configuration
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-
-# Task routing and queue configuration
-CELERY_TASK_ROUTES = {
-    "apps.main.tasks.send_notification": {"queue": "high_priority"},
-    "apps.main.tasks.process_user_action": {"queue": "high_priority"},
-    "apps.main.tasks.update_analytics": {"queue": "default"},
-    "apps.main.tasks.cleanup_temp_files": {"queue": "default"},
-    "apps.main.tasks.generate_reports": {"queue": "low_priority"},
-    "apps.main.tasks.backup_data": {"queue": "low_priority"},
-}
-
-# Worker configuration
-CELERY_WORKER_CONCURRENCY = 4
-CELERY_WORKER_PREFETCH_MULTIPLIER = 1
-CELERY_WORKER_MAX_TASKS_PER_CHILD = 1000
-
-# Task time limits
-CELERY_TASK_SOFT_TIME_LIMIT = 60  # 1 minute
-CELERY_TASK_TIME_LIMIT = 120  # 2 minutes
-CELERY_TASK_MAX_RETRIES = 3
-CELERY_TASK_DEFAULT_RETRY_DELAY = 60
-
-# Result backend settings
-CELERY_RESULT_EXPIRES = 3600  # 1 hour
+# Note: Celery configuration removed (not needed for portfolio/blog site)
+# For scheduled tasks, consider using django-cron or APScheduler as lightweight alternatives
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -451,10 +413,8 @@ if SENTRY_AVAILABLE and SENTRY_DSN:
             event_level=logging.ERROR,  # Send errors as events
         )
 
-        # Import additional APM integrations
-        from sentry_sdk.integrations.celery import CeleryIntegration
+        # Import additional APM integrations (Celery removed)
         from sentry_sdk.integrations.redis import RedisIntegration
-        from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
         sentry_sdk.init(
             dsn=SENTRY_DSN,
@@ -466,9 +426,7 @@ if SENTRY_AVAILABLE and SENTRY_DSN:
                     cache_spans=True,
                 ),
                 sentry_logging,
-                CeleryIntegration(monitor_beat_tasks=True),
                 RedisIntegration(),
-                SqlalchemyIntegration(),
             ],
             traces_sample_rate=config(
                 "SENTRY_TRACES_SAMPLE_RATE", default=0.2, cast=float

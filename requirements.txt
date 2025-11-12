@@ -11,15 +11,11 @@ django-ratelimit==4.1.0
 pyotp==2.9.0
 pywebpush==1.14.0
 qrcode==7.4.2
-celery==5.4.0
 redis==5.2.1
 requests==2.32.3
 python-decouple==3.8
 channels==4.0.0
 channels-redis==4.2.0
-flower==2.0.1
-django-celery-beat==2.7.0
-django-celery-results==2.5.1
 sentry-sdk[django]==2.18.0
 
 # Content Management & Sanitization

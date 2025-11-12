@@ -1,18 +1,8 @@
-"""Project package initialization with optional Celery integration."""
+"""Project package initialization."""
 
 from __future__ import annotations
 
-import logging
+# Note: Celery removed - not needed for portfolio/blog site
+# For scheduled tasks, consider django-cron or APScheduler
 
-celery_app = None
-
-try:
-    from .celery import app as celery_app
-except ModuleNotFoundError as exc:  # pragma: no cover - optional dependency
-    logging.getLogger(__name__).warning(
-        "Celery is not installed; asynchronous task runner disabled. (%s)", exc
-    )
-except Exception as exc:  # pragma: no cover - defensive
-    logging.getLogger(__name__).exception("Celery configuration failed: %s", exc)
-
-__all__ = ("celery_app",)
+__all__ = ()  # type: tuple[str, ...]
