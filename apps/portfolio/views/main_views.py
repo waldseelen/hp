@@ -446,32 +446,65 @@ def useful_view(request):
 
 def projects_view(request):
     """
-    Projects page view with portfolio projects.
+    Optimized projects page view with efficient queryset and caching.
+
+    Performance optimizations:
+    - Single queryset evaluated once (no duplicate queries)
+    - Only() to fetch required fields (reduce data transfer)
+    - Category grouping without separate queries
+    - Smart caching strategy (serialize after processing)
+
+    Cache duration: 15 minutes (900 seconds)
     """
     try:
-        cache_key = "projects_page_data"
+        cache_key = "projects_page_data_v2"  # v2 for new optimized version
         cached_data = cache.get(cache_key)
 
         if cached_data is None:
-            # Get visible projects
-            all_projects = Tool.objects.filter(is_visible=True).order_by(
-                "-is_featured", "order", "-created_at"
+            # Optimized single queryset with required fields only
+            # Using only() to reduce memory footprint and DB transfer
+            all_projects_qs = (
+                Tool.objects.visible()
+                .only(
+                    "id",
+                    "title",
+                    "slug",
+                    "description",
+                    "category",
+                    "image",
+                    "icon_url",
+                    "is_featured",
+                    "order",
+                    "view_count",
+                    "tags",
+                    "created_at",
+                )
+                .order_by("-is_featured", "order", "-created_at")
             )
 
-            # Get featured projects
-            featured_projects = all_projects.filter(is_featured=True)[:3]
+            # Evaluate queryset once and work with the list
+            all_projects_list = list(all_projects_qs)
 
-            # Get projects by category instead of status
+            # Get featured projects from the already-fetched list (no new query)
+            featured_projects = [p for p in all_projects_list if p.is_featured][:3]
+
+            # Group projects by category (no additional queries)
             projects_by_category = {}
-            for category_code, category_name in Tool.CATEGORY_CHOICES:
-                projects = all_projects.filter(category=category_code)
-                if projects.exists():
-                    projects_by_category[category_name] = projects
+            for project in all_projects_list:
+                category_name = dict(Tool.CATEGORY_CHOICES).get(
+                    project.category, project.category
+                )
+                if category_name not in projects_by_category:
+                    projects_by_category[category_name] = []
+                projects_by_category[category_name].append(project)
 
             cached_data = {
-                "all_projects": list(all_projects),
-                "featured_projects": list(featured_projects),
+                "all_projects": all_projects_list,
+                "featured_projects": featured_projects,
                 "projects_by_category": projects_by_category,
+                "total_count": len(all_projects_list),
+                "featured_count": len(featured_projects),
+                "category_count": len(projects_by_category),
             }
 
             cache.set(cache_key, cached_data, 900)  # 15 minutes cache
@@ -480,6 +513,9 @@ def projects_view(request):
             "all_projects": cached_data["all_projects"],
             "featured_projects": cached_data["featured_projects"],
             "projects_by_category": cached_data["projects_by_category"],
+            "total_count": cached_data.get("total_count", 0),
+            "featured_count": cached_data.get("featured_count", 0),
+            "category_count": cached_data.get("category_count", 0),
             "page_title": "Projeler",
             "meta_description": "Geliştirdiğim projeler ve portföy çalışmaları",
         }
@@ -487,11 +523,14 @@ def projects_view(request):
         return render(request, "pages/portfolio/projects.html", context)
 
     except Exception as e:
-        logger.error(f"Error in projects view: {str(e)}")
+        logger.error(f"Error in projects view: {str(e)}", exc_info=True)
         context = {
             "all_projects": [],
             "featured_projects": [],
             "projects_by_category": {},
+            "total_count": 0,
+            "featured_count": 0,
+            "category_count": 0,
             "page_title": "Projeler",
             "meta_description": "Projeler",
         }
@@ -500,26 +539,52 @@ def projects_view(request):
 
 def project_detail_view(request, slug):
     """
-    Project detail view with full project information.
+    Optimized project detail view with efficient related projects.
+
+    Performance optimizations:
+    - Use manager's get_similar_tools() for smart related content
+    - Atomic view count increment with F() expression
+    - only() to fetch required fields for related projects
+    - Proper 404 handling with error logging
+
+    Features:
+    - View count tracking (race condition safe)
+    - Similar projects based on category and tags
+    - Dynamic breadcrumbs
+    - SEO metadata
     """
     try:
         from django.shortcuts import get_object_or_404
 
-        project = get_object_or_404(Tool.objects.filter(is_visible=True), slug=slug)
+        # Get project with only required fields
+        project = get_object_or_404(Tool.objects.visible(), slug=slug)
 
-        # Increment view count
+        # Increment view count atomically (F() expression, no race condition)
         project.increment_view_count()
 
-        # Get related projects (same tech stack or similar difficulty)
-        related_projects = Tool.objects.filter(is_visible=True).exclude(pk=project.pk)[
-            :4
-        ]
+        # Refresh to get updated view_count for display
+        project.refresh_from_db(fields=["view_count"])
 
-        if not related_projects.exists():
-            # Fallback to other featured projects
-            related_projects = Tool.objects.filter(
-                is_visible=True, is_featured=True
-            ).exclude(pk=project.pk)[:4]
+        # Get related projects using optimized manager method
+        # This uses category and tag similarity
+        related_projects = Tool.objects.get_similar_tools(project, limit=4)
+
+        # Fallback if no similar tools found
+        if not related_projects:
+            related_projects = list(
+                Tool.objects.visible()
+                .filter(is_featured=True)
+                .exclude(pk=project.pk)
+                .only(
+                    "id",
+                    "title",
+                    "slug",
+                    "description",
+                    "category",
+                    "image",
+                    "icon_url",
+                )[:4]
+            )
 
         # Add dynamic breadcrumb for this project
         request.breadcrumbs_extra = [{"title": project.title, "url": None}]
@@ -533,12 +598,18 @@ def project_detail_view(request, slug):
                 if project.description
                 else f"{project.title} proje detayları"
             ),
+            "has_related": len(related_projects) > 0,
         }
 
         return render(request, "pages/portfolio/project_detail.html", context)
 
+    except Tool.DoesNotExist:
+        logger.warning(f"Project not found: {slug}")
+        return redirect("main:projects")
     except Exception as e:
-        logger.error(f"Error in project_detail view: {str(e)}")
+        logger.error(
+            f"Error in project_detail view for slug '{slug}': {str(e)}", exc_info=True
+        )
         return redirect("main:projects")
 
 

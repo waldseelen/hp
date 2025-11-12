@@ -407,11 +407,11 @@ def projects_view(request):
         if cached_data is None:
             # Get visible projects
             all_projects = Tool.objects.filter(is_visible=True).order_by(
-                "-is_featured", "order", "-created_at"
+                "-is_favorite", "-created_at"
             )
 
             # Get featured projects
-            featured_projects = all_projects.filter(is_featured=True)[:3]
+            featured_projects = all_projects.filter(is_favorite=True)[:3]
 
             # Get projects by category instead of status
             projects_by_category = {}
@@ -454,9 +454,10 @@ def project_detail_view(request, slug):
     """
     Project detail view with full project information.
     """
-    try:
-        from django.shortcuts import get_object_or_404
+    from django.http import Http404
+    from django.shortcuts import get_object_or_404
 
+    try:
         project = get_object_or_404(Tool.objects.filter(is_visible=True), slug=slug)
 
         # Increment view count
@@ -470,7 +471,7 @@ def project_detail_view(request, slug):
         if not related_projects.exists():
             # Fallback to other featured projects
             related_projects = Tool.objects.filter(
-                is_visible=True, is_featured=True
+                is_visible=True, is_favorite=True
             ).exclude(pk=project.pk)[:4]
 
         context = {
@@ -486,6 +487,9 @@ def project_detail_view(request, slug):
 
         return render(request, "pages/portfolio/project_detail.html", context)
 
+    except Http404:
+        # Re-raise 404 to let Django handle it properly
+        raise
     except Exception as e:
         logger.error(f"Error in project_detail view: {str(e)}")
         return redirect("main:projects")

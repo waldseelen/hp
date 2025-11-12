@@ -163,7 +163,9 @@ class CacheKeyManager:
         # Add hashed kwargs if present
         if kwargs:
             kwargs_str = json.dumps(kwargs, sort_keys=True, default=str)
-            kwargs_hash = hashlib.md5(kwargs_str.encode()).hexdigest()[:8]
+            kwargs_hash = hashlib.md5(
+                kwargs_str.encode(), usedforsecurity=False
+            ).hexdigest()[:8]
             key_parts.append(kwargs_hash)
 
         return ":".join(key_parts)[:250]  # Redis key limit

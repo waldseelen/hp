@@ -20,7 +20,7 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from apps.blog.models import BlogCategory, BlogPost
+from apps.blog.models import Post
 from apps.portfolio.models import (
     Admin,
     AITool,

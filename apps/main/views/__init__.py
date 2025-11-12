@@ -30,6 +30,9 @@ from .home_views import home
 # Info views
 from .info_views import music_view, personal_view
 
+# Main views (projects/portfolio)
+from .main_views import project_detail_view, projects_view
+
 # Tools views
 from .tools_views import ai_tools_view, cybersecurity_view, useful_view
 
@@ -44,6 +47,9 @@ __all__ = [
     "ai_tools_view",
     "cybersecurity_view",
     "useful_view",
+    # Projects
+    "projects_view",
+    "project_detail_view",
     # Auth
     "logout_view",
 ]

@@ -27,6 +27,11 @@ from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from django.views.static import serve
 
+from apps.core.api_views import (
+    collect_performance_metric,
+    health_check,
+    performance_dashboard_data,
+)
 from apps.core.health import (
     health_check_view,
     liveness_check_view,
@@ -69,10 +74,14 @@ urlpatterns = [
         ),
         name="analytics",
     ),
-    # API endpoints for performance monitoring and notifications (commented out temporarily)
-    # path('api/performance/', collect_performance_metric, name='api_performance'),
-    # path('api/performance/dashboard/', performance_dashboard_data, name='api_performance_dashboard'),
-    # path('api/health/', health_check, name='api_health_check'),
+    # API endpoints for performance monitoring
+    path("api/performance/", collect_performance_metric, name="api_performance"),
+    path(
+        "api/performance/dashboard/",
+        performance_dashboard_data,
+        name="api_performance_dashboard",
+    ),
+    path("api/health/", health_check, name="api_health_check"),
     # path('api/notifications/subscribe/', subscribe_push_notifications, name='api_notifications_subscribe'),
     # path('api/notifications/send/', send_push_notification, name='api_notifications_send'),
     # path('api/errors/log/', log_error, name='api_error_log'),

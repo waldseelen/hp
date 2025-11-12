@@ -68,7 +68,7 @@ class RateLimitMiddleware(MiddlewareMixin):
 
         # Create a unique identifier combining IP, path, and user agent
         identifier = f"{ip}:{path}:{user_agent}"
-        key_hash = hashlib.md5(identifier.encode()).hexdigest()
+        key_hash = hashlib.md5(identifier.encode(), usedforsecurity=False).hexdigest()
         return f"ratelimit:{key_hash}"
 
     def get_limit_for_path(self, path):

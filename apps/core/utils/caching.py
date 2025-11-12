@@ -51,7 +51,7 @@ def generate_cache_key(*args, prefix: str = "", **kwargs) -> str:
 
     if len(key) > 200:  # Django cache key limit is 250
         # Hash long keys to keep them short
-        key_hash = hashlib.md5(key.encode()).hexdigest()
+        key_hash = hashlib.md5(key.encode(), usedforsecurity=False).hexdigest()
         return f"{prefix}:{key_hash}" if prefix else key_hash
 
     return key

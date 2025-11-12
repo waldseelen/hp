@@ -1,22 +1,22 @@
 {
   "errors": [
     {
-      "filename": "apps/portfolio\\test_views.py",
+      "filename": "apps/portfolio\\templatetags\\cache_tags.py",
       "reason": "syntax error while parsing AST from file"
     }
   ],
-  "generated_at": "2025-11-12T22:22:56Z",
+  "generated_at": "2025-11-12T17:58:48Z",
   "metrics": {
     "_totals": {
-      "CONFIDENCE.HIGH": 110,
+      "CONFIDENCE.HIGH": 108,
       "CONFIDENCE.LOW": 2,
       "CONFIDENCE.MEDIUM": 7,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 4,
       "SEVERITY.LOW": 64,
-      "SEVERITY.MEDIUM": 55,
+      "SEVERITY.MEDIUM": 49,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 50018,
+      "loc": 49181,
       "nosec": 1,
       "skipped_tests": 23
     },
@@ -458,7 +458,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 264,
+      "loc": 0,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -770,7 +770,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 84,
+      "loc": 75,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -783,7 +783,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 313,
+      "loc": 308,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -809,7 +809,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 82,
+      "loc": 84,
       "nosec": 0,
       "skipped_tests": 1
     },
@@ -836,19 +836,6 @@
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
       "loc": 266,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
-    "apps/core\\api_views.py": {
-      "CONFIDENCE.HIGH": 0,
-      "CONFIDENCE.LOW": 0,
-      "CONFIDENCE.MEDIUM": 0,
-      "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 0,
-      "SEVERITY.MEDIUM": 0,
-      "SEVERITY.UNDEFINED": 0,
-      "loc": 61,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -965,7 +952,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 242,
+      "loc": 240,
       "nosec": 1,
       "skipped_tests": 3
     },
@@ -2408,7 +2395,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 33,
+      "loc": 31,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -2421,7 +2408,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 34,
+      "loc": 31,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -2486,7 +2473,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 380,
+      "loc": 377,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -2785,7 +2772,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 765,
+      "loc": 762,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -2829,15 +2816,15 @@
       "skipped_tests": 0
     },
     "apps/portfolio\\cache.py": {
-      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.HIGH": 3,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 3,
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 389,
+      "loc": 385,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -2863,7 +2850,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 256,
+      "loc": 254,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -2876,7 +2863,7 @@
       "SEVERITY.LOW": 1,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 238,
+      "loc": 234,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -3284,11 +3271,11 @@
       "skipped_tests": 0
     },
     "apps/portfolio\\middleware\\cache_middleware.py": {
-      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.HIGH": 2,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 1,
       "SEVERITY.LOW": 1,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
@@ -3344,7 +3331,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 297,
+      "loc": 295,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -3882,15 +3869,7 @@
       "skipped_tests": 0
     },
     "apps/portfolio\\templatetags\\cache_tags.py": {
-      "CONFIDENCE.HIGH": 6,
-      "CONFIDENCE.LOW": 0,
-      "CONFIDENCE.MEDIUM": 0,
-      "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 0,
-      "SEVERITY.MEDIUM": 6,
-      "SEVERITY.UNDEFINED": 0,
-      "loc": 197,
+      "loc": 191,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -3969,24 +3948,6 @@
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
       "loc": 27,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
-    "apps/portfolio\\test_portfolio_views.py": {
-      "CONFIDENCE.HIGH": 0,
-      "CONFIDENCE.LOW": 0,
-      "CONFIDENCE.MEDIUM": 0,
-      "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 0,
-      "SEVERITY.MEDIUM": 0,
-      "SEVERITY.UNDEFINED": 0,
-      "loc": 63,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
-    "apps/portfolio\\test_views.py": {
-      "loc": 320,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -4246,7 +4207,7 @@
       "SEVERITY.LOW": 1,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 683,
+      "loc": 671,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -4445,45 +4406,6 @@
       "nosec": 0,
       "skipped_tests": 0
     },
-    "apps/tools\\migrations\\0007_add_slug_field.py": {
-      "CONFIDENCE.HIGH": 0,
-      "CONFIDENCE.LOW": 0,
-      "CONFIDENCE.MEDIUM": 0,
-      "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 0,
-      "SEVERITY.MEDIUM": 0,
-      "SEVERITY.UNDEFINED": 0,
-      "loc": 17,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
-    "apps/tools\\migrations\\0008_populate_slugs.py": {
-      "CONFIDENCE.HIGH": 0,
-      "CONFIDENCE.LOW": 0,
-      "CONFIDENCE.MEDIUM": 0,
-      "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 0,
-      "SEVERITY.MEDIUM": 0,
-      "SEVERITY.UNDEFINED": 0,
-      "loc": 26,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
-    "apps/tools\\migrations\\0009_add_view_count_field.py": {
-      "CONFIDENCE.HIGH": 0,
-      "CONFIDENCE.LOW": 0,
-      "CONFIDENCE.MEDIUM": 0,
-      "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 0,
-      "SEVERITY.MEDIUM": 0,
-      "SEVERITY.UNDEFINED": 0,
-      "loc": 14,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
     "apps/tools\\migrations\\__init__.py": {
       "CONFIDENCE.HIGH": 0,
       "CONFIDENCE.LOW": 0,
@@ -4506,7 +4428,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 183,
+      "loc": 166,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -4552,1112 +4474,90 @@
   },
   "results": [
     {
-      "code": "119         try:\n120             response = requests.get(api_url, params=params)\n121             response.raise_for_status()\n",
-      "col_offset": 23,
-      "end_col_offset": 59,
-      "filename": "apps/main\\management\\commands\\analyze_performance.py",
-      "issue_confidence": "LOW",
-      "issue_cwe": {
-        "id": 400,
-        "link": "https://cwe.mitre.org/data/definitions/400.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Call to requests without timeout",
-      "line_number": 120,
-      "line_range": [
-        120
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b113_request_without_timeout.html",
-      "test_id": "B113",
-      "test_name": "request_without_timeout"
-    },
-    {
-      "code": "268     \"\"\"Convenience function for HTML sanitization.\"\"\"\n269     return mark_safe(ContentSanitizer.sanitize_html(content))\n270 \n",
-      "col_offset": 11,
-      "end_col_offset": 61,
-      "filename": "apps/main\\sanitizer.py",
+      "code": "286             # Create cache key from template name and context\n287             context_hash = hashlib.md5(\n288                 json.dumps(context or {}, sort_keys=True, default=str, usedforsecurity=False).encode()\n289             ).hexdigest()[:8]\n290 \n",
+      "col_offset": 27,
+      "end_col_offset": 13,
+      "filename": "apps/portfolio\\cache.py",
       "issue_confidence": "HIGH",
       "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
       },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 269,
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 287,
       "line_range": [
-        269
+        287,
+        288,
+        289
       ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
     },
     {
-      "code": "268     \"\"\"Convenience function for HTML sanitization.\"\"\"\n269     return mark_safe(ContentSanitizer.sanitize_html(content))\n270 \n",
-      "col_offset": 11,
-      "end_col_offset": 61,
-      "filename": "apps/main\\sanitizer.py",
+      "code": "314         model_name = f\"{model_class._meta.app_label}_{model_class._meta.model_name}\"\n315         filter_hash = hashlib.md5(\n316             json.dumps(filters, sort_keys=True, default=str, usedforsecurity=False).encode()\n317         ).hexdigest()[:8]\n318         return f\"model_{model_name}_{operation}_{filter_hash}\"\n",
+      "col_offset": 22,
+      "end_col_offset": 9,
+      "filename": "apps/portfolio\\cache.py",
       "issue_confidence": "HIGH",
       "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
       },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 269,
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 315,
       "line_range": [
-        269
+        315,
+        316,
+        317
       ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
     },
     {
-      "code": "273     \"\"\"Convenience function for Markdown sanitization.\"\"\"\n274     return mark_safe(ContentSanitizer.sanitize_markdown(content))\n275 \n",
-      "col_offset": 11,
-      "end_col_offset": 65,
-      "filename": "apps/main\\sanitizer.py",
+      "code": "325         model_class = queryset.model\n326         query_hash = hashlib.md5(str(queryset.query, usedforsecurity=False).encode()).hexdigest()[:8]\n327         cache_key = f\"queryset_{model_class._meta.label_lower}_{query_hash}{key_suffix}\"\n",
+      "col_offset": 21,
+      "end_col_offset": 85,
+      "filename": "apps/portfolio\\cache.py",
       "issue_confidence": "HIGH",
       "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
       },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 274,
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 326,
       "line_range": [
-        274
+        326
       ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
     },
     {
-      "code": "273     \"\"\"Convenience function for Markdown sanitization.\"\"\"\n274     return mark_safe(ContentSanitizer.sanitize_markdown(content))\n275 \n",
-      "col_offset": 11,
-      "end_col_offset": 65,
-      "filename": "apps/main\\sanitizer.py",
+      "code": "181         if not response.has_header(\"ETag\") and response.status_code == 200:\n182             etag = hashlib.md5(\n183                 f\"{request.path}_{response.content}\".encode()\n184             ).hexdigest()[:16]\n185             response[\"ETag\"] = f'\"{etag}\"'\n",
+      "col_offset": 19,
+      "end_col_offset": 13,
+      "filename": "apps/portfolio\\middleware\\cache_middleware.py",
       "issue_confidence": "HIGH",
       "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
       },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 274,
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 182,
       "line_range": [
-        274
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "278     \"\"\"Convenience function for content sanitization by type.\"\"\"\n279     return mark_safe(ContentSanitizer.sanitize_by_type(content, content_type))\n",
-      "col_offset": 11,
-      "end_col_offset": 78,
-      "filename": "apps/main\\sanitizer.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 279,
-      "line_range": [
-        279
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "278     \"\"\"Convenience function for content sanitization by type.\"\"\"\n279     return mark_safe(ContentSanitizer.sanitize_by_type(content, content_type))\n",
-      "col_offset": 11,
-      "end_col_offset": 78,
-      "filename": "apps/main\\sanitizer.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 279,
-      "line_range": [
-        279
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "19     schema = StructuredData.website_schema(request)\n20     return mark_safe(render_structured_data(schema))\n21 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 20,
-      "line_range": [
-        20
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "19     schema = StructuredData.website_schema(request)\n20     return mark_safe(render_structured_data(schema))\n21 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 20,
-      "line_range": [
-        20
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "26     schema = StructuredData.person_schema(request)\n27     return mark_safe(render_structured_data(schema))\n28 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 27,
-      "line_range": [
-        27
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "26     schema = StructuredData.person_schema(request)\n27     return mark_safe(render_structured_data(schema))\n28 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 27,
-      "line_range": [
-        27
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "33     schema = StructuredData.blog_post_schema(request, post)\n34     return mark_safe(render_structured_data(schema))\n35 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 34,
-      "line_range": [
-        34
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "33     schema = StructuredData.blog_post_schema(request, post)\n34     return mark_safe(render_structured_data(schema))\n35 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 34,
-      "line_range": [
-        34
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "40     schema = StructuredData.project_schema(request, project)\n41     return mark_safe(render_structured_data(schema))\n42 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 41,
-      "line_range": [
-        41
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "40     schema = StructuredData.project_schema(request, project)\n41     return mark_safe(render_structured_data(schema))\n42 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 41,
-      "line_range": [
-        41
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "47     schema = StructuredData.breadcrumb_schema(request, items)\n48     return mark_safe(render_structured_data(schema))\n49 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 48,
-      "line_range": [
-        48
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "47     schema = StructuredData.breadcrumb_schema(request, items)\n48     return mark_safe(render_structured_data(schema))\n49 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 48,
-      "line_range": [
-        48
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "54     schema = StructuredData.organization_schema(request)\n55     return mark_safe(render_structured_data(schema))\n56 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 55,
-      "line_range": [
-        55
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "54     schema = StructuredData.organization_schema(request)\n55     return mark_safe(render_structured_data(schema))\n56 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 55,
-      "line_range": [
-        55
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "61     schema = StructuredData.faq_schema(faqs)\n62     return mark_safe(render_structured_data(schema))\n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 62,
-      "line_range": [
-        62
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "61     schema = StructuredData.faq_schema(faqs)\n62     return mark_safe(render_structured_data(schema))\n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/main\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 62,
-      "line_range": [
-        62
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "67         try:\n68             response = requests.get(api_url, params=params)\n69             response.raise_for_status()\n",
-      "col_offset": 23,
-      "end_col_offset": 59,
-      "filename": "apps/portfolio\\management\\commands\\analyze_performance.py",
-      "issue_confidence": "LOW",
-      "issue_cwe": {
-        "id": 400,
-        "link": "https://cwe.mitre.org/data/definitions/400.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Call to requests without timeout",
-      "line_number": 68,
-      "line_range": [
-        68
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b113_request_without_timeout.html",
-      "test_id": "B113",
-      "test_name": "request_without_timeout"
-    },
-    {
-      "code": "25             type=str,\n26             default=\"0.0.0.0\",\n27             help=\"Address to bind Flower to (default: 0.0.0.0)\",\n",
-      "col_offset": 20,
-      "end_col_offset": 29,
-      "filename": "apps/portfolio\\management\\commands\\start_flower.py",
-      "issue_confidence": "MEDIUM",
-      "issue_cwe": {
-        "id": 605,
-        "link": "https://cwe.mitre.org/data/definitions/605.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Possible binding to all interfaces.",
-      "line_number": 26,
-      "line_range": [
-        26
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b104_hardcoded_bind_all_interfaces.html",
-      "test_id": "B104",
-      "test_name": "hardcoded_bind_all_interfaces"
-    },
-    {
-      "code": "48             \"Access the monitoring dashboard at: http://{}:{}\".format(\n49                 \"localhost\" if address == \"0.0.0.0\" else address, port\n50             )\n",
-      "col_offset": 42,
-      "end_col_offset": 51,
-      "filename": "apps/portfolio\\management\\commands\\start_flower.py",
-      "issue_confidence": "MEDIUM",
-      "issue_cwe": {
-        "id": 605,
-        "link": "https://cwe.mitre.org/data/definitions/605.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Possible binding to all interfaces.",
-      "line_number": 49,
-      "line_range": [
-        49
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b104_hardcoded_bind_all_interfaces.html",
-      "test_id": "B104",
-      "test_name": "hardcoded_bind_all_interfaces"
-    },
-    {
-      "code": "193         temp_dirs = [\n194             \"/tmp\",\n195             os.path.join(settings.BASE_DIR, \"temp\"),\n196             (\n197                 os.path.join(settings.MEDIA_ROOT, \"temp\")\n198                 if hasattr(settings, \"MEDIA_ROOT\")\n199                 else None\n200             ),\n201         ]\n202 \n203         files_cleaned = 0\n",
-      "col_offset": 12,
-      "end_col_offset": 18,
-      "filename": "apps/portfolio\\tasks.py",
-      "issue_confidence": "MEDIUM",
-      "issue_cwe": {
-        "id": 377,
-        "link": "https://cwe.mitre.org/data/definitions/377.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Probable insecure usage of temp file/directory.",
-      "line_number": 194,
-      "line_range": [
-        193,
-        194,
-        195,
-        196,
-        197,
-        198,
-        199,
-        200,
-        201
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b108_hardcoded_tmp_directory.html",
-      "test_id": "B108",
-      "test_name": "hardcoded_tmp_directory"
-    },
-    {
-      "code": "40     if cached_content is not None:\n41         return mark_safe(cached_content)\n42 \n",
-      "col_offset": 15,
-      "end_col_offset": 40,
-      "filename": "apps/portfolio\\templatetags\\cache_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 41,
-      "line_range": [
-        41
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "40     if cached_content is not None:\n41         return mark_safe(cached_content)\n42 \n",
-      "col_offset": 15,
-      "end_col_offset": 40,
-      "filename": "apps/portfolio\\templatetags\\cache_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 41,
-      "line_range": [
-        41
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "70     if cached_html is not None:\n71         return {\"cached_html\": mark_safe(cached_html)}\n72 \n",
-      "col_offset": 31,
-      "end_col_offset": 53,
-      "filename": "apps/portfolio\\templatetags\\cache_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 71,
-      "line_range": [
-        71
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "70     if cached_html is not None:\n71         return {\"cached_html\": mark_safe(cached_html)}\n72 \n",
-      "col_offset": 31,
-      "end_col_offset": 53,
-      "filename": "apps/portfolio\\templatetags\\cache_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 71,
-      "line_range": [
-        71
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "81         cache_manager.set(cache_key, rendered_html, timeout)\n82         return {\"cached_html\": mark_safe(rendered_html)}\n83     except Exception as e:\n",
-      "col_offset": 31,
-      "end_col_offset": 55,
-      "filename": "apps/portfolio\\templatetags\\cache_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 82,
-      "line_range": [
-        82
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "81         cache_manager.set(cache_key, rendered_html, timeout)\n82         return {\"cached_html\": mark_safe(rendered_html)}\n83     except Exception as e:\n",
-      "col_offset": 31,
-      "end_col_offset": 55,
-      "filename": "apps/portfolio\\templatetags\\cache_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 82,
-      "line_range": [
-        82
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "74 \n75     return format_html(\"<img {}>\", mark_safe(attr_string))\n76 \n",
-      "col_offset": 35,
-      "end_col_offset": 57,
-      "filename": "apps/portfolio\\templatetags\\image_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 75,
-      "line_range": [
-        75
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "74 \n75     return format_html(\"<img {}>\", mark_safe(attr_string))\n76 \n",
-      "col_offset": 35,
-      "end_col_offset": 57,
-      "filename": "apps/portfolio\\templatetags\\image_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 75,
-      "line_range": [
-        75
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "127 \n128     return format_html(\"<img {}>\", mark_safe(attr_string))\n129 \n",
-      "col_offset": 35,
-      "end_col_offset": 57,
-      "filename": "apps/portfolio\\templatetags\\image_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 128,
-      "line_range": [
-        128
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "127 \n128     return format_html(\"<img {}>\", mark_safe(attr_string))\n129 \n",
-      "col_offset": 35,
-      "end_col_offset": 57,
-      "filename": "apps/portfolio\\templatetags\\image_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 128,
-      "line_range": [
-        128
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "183 \n184     return format_html(\"<img {}>\", mark_safe(attr_string))\n185 \n",
-      "col_offset": 35,
-      "end_col_offset": 57,
-      "filename": "apps/portfolio\\templatetags\\image_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 184,
-      "line_range": [
+        182,
+        183,
         184
       ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "183 \n184     return format_html(\"<img {}>\", mark_safe(attr_string))\n185 \n",
-      "col_offset": 35,
-      "end_col_offset": 57,
-      "filename": "apps/portfolio\\templatetags\\image_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 184,
-      "line_range": [
-        184
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "285 \n286     return format_html(\"<link {}>\", mark_safe(attr_string))\n287 \n",
-      "col_offset": 36,
-      "end_col_offset": 58,
-      "filename": "apps/portfolio\\templatetags\\image_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 286,
-      "line_range": [
-        286
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "285 \n286     return format_html(\"<link {}>\", mark_safe(attr_string))\n287 \n",
-      "col_offset": 36,
-      "end_col_offset": 58,
-      "filename": "apps/portfolio\\templatetags\\image_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 286,
-      "line_range": [
-        286
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "327 \n328     return format_html(\"<img {}>\", mark_safe(attr_string))\n",
-      "col_offset": 35,
-      "end_col_offset": 57,
-      "filename": "apps/portfolio\\templatetags\\image_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 328,
-      "line_range": [
-        328
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "327 \n328     return format_html(\"<img {}>\", mark_safe(attr_string))\n",
-      "col_offset": 35,
-      "end_col_offset": 57,
-      "filename": "apps/portfolio\\templatetags\\image_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 328,
-      "line_range": [
-        328
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "19     schema = StructuredData.website_schema(request)\n20     return mark_safe(render_structured_data(schema))\n21 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 20,
-      "line_range": [
-        20
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "19     schema = StructuredData.website_schema(request)\n20     return mark_safe(render_structured_data(schema))\n21 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 20,
-      "line_range": [
-        20
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "26     schema = StructuredData.person_schema(request)\n27     return mark_safe(render_structured_data(schema))\n28 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 27,
-      "line_range": [
-        27
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "26     schema = StructuredData.person_schema(request)\n27     return mark_safe(render_structured_data(schema))\n28 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 27,
-      "line_range": [
-        27
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "33     schema = StructuredData.blog_post_schema(request, post)\n34     return mark_safe(render_structured_data(schema))\n35 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 34,
-      "line_range": [
-        34
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "33     schema = StructuredData.blog_post_schema(request, post)\n34     return mark_safe(render_structured_data(schema))\n35 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 34,
-      "line_range": [
-        34
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "40     schema = StructuredData.project_schema(request, project)\n41     return mark_safe(render_structured_data(schema))\n42 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 41,
-      "line_range": [
-        41
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "40     schema = StructuredData.project_schema(request, project)\n41     return mark_safe(render_structured_data(schema))\n42 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 41,
-      "line_range": [
-        41
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "47     schema = StructuredData.breadcrumb_schema(request, items)\n48     return mark_safe(render_structured_data(schema))\n49 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 48,
-      "line_range": [
-        48
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "47     schema = StructuredData.breadcrumb_schema(request, items)\n48     return mark_safe(render_structured_data(schema))\n49 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 48,
-      "line_range": [
-        48
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "54     schema = StructuredData.organization_schema(request)\n55     return mark_safe(render_structured_data(schema))\n56 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 55,
-      "line_range": [
-        55
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "54     schema = StructuredData.organization_schema(request)\n55     return mark_safe(render_structured_data(schema))\n56 \n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 55,
-      "line_range": [
-        55
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
-    },
-    {
-      "code": "61     schema = StructuredData.faq_schema(faqs)\n62     return mark_safe(render_structured_data(schema))\n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 80,
-        "link": "https://cwe.mitre.org/data/definitions/80.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 62,
-      "line_range": [
-        62
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
-      "test_id": "B703",
-      "test_name": "django_mark_safe"
-    },
-    {
-      "code": "61     schema = StructuredData.faq_schema(faqs)\n62     return mark_safe(render_structured_data(schema))\n",
-      "col_offset": 11,
-      "end_col_offset": 52,
-      "filename": "apps/portfolio\\templatetags\\schema_tags.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 79,
-        "link": "https://cwe.mitre.org/data/definitions/79.html"
-      },
-      "issue_severity": "MEDIUM",
-      "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 62,
-      "line_range": [
-        62
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
-      "test_id": "B308",
-      "test_name": "blacklist"
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
     }
   ]
 }

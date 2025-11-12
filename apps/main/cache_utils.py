@@ -352,7 +352,7 @@ def create_cache_invalidation_key(app: str, model: str, keys: List[str]) -> str:
         Invalidation key
     """
     content = f"{app}_{model}_{'_'.join(keys)}"
-    return hashlib.md5(content.encode()).hexdigest()
+    return hashlib.md5(content.encode(), usedforsecurity=False).hexdigest()
 
 
 def get_fallback_data(key: str) -> Optional[Dict[str, Any]]:

@@ -11,6 +11,9 @@ urlpatterns = [
     path("ai/", views.ai_tools_view, name="ai"),
     path("cybersecurity/", views.cybersecurity_view, name="cybersecurity"),
     path("useful/", views.useful_view, name="useful"),
+    # Projects/Portfolio URLs
+    path("projects/", views.projects_view, name="projects"),
+    path("projects/<slug:slug>/", views.project_detail_view, name="project_detail"),
     # Search URLs
     path("api/search/", search_views.search_api, name="search_api"),
     path("api/search/suggest/", search_views.search_suggest, name="search_suggest"),

@@ -450,7 +450,10 @@ class PrivacyCompliantAnalytics:
 
             # Assign new variant using consistent hashing
             hash_value = int(
-                hashlib.md5(f"{anonymous_id}{test_name}".encode()).hexdigest(), 16
+                hashlib.md5(
+                    f"{anonymous_id}{test_name}".encode(), usedforsecurity=False
+                ).hexdigest(),
+                16,
             )
             variant_index = hash_value % len(variants)
             assigned_variant = variants[variant_index]

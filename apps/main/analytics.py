@@ -13,9 +13,7 @@ logger = logging.getLogger(__name__)
 class Analytics:
     """Simple analytics tracker"""
 
-    def track_event(
-        self, event_type: str, data: dict = None, request: HttpRequest = None
-    ):
+    def track_event(self, request: HttpRequest, event_type: str, data: dict = None):
         """Track an analytics event"""
         event_data = {
             "type": event_type,
@@ -39,19 +37,29 @@ class Analytics:
         return event_data
 
     def track_page_view(
-        self, request: HttpRequest, page_title: str = None, page_path: str = None
+        self, request: HttpRequest, page_path: str = None, page_title: str = None
     ):
         """Track a page view"""
         if page_path is None:
             page_path = request.path
         return self.track_event(
+            request,
             "page_view",
             {
                 "title": page_title,
                 "url": request.build_absolute_uri(page_path),
                 "path": page_path,
             },
+        )
+
+    def track_conversion(
+        self, request: HttpRequest, conversion_type: str, data: dict = None
+    ):
+        """Track a conversion event"""
+        return self.track_event(
             request,
+            f"conversion_{conversion_type}",
+            data or {},
         )
 
     def track_contact_form_submission(self, request: HttpRequest, form_data: dict):
@@ -64,19 +72,19 @@ class Analytics:
             "message_length": len(form_data.get("message", "")),
         }
 
-        return self.track_event("contact_form_submission", safe_data, request)
+        return self.track_event(request, "contact_form_submission", safe_data)
 
     def track_playground_code_execution(
         self, request: HttpRequest, language: str, execution_time: float
     ):
         """Track playground code execution"""
         return self.track_event(
+            request,
             "playground_code_execution",
             {
                 "language": language,
                 "execution_time": execution_time,
             },
-            request,
         )
 
     def _get_client_ip(self, request: HttpRequest) -> str:

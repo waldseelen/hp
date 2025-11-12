@@ -219,7 +219,7 @@ def cache_key_generator(prefix: str, *args, **kwargs) -> str:
     # Create hash for very long keys
     key = "_".join(key_parts)
     if len(key) > 200:  # Most cache backends have key length limits
-        key_hash = hashlib.md5(key.encode()).hexdigest()
+        key_hash = hashlib.md5(key.encode(), usedforsecurity=False).hexdigest()
         key = f"{prefix}_{key_hash}"
 
     return key
@@ -285,7 +285,8 @@ def cached_template(timeout: int = 600, key_prefix: str = "template"):
         ):
             # Create cache key from template name and context
             context_hash = hashlib.md5(
-                json.dumps(context or {}, sort_keys=True, default=str).encode()
+                json.dumps(context or {}, sort_keys=True, default=str).encode(),
+                usedforsecurity=False,
             ).hexdigest()[:8]
 
             cache_key = cache_key_generator(key_prefix, template_name, context_hash)
@@ -313,7 +314,8 @@ class QueryCache:
         """Generate cache key for model operations."""
         model_name = f"{model_class._meta.app_label}_{model_class._meta.model_name}"
         filter_hash = hashlib.md5(
-            json.dumps(filters, sort_keys=True, default=str).encode()
+            json.dumps(filters, sort_keys=True, default=str).encode(),
+            usedforsecurity=False,
         ).hexdigest()[:8]
         return f"model_{model_name}_{operation}_{filter_hash}"
 
@@ -323,7 +325,9 @@ class QueryCache:
     ) -> List:
         """Cache QuerySet results with model-based invalidation."""
         model_class = queryset.model
-        query_hash = hashlib.md5(str(queryset.query).encode()).hexdigest()[:8]
+        query_hash = hashlib.md5(
+            str(queryset.query).encode(), usedforsecurity=False
+        ).hexdigest()[:8]
         cache_key = f"queryset_{model_class._meta.label_lower}_{query_hash}{key_suffix}"
 
         # Try cache

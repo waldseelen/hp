@@ -31,32 +31,55 @@
                 </header>
                 <form method="post" class="contact-form" data-validate novalidate>
                     {% csrf_token %}
+
+                    {# Display non-field errors #}
+                    {% if form.non_field_errors %}
+                    <div class="alert alert--error" role="alert">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
                     <input type="text" name="website" style="display:none !important;" tabindex="-1" autocomplete="off">
                     <div class="form-grid">
-                        <label class="form-field">
+                        <label class="form-field {% if form.name.errors %}form-field--error{% endif %}">
                             <span>{% trans 'Name' %} *</span>
-                            <input type="text" name="name" required placeholder="{% trans 'Adınız Soyadınız' %}" value="{{ form.name.value|default_if_none:'' }}">
+                            <input type="text" name="name" required placeholder="{% trans 'Adınız Soyadınız' %}" value="{{ form.name.value|default_if_none:'' }}" {% if form.name.errors %}aria-invalid="true" aria-describedby="name-error"{% endif %}>
+                            {% if form.name.errors %}
+                            <span class="form-error" id="name-error">{{ form.name.errors.0 }}</span>
+                            {% endif %}
                         </label>
-                        <label class="form-field">
+                        <label class="form-field {% if form.email.errors %}form-field--error{% endif %}">
                             <span>{% trans 'Email' %} *</span>
-                            <input type="email" name="email" required placeholder="name@example.com" value="{{ form.email.value|default_if_none:'' }}">
+                            <input type="email" name="email" required placeholder="name@example.com" value="{{ form.email.value|default_if_none:'' }}" {% if form.email.errors %}aria-invalid="true" aria-describedby="email-error"{% endif %}>
+                            {% if form.email.errors %}
+                            <span class="form-error" id="email-error">{{ form.email.errors.0 }}</span>
+                            {% endif %}
                         </label>
                     </div>
-                    <label class="form-field">
+                    <label class="form-field {% if form.subject.errors %}form-field--error{% endif %}">
                         <span>{% trans 'Project headline' %} *</span>
-                        <input type="text" name="subject" required placeholder="{% trans 'Örn. Fintech platformu için güvenlik denetimi' %}" value="{{ form.subject.value|default_if_none:'' }}">
+                        <input type="text" name="subject" required placeholder="{% trans 'Örn. Fintech platformu için güvenlik denetimi' %}" value="{{ form.subject.value|default_if_none:'' }}" {% if form.subject.errors %}aria-invalid="true" aria-describedby="subject-error"{% endif %}>
+                        {% if form.subject.errors %}
+                        <span class="form-error" id="subject-error">{{ form.subject.errors.0 }}</span>
+                        {% endif %}
                     </label>
-                    <label class="form-field">
+                    <label class="form-field {% if form.message.errors %}form-field--error{% endif %}">
                         <span>{% trans 'How can I help?' %} *</span>
-                        <textarea name="message" rows="6" required placeholder="{% trans 'Ekibiniz, ürününüz veya hedefiniz hakkında birkaç paragraf paylaşın.' %}">{{ form.message.value|default_if_none:'' }}</textarea>
+                        <textarea name="message" rows="6" required placeholder="{% trans 'Ekibiniz, ürününüz veya hedefiniz hakkında birkaç paragraf paylaşın.' %}" {% if form.message.errors %}aria-invalid="true" aria-describedby="message-error"{% endif %}>{{ form.message.value|default_if_none:'' }}</textarea>
+                        {% if form.message.errors %}
+                        <span class="form-error" id="message-error">{{ form.message.errors.0 }}</span>
+                        {% endif %}
                     </label>
-                    <label class="form-field">
+                    <label class="form-field {% if form.preferred_channel.errors %}form-field--error{% endif %}">
                         <span>{% trans 'Preferred response channel' %}</span>
-                        <select name="preferred_channel">
-                            <option value="email">{% trans 'Email' %}</option>
-                            <option value="calendly">{% trans 'Plan a call' %}</option>
-                            <option value="slack">{% trans 'Slack / Teams invite' %}</option>
+                        <select name="preferred_channel" {% if form.preferred_channel.errors %}aria-invalid="true" aria-describedby="channel-error"{% endif %}>
+                            <option value="email" {% if form.preferred_channel.value == 'email' or not form.preferred_channel.value %}selected{% endif %}>{% trans 'Email' %}</option>
+                            <option value="calendly" {% if form.preferred_channel.value == 'calendly' %}selected{% endif %}>{% trans 'Plan a call' %}</option>
+                            <option value="slack" {% if form.preferred_channel.value == 'slack' %}selected{% endif %}>{% trans 'Slack / Teams invite' %}</option>
                         </select>
+                        {% if form.preferred_channel.errors %}
+                        <span class="form-error" id="channel-error">{{ form.preferred_channel.errors.0 }}</span>
+                        {% endif %}
                     </label>
                     <div class="form-footer">
                         <p>{% trans 'Replies within 2 business days. Gizlilik garantili.' %}</p>

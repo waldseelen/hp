@@ -212,7 +212,9 @@ class StaticFileOptimizationMiddleware(MiddlewareMixin):
             if file_path and Path(file_path).exists():
                 file_stat = Path(file_path).stat()
                 etag_data = f"{file_stat.st_mtime}_{file_stat.st_size}_{path}"
-                etag = hashlib.md5(etag_data.encode()).hexdigest()[:16]
+                etag = hashlib.md5(
+                    etag_data.encode(), usedforsecurity=False
+                ).hexdigest()[:16]
                 return f'"{etag}"'
         except Exception as e:
             logger.error(f"Error generating ETag for {path}: {e}")

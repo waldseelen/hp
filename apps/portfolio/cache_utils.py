@@ -43,7 +43,9 @@ class CacheManager:
         # Add kwargs as sorted string
         if kwargs:
             kwargs_str = json.dumps(kwargs, sort_keys=True, default=str)
-            key_parts.append(hashlib.md5(kwargs_str.encode()).hexdigest()[:8])
+            key_parts.append(
+                hashlib.md5(kwargs_str.encode(), usedforsecurity=False).hexdigest()[:8]
+            )
 
         key = ":".join([prefix] + key_parts)
         return key[:250]  # Memcached key limit
@@ -224,7 +226,9 @@ class ModelCacheManager:
             return f"model:{model_name}:obj:{obj_id}"
         elif filter_params:
             params_str = json.dumps(filter_params, sort_keys=True)
-            params_hash = hashlib.md5(params_str.encode()).hexdigest()[:8]
+            params_hash = hashlib.md5(
+                params_str.encode(), usedforsecurity=False
+            ).hexdigest()[:8]
             return f"model:{model_name}:query:{params_hash}"
         else:
             return f"model:{model_name}:all"

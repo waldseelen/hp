@@ -148,7 +148,9 @@ class APICachingMiddleware:
             "auth" if request.user.is_authenticated else "anon",
         ]
         key_string = "|".join(key_parts)
-        key_hash = hashlib.md5(key_string.encode()).hexdigest()  # nosec
+        key_hash = hashlib.md5(
+            key_string.encode(), usedforsecurity=False
+        ).hexdigest()  # nosec
         return f"api_cache:{self.api_version}:{key_hash}"
 
     def _generate_etag(self, content):

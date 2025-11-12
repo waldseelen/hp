@@ -1,23 +1,18 @@
 {
-  "errors": [
-    {
-      "filename": "apps/portfolio\\test_views.py",
-      "reason": "syntax error while parsing AST from file"
-    }
-  ],
-  "generated_at": "2025-11-12T22:22:56Z",
+  "errors": [],
+  "generated_at": "2025-11-12T17:54:50Z",
   "metrics": {
     "_totals": {
-      "CONFIDENCE.HIGH": 110,
+      "CONFIDENCE.HIGH": 129,
       "CONFIDENCE.LOW": 2,
       "CONFIDENCE.MEDIUM": 7,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 19,
       "SEVERITY.LOW": 64,
       "SEVERITY.MEDIUM": 55,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 50018,
-      "nosec": 1,
+      "loc": 49181,
+      "nosec": 3,
       "skipped_tests": 23
     },
     "apps/__init__.py": {
@@ -458,7 +453,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 264,
+      "loc": 0,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -770,7 +765,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 84,
+      "loc": 75,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -783,7 +778,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 313,
+      "loc": 308,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -809,8 +804,8 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 82,
-      "nosec": 0,
+      "loc": 84,
+      "nosec": 1,
       "skipped_tests": 1
     },
     "apps/core\\__init__.py": {
@@ -836,19 +831,6 @@
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
       "loc": 266,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
-    "apps/core\\api_views.py": {
-      "CONFIDENCE.HIGH": 0,
-      "CONFIDENCE.LOW": 0,
-      "CONFIDENCE.MEDIUM": 0,
-      "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 0,
-      "SEVERITY.MEDIUM": 0,
-      "SEVERITY.UNDEFINED": 0,
-      "loc": 61,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -965,8 +947,8 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 242,
-      "nosec": 1,
+      "loc": 240,
+      "nosec": 2,
       "skipped_tests": 3
     },
     "apps/core\\middleware\\api_rate_limiting.py": {
@@ -1100,11 +1082,11 @@
       "skipped_tests": 0
     },
     "apps/core\\utils\\caching.py": {
-      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.HIGH": 1,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 1,
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
@@ -1412,11 +1394,11 @@
       "skipped_tests": 0
     },
     "apps/main\\cache_utils.py": {
-      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.HIGH": 1,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 1,
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
@@ -2408,7 +2390,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 33,
+      "loc": 31,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -2421,7 +2403,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 34,
+      "loc": 31,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -2486,7 +2468,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 380,
+      "loc": 377,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -2777,15 +2759,15 @@
       "skipped_tests": 0
     },
     "apps/portfolio\\analytics.py": {
-      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.HIGH": 1,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 1,
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 765,
+      "loc": 762,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -2829,15 +2811,15 @@
       "skipped_tests": 0
     },
     "apps/portfolio\\cache.py": {
-      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.HIGH": 4,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 4,
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 389,
+      "loc": 385,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -2855,28 +2837,28 @@
       "skipped_tests": 0
     },
     "apps/portfolio\\cache_keys.py": {
-      "CONFIDENCE.HIGH": 0,
-      "CONFIDENCE.LOW": 0,
-      "CONFIDENCE.MEDIUM": 0,
-      "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 0,
-      "SEVERITY.MEDIUM": 0,
-      "SEVERITY.UNDEFINED": 0,
-      "loc": 256,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
-    "apps/portfolio\\cache_utils.py": {
       "CONFIDENCE.HIGH": 1,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 1,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 254,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "apps/portfolio\\cache_utils.py": {
+      "CONFIDENCE.HIGH": 3,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 2,
       "SEVERITY.LOW": 1,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 238,
+      "loc": 234,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -3284,11 +3266,11 @@
       "skipped_tests": 0
     },
     "apps/portfolio\\middleware\\cache_middleware.py": {
-      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.HIGH": 4,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 3,
       "SEVERITY.LOW": 1,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
@@ -3336,15 +3318,15 @@
       "skipped_tests": 0
     },
     "apps/portfolio\\middleware\\static_optimization_middleware.py": {
-      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.HIGH": 1,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 1,
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 297,
+      "loc": 295,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -3622,11 +3604,11 @@
       "skipped_tests": 0
     },
     "apps/portfolio\\ratelimit.py": {
-      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.HIGH": 1,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 1,
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
@@ -3882,15 +3864,15 @@
       "skipped_tests": 0
     },
     "apps/portfolio\\templatetags\\cache_tags.py": {
-      "CONFIDENCE.HIGH": 6,
+      "CONFIDENCE.HIGH": 10,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
+      "SEVERITY.HIGH": 4,
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 6,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 197,
+      "loc": 191,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -3969,24 +3951,6 @@
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
       "loc": 27,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
-    "apps/portfolio\\test_portfolio_views.py": {
-      "CONFIDENCE.HIGH": 0,
-      "CONFIDENCE.LOW": 0,
-      "CONFIDENCE.MEDIUM": 0,
-      "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 0,
-      "SEVERITY.MEDIUM": 0,
-      "SEVERITY.UNDEFINED": 0,
-      "loc": 63,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
-    "apps/portfolio\\test_views.py": {
-      "loc": 320,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -4246,7 +4210,7 @@
       "SEVERITY.LOW": 1,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 683,
+      "loc": 671,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -4445,45 +4409,6 @@
       "nosec": 0,
       "skipped_tests": 0
     },
-    "apps/tools\\migrations\\0007_add_slug_field.py": {
-      "CONFIDENCE.HIGH": 0,
-      "CONFIDENCE.LOW": 0,
-      "CONFIDENCE.MEDIUM": 0,
-      "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 0,
-      "SEVERITY.MEDIUM": 0,
-      "SEVERITY.UNDEFINED": 0,
-      "loc": 17,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
-    "apps/tools\\migrations\\0008_populate_slugs.py": {
-      "CONFIDENCE.HIGH": 0,
-      "CONFIDENCE.LOW": 0,
-      "CONFIDENCE.MEDIUM": 0,
-      "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 0,
-      "SEVERITY.MEDIUM": 0,
-      "SEVERITY.UNDEFINED": 0,
-      "loc": 26,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
-    "apps/tools\\migrations\\0009_add_view_count_field.py": {
-      "CONFIDENCE.HIGH": 0,
-      "CONFIDENCE.LOW": 0,
-      "CONFIDENCE.MEDIUM": 0,
-      "CONFIDENCE.UNDEFINED": 0,
-      "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 0,
-      "SEVERITY.MEDIUM": 0,
-      "SEVERITY.UNDEFINED": 0,
-      "loc": 14,
-      "nosec": 0,
-      "skipped_tests": 0
-    },
     "apps/tools\\migrations\\__init__.py": {
       "CONFIDENCE.HIGH": 0,
       "CONFIDENCE.LOW": 0,
@@ -4506,7 +4431,7 @@
       "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 183,
+      "loc": 166,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -4551,6 +4476,46 @@
     }
   },
   "results": [
+    {
+      "code": "53         # Hash long keys to keep them short\n54         key_hash = hashlib.md5(key.encode()).hexdigest()\n55         return f\"{prefix}:{key_hash}\" if prefix else key_hash\n",
+      "col_offset": 19,
+      "end_col_offset": 44,
+      "filename": "apps/core\\utils\\caching.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 54,
+      "line_range": [
+        54
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "354     content = f\"{app}_{model}_{'_'.join(keys)}\"\n355     return hashlib.md5(content.encode()).hexdigest()\n356 \n",
+      "col_offset": 11,
+      "end_col_offset": 40,
+      "filename": "apps/main\\cache_utils.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 355,
+      "line_range": [
+        355
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
     {
       "code": "119         try:\n120             response = requests.get(api_url, params=params)\n121             response.raise_for_status()\n",
       "col_offset": 23,
@@ -4972,6 +4937,170 @@
       "test_name": "blacklist"
     },
     {
+      "code": "452             hash_value = int(\n453                 hashlib.md5(f\"{anonymous_id}{test_name}\".encode()).hexdigest(), 16\n454             )\n",
+      "col_offset": 16,
+      "end_col_offset": 66,
+      "filename": "apps/portfolio\\analytics.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 453,
+      "line_range": [
+        453
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "221     if len(key) > 200:  # Most cache backends have key length limits\n222         key_hash = hashlib.md5(key.encode()).hexdigest()\n223         key = f\"{prefix}_{key_hash}\"\n",
+      "col_offset": 19,
+      "end_col_offset": 44,
+      "filename": "apps/portfolio\\cache.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 222,
+      "line_range": [
+        222
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "286             # Create cache key from template name and context\n287             context_hash = hashlib.md5(\n288                 json.dumps(context or {}, sort_keys=True, default=str).encode()\n289             ).hexdigest()[:8]\n290 \n",
+      "col_offset": 27,
+      "end_col_offset": 13,
+      "filename": "apps/portfolio\\cache.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 287,
+      "line_range": [
+        287,
+        288,
+        289
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "314         model_name = f\"{model_class._meta.app_label}_{model_class._meta.model_name}\"\n315         filter_hash = hashlib.md5(\n316             json.dumps(filters, sort_keys=True, default=str).encode()\n317         ).hexdigest()[:8]\n318         return f\"model_{model_name}_{operation}_{filter_hash}\"\n",
+      "col_offset": 22,
+      "end_col_offset": 9,
+      "filename": "apps/portfolio\\cache.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 315,
+      "line_range": [
+        315,
+        316,
+        317
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "325         model_class = queryset.model\n326         query_hash = hashlib.md5(str(queryset.query).encode()).hexdigest()[:8]\n327         cache_key = f\"queryset_{model_class._meta.label_lower}_{query_hash}{key_suffix}\"\n",
+      "col_offset": 21,
+      "end_col_offset": 62,
+      "filename": "apps/portfolio\\cache.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 326,
+      "line_range": [
+        326
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "165             kwargs_str = json.dumps(kwargs, sort_keys=True, default=str)\n166             kwargs_hash = hashlib.md5(kwargs_str.encode()).hexdigest()[:8]\n167             key_parts.append(kwargs_hash)\n",
+      "col_offset": 26,
+      "end_col_offset": 58,
+      "filename": "apps/portfolio\\cache_keys.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 166,
+      "line_range": [
+        166
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "45             kwargs_str = json.dumps(kwargs, sort_keys=True, default=str)\n46             key_parts.append(hashlib.md5(kwargs_str.encode()).hexdigest()[:8])\n47 \n",
+      "col_offset": 29,
+      "end_col_offset": 61,
+      "filename": "apps/portfolio\\cache_utils.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 46,
+      "line_range": [
+        46
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "226             params_str = json.dumps(filter_params, sort_keys=True)\n227             params_hash = hashlib.md5(params_str.encode()).hexdigest()[:8]\n228             return f\"model:{model_name}:query:{params_hash}\"\n",
+      "col_offset": 26,
+      "end_col_offset": 58,
+      "filename": "apps/portfolio\\cache_utils.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 227,
+      "line_range": [
+        227
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
       "code": "67         try:\n68             response = requests.get(api_url, params=params)\n69             response.raise_for_status()\n",
       "col_offset": 23,
       "end_col_offset": 59,
@@ -5032,6 +5161,108 @@
       "test_name": "hardcoded_bind_all_interfaces"
     },
     {
+      "code": "136         if len(cache_key) > 200:\n137             cache_key = f\"api_response_{hashlib.md5(cache_key.encode()).hexdigest()}\"\n138 \n",
+      "col_offset": 40,
+      "end_col_offset": 71,
+      "filename": "apps/portfolio\\middleware\\cache_middleware.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 137,
+      "line_range": [
+        137
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "181         if not response.has_header(\"ETag\") and response.status_code == 200:\n182             etag = hashlib.md5(\n183                 f\"{request.path}_{response.content}\".encode()\n184             ).hexdigest()[:16]\n185             response[\"ETag\"] = f'\"{etag}\"'\n",
+      "col_offset": 19,
+      "end_col_offset": 13,
+      "filename": "apps/portfolio\\middleware\\cache_middleware.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 182,
+      "line_range": [
+        182,
+        183,
+        184
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "330             if len(cache_key) > 200:\n331                 cache_key = f\"{key_prefix}_{func.__name__}_{hashlib.md5(cache_key.encode()).hexdigest()}\"\n332 \n",
+      "col_offset": 60,
+      "end_col_offset": 91,
+      "filename": "apps/portfolio\\middleware\\cache_middleware.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 331,
+      "line_range": [
+        331
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "214                 etag_data = f\"{file_stat.st_mtime}_{file_stat.st_size}_{path}\"\n215                 etag = hashlib.md5(etag_data.encode()).hexdigest()[:16]\n216                 return f'\"{etag}\"'\n",
+      "col_offset": 23,
+      "end_col_offset": 54,
+      "filename": "apps/portfolio\\middleware\\static_optimization_middleware.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 215,
+      "line_range": [
+        215
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "70         identifier = f\"{ip}:{path}:{user_agent}\"\n71         key_hash = hashlib.md5(identifier.encode()).hexdigest()\n72         return f\"ratelimit:{key_hash}\"\n",
+      "col_offset": 19,
+      "end_col_offset": 51,
+      "filename": "apps/portfolio\\ratelimit.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 71,
+      "line_range": [
+        71
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
       "code": "193         temp_dirs = [\n194             \"/tmp\",\n195             os.path.join(settings.BASE_DIR, \"temp\"),\n196             (\n197                 os.path.join(settings.MEDIA_ROOT, \"temp\")\n198                 if hasattr(settings, \"MEDIA_ROOT\")\n199                 else None\n200             ),\n201         ]\n202 \n203         files_cleaned = 0\n",
       "col_offset": 12,
       "end_col_offset": 18,
@@ -5060,6 +5291,26 @@
       "test_name": "hardcoded_tmp_directory"
     },
     {
+      "code": "33     if len(cache_key) > 200:\n34         cache_key = f\"fragment_{hashlib.md5(cache_key.encode()).hexdigest()}\"\n35     else:\n",
+      "col_offset": 32,
+      "end_col_offset": 63,
+      "filename": "apps/portfolio\\templatetags\\cache_tags.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 34,
+      "line_range": [
+        34
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
       "code": "40     if cached_content is not None:\n41         return mark_safe(cached_content)\n42 \n",
       "col_offset": 15,
       "end_col_offset": 40,
@@ -5100,7 +5351,27 @@
       "test_name": "blacklist"
     },
     {
-      "code": "70     if cached_html is not None:\n71         return {\"cached_html\": mark_safe(cached_html)}\n72 \n",
+      "code": "61     # Build cache key from component name and context variables\n62     context_hash = hashlib.md5(str(sorted(kwargs.items())).encode()).hexdigest()[:8]\n63 \n",
+      "col_offset": 19,
+      "end_col_offset": 68,
+      "filename": "apps/portfolio\\templatetags\\cache_tags.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 62,
+      "line_range": [
+        62
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "68     if cached_html is not None:\n69         return {\"cached_html\": mark_safe(cached_html)}\n70 \n",
       "col_offset": 31,
       "end_col_offset": 53,
       "filename": "apps/portfolio\\templatetags\\cache_tags.py",
@@ -5111,16 +5382,16 @@
       },
       "issue_severity": "MEDIUM",
       "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 71,
+      "line_number": 69,
       "line_range": [
-        71
+        69
       ],
       "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
       "test_id": "B703",
       "test_name": "django_mark_safe"
     },
     {
-      "code": "70     if cached_html is not None:\n71         return {\"cached_html\": mark_safe(cached_html)}\n72 \n",
+      "code": "68     if cached_html is not None:\n69         return {\"cached_html\": mark_safe(cached_html)}\n70 \n",
       "col_offset": 31,
       "end_col_offset": 53,
       "filename": "apps/portfolio\\templatetags\\cache_tags.py",
@@ -5131,16 +5402,16 @@
       },
       "issue_severity": "MEDIUM",
       "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 71,
+      "line_number": 69,
       "line_range": [
-        71
+        69
       ],
       "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
       "test_id": "B308",
       "test_name": "blacklist"
     },
     {
-      "code": "81         cache_manager.set(cache_key, rendered_html, timeout)\n82         return {\"cached_html\": mark_safe(rendered_html)}\n83     except Exception as e:\n",
+      "code": "79         cache_manager.set(cache_key, rendered_html, timeout)\n80         return {\"cached_html\": mark_safe(rendered_html)}\n81     except Exception as e:\n",
       "col_offset": 31,
       "end_col_offset": 55,
       "filename": "apps/portfolio\\templatetags\\cache_tags.py",
@@ -5151,16 +5422,16 @@
       },
       "issue_severity": "MEDIUM",
       "issue_text": "Potential XSS on mark_safe function.",
-      "line_number": 82,
+      "line_number": 80,
       "line_range": [
-        82
+        80
       ],
       "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b703_django_mark_safe.html",
       "test_id": "B703",
       "test_name": "django_mark_safe"
     },
     {
-      "code": "81         cache_manager.set(cache_key, rendered_html, timeout)\n82         return {\"cached_html\": mark_safe(rendered_html)}\n83     except Exception as e:\n",
+      "code": "79         cache_manager.set(cache_key, rendered_html, timeout)\n80         return {\"cached_html\": mark_safe(rendered_html)}\n81     except Exception as e:\n",
       "col_offset": 31,
       "end_col_offset": 55,
       "filename": "apps/portfolio\\templatetags\\cache_tags.py",
@@ -5171,13 +5442,53 @@
       },
       "issue_severity": "MEDIUM",
       "issue_text": "Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.",
-      "line_number": 82,
+      "line_number": 80,
       "line_range": [
-        82
+        80
       ],
       "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b308-mark-safe",
       "test_id": "B308",
       "test_name": "blacklist"
+    },
+    {
+      "code": "251         # Build cache key\n252         filter_hash = hashlib.md5(str(sorted(filters.items())).encode()).hexdigest()[:8]\n253 \n",
+      "col_offset": 22,
+      "end_col_offset": 72,
+      "filename": "apps/portfolio\\templatetags\\cache_tags.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 252,
+      "line_range": [
+        252
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "258         # Fallback to simple cache key\n259         filter_hash = hashlib.md5(str(sorted(filters.items())).encode()).hexdigest()[:8]\n260         return f\"fallback_{model_name.lower()}_{action}_{filter_hash}\"\n",
+      "col_offset": 22,
+      "end_col_offset": 72,
+      "filename": "apps/portfolio\\templatetags\\cache_tags.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 259,
+      "line_range": [
+        259
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
     },
     {
       "code": "74 \n75     return format_html(\"<img {}>\", mark_safe(attr_string))\n76 \n",

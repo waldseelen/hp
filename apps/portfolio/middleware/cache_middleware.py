@@ -134,7 +134,7 @@ class APIResponseCacheMiddleware(MiddlewareMixin):
         # Create hash for long keys
         cache_key = "_".join(filter(None, key_parts))
         if len(cache_key) > 200:
-            cache_key = f"api_response_{hashlib.md5(cache_key.encode()).hexdigest()}"
+            cache_key = f"api_response_{hashlib.md5(cache_key.encode(), usedforsecurity=False).hexdigest()}"
 
         return cache_key
 
@@ -180,7 +180,7 @@ class CacheHeadersMiddleware(MiddlewareMixin):
         # Add ETag for better caching
         if not response.has_header("ETag") and response.status_code == 200:
             etag = hashlib.md5(
-                f"{request.path}_{response.content}".encode()
+                f"{request.path}_{response.content}".encode(), usedforsecurity=False
             ).hexdigest()[:16]
             response["ETag"] = f'"{etag}"'
 
@@ -328,7 +328,7 @@ def cache_function_result(timeout=300, key_prefix="func"):
 
             cache_key = "_".join(key_parts)
             if len(cache_key) > 200:
-                cache_key = f"{key_prefix}_{func.__name__}_{hashlib.md5(cache_key.encode()).hexdigest()}"
+                cache_key = f"{key_prefix}_{func.__name__}_{hashlib.md5(cache_key.encode(), usedforsecurity=False).hexdigest()}"
 
             # Try cache
             result = cache_manager.get(cache_key)

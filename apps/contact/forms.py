@@ -21,7 +21,7 @@ class ContactForm(forms.ModelForm):
 
     class Meta:
         model = ContactMessage
-        fields = ["name", "email", "subject", "message"]
+        fields = ["name", "email", "subject", "message", "preferred_channel"]
         widgets = {
             "name": forms.TextInput(
                 attrs={
@@ -46,6 +46,11 @@ class ContactForm(forms.ModelForm):
                     "placeholder": "Your message...",
                     "rows": 5,
                     "maxlength": 2000,
+                }
+            ),
+            "preferred_channel": forms.Select(
+                attrs={
+                    "class": "form-control",
                 }
             ),
         }

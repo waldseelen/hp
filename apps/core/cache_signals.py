@@ -90,7 +90,7 @@ def invalidate_tool_cache(sender, instance, **kwargs):
     - Similar tools
     """
     cache_keys = [
-        f"tool_detail_{instance.slug}",
+        f"tool_detail_{instance.pk}",
         f"tool_{instance.pk}",
         "tool_list",
         "featured_tools",
@@ -98,7 +98,7 @@ def invalidate_tool_cache(sender, instance, **kwargs):
 
     # Invalidate category cache
     if instance.category:
-        cache_keys.append(f"tool_category_{instance.category.slug}")
+        cache_keys.append(f"tool_category_{instance.category}")
 
     # Invalidate similar tools cache
     cache_keys.append(f"similar_tools_{instance.pk}")

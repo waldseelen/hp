@@ -31,7 +31,7 @@ def cache_fragment(context, fragment_name, timeout=600, vary_on=None):
     # Create hash for long keys
     cache_key = "_".join(key_parts)
     if len(cache_key) > 200:
-        cache_key = f"fragment_{hashlib.md5(cache_key.encode()).hexdigest()}"
+        cache_key = f"fragment_{hashlib.md5(cache_key.encode(), usedforsecurity=False).hexdigest()}"
     else:
         cache_key = f"fragment_{cache_key}"
 
@@ -59,7 +59,9 @@ def cached_component(context, component_name, template_name, timeout=600, **kwar
     Usage: {% cached_component "header" "components/header.html" 300 user=user %}
     """
     # Build cache key from component name and context variables
-    context_hash = hashlib.md5(str(sorted(kwargs.items())).encode()).hexdigest()[:8]
+    context_hash = hashlib.md5(
+        str(sorted(kwargs.items())).encode(), usedforsecurity=False
+    ).hexdigest()[:8]
 
     cache_key = f"component_{component_name}_{context_hash}"
 
@@ -249,14 +251,18 @@ def smart_cache_key(model_name, action="list", **filters):
             version = timezone.now().timestamp()
 
         # Build cache key
-        filter_hash = hashlib.md5(str(sorted(filters.items())).encode()).hexdigest()[:8]
+        filter_hash = hashlib.md5(
+            str(sorted(filters.items())).encode(), usedforsecurity=False
+        ).hexdigest()[:8]
 
         cache_key = f"smart_{model_name.lower()}_{action}_{version:.0f}_{filter_hash}"
         return cache_key
 
     except Exception:
         # Fallback to simple cache key
-        filter_hash = hashlib.md5(str(sorted(filters.items())).encode()).hexdigest()[:8]
+        filter_hash = hashlib.md5(
+            str(sorted(filters.items())).encode(), usedforsecurity=False
+        ).hexdigest()[:8]
         return f"fallback_{model_name.lower()}_{action}_{filter_hash}"
 
 

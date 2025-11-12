@@ -71,6 +71,12 @@ class Tool(models.Model):
     ]
 
     title = models.CharField(max_length=200, help_text="Name of the tool or resource")
+    slug = models.SlugField(
+        max_length=255,
+        unique=True,
+        blank=True,
+        help_text="URL-friendly version of title",
+    )
     description = models.TextField(
         help_text="Detailed description of what this tool does"
     )
@@ -109,6 +115,9 @@ class Tool(models.Model):
     )
     last_updated = models.DateField(
         blank=True, null=True, help_text="When this tool info was last updated"
+    )
+    view_count = models.PositiveIntegerField(
+        default=0, help_text="Number of times this tool has been viewed"
     )
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -156,6 +165,19 @@ class Tool(models.Model):
                     )
 
     def save(self, *args, **kwargs):
+        # Generate slug from title if not provided
+        if not self.slug:
+            from django.utils.text import slugify
+
+            base_slug = slugify(self.title)
+            slug = base_slug
+            counter = 1
+            # Ensure uniqueness
+            while Tool.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+
         # Clean tags list
         if self.tags:
             # Remove empty tags and strip whitespace
@@ -195,6 +217,12 @@ class Tool(models.Model):
         if not self.pricing:
             return None
         return self.pricing.lower() in ["free", "open source", "freemium"]
+
+    def increment_view_count(self):
+        """Increment view count atomically using F() expression"""
+        from django.db.models import F
+
+        Tool.objects.filter(pk=self.pk).update(view_count=F("view_count") + 1)
 
     def get_similar_tools(self, limit=3):
         """Get similar tools based on category and tags (delegates to manager)"""
