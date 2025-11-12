@@ -22,8 +22,8 @@ module.exports = defineConfig({
 
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [
-        ['html', { outputFolder: 'test-results/html-report' }],
-        ['json', { outputFile: 'test-results/results.json' }],
+        ['html', { outputFolder: 'playwright-report' }],
+        ['json', { outputFile: 'playwright-report/results.json' }],
         ['list']
     ],
 
@@ -91,7 +91,7 @@ module.exports = defineConfig({
     globalTeardown: './tests/e2e/global-teardown.js',
 
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-    outputDir: 'test-results/',
+    outputDir: 'test-artifacts/',
 
     /* Timeout for each test */
     timeout: 60000,
@@ -103,12 +103,12 @@ module.exports = defineConfig({
 
     /* Web Server configuration - automatically start Django server for tests */
     webServer: {
-        command: '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" manage.py runserver 127.0.0.1:8001',
+        command: 'python manage.py runserver 127.0.0.1:8001',
         url: 'http://127.0.0.1:8001',
-        reuseExistingServer: !process.env.CI,
-        timeout: 120 * 1000, // 2 minutes timeout
+        reuseExistingServer: true,
+        timeout: 60 * 1000, // 1 minute timeout
         env: {
-            DJANGO_SETTINGS_MODULE: 'portfolio_site.settings.test'
+            DJANGO_SETTINGS_MODULE: 'project.settings.simple'
         }
     },
 });
