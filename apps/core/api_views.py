@@ -28,7 +28,7 @@ def collect_performance_metric(request):
                 logger.debug(f"Performance metrics received: {data}")
 
         return JsonResponse(
-            {"status": "success", "message": "Metrics received"}, status=200
+            {"status": "success", "message": "Metrics received"}, status=201
         )
     except Exception as e:
         logger.warning(f"Error processing performance metric: {e}")
@@ -55,4 +55,4 @@ def performance_dashboard_data(request):
 
 def health_check(request):
     """Simple health check endpoint."""
-    return JsonResponse({"status": "ok"}, status=200)
+    return JsonResponse({"status": "healthy"}, status=200)

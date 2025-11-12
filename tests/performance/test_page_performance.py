@@ -155,8 +155,8 @@ class TestDatabaseQueryPerformance:
         self, client: Client, django_assert_num_queries, large_dataset
     ):
         """Blog list should use efficient queries"""
-        # Should use select_related for author to avoid N+1
-        with django_assert_num_queries(5):  # Adjust based on actual query count
+        # Optimized queries: 1) Count query, 2) Posts with select_related(author), 3) Social links
+        with django_assert_num_queries(3):  # Actual optimized query count
             response = client.get(reverse("blog:list"))
             assert response.status_code == 200
 
