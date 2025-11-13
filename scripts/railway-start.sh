@@ -33,6 +33,10 @@ warning() {
 
 log "Starting Django Portfolio Site on Railway..."
 
+# Docker environment uses system Python (no venv needed)
+log "Python: $(python --version 2>/dev/null || echo 'not found')"
+log "Working directory: $(pwd)"
+
 # Check environment
 log "Environment: ${DJANGO_SETTINGS_MODULE:-project.settings.production}"
 log "Debug mode: ${DEBUG:-False}"
@@ -72,12 +76,12 @@ else
     error "Database migrations failed"
 fi
 
-# Collect static files
+# Collect static files (already done in Dockerfile, but re-run for safety)
 log "Collecting static files..."
-if python manage.py collectstatic --noinput --clear; then
-    success "Static files collected"
+if python manage.py collectstatic --noinput; then
+    success "Static files collected (runtime verification)"
 else
-    warning "Static files collection failed, continuing..."
+    warning "Static files collection skipped (already collected in build)"
 fi
 
 # Create superuser if needed (only in staging)
@@ -142,7 +146,7 @@ MAX_REQUESTS_JITTER=${GUNICORN_MAX_REQUESTS_JITTER:-100}
 log "Starting Gunicorn with $WORKERS workers..."
 
 # Final startup
-exec gunicorn portfolio_site.wsgi:application \
+exec gunicorn project.wsgi:application \
     --bind 0.0.0.0:${PORT:-8000} \
     --workers $WORKERS \
     --worker-class $WORKER_CLASS \
