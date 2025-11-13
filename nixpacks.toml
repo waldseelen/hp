@@ -14,4 +14,4 @@ cmds = [
 ]
 
 [start]
-cmd = "bash scripts/railway-start.sh"
+cmd = ". /opt/venv/bin/activate && bash scripts/railway-start.sh"
