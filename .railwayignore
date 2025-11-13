@@ -87,9 +87,12 @@ temp/
 
 # Reports
 reports/
-*.json
 bandit_*.json
 radon_*.json
+# Keep package.json but exclude report JSONs
+!package.json
+!package-lock.json
+!railway.json
 
 # Archives
 archive/
