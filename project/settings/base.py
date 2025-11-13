@@ -302,6 +302,13 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
 
+# CSRF Trusted Origins (for Railway and custom domains)
+CSRF_TRUSTED_ORIGINS = config(
+    "CSRF_TRUSTED_ORIGINS",
+    default="https://*.railway.app",
+    cast=lambda v: [s.strip() for s in v.split(",") if s.strip()],
+)
+
 # Session configuration
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
