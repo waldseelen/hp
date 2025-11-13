@@ -2,10 +2,10 @@
     "$schema": "https://railway.app/railway.schema.json",
     "build": {
         "builder": "NIXPACKS",
-        "buildCommand": "export PATH=/opt/venv/bin:$PATH && npm run build:all && python manage.py collectstatic --noinput"
+        "nixpacksConfigPath": "nixpacks.toml"
     },
     "deploy": {
-        "startCommand": "bash scripts/railway-start.sh",
+        "startCommand": ". /opt/venv/bin/activate && bash scripts/railway-start.sh",
         "healthcheckPath": "/health/",
         "healthcheckTimeout": 300,
         "restartPolicyType": "ON_FAILURE",
