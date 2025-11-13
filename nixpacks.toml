@@ -8,8 +8,5 @@ cmds = [
     ". /opt/venv/bin/activate && pip install -r requirements.txt"
 ]
 
-[phases.build]
-cmd = "export PATH=/opt/venv/bin:$PATH && npm run build:all && python manage.py collectstatic --noinput"
-
 [start]
 cmd = "bash scripts/railway-start.sh"
