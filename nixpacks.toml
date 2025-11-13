@@ -9,7 +9,11 @@ cmds = [
 ]
 
 [phases.build]
-cmds = ["npm run build:all"]
+cmds = [
+    "mv manage.py manage.py.bak || true",
+    "npm run build:all",
+    "mv manage.py.bak manage.py || true"
+]
 
 [start]
 cmd = ". /opt/venv/bin/activate && bash scripts/railway-start.sh"
