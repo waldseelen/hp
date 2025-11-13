@@ -9,9 +9,9 @@ FROM node:20-alpine AS node-builder
 
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Copy package files and install ALL dependencies (including devDependencies for build)
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 # Copy source files needed for Tailwind build
 COPY static ./static
