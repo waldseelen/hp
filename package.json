@@ -49,7 +49,9 @@
         "axe:ci": "axe http://localhost:8000 --reporter json --output-file coverage/accessibility/axe-results.json",
         "accessibility:full": "node scripts/run-accessibility-tests.js",
         "accessibility:ci": "npm run accessibility:full",
-        "precommit:a11y": "npm run test:a11y"
+        "precommit:a11y": "npm run test:a11y",
+        "preview": "vite preview --host 0.0.0.0 --port 8080",
+        "start": "vite preview --host 0.0.0.0 --port 8080"
     },
     "repository": {
         "type": "git",
