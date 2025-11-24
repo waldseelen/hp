@@ -1,23 +1,25 @@
-# Cloud Run Kesin Çalışan Dockerfile
-# Node.js Frontend + Django Backend
+# 1. Zemin: Node.js 22 kullan (Uyarıları da çözer)
+FROM node:22-alpine
 
-FROM node:20-alpine
-
+# 2. Çalışma masasını hazırla
 WORKDIR /app
 
-# 1. Package dosyalarını kopyala
-COPY package.json package-lock.json ./
-RUN npm ci
+# 3. Dosyaları kopyala
+COPY package*.json ./
 
-# 2. Tüm projeyi kopyala
+# 4. KURULUM (Sihirli Dokunuş Burası)
+# --include=dev diyerek "Geliştirici araçlarını (Vite) da zorla yükle" diyoruz.
+RUN npm install --include=dev
+
+# 5. Projenin geri kalanını kopyala
 COPY . .
 
-# 3. Projeyi derle
+# 6. Uygulamayı derle (Build)
 RUN npm run build
 
-# 4. PORT'u 8080 olarak ayarla (Cloud Run gereksinimi)
+# 7. PORT ayarını yap
 ENV PORT=8080
 EXPOSE 8080
 
-# 5. Uygulamayı başlat - 0.0.0.0 ve 8080 portuna zorla
+# 8. Uygulamayı başlat
 CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "8080"]
