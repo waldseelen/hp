@@ -52,7 +52,7 @@
 - [ ] Railway project listele (doğrulama)
   ```
   MCP Tool: mcp_railway-mcp-s_list-projects
-  Command: List all Railway projects
+  Command: List all Railway projects    
   ```
 
 ### 2.2 Database Configuration
@@ -86,6 +86,32 @@
   ```
 
 ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 🚀 PHASE 3: Initial Deployment (MCP Automated)
 

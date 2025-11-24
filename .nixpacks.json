@@ -1,3 +1,6 @@
 {
-  "providers": ["node", "python"]
+    "providers": [
+        "node",
+        "python"
+    ]
 }
