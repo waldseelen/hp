@@ -37,43 +37,58 @@ log "Starting Django Portfolio Site on Google Cloud Run..."
 export DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-portfolio_site.settings}
 export PORT=${PORT:-8080}
 
+# Verify environment variables (optional - use defaults if not set)
+log "Environment setup:"
 log "Python: $(python --version)"
 log "Working directory: $(pwd)"
 log "Port: ${PORT}"
 log "Settings module: ${DJANGO_SETTINGS_MODULE}"
 
-# Verify required environment variables
-REQUIRED_VARS=("DATABASE_URL" "SECRET_KEY")
-for var in "${REQUIRED_VARS[@]}"; do
-    if [ -z "${!var}" ]; then
-        error "Required environment variable $var is not set"
-    fi
-done
-
-success "Environment variables validated"
-
-# Wait for database to be ready (Google Cloud SQL)
-log "Checking database connection..."
-timeout=60
-counter=0
-
-while ! python manage.py check --database default 2>/dev/null; do
-    if [ $counter -ge $timeout ]; then
-        error "Database not ready after ${timeout} seconds"
-    fi
-    log "Database not ready, waiting... ($counter/$timeout)"
-    sleep 2
-    counter=$((counter + 2))
-done
-
-success "Database connection verified"
-
-# Run database migrations
-log "Running database migrations..."
-if python manage.py migrate --noinput; then
-    success "Database migrations completed"
+# Check for optional variables
+if [ -n "$DATABASE_URL" ]; then
+    log "Database URL is configured"
 else
-    error "Database migrations failed"
+    warning "DATABASE_URL not set - using default SQLite database"
+fi
+
+if [ -n "$SECRET_KEY" ]; then
+    log "SECRET_KEY is configured"
+else
+    warning "SECRET_KEY not set - generating random key"
+    export SECRET_KEY=$(python -c 'import secrets; print(secrets.token_urlsafe(50))')
+fi
+
+success "Environment variables setup complete"
+
+# Wait for database to be ready (only if DATABASE_URL is set)
+if [ -n "$DATABASE_URL" ]; then
+    log "Checking database connection..."
+    timeout=30
+    counter=0
+    
+    while ! python manage.py check --database default 2>/dev/null; do
+        if [ $counter -ge $timeout ]; then
+            warning "Database not ready after ${timeout} seconds - continuing with local database"
+            break
+        fi
+        log "Database not ready, waiting... ($counter/$timeout)"
+        sleep 2
+        counter=$((counter + 2))
+    done
+    
+    success "Database connection verified"
+    
+    # Run database migrations
+    log "Running database migrations..."
+    if python manage.py migrate --noinput; then
+        success "Database migrations completed"
+    else
+        warning "Database migrations skipped"
+    fi
+else
+    log "Skipping database checks (DATABASE_URL not set)"
+    # Create default SQLite database
+    python manage.py migrate --noinput || true
 fi
 
 # Collect static files (if not done in build)

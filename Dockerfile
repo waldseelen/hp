@@ -83,22 +83,9 @@ USER appuser
 # Expose port (Google Cloud Run uses PORT env variable, default 8080)
 EXPOSE 8080
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-8080}/health/ || exit 1
+# Health check - Simple liveness check for root path
+HEALTHCHECK --interval=30s --timeout=3s --start-period=50s --retries=2 \
+    CMD curl -f http://localhost:${PORT:-8080}/ || exit 1
 
-# Start application
-CMD exec gunicorn portfolio_site.wsgi:application \
-    --bind 0.0.0.0:${PORT:-8080} \
-    --workers 2 \
-    --threads 4 \
-    --worker-class gthread \
-    --worker-tmp-dir /dev/shm \
-    --timeout 60 \
-    --graceful-timeout 30 \
-    --max-requests 1000 \
-    --max-requests-jitter 100 \
-    --preload \
-    --access-logfile - \
-    --error-logfile - \
-    --log-level info
+# Start application using startup script
+CMD ["bash", "scripts/gcloud-start.sh"]
