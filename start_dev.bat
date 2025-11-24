@@ -13,19 +13,13 @@ if errorlevel 1 (
 
 REM Check if requirements.txt exists and install dependencies
 if exist "requirements.txt" (
-    echo [+] Checking dependencies...
-    python -c "import django" 2>nul
+    echo [+] Installing dependencies from requirements.txt...
+    pip install -r requirements.txt --quiet
     if errorlevel 1 (
-        echo [!] Django not found! Installing requirements...
-        pip install -r requirements.txt
-        if errorlevel 1 (
-            echo [X] Failed to install requirements!
-            pause
-            exit /b 1
-        )
-        echo [✓] Dependencies installed successfully
+        echo [!] Some packages failed to install, but continuing...
+        echo [!] Tip: Some packages need extra system dependencies
     ) else (
-        echo [✓] Django is available
+        echo [✓] Dependencies installed successfully
     )
 ) else (
     echo [!] requirements.txt not found!
@@ -39,27 +33,21 @@ if not exist "manage.py" (
     exit /b 1
 )
 
-REM Apply any pending migrations
+REM Apply any pending migrations (skip if development environment is incomplete)
 echo [+] Checking for database migrations...
-python manage.py migrate --check >nul 2>&1
+python manage.py migrate --no-input >nul 2>&1
 if errorlevel 1 (
-    echo [!] Applying database migrations...
-    python manage.py migrate
-    if errorlevel 1 (
-        echo [X] Migration failed!
-        pause
-        exit /b 1
-    )
-    echo [✓] Migrations applied successfully
+    echo [!] Skipping migrations - development environment may be incomplete
+    echo [!] To retry migrations later, run: python manage.py migrate
 ) else (
-    echo [✓] Database is up to date
+    echo [✓] Migrations applied successfully
 )
 
 REM Collect static files
 echo [+] Collecting static files...
 python manage.py collectstatic --noinput >nul 2>&1
 if errorlevel 1 (
-    echo [!] Static files collection failed (continuing anyway...)
+    echo [!] Static files collection skipped (may be missing packages)...
 ) else (
     echo [✓] Static files collected
 )

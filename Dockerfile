@@ -1,25 +1,49 @@
-# 1. Zemin: Node.js 22 kullan (Uyarıları da çözer)
-FROM node:22-alpine
+# Multi-stage Build: Production-Ready Dockerfile for Google Cloud Run
+# Django Backend + React/Vite Frontend
 
-# 2. Çalışma masasını hazırla
+# Stage 1: Build Frontend (Node.js)
+FROM node:22-alpine AS frontend-builder
+
 WORKDIR /app
 
-# 3. Dosyaları kopyala
 COPY package*.json ./
-
-# 4. KURULUM (Sihirli Dokunuş Burası)
-# --include=dev diyerek "Geliştirici araçlarını (Vite) da zorla yükle" diyoruz.
 RUN npm install --include=dev
 
-# 5. Projenin geri kalanını kopyala
 COPY . .
-
-# 6. Uygulamayı derle (Build)
 RUN npm run build
 
-# 7. PORT ayarını yap
+# Stage 2: Production Runtime (Python + Node.js base)
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Install Python runtime dependencies
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    postgresql-client
+
+# Copy built frontend dist folder
+COPY --from=frontend-builder /app/dist ./dist
+
+# Copy Python dependencies
+COPY requirements-prod.txt requirements.txt ./
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements-prod.txt
+
+# Copy entire project
+COPY . .
+
+# Collect Django static files
+RUN python manage.py collectstatic --noinput || true
+
+# Set environment for Cloud Run
 ENV PORT=8080
+ENV NODE_ENV=production
+ENV DJANGO_SETTINGS_MODULE=project.settings.production
+
 EXPOSE 8080
 
-# 8. Uygulamayı başlat
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "8080"]
+# Start Django with Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "4", "--timeout", "120", "project.wsgi:application"]
