@@ -1,5 +1,6 @@
 # Multi-stage Build: Production-Ready Dockerfile for Google Cloud Run
 # Django Backend + React/Vite Frontend
+# Using Python-based image to avoid PEP 668 externally managed environment issues
 
 # Stage 1: Build Frontend (Node.js)
 FROM node:22-alpine AS frontend-builder
@@ -13,16 +14,26 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Stage 2: Production Runtime (Python + Node.js base)
-FROM node:22-alpine
+# Stage 2: Production Runtime (Python-based)
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install Python runtime dependencies
-RUN apk add --no-cache \
-    python3 \
-    py3-pip \
-    postgresql-client
+# Set Python environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install system dependencies including Node.js for any runtime needs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    gnupg \
+    postgresql-client \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy built frontend dist folder
 COPY --from=frontend-builder /app/dist ./dist
@@ -30,7 +41,7 @@ COPY --from=frontend-builder /app/dist ./dist
 # Copy Python dependencies
 COPY requirements-prod.txt requirements.txt ./
 
-# Install Python dependencies
+# Install Python dependencies (no PEP 668 issues with official Python image)
 RUN pip install --no-cache-dir -r requirements-prod.txt
 
 # Copy entire project
