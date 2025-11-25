@@ -11,4 +11,56 @@ from .base import *  # noqa: F401, F403
 # Production settings - Override base.py defaults
 DEBUG = False
 
-# ===...  # abbreviated version of full content for readability
+# ==========================================================================
+# ALLOWED_HOSTS - Add Cloud Run domains
+# ==========================================================================
+# Get hosts from environment variable and add Cloud Run domain pattern
+_allowed_hosts_env = os.environ.get("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = [host.strip() for host in _allowed_hosts_env if host.strip()]
+
+# Add Cloud Run domain pattern
+if ".run.app" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(".run.app")
+
+# Fallback for production (allow wildcard if no hosts configured)
+if not ALLOWED_HOSTS:
+    ALLOWED_HOSTS = ["*"]
+
+# ==========================================================================
+# CSRF_TRUSTED_ORIGINS - Add Cloud Run domains for CSRF protection
+# ==========================================================================
+# Get origins from environment variable
+_csrf_origins_env = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_origins_env if origin.strip()]
+
+# Add Cloud Run origins
+_cloud_run_origins = [
+    "https://*.run.app",
+]
+
+for origin in _cloud_run_origins:
+    if origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(origin)
+
+# ==========================================================================
+# SECURITY SETTINGS - Production hardening
+# ==========================================================================
+# Force HTTPS in production
+SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "True").lower() == "true"
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Session and CSRF cookies security
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+
+# HSTS settings
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Other security headers
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
