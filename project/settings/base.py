@@ -93,9 +93,9 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "apps.main.ratelimit.RateLimitMiddleware",  # Global rate limiting
     "apps.main.middleware.SecurityHeadersMiddleware",  # Custom security headers with CSP
-    "apps.main.middleware.static_optimization_middleware.TTFBOptimizationMiddleware",  # TTFB optimization
+    "apps.portfolio.middleware.static_optimization_middleware.TTFBOptimizationMiddleware",  # TTFB optimization
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "apps.main.middleware.static_optimization_middleware.StaticFileOptimizationMiddleware",  # Static file optimization
+    "apps.portfolio.middleware.static_optimization_middleware.StaticFileOptimizationMiddleware",  # Static file optimization
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -112,8 +112,8 @@ MIDDLEWARE = [
     "apps.main.middleware.PerformanceMiddleware",  # Performance monitoring
     "apps.main.middleware.apm_middleware.APMMiddleware",  # APM transaction tracking
     "apps.main.middleware.apm_middleware.DatabaseQueryTrackingMiddleware",  # Database query tracking
-    "apps.main.middleware.static_optimization_middleware.ResourceHintsMiddleware",  # Resource hints
-    "apps.main.middleware.static_optimization_middleware.StaticFileMetricsMiddleware",  # Static file metrics
+    "apps.portfolio.middleware.static_optimization_middleware.ResourceHintsMiddleware",  # Resource hints
+    "apps.portfolio.middleware.static_optimization_middleware.StaticFileMetricsMiddleware",  # Static file metrics
 ]
 
 ROOT_URLCONF = "project.urls"
