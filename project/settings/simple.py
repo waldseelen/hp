@@ -137,8 +137,11 @@ PERFORMANCE_BUDGETS = {
 
 # Authentication: restrict to single admin account via custom backend
 AUTHENTICATION_BACKENDS = [
-    "apps.main.auth_backends.RestrictedAdminBackend",
+    "django.contrib.auth.backends.ModelBackend",  # Enable standard DB login
 ]
+
+# Custom User Model (matches base.py)
+AUTH_USER_MODEL = "main.Admin"
 
 # Session cookie hardening (still okay in DEBUG for local dev)
 SESSION_COOKIE_HTTPONLY = True

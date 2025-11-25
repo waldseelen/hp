@@ -1,0 +1,236 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Panel - {{ page_title }}">
+    <title>{{ page_title }} - Admin Panel</title>
+    <link rel="stylesheet" href="{% static 'admin/zero-based/admin-style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar__header">
+                <div class="sidebar__brand">
+                    <div class="sidebar__logo">AP</div>
+                    <span class="sidebar__brand-text">Admin Panel</span>
+                </div>
+                <button class="sidebar__toggle" id="sidebarToggle" aria-label="Menüyü Aç/Kapat">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Sidebar Navigation -->
+            <nav class="sidebar__nav">
+                <!-- Ana Menü -->
+                <div class="nav-section">
+                    <h3 class="nav-section__title">Ana Menü</h3>
+                    <a href="{% url 'modern_admin:dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}nav-item--active{% endif %}">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                        </svg>
+                        <span class="nav-item__text">Dashboard</span>
+                    </a>
+                </div>
+
+                <!-- İçerik Yönetimi -->
+                <div class="nav-section">
+                    <h3 class="nav-section__title">İçerik</h3>
+                    <a href="{% url 'modern_admin:blog' %}" class="nav-item {% if request.resolver_match.url_name == 'blog' %}nav-item--active{% endif %}">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z"/>
+                            <path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/>
+                        </svg>
+                        <span class="nav-item__text">Blog Yazıları</span>
+                    </a>
+                    <a href="{% url 'modern_admin:cybersecurity' %}" class="nav-item {% if request.resolver_match.url_name == 'cybersecurity' %}nav-item--active{% endif %}">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                        </svg>
+                        <span class="nav-item__text">Siber Güvenlik</span>
+                    </a>
+                    <a href="{% url 'modern_admin:tools' %}" class="nav-item {% if request.resolver_match.url_name == 'tools' %}nav-item--active{% endif %}">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/>
+                        </svg>
+                        <span class="nav-item__text">Tools & AI</span>
+                    </a>
+                </div>
+
+                <!-- Ayarlar -->
+                <div class="nav-section">
+                    <h3 class="nav-section__title">Sistem</h3>
+                    <a href="/admin/" class="nav-item" target="_blank">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"/>
+                        </svg>
+                        <span class="nav-item__text">Django Admin</span>
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Sidebar Footer -->
+            <div class="sidebar__footer">
+                <div class="user-menu">
+                    <div class="user-menu__info">
+                        <div class="user-menu__avatar">{{ request.user.email.0|upper }}</div>
+                        <div class="user-menu__details">
+                            <div class="user-menu__name">{{ request.user.get_full_name|default:request.user.username }}</div>
+                            <div class="user-menu__role">Admin</div>
+                        </div>
+                    </div>
+                    <a href="{% url 'modern_admin:logout' %}" class="btn btn--ghost btn--sm">
+                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"/>
+                        </svg>
+                        Çıkış
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="top-bar__left">
+                    <h1 class="page-title">{{ page_title }}</h1>
+                </div>
+                <div class="top-bar__right">
+                    <button class="btn btn--ghost btn--icon" aria-label="Bildirimler">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zm0 16a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                        </svg>
+                        <span class="badge badge--danger">3</span>
+                    </button>
+                    <div class="user-avatar">{{ request.user.email.0|upper }}</div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content">
+                {% block content %}
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <!-- Blog Stats -->
+                    <div class="stat-card">
+                        <div class="stat-card__icon stat-card__icon--primary">
+                            <svg viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-card__content">
+                            <h3 class="stat-card__title">Blog Yazıları</h3>
+                            <p class="stat-card__value">{{ stats.blog.total }}</p>
+                            <p class="stat-card__label">{{ stats.blog.published }} Yayında, {{ stats.blog.draft }} Taslak</p>
+                        </div>
+                    </div>
+
+                    <!-- Tools Stats -->
+                    <div class="stat-card">
+                        <div class="stat-card__icon stat-card__icon--success">
+                            <svg viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-card__content">
+                            <h3 class="stat-card__title">Tools</h3>
+                            <p class="stat-card__value">{{ stats.tools.total }}</p>
+                            <p class="stat-card__label">{{ stats.tools.visible }} Görünür</p>
+                        </div>
+                    </div>
+
+                    <!-- AI Tools Stats -->
+                    <div class="stat-card">
+                        <div class="stat-card__icon stat-card__icon--warning">
+                            <svg viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M13 7H7v6h6V7z"/>
+                                <path fill-rule="evenodd" d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1V9H2a1 1 0 010-2h1V5a2 2 0 012-2h2V2z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-card__content">
+                            <h3 class="stat-card__title">AI Tools</h3>
+                            <p class="stat-card__value">{{ stats.ai_tools.total }}</p>
+                            <p class="stat-card__label">{{ stats.ai_tools.featured }} Öne Çıkan</p>
+                        </div>
+                    </div>
+
+                    <!-- Cybersecurity Stats -->
+                    <div class="stat-card">
+                        <div class="stat-card__icon stat-card__icon--danger">
+                            <svg viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-card__content">
+                            <h3 class="stat-card__title">Siber Güvenlik</h3>
+                            <p class="stat-card__value">{{ stats.cybersecurity.total }}</p>
+                            <p class="stat-card__label">{{ stats.cybersecurity.urgent }} Acil, {{ stats.cybersecurity.critical }} Kritik</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card__header">
+                        <h2 class="card__title">Son Aktiviteler</h2>
+                        <a href="{% url 'modern_admin:blog' %}" class="btn btn--ghost btn--sm">Tümünü Gör</a>
+                    </div>
+                    <div class="card__body">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Başlık</th>
+                                        <th>Tip</th>
+                                        <th>Durum</th>
+                                        <th>Tarih</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for post in recent_activities.blog_posts %}
+                                    <tr>
+                                        <td>{{ post.title }}</td>
+                                        <td><span class="badge badge--info">Blog</span></td>
+                                        <td>
+                                            {% if post.status == 'published' %}
+                                            <span class="badge badge--success">Yayında</span>
+                                            {% elif post.status == 'draft' %}
+                                            <span class="badge badge--warning">Taslak</span>
+                                            {% else %}
+                                            <span class="badge badge--secondary">{{ post.get_status_display }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ post.created_at|date:"d.m.Y H:i" }}</td>
+                                        <td>
+                                            <a href="/admin/blog/post/{{ post.id }}/change/" class="btn btn--ghost btn--sm" target="_blank">Düzenle</a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">Henüz aktivite yok</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script src="{% static 'admin/zero-based/admin-script.js' %}"></script>
+</body>
+</html>

@@ -96,7 +96,10 @@ urlpatterns = [
     # path('api/logs/alerts/', log_alerts_api, name='api_log_alerts'),
     # path('api/logs/acknowledge/', acknowledge_alert_api, name='api_acknowledge_alert'),
     # path('api/logs/export/', log_export_view, name='api_log_export'),
-    # Admin (language-independent)
+    # Modern Admin Panel (Custom)
+    path("panel/", include("apps.core.admin_urls")),
+
+    # Django Admin (language-independent)
     path("admin/", admin.site.urls),
     # TinyMCE Rich Text Editor
     path("tinymce/", include("tinymce.urls")),

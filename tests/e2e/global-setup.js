@@ -13,7 +13,7 @@ async function globalSetup(config) {
 
     try {
         // Wait for server to be ready
-        const baseURL = config.use?.baseURL || 'http://127.0.0.1:8001';
+        const baseURL = config.use?.baseURL || 'http://127.0.0.1:8000';
         console.log(`📡 Checking server availability at ${baseURL}...`);
 
         let retries = 0;

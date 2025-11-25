@@ -7,7 +7,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
     plugins: [
-    // Tailwind CSS
+        // Tailwind CSS
         require('@tailwindcss/postcss'),
 
         // Autoprefixer for vendor prefixes
@@ -83,11 +83,49 @@ module.exports = {
                     'skip-nav',
                     'sr-only',
                     'focus-visible',
+                    'login-page',
+                    'login-card',
+                    'login-layout',
+                    'login-form',
+                    'form-field',
+                    'alert',
+                    'alert--danger',
+                    'lockout-page',
+                    'lockout-container',
+                    'lockout-card',
+                    'lockout-countdown__ready',
+                    'search-dashboard',
+                    'status-card',
+                    'status-header',
+                    'status-badge',
+                    'status-card__details',
+                    'status-card__list',
+                    'status-card__note',
+                    'metric-grid',
+                    'metric-item',
+                    'metric-value',
+                    'metric-label',
+                    'query-log',
+                    'query-item',
+                    'query-item__timestamp',
+                    'query-item__error',
+                    'query-empty',
+                    'status-actions',
+                    'refresh-button',
+                    'sidebar-toggle',
+                    'admin-branding',
+                    'admin-brand',
+                    'admin-user-tools',
+                    'admin-sidebar-collapsed',
+                    'admin-enhanced',
+                    'admin-reduced-motion',
 
                     // Dynamic background and text colors
                     /^bg-/,
                     /^text-/,
                     /^border-/,
+                    /^status-/,
+                    /^latency-/,
                 ],
 
                 // Patterns for whitelist

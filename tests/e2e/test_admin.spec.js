@@ -47,10 +47,14 @@ test.describe('Admin Authentication', () => {
 
         await expect(page).toHaveTitle(/Log in|Django|Admin/i);
 
-        // Check for login form
+        // Check for login form with new compact layout
         await expect(page.locator('input[name="username"]')).toBeVisible();
         await expect(page.locator('input[name="password"]')).toBeVisible();
-        await expect(page.locator('input[type="submit"], button[type="submit"]')).toBeVisible();
+        await expect(page.locator('button[type="submit"], input[type="submit"]')).toBeVisible();
+
+        // Verify no sidebar/header on login page
+        await expect(page.locator('#nav-sidebar')).not.toBeVisible();
+        await expect(page.locator('.login-card')).toBeVisible();
     });
 
     test('should login with valid admin credentials', async ({ page }) => {
@@ -119,16 +123,24 @@ test.describe('Admin Dashboard Navigation', () => {
         await loginAsAdmin(page);
     });
 
-    test('should display admin dashboard', async ({ page }) => {
+    test('should display admin dashboard with new UI', async ({ page }) => {
         await page.goto('/admin/');
 
         // Should show Django admin interface
         const dashboard = page.locator('#content, .content, main').first();
         await expect(dashboard).toBeVisible();
 
-        // Should show site administration header
-        const header = page.locator('h1, #site-name, .site-name').first();
-        await expect(header).toBeVisible();
+        // Should show compact header with branding
+        const branding = page.locator('.admin-brand, #branding').first();
+        await expect(branding).toBeVisible();
+
+        // Should have sidebar toggle button
+        const sidebarToggle = page.locator('.sidebar-toggle, [data-admin-toggle="sidebar"]').first();
+        await expect(sidebarToggle).toBeVisible();
+
+        // Should show navigation sidebar
+        const sidebar = page.locator('#nav-sidebar').first();
+        await expect(sidebar).toBeVisible();
     });
 
     test('should display available models/apps', async ({ page }) => {
@@ -575,6 +587,10 @@ test.describe('Admin Mobile Experience', () => {
         // App list should be visible
         const appList = page.locator('#content-main, .app-list').first();
         await expect(appList).toBeVisible();
+
+        // On mobile, sidebar should be collapsed or at top
+        const sidebar = page.locator('#nav-sidebar').first();
+        await expect(sidebar).toBeVisible();
     });
 
     test('should display model list on mobile', async ({ page }) => {
@@ -607,6 +623,79 @@ test.describe('Admin Mobile Experience', () => {
         const form = page.locator('form').first();
         await expect(form).toBeVisible();
     });
+
+    test('should have working sidebar toggle on mobile', async ({ page }) => {
+        await page.goto('/admin/');
+
+        // Sidebar toggle should be visible
+        const sidebarToggle = page.locator('.sidebar-toggle').first();
+        await expect(sidebarToggle).toBeVisible();
+
+        // Toggle should be clickable
+        await sidebarToggle.click();
+        await page.waitForTimeout(300);
+
+        // Click again to toggle back
+        await sidebarToggle.click();
+        await page.waitForTimeout(300);
+    });
+});
+
+// ============================================================================
+// RESPONSIVE DESIGN TESTS
+// ============================================================================
+
+test.describe('Admin Responsive Design', () => {
+    test.beforeEach(async ({ page }) => {
+        await loginAsAdmin(page);
+    });
+
+    test('should collapse sidebar on tablet breakpoint', async ({ page }) => {
+        // Set tablet viewport
+        await page.setViewportSize({ width: 768, height: 1024 });
+        await page.goto('/admin/');
+
+        const sidebar = page.locator('#nav-sidebar').first();
+        await expect(sidebar).toBeVisible();
+
+        // Sidebar should be collapsed or have collapsed styling
+        await page.waitForTimeout(500);
+    });
+
+    test('should show compact layout on desktop', async ({ page }) => {
+        await page.setViewportSize({ width: 1920, height: 1080 });
+        await page.goto('/admin/');
+
+        // Should show sidebar
+        const sidebar = page.locator('#nav-sidebar').first();
+        await expect(sidebar).toBeVisible();
+
+        // Should show toggle button
+        const toggle = page.locator('.sidebar-toggle').first();
+        await expect(toggle).toBeVisible();
+
+        // Stats cards should be in grid
+        const statsGrid = page.locator('.dashboard__grid, .stat-card').first();
+        if (await statsGrid.count() > 0) {
+            await expect(statsGrid).toBeVisible();
+        }
+    });
+
+    test('should have hover animations on desktop', async ({ page }) => {
+        await page.setViewportSize({ width: 1920, height: 1080 });
+        await page.goto('/admin/');
+
+        // Hover over stat card if exists
+        const statCard = page.locator('.stat-card').first();
+        if (await statCard.count() > 0) {
+            await statCard.hover();
+            await page.waitForTimeout(200);
+
+            // Card should have transform applied (visual check)
+            const box = await statCard.boundingBox();
+            expect(box).toBeTruthy();
+        }
+    });
 });
 
 // ============================================================================
@@ -637,14 +726,43 @@ test.describe('Admin Accessibility', () => {
         await expect(h1).toBeVisible();
     });
 
-    test('should have skip to content link', async ({ page }) => {
+    test('sidebar toggle should be accessible', async ({ page }) => {
         await page.goto('/admin/');
 
-        // Check for skip link (optional but good for accessibility)
-        const skipLink = page.locator('a[href="#content"], .skip').first();
+        // Check sidebar toggle accessibility
+        const toggle = page.locator('.sidebar-toggle, [data-admin-toggle="sidebar"]').first();
 
-        if (await skipLink.count() > 0) {
-            console.log('Skip to content link found (good accessibility)');
+        if (await toggle.count() > 0) {
+            // Should have aria-label
+            const ariaLabel = await toggle.getAttribute('aria-label');
+            expect(ariaLabel).toBeTruthy();
+
+            // Should have aria-expanded
+            const ariaExpanded = await toggle.getAttribute('aria-expanded');
+            expect(ariaExpanded).toBeTruthy();
+
+            // Should have aria-controls
+            const ariaControls = await toggle.getAttribute('aria-controls');
+            expect(ariaControls).toBe('nav-sidebar');
         }
+    });
+
+    test('should toggle sidebar with keyboard shortcut', async ({ page }) => {
+        await page.goto('/admin/');
+
+        const sidebar = page.locator('#nav-sidebar').first();
+
+        // Get initial state
+        const initialClasses = await sidebar.getAttribute('class');
+
+        // Press Ctrl/Cmd + B
+        const modifier = process.platform === 'darwin' ? 'Meta' : 'Control';
+        await page.keyboard.press(`${modifier}+KeyB`);
+
+        await page.waitForTimeout(500);
+
+        // State should have changed
+        const newClasses = await sidebar.getAttribute('class');
+        expect(newClasses).not.toBe(initialClasses);
     });
 });

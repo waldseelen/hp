@@ -1,0 +1,296 @@
+{% extends 'admin/modern/dashboard.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Actions -->
+<div class="page-actions" style="margin-bottom: 24px;">
+    <a href="/admin/tools/tool/add/" class="btn btn--primary" target="_blank">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+        </svg>
+        Tool Ekle
+    </a>
+    <a href="/admin/main/aitool/add/" class="btn btn--secondary" target="_blank">
+        AI Tool Ekle
+    </a>
+    <a href="/admin/main/usefulresource/add/" class="btn btn--ghost" target="_blank">
+        Useful Resource Ekle
+    </a>
+</div>
+
+<!-- Stats Overview -->
+<div class="stats-grid" style="margin-bottom: 32px;">
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--primary">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <h3 class="stat-card__title">Tools</h3>
+            <p class="stat-card__value">{{ tools.count }}</p>
+            <p class="stat-card__label">{{ tools|selectattr:"is_visible"|length }} Görünür</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--success">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13 7H7v6h6V7z"/>
+                <path fill-rule="evenodd" d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1V9H2a1 1 0 010-2h1V5a2 2 0 012-2h2V2z"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <h3 class="stat-card__title">AI Tools</h3>
+            <p class="stat-card__value">{{ ai_tools.count }}</p>
+            <p class="stat-card__label">{{ ai_tools|selectattr:"is_featured"|length }} Öne Çıkan</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--warning">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <h3 class="stat-card__title">Useful Resources</h3>
+            <p class="stat-card__value">{{ useful_resources.count }}</p>
+            <p class="stat-card__label">{{ useful_resources|selectattr:"is_free"|length }} Ücretsiz</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--info">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <h3 class="stat-card__title">Favoriler</h3>
+            <p class="stat-card__value">{{ tools|selectattr:"is_favorite"|length|add:ai_tools|selectattr:"is_featured"|length }}</p>
+            <p class="stat-card__label">Öne çıkan içerikler</p>
+        </div>
+    </div>
+</div>
+
+<!-- Tools Table -->
+<div class="card" style="margin-bottom: 24px;">
+    <div class="card__header">
+        <h2 class="card__title">Tools (apps.tools)</h2>
+        <a href="/admin/tools/tool/" class="btn btn--ghost btn--sm" target="_blank">Django Admin'de Yönet</a>
+    </div>
+    <div class="card__body">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Başlık</th>
+                        <th>Kategori</th>
+                        <th>Rating</th>
+                        <th>Fiyat</th>
+                        <th>Durum</th>
+                        <th>Tarih</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tool in tools|slice:":10" %}
+                    <tr>
+                        <td>
+                            <strong>{{ tool.title }}</strong>
+                            {% if tool.is_favorite %}
+                            <span class="badge badge--warning" style="margin-left: 8px;">⭐</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge badge--info">{{ tool.category }}</span></td>
+                        <td>
+                            {% if tool.rating %}
+                            <span style="color: #f59e0b;">{{ "⭐"|multiply:tool.rating }}</span>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if tool.pricing == 'free' %}
+                            <span class="badge badge--success">Ücretsiz</span>
+                            {% elif tool.pricing == 'paid' %}
+                            <span class="badge badge--danger">Ücretli</span>
+                            {% elif tool.pricing == 'freemium' %}
+                            <span class="badge badge--warning">Freemium</span>
+                            {% else %}
+                            {{ tool.get_pricing_display }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if tool.is_visible %}
+                            <span class="badge badge--success">👁️ Görünür</span>
+                            {% else %}
+                            <span class="badge badge--secondary">🔒 Gizli</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ tool.created_at|date:"d.m.Y" }}</td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="/admin/tools/tool/{{ tool.id }}/change/" class="btn btn--ghost btn--sm" target="_blank">Düzenle</a>
+                                {% if tool.url %}
+                                <a href="{{ tool.url }}" class="btn btn--ghost btn--sm" target="_blank">Link</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">Henüz tool yok</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- AI Tools Table -->
+<div class="card" style="margin-bottom: 24px;">
+    <div class="card__header">
+        <h2 class="card__title">AI Tools (apps.main)</h2>
+        <a href="/admin/main/aitool/" class="btn btn--ghost btn--sm" target="_blank">Django Admin'de Yönet</a>
+    </div>
+    <div class="card__body">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ad</th>
+                        <th>Kategori</th>
+                        <th>Rating</th>
+                        <th>Ücretsiz</th>
+                        <th>Durum</th>
+                        <th>Sıra</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tool in ai_tools|slice:":10" %}
+                    <tr>
+                        <td>
+                            <strong>{{ tool.name }}</strong>
+                            {% if tool.is_featured %}
+                            <span class="badge badge--warning" style="margin-left: 8px;">⭐</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge badge--primary">{{ tool.category }}</span></td>
+                        <td>
+                            {% if tool.rating %}
+                            <span style="color: #f59e0b;">{{ "⭐"|multiply:tool.rating|floatformat:0 }}</span>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if tool.is_free %}
+                            <span class="badge badge--success">✅ Ücretsiz</span>
+                            {% else %}
+                            <span class="badge badge--secondary">💰 Ücretli</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if tool.is_visible %}
+                            <span class="badge badge--success">👁️ Görünür</span>
+                            {% else %}
+                            <span class="badge badge--secondary">🔒 Gizli</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ tool.order }}</td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="/admin/main/aitool/{{ tool.id }}/change/" class="btn btn--ghost btn--sm" target="_blank">Düzenle</a>
+                                {% if tool.url %}
+                                <a href="{{ tool.url }}" class="btn btn--ghost btn--sm" target="_blank">Link</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">Henüz AI tool yok</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Useful Resources Table -->
+<div class="card">
+    <div class="card__header">
+        <h2 class="card__title">Useful Resources (apps.main)</h2>
+        <a href="/admin/main/usefulresource/" class="btn btn--ghost btn--sm" target="_blank">Django Admin'de Yönet</a>
+    </div>
+    <div class="card__body">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ad</th>
+                        <th>Kategori</th>
+                        <th>Tip</th>
+                        <th>Rating</th>
+                        <th>Ücretsiz</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resource in useful_resources|slice:":10" %}
+                    <tr>
+                        <td>
+                            <strong>{{ resource.name }}</strong>
+                            {% if resource.is_featured %}
+                            <span class="badge badge--warning" style="margin-left: 8px;">⭐</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge badge--info">{{ resource.category }}</span></td>
+                        <td><span class="badge badge--secondary">{{ resource.type }}</span></td>
+                        <td>
+                            {% if resource.rating %}
+                            <span style="color: #f59e0b;">{{ "⭐"|multiply:resource.rating|floatformat:0 }}</span>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if resource.is_free %}
+                            <span class="badge badge--success">✅ Ücretsiz</span>
+                            {% else %}
+                            <span class="badge badge--secondary">💰 Ücretli</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if resource.is_visible %}
+                            <span class="badge badge--success">👁️ Görünür</span>
+                            {% else %}
+                            <span class="badge badge--secondary">🔒 Gizli</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="/admin/main/usefulresource/{{ resource.id }}/change/" class="btn btn--ghost btn--sm" target="_blank">Düzenle</a>
+                                {% if resource.url %}
+                                <a href="{{ resource.url }}" class="btn btn--ghost btn--sm" target="_blank">Link</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">Henüz useful resource yok</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

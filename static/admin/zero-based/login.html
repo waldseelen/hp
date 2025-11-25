@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Panel - Güvenli Giriş">
+    <title>Giriş Yap - Admin Panel</title>
+    <link rel="stylesheet" href="admin-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Login sayfası için ekstra güvenlik - sidebar kesinlikle gözükmesin */
+        .sidebar,
+        .admin-layout,
+        aside {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+
+<body class="login-body">
+    <!-- Login Page Container -->
+    <div class="login-page">
+        <!-- Login Card -->
+        <div class="login-card">
+            <!-- Header -->
+            <header class="login-header">
+                <div class="login-logo" aria-label="Admin Panel Logo">
+                    AP
+                </div>
+                <h1 class="login-title">Hoş Geldiniz</h1>
+                <p class="login-subtitle">Devam etmek için hesabınıza giriş yapın</p>
+            </header>
+
+            <!-- Login Form -->
+            <form class="login-form" id="loginForm" novalidate>
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="email" class="form-label form-label--required">
+                        E-posta Adresi
+                    </label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="ornek@domain.com"
+                        autocomplete="email" required aria-describedby="email-error">
+                    <div class="form-error" id="email-error" role="alert" style="display: none;">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 0a8 8 0 100 16A8 8 0 008 0zM7 4h2v5H7V4zm0 6h2v2H7v-2z" />
+                        </svg>
+                        <span id="email-error-text">Geçerli bir e-posta adresi giriniz</span>
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="password" class="form-label form-label--required">
+                        Şifre
+                    </label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="••••••••"
+                        autocomplete="current-password" required minlength="6" aria-describedby="password-error">
+                    <div class="form-error" id="password-error" role="alert" style="display: none;">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 0a8 8 0 100 16A8 8 0 008 0zM7 4h2v5H7V4zm0 6h2v2H7v-2z" />
+                        </svg>
+                        <span id="password-error-text">Şifre en az 6 karakter olmalıdır</span>
+                    </div>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="login-extras">
+                    <label class="login-remember">
+                        <input type="checkbox" id="remember" name="remember" class="form-checkbox">
+                        <span>Beni Hatırla</span>
+                    </label>
+                    <a href="#" class="login-forgot">Şifremi Unuttum?</a>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn--primary w-full">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-2 0V4H5v12h10v-2a1 1 0 112 0v3a1 1 0 01-1 1H4a1 1 0 01-1-1V3z" />
+                        <path
+                            d="M13 10a1 1 0 011-1h3.586l-1.293-1.293a1 1 0 011.414-1.414l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L17.586 11H14a1 1 0 01-1-1z" />
+                    </svg>
+                    Giriş Yap
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <footer class="login-footer">
+                <p>© 2024 Admin Panel. Tüm hakları saklıdır.</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="admin-script.js"></script>
+</body>
+
+</html>

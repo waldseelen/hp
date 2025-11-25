@@ -1,0 +1,212 @@
+{% extends 'admin/modern/dashboard.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Actions -->
+<div class="page-actions" style="margin-bottom: 24px;">
+    <a href="/admin/blog/post/add/" class="btn btn--primary" target="_blank">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+        </svg>
+        Yeni Blog Yazısı Ekle
+    </a>
+    <a href="/admin/main/blogpost/add/" class="btn btn--secondary" target="_blank">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+        </svg>
+        Main Blog Post Ekle
+    </a>
+</div>
+
+<!-- Stats Overview -->
+<div class="stats-grid" style="margin-bottom: 32px;">
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--primary">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <h3 class="stat-card__title">Toplam Blog Yazısı</h3>
+            <p class="stat-card__value">{{ posts.count|add:blog_posts.count }}</p>
+            <p class="stat-card__label">{{ posts.count }} Post, {{ blog_posts.count }} BlogPost</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--success">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <h3 class="stat-card__title">Yayında</h3>
+            <p class="stat-card__value">{{ posts|selectattr:"status"|selectattr:"published"|length }}</p>
+            <p class="stat-card__label">Aktif içerikler</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--warning">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <h3 class="stat-card__title">Taslak</h3>
+            <p class="stat-card__value">{{ posts|selectattr:"status"|selectattr:"draft"|length }}</p>
+            <p class="stat-card__label">Bekleyen yazılar</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--info">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <h3 class="stat-card__title">Görüntülenme</h3>
+            <p class="stat-card__value">{{ posts|sum:attribute='view_count'|default:0 }}</p>
+            <p class="stat-card__label">Toplam görüntülenme</p>
+        </div>
+    </div>
+</div>
+
+<!-- Blog Posts Table (apps.blog.models.Post) -->
+<div class="card" style="margin-bottom: 24px;">
+    <div class="card__header">
+        <h2 class="card__title">Blog Yazıları (Post)</h2>
+        <a href="/admin/blog/post/" class="btn btn--ghost btn--sm" target="_blank">Django Admin'de Yönet</a>
+    </div>
+    <div class="card__body">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Başlık</th>
+                        <th>Yazar</th>
+                        <th>Durum</th>
+                        <th>Görüntülenme</th>
+                        <th>Tarih</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in posts|slice:":10" %}
+                    <tr>
+                        <td>
+                            <strong>{{ post.title }}</strong>
+                            {% if post.featured_image or post.featured_image_url %}
+                            <span class="badge badge--info" style="margin-left: 8px;">📷</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ post.author.get_full_name|default:post.author.username }}</td>
+                        <td>
+                            {% if post.status == 'published' %}
+                            <span class="badge badge--success">✅ Yayında</span>
+                            {% elif post.status == 'draft' %}
+                            <span class="badge badge--warning">📝 Taslak</span>
+                            {% elif post.status == 'unlisted' %}
+                            <span class="badge badge--secondary">🔒 Gizli</span>
+                            {% else %}
+                            <span class="badge badge--info">{{ post.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ post.view_count|default:0 }}</td>
+                        <td>{{ post.created_at|date:"d.m.Y" }}</td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="/admin/blog/post/{{ post.id }}/change/" class="btn btn--ghost btn--sm" target="_blank">Düzenle</a>
+                                <a href="/blog/{{ post.slug }}/" class="btn btn--ghost btn--sm" target="_blank">Görüntüle</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">Henüz blog yazısı yok</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Main Blog Posts Table (apps.main.models.BlogPost) -->
+<div class="card">
+    <div class="card__header">
+        <h2 class="card__title">Ana Blog Yazıları (BlogPost)</h2>
+        <a href="/admin/main/blogpost/" class="btn btn--ghost btn--sm" target="_blank">Django Admin'de Yönet</a>
+    </div>
+    <div class="card__body">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Başlık</th>
+                        <th>Kategori</th>
+                        <th>Yazar</th>
+                        <th>Durum</th>
+                        <th>Öne Çıkan</th>
+                        <th>Görüntülenme</th>
+                        <th>Tarih</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in blog_posts|slice:":10" %}
+                    <tr>
+                        <td>
+                            <strong>{{ post.title }}</strong>
+                            {% if post.featured_image %}
+                            <span class="badge badge--info" style="margin-left: 8px;">📷</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if post.category %}
+                            <span class="badge" style="background-color: {{ post.category.color }}20; color: {{ post.category.color }};">
+                                {{ post.category.icon }} {{ post.category.display_name }}
+                            </span>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>{{ post.author.get_full_name|default:post.author.username|default:'-' }}</td>
+                        <td>
+                            {% if post.status == 'published' %}
+                            <span class="badge badge--success">✅ Yayında</span>
+                            {% elif post.status == 'draft' %}
+                            <span class="badge badge--warning">📝 Taslak</span>
+                            {% else %}
+                            <span class="badge badge--secondary">{{ post.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if post.is_featured %}
+                            <span class="badge badge--warning">⭐ Öne Çıkan</span>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>{{ post.view_count|default:0 }}</td>
+                        <td>{{ post.created_at|date:"d.m.Y" }}</td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="/admin/main/blogpost/{{ post.id }}/change/" class="btn btn--ghost btn--sm" target="_blank">Düzenle</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">Henüz blog yazısı yok</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

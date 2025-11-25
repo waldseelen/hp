@@ -7,7 +7,8 @@ FROM node:22-alpine AS frontend-builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install --include=dev
+ENV NODE_ENV=development
+RUN npm install
 
 COPY . .
 RUN npm run build

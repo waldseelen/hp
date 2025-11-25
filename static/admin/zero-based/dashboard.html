@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Panel - Dashboard">
+    <title>Dashboard - Admin Panel</title>
+    <link rel="stylesheet" href="admin-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar__header">
+                <div class="sidebar__brand">
+                    <div class="sidebar__logo">AP</div>
+                    <span class="sidebar__brand-text">Admin Panel</span>
+                </div>
+                <button class="sidebar__toggle" id="sidebarToggle" aria-label="Menüyü Aç/Kapat">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Sidebar Navigation -->
+            <nav class="sidebar__nav">
+                <!-- Ana Menü -->
+                <div class="nav-section">
+                    <h3 class="nav-section__title">Ana Menü</h3>
+                    <a href="#" class="nav-item nav-item--active">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                        </svg>
+                        <span class="nav-item__text">Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                        </svg>
+                        <span class="nav-item__text">Kullanıcılar</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"/>
+                        </svg>
+                        <span class="nav-item__text">Projeler</span>
+                    </a>
+                </div>
+
+                <!-- İçerik Yönetimi -->
+                <div class="nav-section">
+                    <h3 class="nav-section__title">İçerik</h3>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z"/>
+                            <path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/>
+                        </svg>
+                        <span class="nav-item__text">Blog Yazıları</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/>
+                        </svg>
+                        <span class="nav-item__text">Medya Galerisi</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm12.553 1.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/>
+                        </svg>
+                        <span class="nav-item__text">Kategoriler</span>
+                    </a>
+                </div>
+
+                <!-- Ayarlar -->
+                <div class="nav-section">
+                    <h3 class="nav-section__title">Sistem</h3>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"/>
+                        </svg>
+                        <span class="nav-item__text">Ayarlar</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-item__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
+                        </svg>
+                        <span class="nav-item__text">Yardım</span>
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Sidebar Footer -->
+            <div class="sidebar__footer">
+                <div class="user-menu">
+                    <div class="user-avatar">AK</div>
+                    <div class="user-name">Admin</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="top-bar__left">
+                    <h1 class="top-bar__title">Dashboard</h1>
+                </div>
+                <div class="top-bar__right">
+                    <!-- Notifications -->
+                    <button class="btn btn--ghost btn--small" aria-label="Bildirimler">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                        </svg>
+                    </button>
+                    
+                    <!-- User Menu -->
+                    <div class="user-menu">
+                        <div class="user-avatar">AK</div>
+                        <span class="user-name">Admin Kullanıcı</span>
+                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                        </svg>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card__icon">
+                            <svg viewBox="0 0 20 20" fill="currentColor" style="width: 24px; height: 24px; color: var(--text-inverse);">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-card__content">
+                            <div class="stat-card__label">Toplam Kullanıcı</div>
+                            <div class="stat-card__value">2,847</div>
+                            <div class="stat-card__change stat-card__change--positive">
+                                ↑ 12% bu ay
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card__icon">
+                            <svg viewBox="0 0 20 20" fill="currentColor" style="width: 24px; height: 24px; color: var(--text-inverse);">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-card__content">
+                            <div class="stat-card__label">Aktif Projeler</div>
+                            <div class="stat-card__value">156</div>
+                            <div class="stat-card__change stat-card__change--positive">
+                                ↑ 8% bu hafta
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card__icon">
+                            <svg viewBox="0 0 20 20" fill="currentColor" style="width: 24px; height: 24px; color: var(--text-inverse);">
+                                <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-card__content">
+                            <div class="stat-card__label">Blog Yazıları</div>
+                            <div class="stat-card__value">842</div>
+                            <div class="stat-card__change stat-card__change--positive">
+                                ↑ 24 yeni
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card__icon">
+                            <svg viewBox="0 0 20 20" fill="currentColor" style="width: 24px; height: 24px; color: var(--text-inverse);">
+                                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-card__content">
+                            <div class="stat-card__label">Aylık Gelir</div>
+                            <div class="stat-card__value">₺45.2K</div>
+                            <div class="stat-card__change stat-card__change--positive">
+                                ↑ 18% artış
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Table -->
+                <div class="card">
+                    <div class="card__header">
+                        <h2 class="card__title">Son Aktiviteler</h2>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Kullanıcı</th>
+                                    <th>Aktivite</th>
+                                    <th>Durum</th>
+                                    <th>Tarih</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-4">
+                                            <div class="user-avatar">AK</div>
+                                            <span>Ahmet Kaya</span>
+                                        </div>
+                                    </td>
+                                    <td>Yeni proje oluşturdu</td>
+                                    <td><span class="badge badge--success">Tamamlandı</span></td>
+                                    <td>2 dakika önce</td>
+                                    <td>
+                                        <button class="btn btn--ghost btn--small">Detay</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-4">
+                                            <div class="user-avatar" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">MS</div>
+                                            <span>Mehmet Şahin</span>
+                                        </div>
+                                    </td>
+                                    <td>Blog yazısı yayınladı</td>
+                                    <td><span class="badge badge--success">Yayında</span></td>
+                                    <td>15 dakika önce</td>
+                                    <td>
+                                        <button class="btn btn--ghost btn--small">Detay</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-4">
+                                            <div class="user-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">ZY</div>
+                                            <span>Zeynep Yılmaz</span>
+                                        </div>
+                                    </td>
+                                    <td>Profil fotoğrafı güncelledi</td>
+                                    <td><span class="badge badge--info">Güncellendi</span></td>
+                                    <td>1 saat önce</td>
+                                    <td>
+                                        <button class="btn btn--ghost btn--small">Detay</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-4">
+                                            <div class="user-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">CÖ</div>
+                                            <span>Can Özdemir</span>
+                                        </div>
+                                    </td>
+                                    <td>Yorum gönderdi</td>
+                                    <td><span class="badge badge--gold">Beklemede</span></td>
+                                    <td>2 saat önce</td>
+                                    <td>
+                                        <button class="btn btn--ghost btn--small">Detay</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-4">
+                                            <div class="user-avatar" style="background: linear-gradient(135deg, #ef4444, #dc2626);">EA</div>
+                                            <span>Elif Arslan</span>
+                                        </div>
+                                    </td>
+                                    <td>Dosya yükledi</td>
+                                    <td><span class="badge badge--warning">İşleniyor</span></td>
+                                    <td>3 saat önce</td>
+                                    <td>
+                                        <button class="btn btn--ghost btn--small">Detay</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card mt-4">
+                    <div class="card__header">
+                        <h2 class="card__title">Hızlı İşlemler</h2>
+                    </div>
+                    <div class="card__body">
+                        <div class="flex gap-4">
+                            <button class="btn btn--primary">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+                                </svg>
+                                Yeni Proje
+                            </button>
+                            <button class="btn btn--secondary">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M8 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3zM15 11a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z"/>
+                                </svg>
+                                Kullanıcı Ekle
+                            </button>
+                            <button class="btn btn--secondary">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/>
+                                </svg>
+                                Rapor İndir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="admin-script.js"></script>
+</body>
+</html>

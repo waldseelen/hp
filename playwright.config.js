@@ -101,14 +101,11 @@ module.exports = defineConfig({
         timeout: 15000
     },
 
-    /* Web Server configuration - automatically start Django server for tests */
-    webServer: {
-        command: 'python manage.py runserver 127.0.0.1:8001',
-        url: 'http://127.0.0.1:8001',
-        reuseExistingServer: true,
-        timeout: 60 * 1000, // 1 minute timeout
-        env: {
-            DJANGO_SETTINGS_MODULE: 'project.settings.simple'
-        }
-    },
+    /* Web Server configuration - use existing Django server for tests */
+    // webServer: {
+    //     command: 'python manage.py runserver 127.0.0.1:8000',
+    //     url: 'http://127.0.0.1:8000',
+    //     reuseExistingServer: true,
+    //     timeout: 60 * 1000,
+    // },
 });

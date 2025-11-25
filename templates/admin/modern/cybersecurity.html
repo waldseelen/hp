@@ -1,0 +1,230 @@
+{% extends 'admin/modern/dashboard.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Actions -->
+<div class="page-actions" style="margin-bottom: 24px;">
+    <a href="/admin/main/cybersecurityresource/add/" class="btn btn--primary" target="_blank">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+        </svg>
+        Yeni Kaynak Ekle
+    </a>
+    <a href="/admin/main/cybersecurityresource/" class="btn btn--secondary" target="_blank">
+        Tüm Kaynakları Yönet
+    </a>
+</div>
+
+<!-- Stats Overview -->
+<div class="stats-grid" style="margin-bottom: 32px;">
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--danger">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <h3 class="stat-card__title">Toplam Kaynak</h3>
+            <p class="stat-card__value">{{ stats.total }}</p>
+            <p class="stat-card__label">Siber güvenlik kaynakları</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--warning">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <h3 class="stat-card__title">Acil Uyarılar</h3>
+            <p class="stat-card__value">{{ stats.urgent_count }}</p>
+            <p class="stat-card__label">Hızlı müdahale gerekli</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--info">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <h3 class="stat-card__title">Kaynak Tipleri</h3>
+            <p class="stat-card__value">{{ stats.by_type.count }}</p>
+            <p class="stat-card__label">Farklı kategori</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--success">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <h3 class="stat-card__title">Doğrulanmış</h3>
+            <p class="stat-card__value">{{ resources|selectattr:"is_featured"|length }}</p>
+            <p class="stat-card__label">Öne çıkan kaynaklar</p>
+        </div>
+    </div>
+</div>
+
+<!-- Severity Stats -->
+<div class="card" style="margin-bottom: 24px;">
+    <div class="card__header">
+        <h2 class="card__title">Önem Seviyesine Göre Dağılım</h2>
+    </div>
+    <div class="card__body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+            {% for item in stats.by_severity %}
+            <div style="padding: 16px; background: var(--color-dark-800); border-radius: 8px; text-align: center;">
+                {% if item.severity_level == 1 %}
+                <div style="font-size: 2rem; margin-bottom: 8px;">🟢</div>
+                <div style="color: #10b981; font-weight: 600; font-size: 1.25rem;">{{ item.count }}</div>
+                <div style="color: var(--color-text-secondary); font-size: 0.875rem;">Düşük Öncelik</div>
+                {% elif item.severity_level == 2 %}
+                <div style="font-size: 2rem; margin-bottom: 8px;">🟡</div>
+                <div style="color: #f59e0b; font-weight: 600; font-size: 1.25rem;">{{ item.count }}</div>
+                <div style="color: var(--color-text-secondary); font-size: 0.875rem;">Orta Öncelik</div>
+                {% elif item.severity_level == 3 %}
+                <div style="font-size: 2rem; margin-bottom: 8px;">🟠</div>
+                <div style="color: #f97316; font-weight: 600; font-size: 1.25rem;">{{ item.count }}</div>
+                <div style="color: var(--color-text-secondary); font-size: 0.875rem;">Yüksek Öncelik</div>
+                {% elif item.severity_level == 4 %}
+                <div style="font-size: 2rem; margin-bottom: 8px;">🔴</div>
+                <div style="color: #ef4444; font-weight: 600; font-size: 1.25rem;">{{ item.count }}</div>
+                <div style="color: var(--color-text-secondary); font-size: 0.875rem;">Kritik</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Resources Table -->
+<div class="card">
+    <div class="card__header">
+        <h2 class="card__title">Siber Güvenlik Kaynakları</h2>
+        <div style="display: flex; gap: 12px;">
+            <select class="form-input" style="width: auto; min-width: 150px;" id="filterType">
+                <option value="">Tüm Tipler</option>
+                <option value="article">Makale</option>
+                <option value="tool">Araç</option>
+                <option value="tutorial">Eğitim</option>
+                <option value="news">Haber</option>
+            </select>
+            <select class="form-input" style="width: auto; min-width: 150px;" id="filterSeverity">
+                <option value="">Tüm Önem Seviyeleri</option>
+                <option value="1">Düşük</option>
+                <option value="2">Orta</option>
+                <option value="3">Yüksek</option>
+                <option value="4">Kritik</option>
+            </select>
+        </div>
+    </div>
+    <div class="card__body">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Başlık</th>
+                        <th>Tip</th>
+                        <th>Zorluk</th>
+                        <th>Önem</th>
+                        <th>Durum</th>
+                        <th>Tarih</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resource in resources|slice:":20" %}
+                    <tr>
+                        <td>
+                            <strong>{{ resource.title }}</strong>
+                            {% if resource.image %}
+                            <span class="badge badge--info" style="margin-left: 8px;">📷</span>
+                            {% endif %}
+                            {% if resource.is_urgent %}
+                            <span class="badge badge--danger" style="margin-left: 8px;">🚨 ACİL</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if resource.type == 'article' %}
+                            <span class="badge badge--info">📄 Makale</span>
+                            {% elif resource.type == 'tool' %}
+                            <span class="badge badge--success">🛠️ Araç</span>
+                            {% elif resource.type == 'tutorial' %}
+                            <span class="badge badge--warning">📚 Eğitim</span>
+                            {% elif resource.type == 'news' %}
+                            <span class="badge badge--primary">📰 Haber</span>
+                            {% else %}
+                            <span class="badge badge--secondary">{{ resource.get_type_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if resource.difficulty == 'beginner' %}
+                            <span class="badge badge--success">👶 Başlangıç</span>
+                            {% elif resource.difficulty == 'intermediate' %}
+                            <span class="badge badge--warning">📈 Orta</span>
+                            {% elif resource.difficulty == 'advanced' %}
+                            <span class="badge badge--danger">🎓 İleri</span>
+                            {% else %}
+                            {{ resource.get_difficulty_display }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if resource.severity_level == 1 %}
+                            <span class="badge" style="background: #10b98120; color: #10b981;">🟢 Düşük</span>
+                            {% elif resource.severity_level == 2 %}
+                            <span class="badge" style="background: #f59e0b20; color: #f59e0b;">🟡 Orta</span>
+                            {% elif resource.severity_level == 3 %}
+                            <span class="badge" style="background: #f9731620; color: #f97316;">🟠 Yüksek</span>
+                            {% elif resource.severity_level == 4 %}
+                            <span class="badge" style="background: #ef444420; color: #ef4444;">🔴 Kritik</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if resource.is_featured %}
+                            <span class="badge badge--warning">⭐ Öne Çıkan</span>
+                            {% endif %}
+                            {% if resource.is_visible %}
+                            <span class="badge badge--success">👁️ Görünür</span>
+                            {% else %}
+                            <span class="badge badge--secondary">🔒 Gizli</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ resource.created_at|date:"d.m.Y" }}</td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="/admin/main/cybersecurityresource/{{ resource.id }}/change/" class="btn btn--ghost btn--sm" target="_blank">Düzenle</a>
+                                {% if resource.url %}
+                                <a href="{{ resource.url }}" class="btn btn--ghost btn--sm" target="_blank">Kaynak</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">Henüz siber güvenlik kaynağı yok</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+// Simple filtering (client-side)
+document.getElementById('filterType')?.addEventListener('change', function() {
+    console.log('Filter by type:', this.value);
+    // TODO: Implement AJAX filtering or page reload with query params
+});
+
+document.getElementById('filterSeverity')?.addEventListener('change', function() {
+    console.log('Filter by severity:', this.value);
+    // TODO: Implement AJAX filtering or page reload with query params
+});
+</script>
+{% endblock %}

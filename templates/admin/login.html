@@ -5,15 +5,20 @@
 {% block bodyclass %}login-page{% endblock %}
 
 {% block content %}
-<div id="content" class="login-layout">
-  <div class="login-card">
-    <div class="login-card__header">
-      <h1>Yonetim Girisi</h1>
-      <p>Kontrol paneline erismek icin kayitli bilgilerinizi kullanin.</p>
-    </div>
+<div id="content" class="login-layout" data-admin-screen="login">
+  <section class="login-card" aria-labelledby="admin-login-title">
+    <header class="login-card__header">
+      <div class="login-card__badge">BA</div>
+      <div>
+        <p id="admin-login-title" class="login-card__title">Yonetim Girisi</p>
+        <p class="login-card__subtitle">Yetkili hesaplarla devam edin. Tum aktiviteler kaydedilir.</p>
+      </div>
+    </header>
+
     {% if form.errors %}
-      <div class="alert alert--danger">Yetkisiz giris</div>
+      <div class="alert alert--danger" role="alert">Yetkisiz giris. Lutfen bilgilerinizi kontrol edin.</div>
     {% endif %}
+
     <form action="{{ app_path }}" method="post" novalidate class="login-form">
       {% csrf_token %}
       <div class="form-field">
@@ -29,6 +34,10 @@
       {% endif %}
       <button type="submit" class="button button--primary">Giris Yap</button>
     </form>
-  </div>
+
+    <footer class="login-card__footer">
+      <p>Destek gerektiriyorsa <a href="mailto:hello@bugraakin.com">hello@bugraakin.com</a> uzerinden ulasin.</p>
+    </footer>
+  </section>
 </div>
 {% endblock %}

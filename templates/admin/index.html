@@ -48,7 +48,7 @@
       <section class="panel panel--posts">
         <h3>Son Eklenen 5 Yazı</h3>
         <ul>
-          {% for post in last_blog_posts 5 %}
+          {% for post in last_blog_posts|slice:":5" %}
             <li>
               <a href="{% url 'admin:blog_post_change' post.pk %}">{{ post.title }}</a>
               — <small>{{ post.get_status_display }}</small>
@@ -62,7 +62,7 @@
       <section class="panel panel--top-viewed">
         <h3>En Çok Görüntülenen 5 Yazı</h3>
         <ul>
-          {% for post in top_viewed_posts 5 %}
+          {% for post in top_viewed_posts|slice:":5" %}
             <li>
               <a href="{% url 'admin:blog_post_change' post.pk %}">{{ post.title }}</a>
               — <small>{{ post.view_count }} görüntüleme</small>

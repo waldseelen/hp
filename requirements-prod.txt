@@ -1,6 +1,6 @@
 # Production Requirements
 # Database driver for PostgreSQL (required for Cloud Run)
-psycopg2-binary==2.9.10
+psycopg2-binary>=2.9.10
 
 # Base requirements
 -r requirements.txt
