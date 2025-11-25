@@ -15,23 +15,29 @@ DEBUG = False
 # ALLOWED_HOSTS - Add Cloud Run domains
 # ==========================================================================
 # Get hosts from environment variable and add Cloud Run domain pattern
-_allowed_hosts_env = os.environ.get("ALLOWED_HOSTS", "").split(",")
-ALLOWED_HOSTS = [host.strip() for host in _allowed_hosts_env if host.strip()]
+_allowed_hosts_raw = os.environ.get("ALLOWED_HOSTS", "")
+_allowed_hosts_env = (
+    [host.strip() for host in _allowed_hosts_raw.split(",") if host.strip()]
+    if _allowed_hosts_raw
+    else []
+)
+ALLOWED_HOSTS = _allowed_hosts_env.copy()
 
 # Add Cloud Run domain pattern
 if ".run.app" not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(".run.app")
 
-# Fallback for production (allow wildcard if no hosts configured)
-if not ALLOWED_HOSTS:
-    ALLOWED_HOSTS = ["*"]
-
 # ==========================================================================
 # CSRF_TRUSTED_ORIGINS - Add Cloud Run domains for CSRF protection
 # ==========================================================================
 # Get origins from environment variable
-_csrf_origins_env = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
-CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_origins_env if origin.strip()]
+_csrf_origins_raw = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
+_csrf_origins_env = (
+    [origin.strip() for origin in _csrf_origins_raw.split(",") if origin.strip()]
+    if _csrf_origins_raw
+    else []
+)
+CSRF_TRUSTED_ORIGINS = _csrf_origins_env.copy()
 
 # Add Cloud Run origins
 _cloud_run_origins = [
@@ -62,5 +68,4 @@ SECURE_HSTS_PRELOAD = True
 
 # Other security headers
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = "DENY"
